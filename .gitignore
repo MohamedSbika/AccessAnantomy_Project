@@ -1,0 +1,68 @@
+# Backup files
+Access backup.tar.gz
+*.tar.gz
+*.zip
+*.bak
+*.sql
+*.dump
+
+# System files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.editorconfig
+
+# PHP Configuration files (sensible)
+.htaccess-no https
+phpinfo.php
+diagnostic.php
+api_test.php
+
+# Vendor dependencies
+/vendor/
+composer.phar
+
+# Upload directories
+/uploads/*
+!/uploads/.gitkeep
+
+# Cache and temporary files
+/system/cache/*
+!/system/cache/.gitkeep
+/system/logs/*
+!/system/logs/.gitkeep
+*.log
+*.cache
+
+# Database files
+*.sqlite
+*.db
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Node modules (si vous utilisez npm)
+node_modules/
+package-lock.json
+
+# Build files
+/dist/
+/build/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
