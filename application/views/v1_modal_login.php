@@ -200,11 +200,11 @@
 
 $.ajax({
     type: "POST",
-    url: "http://localhost/public_html/home/login_process",
+    url: "<?php echo base_url(); ?>home/login_process",
     data: formData,
     processData: false,
     contentType: false,
-    xhrFields: { withCredentials: true }, 
+    xhrFields: { withCredentials: true },
     timeout: 30000,
     success: function(response) {
         console.log("Réponse brute :", response);
