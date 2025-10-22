@@ -501,47 +501,51 @@
                                 <div class="card-body" style=" display: flex;  justify-content: center;">
 
                                     <?php if ((strlen($this->session->userdata('passTok')) == 200) && ($this->session->userdata('EstAdmin') == 1)) { ?>
-                                        <form name="pageForm_SetChap" id="pageForm_SetChap" action="">
-                                            <div class="row" style="flex: 1 0 0%;">
-                                                <a href="#" data-toggle="modal" data-target="#modalChap">
-                                                    <i class="fa fa-plus" title="<?php echo $this->lang->line('actionAjout'); ?>"></i>
-                                                </a>
-                                                <div class="modal fade" id="modalChap" tabindex="<?= $OneBook[0]['IDLivre']; ?>" style="display: none;" aria-hidden="true">
-                                                    <div class="modal-dialog modal-sm" role="document">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h3 class="h2 mb-1" style="font-family: Georgia, serif;font-size: 180%;"><?= $OneBook[0]['Titre']; ?></h3>
-                                                                <input type="hidden" name="bookID" id="bookID" value="<?= $OneBook[0]['IDLivre']; ?>">
-                                                            </div>
-                                                            <div class="card-body">
-                                                                <div class="list_wrapper_<?= $OneBook[0]['IDLivre']; ?>">
-                                                                    <div class="row">
+<form name="pageForm_SetChap" id="pageForm_SetChap_<?= $OneBook[0]['IDLivre']; ?>" action="">
+    <div class="row" style="flex: 1 0 0%;">
+        <a href="#" data-toggle="modal" data-target="#modalChap_<?= $OneBook[0]['IDLivre']; ?>">
+            <i class="fa fa-plus" title="<?= $this->lang->line('actionAjout'); ?>"></i>
+        </a>
 
-                                                                        <div class="col-xs-7 col-sm-7 col-md-7">
-                                                                            <div class="form-group">
-                                                                                Chapitre 1
-                                                                                <input name="list[]" type="text" placeholder="Titre de chapitre" class="form-control" />
-                                                                            </div>
-                                                                        </div>
+        <div class="modal fade" id="modalChap_<?= $OneBook[0]['IDLivre']; ?>" tabindex="<?= $OneBook[0]['IDLivre']; ?>" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content">
 
-                                                                        <div class="col-xs-1 col-sm-1 col-md-1">
-                                                                            <br>
-                                                                            <button class="btn btn-primary list_add_button" type="button" value="<?= $OneBook[0]['IDLivre']; ?>">+</button>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+                    <div class="modal-header">
+                        <h3 class="h2 mb-1" style="font-family: Georgia, serif;font-size: 180%;"><?= $OneBook[0]['Titre']; ?></h3>
+                        <!-- ID unique pour le bookID -->
+                        <input type="hidden" name="bookID" id="bookID_<?= $OneBook[0]['IDLivre']; ?>" value="<?= $OneBook[0]['IDLivre']; ?>">
+                    </div>
 
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                                <button type="button" class="btn btn-primary" onclick="set_LivChap()">Save changes</button>
-                                                            </div>
+                    <div class="card-body">
+                        <div class="list_wrapper_<?= $OneBook[0]['IDLivre']; ?>">
+                            <div class="row">
+                                <div class="col-xs-7 col-sm-7 col-md-7">
+                                    <div class="form-group">
+                                        Chapitre 1
+                                        <input name="list[]" type="text" placeholder="Titre de chapitre" class="form-control" id="list_<?= $OneBook[0]['IDLivre']; ?>_0">
+                                    </div>
+                                </div>
 
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </form>
+                                <div class="col-xs-1 col-sm-1 col-md-1">
+                                    <br>
+                                    <button class="btn btn-primary list_add_button" type="button" data-bookid="<?= $OneBook[0]['IDLivre']; ?>">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="set_LivChap(<?= $OneBook[0]['IDLivre']; ?>)">Save changes</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
                                     <?php } ?>
 
                                     <table class="table table-striped" style="width: 70%; align-self: center;">
@@ -3135,73 +3139,67 @@
                 return false;
             }
 
-            function set_LivChap() {
+           function set_LivChap(bookID) {
+    var form = $('#pageForm_SetChap_' + bookID)[0]; // sélectionner le bon formulaire
+    var data_plat = new FormData(form);
 
-                var data_plat = new FormData($('#pageForm_SetChap')[0]);
+    Swal.fire({
+        title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading()
+        }
+    });
 
+    $.ajax({
+        type: "POST",
+        url: "<?= base_url('home/set_LivChap'); ?>",
+        data: data_plat,
+        cache: false,
+        contentType: false,
+        processData: false,
+        timeout: 30000000,
+        success: function(html) {
+            console.log(html); // vérifier la réponse
+            try {
+                var resu = JSON.parse(html);
+            } catch(e) {
+                console.error("Erreur JSON :", e, html);
                 Swal.fire({
-                    title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
-                    allowOutsideClick: false,
-                    allowEscapeKey: false,
-                    onBeforeOpen: () => {
-                        Swal.showLoading()
-                    }
-                })
-
-                $.ajax({
-
-                    type: "POST",
-                    url: "<?php echo base_url(); ?>home/set_LivChap",
-                    data: data_plat,
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    timeout: 30000000,
-                    success: function(html) {
-
-                        console.log(html);
-                        var resu = JSON.parse(html);
-                        console.log(resu);
-
-                        if (resu[0]["id"] == 1) {
-                            $('#modalChap').modal('hide');
-                            Swal.fire({
-                                title: resu[0]["desc"],
-                                position: 'center',
-                                type: 'success',
-                                confirmButtonColor: '#3085d6',
-                                cancelButtonColor: '#d33',
-                                confirmButtonText: 'OK',
-                                allowOutsideClick: false,
-                                allowEscapeKey: false
-                            }).then((result) => {
-                                if (result.value) {
-                                    location.reload();
-                                }
-                            })
-
-                        } else {
-                            Swal.fire({
-                                position: 'center',
-                                type: 'error',
-                                title: resu[0]["desc"],
-                                showConfirmButton: false,
-                                timer: 4000
-                            })
-                        }
-                    },
-                    error: function() {
-                        // SHOW AN ERROR { if php failed to fetch }
-
-                        //$("#user_message_error_pretech").show();
-                        $('.modal-message').html("Sorry, File not Uploaded");
-                        $('#modal-confirm-all').modal('show');
-                    }
-
+                    title: 'Erreur serveur',
+                    text: 'Impossible de traiter la réponse',
+                    icon: 'error'
                 });
-
-                return false;
+                return;
             }
+
+            if (resu[0]["id"] == 1) {
+                $('#modalChap_' + bookID).modal('hide');
+                Swal.fire({
+                    title: resu[0]["desc"],
+                    icon: 'success',
+                    text: 'chapitre Ajouters avec succès',
+                    confirmButtonText: 'OK'
+                }).then(() => location.reload());
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: resu[0]["desc"],
+                    timer: 4000
+                });
+            }
+        },
+        error: function() {
+            Swal.fire({
+                icon: 'error',
+                title: 'Erreur lors de l’envoi du formulaire',
+            });
+        }
+    });
+
+    return false;
+}
 
             function delChap(iTH, xx) {
                 var elem = document.getElementsByClassName('row ' + xx);
