@@ -1435,28 +1435,32 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 					<img src="<?php echo HTTP_IMAGES; ?>photos/chatbot.png" alt="Cerveau énergétique">
 				</div>
 				<div class="text-container">
-					<h3><?php echo $this->lang->line('chatbot_title'); ?></h3>
-					<p><?php echo $this->lang->line('chatbot_p'); ?></p>
-					<p><?php echo $this->lang->line('chatbot_p1'); ?></p>
-					<ul>
-						<li><?php echo $this->lang->line('chatbot_li1'); ?></li>
-						<li><?php echo $this->lang->line('chatbot_li2'); ?></li>
-						<li><?php echo $this->lang->line('chatbot_li3'); ?></li>
-						<li><?php echo $this->lang->line('chatbot_li4'); ?></li>
-						<li><?php echo $this->lang->line('chatbot_li5'); ?></li>
-					</ul>
-					<p><?php echo $this->lang->line('chatbot_p2'); ?></p>
+	<h3><?php echo $this->lang->line('chatbot_title'); ?></h3>
+	<p><?php echo $this->lang->line('chatbot_p'); ?></p>
+	<p><?php echo $this->lang->line('chatbot_p1'); ?></p>
+	<ul>
+		<li><?php echo $this->lang->line('chatbot_li1'); ?></li>
+		<li><?php echo $this->lang->line('chatbot_li2'); ?></li>
+		<li><?php echo $this->lang->line('chatbot_li3'); ?></li>
+		<li><?php echo $this->lang->line('chatbot_li4'); ?></li>
+		<li><?php echo $this->lang->line('chatbot_li5'); ?></li>
+	</ul>
+	<p><?php echo $this->lang->line('chatbot_p2'); ?></p>
 
-					<!-- 🔘 Bouton corrigé -->
-					<a href="http://localhost:5173" class="btn-chatbot" target="_blank">
-						<?php
-						// Vérifiez d'abord si la ligne existe
-						$button_text = $this->lang->line('chatbot_button');
-						echo !empty($button_text) ? $button_text : 'hello';
-						?>
-					</a>
-				</div>
+	<?php $button_text = $this->lang->line('chatbot_button') ?? 'hello'; ?>
 
+	<?php if ($this->session->userdata('user_id') > 0): ?>
+		<!-- ✅ Si l'utilisateur est connecté -->
+		<a href="http://localhost:5173" class="btn-chatbot" target="_blank">
+			<?= $button_text; ?>
+		</a>
+	<?php else: ?>
+		<!-- ❌ Si non connecté → ouvre la modale de login existante -->
+		<a href="#" class="btn-chatbot" onclick="openModalLogin(); return false;">
+			<?= $button_text; ?>
+		</a>
+	<?php endif; ?>
+</div>
 				<style>
 					.section-info .btn-chatbot {
 						display: inline-block;
