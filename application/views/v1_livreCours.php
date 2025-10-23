@@ -266,6 +266,31 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 		}
 	</style>
 
+<!-- <?php
+if (isset($OneBook[0]["IDTheme"])) {
+    $themeId = $OneBook[0]["IDTheme"];
+    if (in_array($themeId, [20, 30, 31])) {
+        ?>
+        <div style="text-align:center; margin-top:15px;">
+            <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>cours"
+               class="btn btn-primary"
+               style="display:inline-block;
+                      padding:10px 20px;
+                      background: linear-gradient(135deg, #1d3557, #457b9d);
+                      color:#fff;
+                      border-radius:4px;
+                      text-decoration:none;
+                      font-weight:600;">
+                <i class="fa fa-arrow-left" style="margin-right:5px;"></i> Revenir au cours
+            </a>
+        </div>
+        <?php
+    }
+}
+?> -->
+
+
+
 	<div id="element">
 
 		<?php include('v1_racourci.php'); ?>

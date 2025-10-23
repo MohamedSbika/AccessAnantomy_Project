@@ -1,7 +1,16 @@
 <?php
-if (in_array((int)$OneBook[0]["IDLivre"], [70, 71]) || in_array((int)$OneBook[0]["IDCategory"], [4, 9])) {
+$bookId = (int)$OneBook[0]["IDLivre"];
+
+// Vérification pour afficher v1_racourci_pathologie
+if (in_array($bookId, [20, 30, 31]) || in_array((int)$OneBook[0]["IDTheme"], [20, 30, 31])) {
+	include('v1_racourci_pathologie.php');
+} 
+// Vérification pour afficher v1_racourci_atlas
+elseif (in_array($bookId, [70, 71]) || in_array((int)$OneBook[0]["IDCategory"], [4, 9])) {
 	include('v1_racourci_atlas.php');
-} else { ?>
+} 
+// Affichage du raccourci par défaut
+else { ?>
 
 	<style>
 		.sidebar-racc {

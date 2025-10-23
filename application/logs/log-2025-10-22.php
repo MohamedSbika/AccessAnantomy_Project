@@ -126,3 +126,61 @@ ERROR - 2025-10-22 14:30:25 --> Severity: Notice --> Undefined index: IDChapitre
 ERROR - 2025-10-22 14:31:37 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
 ERROR - 2025-10-22 14:35:46 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
 ERROR - 2025-10-22 14:38:09 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-22 14:51:54 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-22 14:53:23 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-22 14:53:30 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-22 15:39:34 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-22 15:39:35 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-22 15:40:19 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 2681
+ERROR - 2025-10-22 15:40:19 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 2681
+ERROR - 2025-10-22 15:40:19 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\header.php 36
+ERROR - 2025-10-22 15:40:19 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\header.php 36
+ERROR - 2025-10-22 15:40:19 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\livreCours.php 351
+ERROR - 2025-10-22 15:40:19 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\livreCours.php 351
+ERROR - 2025-10-22 15:40:19 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\livreCours.php 601
+ERROR - 2025-10-22 15:40:19 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\livreCours.php 601
+ERROR - 2025-10-22 15:40:21 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 2681
+ERROR - 2025-10-22 15:40:21 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 2681
+ERROR - 2025-10-22 15:40:21 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\header.php 36
+ERROR - 2025-10-22 15:40:21 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\header.php 36
+ERROR - 2025-10-22 15:40:21 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\livreCours.php 351
+ERROR - 2025-10-22 15:40:21 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\livreCours.php 351
+ERROR - 2025-10-22 15:40:21 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\livreCours.php 601
+ERROR - 2025-10-22 15:40:21 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\livreCours.php 601
+ERROR - 2025-10-22 15:40:22 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 2681
+ERROR - 2025-10-22 15:40:22 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 2681
+ERROR - 2025-10-22 15:40:22 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\header.php 36
+ERROR - 2025-10-22 15:40:22 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\header.php 36
+ERROR - 2025-10-22 15:40:22 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\livreCours.php 351
+ERROR - 2025-10-22 15:40:22 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\livreCours.php 351
+ERROR - 2025-10-22 15:40:22 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\livreCours.php 601
+ERROR - 2025-10-22 15:40:22 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\livreCours.php 601
+ERROR - 2025-10-22 15:40:34 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-22 16:12:03 --> 404 Page Not Found: Backend/session.php
+ERROR - 2025-10-22 16:12:03 --> 404 Page Not Found: Backend/session.php
+ERROR - 2025-10-22 16:12:03 --> 404 Page Not Found: Backend/session.php
+ERROR - 2025-10-22 16:12:15 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-22 17:41:57 --> 404 Page Not Found: Backend/session.php
+ERROR - 2025-10-22 17:41:57 --> 404 Page Not Found: Backend/session.php
+ERROR - 2025-10-22 17:41:57 --> 404 Page Not Found: Backend/session.php
+ERROR - 2025-10-22 17:42:24 --> 404 Page Not Found: Assets/js
+ERROR - 2025-10-22 17:47:39 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-22 17:48:30 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-22 17:48:50 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-22 17:52:29 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-22 18:02:03 --> 404 Page Not Found: Assets/js
+ERROR - 2025-10-22 18:02:14 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-22 18:03:11 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-22 18:03:49 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-22 18:03:53 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-22 18:05:33 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-22 18:06:48 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-22 18:09:07 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-22 18:16:56 --> 404 Page Not Found: Backend/session.php
+ERROR - 2025-10-22 18:16:56 --> 404 Page Not Found: Backend/session.php
+ERROR - 2025-10-22 18:16:57 --> 404 Page Not Found: Backend/session.php
+ERROR - 2025-10-22 18:16:58 --> 404 Page Not Found: Backend/session.php
+ERROR - 2025-10-22 18:16:58 --> 404 Page Not Found: Backend/session.php
+ERROR - 2025-10-22 18:20:19 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-22 18:20:27 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-22 18:22:12 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
