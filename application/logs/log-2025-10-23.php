@@ -43,3 +43,16 @@ ERROR - 2025-10-23 13:56:23 --> Severity: Notice --> Undefined index: IDChapitre
 ERROR - 2025-10-23 13:56:25 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
 ERROR - 2025-10-23 13:56:27 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
 ERROR - 2025-10-23 13:56:29 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-23 15:40:11 --> 404 Page Not Found: Assets/js
+ERROR - 2025-10-23 16:14:36 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-23 16:14:40 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-23 16:14:46 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-23 16:14:52 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-23 17:42:39 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-23 17:42:41 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-23 17:42:45 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-23 17:42:47 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-23 17:51:40 --> Severity: Warning --> Invalid argument supplied for foreach() C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 7658
+ERROR - 2025-10-23 17:51:48 --> Severity: Warning --> Invalid argument supplied for foreach() C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 7658
+ERROR - 2025-10-23 17:53:35 --> Severity: Warning --> Invalid argument supplied for foreach() C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 7642
+ERROR - 2025-10-23 17:54:25 --> Severity: Warning --> Invalid argument supplied for foreach() C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 7642

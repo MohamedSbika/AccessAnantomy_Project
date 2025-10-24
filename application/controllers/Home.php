@@ -7632,4 +7632,79 @@ loadingTask.promise.then(function(pdf) {
 //		echo json_encode($socialLinks);
     }
 
+public function set_LivSousChap()
+{
+    // Récupération correcte du JSON brut
+    $inputJSON = file_get_contents('php://input');
+    $data = json_decode($inputJSON, true);
+
+    $IDLivr = $data['bookID'] ?? null;
+    $OrdreChap = $data['chapters'] ?? [];
+
+    log_message('debug', 'Chapitres reçus: ' . print_r($OrdreChap, true));
+
+    $arr_Res = [];
+
+    foreach ($OrdreChap as $chap) {
+        // Cas 1 : ajout depuis "modal sous chapitre"
+        if (isset($chap['idChap'])) {
+            $idChap = $chap['idChap'];
+        } else {
+            // Cas 2 : ajout d’un nouveau chapitre
+            $titreChap = trim($chap['titreChap'] ?? '');
+            if ($titreChap === '') continue;
+
+            $this->db->select('*')
+                     ->from('_chapitre')
+                     ->where('TitreChapitre', $titreChap)
+                     ->where('IDLivre', $IDLivr);
+            $resC = $this->db->get()->result_array();
+
+            if (!empty($resC)) {
+                $idChap = $resC[0]['IDChapitre'];
+            } else {
+                $dataChap = [
+                    'TitreChapitre' => $titreChap,
+                    'IDLivre' => $IDLivr
+                ];
+                $idChap = $this->insert_dd('_chapitre', $dataChap);
+            }
+        }
+
+        if (isset($chap['sousChaps']) && is_array($chap['sousChaps'])) {
+            foreach ($chap['sousChaps'] as $sTitre) {
+                $sTitre = trim($sTitre);
+                if ($sTitre === '') continue;
+
+                $this->db->select('*')
+                         ->from('_souschapitre')
+                         ->where('TitreSousChapitre', $sTitre)
+                         ->where('IDChapitre', $idChap)
+                         ->where('IDLivre', $IDLivr);
+
+                $resSC = $this->db->get()->result_array();
+
+                if (empty($resSC)) {
+                    $dataSC = [
+                        'TitreSousChapitre' => $sTitre,
+                        'IDChapitre'        => $idChap,
+                        'IDLivre'           => $IDLivr
+                    ];
+                    $this->insert_dd('_souschapitre', $dataSC);
+                }
+            }
+        }
+    }
+
+    $arr_Res[] = [
+        "id"   => 1,
+        "desc" => "Sous-chapitres ajoutés avec succès"
+    ];
+
+    $this->output->set_content_type('application/json');
+    echo json_encode($arr_Res);
+    exit;
+}
+
+
 }

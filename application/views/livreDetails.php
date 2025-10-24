@@ -848,6 +848,15 @@
                                                                         <a href="#" onclick="suppCh('<?php print base64_encode($value['IDChapitre']); ?> ')" name="<?php print str_replace("'", '&#39;', $value['TitreChapitre']); ?>" id="<?php print base64_encode($value['IDChapitre']); ?> ">
                                                                             <i class="fa fa-trash-alt" title="<?php echo $this->lang->line('actionSupp'); ?>"></i>
                                                                         </a>
+                                                                            <?php if ((strlen($this->session->userdata('passTok')) == 200) 
+                                                                                    && ($this->session->userdata('EstAdmin') == 1) 
+                                                                                    && (in_array($value['IDLivre'], [20, 30, 31]) 
+                                                                                        || in_array((int)$OneBook[0]["IDTheme"], [20, 30, 31]))) { ?>
+                                                                                <a href="#" onclick="openSousChapForm('<?php print $value['IDChapitre']; ?>', '<?php print $value['IDLivre']; ?>')" 
+                                                                                title="Ajouter Sous-Chapitre">
+                                                                                    <i class="fa fa-plus"></i>
+                                                                                </a>
+                                                                            <?php } ?>
                                                                         <div class="dropdown-menu">
                                                                             <div class="row">
                                                                                 <div class="col-md-12" style="padding-left: 1.4em;padding-right: 1.4em;">
@@ -1335,7 +1344,31 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/bootstrap-tokenfield.js"></script>
 
+<!-- Modal pour ajouter des sous-chapitres -->
+<div class="modal fade" id="modalSousChap" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content p-3">
+      <h5>Ajouter des sous-chapitres</h5>
+      <form id="formSousChap">
+        <!-- Ces champs sont remplis automatiquement -->
+        <input type="hidden" name="bookID" id="sousChap_bookID">
+        <input type="hidden" name="chapters[0][idChap]" id="sousChap_chapID">
 
+        <div class="form-group mt-3">
+          <label for="sousChaps">Sous-chapitres (séparés par une virgule)</label>
+          <input type="text" class="form-control" id="sousChaps" placeholder="Ex: Introduction, Développement, Conclusion">
+        </div>
+
+        <div class="text-end mt-4">
+          <button type="button" class="btn btn-secondary" onclick="closeSousChapModal()">Annuler</button>
+          <button type="button" class="btn btn-primary" onclick="submitSousChap()">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 
     </body>
 
@@ -1357,7 +1390,99 @@
             image.src = URL.createObjectURL(event.target.files[0]);
         };
 
+function openSousChapForm(chapID, bookID) {
+    document.getElementById('sousChap_bookID').value = bookID;
+    document.getElementById('sousChap_chapID').value = chapID;
 
+    document.getElementById('sousChaps').value = '';
+
+    // On affiche le modal
+    $('#modalSousChap').modal('show');
+}
+
+function closeSousChapModal() {
+    $('#modalSousChap').modal('hide');
+}
+
+function submitSousChap() {
+    const bookID = $('#sousChap_bookID').val();
+    const chapID = $('#sousChap_chapID').val();
+    const sousChapsText = $('#sousChaps').val();
+
+    if (!sousChapsText.trim()) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Veuillez saisir au moins un sous-chapitre.'
+        });
+        return;
+    }
+
+    const sousChapsArray = sousChapsText.split(',').map(s => s.trim()).filter(Boolean);
+
+    const dataToSend = {
+        bookID: bookID,
+        chapters: [{
+            idChap: chapID,
+            sousChaps: sousChapsArray
+        }]
+    };
+
+    Swal.fire({
+        title: 'Veuillez patienter...',
+        text: 'Ajout des sous-chapitres en cours',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+    });
+
+    $.ajax({
+        type: "POST",
+        url: "<?= base_url('home/set_LivSousChap'); ?>",
+        data: JSON.stringify(dataToSend),
+        contentType: "application/json",
+        success: function (response) {
+            try {
+                const res = JSON.parse(response);
+                if (res[0].id === '1') {
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Succès',
+                        text: res[0].desc,
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        location.reload();
+                    });
+                    $('#modalSousChap').modal('hide');
+
+                    $('#formSousChap')[0].reset();
+                    $('#sousChap_bookID').val('');
+                    $('#sousChap_chapID').val('');
+
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: res[0].desc
+                    });
+                }
+            } catch (err) {
+                console.error(err);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erreur serveur',
+                    text: 'La réponse est invalide'
+                });
+            }
+        },
+        error: function () {
+            Swal.fire({
+                icon: 'error',
+                title: 'Erreur AJAX',
+                text: 'Impossible d’envoyer la requête.'
+            });
+        }
+    });
+}
         //add Figure
         function add_Figure(id) {
 
@@ -3200,6 +3325,70 @@
 
     return false;
 }
+
+function set_LivSousChap(bookID) {
+    var form = $('#pageForm_SetChap_' + bookID)[0]; // Sélection du formulaire correspondant
+    var data_plat = new FormData(form);
+
+    Swal.fire({
+        title: 'Veuillez patienter ...<br>Envoi des données en cours...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => Swal.showLoading()
+    });
+
+    $.ajax({
+        type: "POST",
+        url: "<?= base_url('home/set_LivSousChap'); ?>", // 👉 Appel à ta nouvelle fonction PHP
+        data: data_plat,
+        cache: false,
+        contentType: false,
+        processData: false,
+        timeout: 30000000,
+        success: function (html) {
+            console.log("Réponse serveur :", html);
+
+            let resu;
+            try {
+                resu = JSON.parse(html);
+            } catch (e) {
+                console.error("Erreur de parsing JSON :", e, html);
+                Swal.fire({
+                    title: 'Erreur serveur',
+                    text: 'Impossible de traiter la réponse',
+                    icon: 'error'
+                });
+                return;
+            }
+
+            if (resu[0]["id"] == 1) {
+                $('#modalChap_' + bookID).modal('hide');
+                Swal.fire({
+                    title: resu[0]["desc"],
+                    icon: 'success',
+                    text: 'Sous-chapitres ajoutés avec succès',
+                    confirmButtonText: 'OK'
+                }).then(() => location.reload());
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: resu[0]["desc"],
+                    timer: 4000
+                });
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error("Erreur AJAX :", status, error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Erreur lors de l’envoi du formulaire',
+            });
+        }
+    });
+
+    return false;
+}
+
 
             function delChap(iTH, xx) {
                 var elem = document.getElementsByClassName('row ' + xx);
