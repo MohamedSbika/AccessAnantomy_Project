@@ -7705,6 +7705,26 @@ public function set_LivSousChap()
     echo json_encode($arr_Res);
     exit;
 }
+public function get_SousChapitres()
+{
+    $data = json_decode($this->input->raw_input_stream, true);
+    $idChap = isset($data['idChap']) ? $data['idChap'] : null;
 
+    if (!$idChap) {
+        echo json_encode([
+            ['id' => '0', 'desc' => 'IDChapitre manquant']
+        ]);
+        return;
+    }
+
+    // Récupère tous les sous-chapitres du chapitre
+    $this->db->select('*');
+    $this->db->where('IDChapitre', $idChap);
+    $this->db->order_by('IDSousChapitre', 'ASC');
+    $query = $this->db->get('_souschapitre');
+    $sousChaps = $query->result_array();
+
+    echo json_encode($sousChaps); // ⚠ ici on renvoie juste le tableau pour le JS
+}
 
 }

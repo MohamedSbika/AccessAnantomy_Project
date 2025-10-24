@@ -835,49 +835,51 @@
                                                 <tr>
 
                                                     <td style="text-align: left;">
-                                                        <div class="row">
+                                                       <div class="row">
+    <div class="col-md-4">
+        <?php if ((strlen($this->session->userdata('passTok')) == 200) && ($this->session->userdata('EstAdmin') == 1)) { ?>
+            <div class="dropdown">
+                <a href="#" data-toggle="dropdown" data-display="static" aria-expanded="false" title="<?php echo $this->lang->line('actionEdit'); ?>">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 align-middle">
+                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                    </svg>
+                </a>
+                <a href="#" onclick="suppCh('<?php print base64_encode($value['IDChapitre']); ?> ')" name="<?php print str_replace("'", '&#39;', $value['TitreChapitre']); ?>" id="<?php print base64_encode($value['IDChapitre']); ?> ">
+                    <i class="fa fa-trash-alt" title="<?php echo $this->lang->line('actionSupp'); ?>"></i>
+                </a>
+                <?php if ((strlen($this->session->userdata('passTok')) == 200) 
+                        && ($this->session->userdata('EstAdmin') == 1) 
+                        && (in_array($value['IDLivre'], [20, 30, 31]) 
+                            || in_array((int)$OneBook[0]["IDTheme"], [20, 30, 31]))) { ?>
+                    <a href="#" onclick="openSousChapForm('<?php print $value['IDChapitre']; ?>', '<?php print $value['IDLivre']; ?>')" title="Ajouter Sous-Chapitre">
+                        <i class="fa fa-plus"></i>
+                    </a>
+                <?php } ?>
+                <div class="dropdown-menu">
+                    <div class="row">
+                        <div class="col-md-12" style="padding-left: 1.4em; padding-right: 1.4em;">
+                            <input type="text" class="form-control my-3" name="setTitreChap[]" id="setTitreChap">
+                            <input type="hidden" name="set_IdCh[]" id="set_IdCh" value="<?php print $value['IDChapitre']; ?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="mt-2" style="text-align: center;">
+                            <span class="btn btn-info" onclick="set_ChapBack()"><i class="fas fa-check"></i> Valider</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php } ?>
+    </div>
 
-                                                            <div class="col-md-4">
-                                                                <?php if ((strlen($this->session->userdata('passTok')) == 200) && ($this->session->userdata('EstAdmin') == 1)) { ?>
-                                                                    <div class="dropdown " style="">
-                                                                        <a href="#" data-toggle="dropdown" data-display="static" aria-expanded="false" class="" title="<?php echo $this->lang->line('actionEdit'); ?>">
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 align-middle">
-                                                                                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
-                                                                            </svg>
-                                                                        </a>
-                                                                        <a href="#" onclick="suppCh('<?php print base64_encode($value['IDChapitre']); ?> ')" name="<?php print str_replace("'", '&#39;', $value['TitreChapitre']); ?>" id="<?php print base64_encode($value['IDChapitre']); ?> ">
-                                                                            <i class="fa fa-trash-alt" title="<?php echo $this->lang->line('actionSupp'); ?>"></i>
-                                                                        </a>
-                                                                            <?php if ((strlen($this->session->userdata('passTok')) == 200) 
-                                                                                    && ($this->session->userdata('EstAdmin') == 1) 
-                                                                                    && (in_array($value['IDLivre'], [20, 30, 31]) 
-                                                                                        || in_array((int)$OneBook[0]["IDTheme"], [20, 30, 31]))) { ?>
-                                                                                <a href="#" onclick="openSousChapForm('<?php print $value['IDChapitre']; ?>', '<?php print $value['IDLivre']; ?>')" 
-                                                                                title="Ajouter Sous-Chapitre">
-                                                                                    <i class="fa fa-plus"></i>
-                                                                                </a>
-                                                                            <?php } ?>
-                                                                        <div class="dropdown-menu">
-                                                                            <div class="row">
-                                                                                <div class="col-md-12" style="padding-left: 1.4em;padding-right: 1.4em;">
-                                                                                    <input type="text" class="form-control my-3" name="setTitreChap[]" id="setTitreChap">
-                                                                                    <input type="hidden" name="set_IdCh[]" id="set_IdCh" value="<?php print $value['IDChapitre']; ?>">
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="row">
-                                                                                <div class="mt-2" style=" text-align: center;">
-                                                                                    <span class="btn btn-info" onclick="set_ChapBack()"><i class="fas fa-check"></i> Valider</span>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
+    <div class="col-md-8" style="font-size: 0.97rem; display: flex; align-items: center;">
+        <span class="toggle-souschap" style="cursor: pointer; margin-right: 0.5em;">&#9654;</span>
+        <span><?= $value['TitreChapitre']; ?></span>
+    </div>
+</div>
 
-                                                                    </div>
-                                                                <?php } ?>
-                                                            </div>
-                                                            <div class="col-md-8" style="font-size: 0.97rem;">
-                                                                <?= $value['TitreChapitre']; ?>
-                                                            </div>
-                                                        </div>
+<!-- Container pour les sous-chapitres -->
+<div class="souschap-container" style="display: none; padding-left: 2em; margin-bottom: 1em;"></div>
 
                                                     </td>
                                                     <td>
@@ -1369,6 +1371,50 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('.toggle-souschap').click(function() {
+        const arrow = $(this);
+        const container = arrow.closest('.row').next('.souschap-container');
+
+        if(container.is(':visible')) {
+            container.slideUp();
+            arrow.html('&#9654;'); // flèche droite
+            return;
+        }
+
+        const chapID = arrow.closest('.row').find('input[name="set_IdCh[]"]').val();
+
+        $.ajax({
+            url: "<?= base_url('home/get_SousChapitres'); ?>",
+            type: "POST",
+            data: JSON.stringify({ idChap: chapID }),
+            contentType: "application/json",
+            dataType: "json",
+            success: function(sousChaps) {
+                container.html('');
+                if(sousChaps.length > 0){
+                    sousChaps.forEach(sc => {
+                        container.append('<div style="padding:2px 0;">- '+sc.TitreSousChapitre+'</div>');
+                    });
+                } else {
+                    container.append('<div style="font-style:italic; color:#888;">Aucun sous-chapitre</div>');
+                }
+                container.slideDown();
+                arrow.html('&#9660;'); // flèche bas
+            },
+            error: function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erreur AJAX',
+                    text: 'Impossible de charger les sous-chapitres'
+                });
+            }
+        });
+    });
+});
+
+</script>
 
     </body>
 
@@ -3387,6 +3433,18 @@ function set_LivSousChap(bookID) {
     });
 
     return false;
+}
+
+public function get_SousChapitres() {
+    $idChap = $this->input->post('idChap');
+    
+    // On récupère uniquement si le chapitre appartient aux livres 20, 30 ou 31
+    $this->db->where('IDChapitre', $idChap);
+    $this->db->where_in('IDLivre', [20, 30, 31]);
+    $query = $this->db->get('_souschapitre');
+    
+    $sousChaps = $query->result_array();
+    echo json_encode($sousChaps);
 }
 
 
