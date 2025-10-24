@@ -1,285 +1,337 @@
 <style>
-	.sidebar-racc {
-		position: fixed;
-		width: 35%;
-		padding: 15px;
-		border-radius: 10px;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		overflow: hidden;
-		z-index: 1000;
-		top:110px;
-		left: 5px;
-		font-size: 13px;
-		background: #eaebec94;
-	}
-	.sidebar-racc.collapsed {
-		width: 5%;
-		padding: 8px;
-		opacity: 0.9;
-	}
-	.sidebar-racc.collapsed .chapter-item,
-	.sidebar-racc.collapsed .chapter-header {
-		display: none;
-	}
-	.sidebar-racc.collapsed .carreaux {
-		font-size: 12px;
-		text-align: center;
-	}
-	.carreaux {
-		border-radius: 10px;
-		width: 50px;
-		height: 50px;
-		background-color: #fff;
-		padding: 10px;
-		font-size: 0.9em;
-		text-align: center;
-		color: #1d3557;
-		cursor: pointer;
-		transition: background-color 0.3s ease;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-	}
-	.carreaux i {
-		font-size: 21px;
-	}
-	.carreaux.selected, .carreaux:hover {
-		background-color: #7387b8;
-	}
+    .sidebar-racc {
+        position: fixed;
+        width: 35%;
+        padding: 15px;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        overflow: hidden;
+        z-index: 1000;
+        top: 110px;
+        left: 5px;
+        font-size: 13px;
+        background: #eaebec94;
+    }
 
-	.toggle-btn {
-		position: relative;
-		transform: translateX(-50%);
-		background: linear-gradient(135deg, #1d3557, #457b9d);
-		color: white;
-		border: none;
-		cursor: pointer;
-		font-weight: bold;
-		font-size: 14px;
-		align-items: center;
-		gap: 8px;
-		transition: all 0.3s ease;
-		box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-		border-radius: 10px;
-		width: 60px;
-		height: 40px;
-		padding-bottom: 20px;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-	}
-	.toggle-btn:hover {
-		background: linear-gradient(135deg, #457b9d, #1d3557);
-		transform: translateX(-50%) scale(1.05);
-	}
-	.toggle-btn:active {
-		transform: translateX(-50%) scale(0.95);
-	}
-	.toggle-btn .arrow {
-		font-size: 18px;
-		transition: transform 0.3s ease;
-	}
-	.sidebar-racc.collapsed .toggle-btn .arrow {
-		transform: rotate(0deg);
-	}
-	.sidebar-racc:not(.collapsed) .toggle-btn .arrow {
-		transform: rotate(180deg);
-	}
-	.title_carr{
-		font-weight: bolder;
-	}
+    .sidebar-racc.collapsed {
+        width: 5%;
+        padding: 8px;
+        opacity: 0.9;
+    }
 
-	.toggle_bloc {
-		display: flex;
-		width: 100%;
-		transition: justify-content 0.3s ease;
-	}
+    .sidebar-racc.collapsed .chapter-item,
+    .sidebar-racc.collapsed .chapter-header {
+        display: none;
+    }
 
-	.toggle_bloc.left {
-		justify-content: flex-start;
-	}
+    .sidebar-racc.collapsed .carreaux {
+        font-size: 12px;
+        text-align: center;
+    }
 
-	.toggle_bloc.right {
-		justify-content: flex-end;
-	}
+    .carreaux {
+        border-radius: 10px;
+        width: 50px;
+        height: 50px;
+        background-color: #fff;
+        padding: 10px;
+        font-size: 0.9em;
+        text-align: center;
+        color: #1d3557;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
 
-	.toggle_bloc.left .toggle-btn {
-		transform: none;
-	}
+    .carreaux i {
+        font-size: 21px;
+    }
 
-	.toggle_bloc.right .toggle-btn {
-		left: auto;
-		transform: none;
-	}
+    .carreaux.selected,
+    .carreaux:hover {
+        background-color: #7387b8;
+    }
 
-	/******************************************/
+    .toggle-btn {
+        position: relative;
+        transform: translateX(-50%);
+        background: linear-gradient(135deg, #1d3557, #457b9d);
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 14px;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+        width: 60px;
+        height: 40px;
+        padding-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
 
-	.tooltip-chapitre {
-		position: fixed;
-		width: 30%;
-		background: rgb(255, 255, 255);
-		border: 1px solid #274668;
-		border-radius: 10px;
-		box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-		padding: 12px;
-		z-index: 3000;
-		overflow-y: auto;
-		backdrop-filter: blur(6px);
-		transition: opacity 0.3s ease;
-		top: 110px;
-	}
+    .toggle-btn:hover {
+        background: linear-gradient(135deg, #457b9d, #1d3557);
+        transform: translateX(-50%) scale(1.05);
+    }
 
-	.tooltip-chapitre .chapter-header {
-		font-weight: bold;
-		margin-bottom: 10px;
-		background: #1d3557;
-		color: white;
-		font-size: 15px;
-		border-radius: 10px 10px 10px 10px;
-		text-align: center;
-	}
+    .toggle-btn:active {
+        transform: translateX(-50%) scale(0.95);
+    }
 
-	.tooltip-chapitre .chapter-list {
-		list-style: none;
-		padding: 0;
-		margin: 0;
-		max-height: 100%;
-	}
+    .toggle-btn .arrow {
+        font-size: 18px;
+        transition: transform 0.3s ease;
+    }
 
-	.tooltip-chapitre .chapter-item {
-		padding: 8px 10px;
-		font-size: 13px;
-		border-bottom: 1px solid #cccccc4f;
-		cursor: pointer;
-		transition: background 0.2s;
-		color: #2c2c2c;
-		text-align: left;
-		position: relative;
-	}
+    .sidebar-racc.collapsed .toggle-btn .arrow {
+        transform: rotate(0deg);
+    }
 
-	.tooltip-chapitre .chapter-item:hover {
-		background-color: #f2f4f8;
-	}
+    .sidebar-racc:not(.collapsed) .toggle-btn .arrow {
+        transform: rotate(180deg);
+    }
 
-	/* Styles pour l'accordéon */
-	.chapter-item-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-	}
+    .title_carr {
+        font-weight: bolder;
+    }
 
-	.accordion-arrow {
-		font-size: 12px;
-		transition: transform 0.3s ease;
-		color: #1d3557;
-		margin-left: 8px;
-	}
+    .toggle_bloc {
+        display: flex;
+        width: 100%;
+        transition: justify-content 0.3s ease;
+    }
 
-	.accordion-arrow.expanded {
-		transform: rotate(90deg);
-	}
+    .toggle_bloc.left {
+        justify-content: flex-start;
+    }
 
-	.sous-chapitres-list {
-		list-style: none;
-		padding: 0;
-		margin: 8px 0 0 0;
-		max-height: 0;
-		overflow: hidden;
-		transition: max-height 0.3s ease;
-	}
+    .toggle_bloc.right {
+        justify-content: flex-end;
+    }
 
-	.sous-chapitres-list.expanded {
-		max-height: 500px; /* Ajustez selon vos besoins */
-	}
+    .toggle_bloc.left .toggle-btn {
+        transform: none;
+    }
 
-	.sous-chapitre-item {
-		padding: 6px 10px 6px 20px;
-		font-size: 12px;
-		color: #555;
-		cursor: pointer;
-		border-left: 2px solid #1d3557;
-		margin-left: 10px;
-		transition: all 0.2s;
-	}
+    .toggle_bloc.right .toggle-btn {
+        left: auto;
+        transform: none;
+    }
 
-	.sous-chapitre-item:hover {
-		background-color: #e8f4f8;
-		border-left-color: #457b9d;
-		color: #1d3557;
-	}
+    /******************************************/
 
-	.sous-chapitre-item.selected {
-		background-color: #d6e9f5;
-		font-weight: bold;
-		color: #1d3557;
-	}
+    .tooltip-chapitre {
+        position: fixed;
+        width: 30%;
+        background: rgb(255, 255, 255);
+        border: 1px solid #274668;
+        border-radius: 10px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        padding: 12px;
+        z-index: 3000;
+        overflow-y: auto;
+        backdrop-filter: blur(6px);
+        transition: opacity 0.3s ease;
+        top: 110px;
+    }
 
-	/* Loader pour les sous-chapitres */
-	.loading-sous-chapitres {
-		padding: 8px;
-		text-align: center;
-		font-size: 11px;
-		color: #666;
-		font-style: italic;
-	}
+    .tooltip-chapitre .chapter-header {
+        font-weight: bold;
+        margin-bottom: 10px;
+        background: #1d3557;
+        color: white;
+        font-size: 15px;
+        border-radius: 10px 10px 10px 10px;
+        text-align: center;
+    }
+
+    .tooltip-chapitre .chapter-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        max-height: 100%;
+    }
+
+    .chapter-list {
+        max-height: 500px;
+        /* ou la hauteur que tu veux */
+        overflow-y: auto;
+        padding-right: 5px;
+        /* pour éviter que le scroll masque le contenu */
+    }
+
+    .tooltip-chapitre .chapter-item {
+        padding: 8px 10px;
+        font-size: 13px;
+        border-bottom: 1px solid #cccccc4f;
+        cursor: pointer;
+        transition: background 0.2s;
+        color: #2c2c2c;
+        text-align: left;
+        position: relative;
+    }
+
+    .tooltip-chapitre .chapter-item:hover {
+        background-color: #f2f4f8;
+    }
+
+    /* Styles pour l'accordéon */
+    .chapter-item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 4px 0;
+    }
+
+    .chapter-item-title {
+        flex: 1;
+        cursor: pointer;
+    }
+
+    .accordion-arrow {
+        font-size: 14px;
+        transition: transform 0.3s ease;
+        color: #1d3557;
+        margin-left: 8px;
+        cursor: pointer;
+        padding: 5px;
+        flex-shrink: 0;
+    }
+
+    .accordion-arrow.expanded {
+        transform: rotate(90deg);
+    }
+
+    .sous-chapitres-list {
+        position: absolute;
+        /* positionne l'accordéon par rapport au parent */
+        top: 100%;
+        /* juste en dessous du chapitre */
+        left: 0;
+        right: 0;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease, opacity 0.3s ease;
+        opacity: 0;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        z-index: 2000;
+        /* au-dessus des autres éléments */
+    }
+
+    .sous-chapitres-list.expanded {
+        max-height: 600px;
+        opacity: 1;
+        margin-top: 5px;
+        /* petit écart sous le chapitre */
+        margin-bottom: 5px;
+    }
+
+
+    .sous-chapitre-item {
+        padding: 8px 15px;
+        font-size: 12px;
+        color: #555;
+        cursor: pointer;
+        border-left: 3px solid #457b9d;
+        margin: 3px 10px;
+        background-color: white;
+        border-radius: 3px;
+        transition: all 0.2s;
+    }
+
+    .sous-chapitre-item:hover {
+        background-color: #e3f2fd;
+        border-left-color: #1d3557;
+        color: #1d3557;
+        transform: translateX(3px);
+    }
+
+    .sous-chapitre-item.selected {
+        background-color: #d6e9f5;
+        font-weight: bold;
+        color: #1d3557;
+    }
+
+    /* Loader pour les sous-chapitres */
+    .loading-sous-chapitres {
+        padding: 8px;
+        text-align: center;
+        font-size: 11px;
+        color: #666;
+        font-style: italic;
+    }
 </style>
 
 <div id="listChapTooltip" class="tooltip-chapitre" style="display: none;">
-	<div class="chapter-header">
-		<?php
-		$curs_id = $this->session->userdata('curs_id');
-		echo !empty($curs_id)
-			? $this->lang->line('sidebar_choisir_cours')
-			: $this->lang->line('sidebar_aucun_cours');
-		?>
-	</div>
+    <div class="chapter-header">
+        <?php
+        $curs_id = $this->session->userdata('curs_id');
+        echo !empty($curs_id)
+            ? $this->lang->line('sidebar_choisir_cours')
+            : $this->lang->line('sidebar_aucun_cours');
+        ?>
+    </div>
 
-	<ul class="chapter-list" id="chapterListTooltip">
-		<?php foreach ($listChap as $value) {
-			$selected = ($curs_id === "curs_" . $value['IDChapitre']) ? 'selected' : '';
-			?>
-			<li class="chapter-item <?= $selected; ?>"
-				id="curs_<?= $value['IDChapitre']; ?>"
-				data-id="<?= $value['IDChapitre']; ?>"
-				data-curs="<?= $value['NbreCours']; ?>"
-				data-resum="<?= $value['NbreResume']; ?>">
-				<div class="chapter-item-header">
-					<div onclick="selectUniqueChapter(this.parentElement.parentElement)">
-						<?= htmlspecialchars($value['TitreChapitre']); ?>
-					</div>
-					<span class="accordion-arrow" onclick="toggleSousChapitres(<?= $value['IDChapitre']; ?>, this, event)">
-						▶
-					</span>
-				</div>
-				<ul class="sous-chapitres-list" id="sous-chap-<?= $value['IDChapitre']; ?>">
-					<!-- Les sous-chapitres seront chargés ici dynamiquement -->
-				</ul>
-			</li>
-		<?php } ?>
-	</ul>
+    <ul class="chapter-list" id="chapterListTooltip">
+        <?php foreach ($listChap as $value) {
+            $selected = ($curs_id === "curs_" . $value['IDChapitre']) ? 'selected' : '';
+            ?>
+            <li class="chapter-item <?= $selected; ?>" id="curs_<?= $value['IDChapitre']; ?>"
+                data-id="<?= $value['IDChapitre']; ?>" data-curs="<?= $value['NbreCours']; ?>"
+                data-resum="<?= $value['NbreResume']; ?>">
+                <div class="chapter-item-header"
+                    onclick="toggleSousChapitres(<?= $value['IDChapitre']; ?>, this.querySelector('.accordion-arrow'), event)">
+                    <div class="chapter-item-title">
+                        <?= htmlspecialchars($value['TitreChapitre']); ?>
+                    </div>
+                    <span class="accordion-arrow">
+                        ▶
+                    </span>
+                </div>
+
+                <ul class="sous-chapitres-list" id="sous-chap-<?= $value['IDChapitre']; ?>">
+                    <!-- Les sous-chapitres seront chargés ici dynamiquement -->
+                </ul>
+            </li>
+        <?php } ?>
+    </ul>
 </div>
 
 <div class="sidebar-racc collapsed" id="sidebar-racc">
-	<div class="toggle_bloc left" style="display: none">
-		<button class="toggle-btn" onclick="toggleSidebar()">
-            <span class="s_plan_retour" style="display: block; width: 100%; text-align: center;padding-top: 30px;height: 35px;">
+    <div class="toggle_bloc left" style="display: none">
+        <button class="toggle-btn" onclick="toggleSidebar()">
+            <span class="s_plan_retour"
+                style="display: block; width: 100%; text-align: center;padding-top: 30px;height: 35px;">
                 <?php echo $this->lang->line('sidebar_plan'); ?>
             </span>
-			<span class="arrow" style="display: block; width: 100%; text-align: center;height: 20px;padding-bottom: 33px;">&#8594;</span>
-		</button>
-	</div>
+            <span class="arrow"
+                style="display: block; width: 100%; text-align: center;height: 20px;padding-bottom: 33px;">&#8594;</span>
+        </button>
+    </div>
 
-	<div style="display: flex;justify-content: space-between; align-items: flex-start; width: 100%;">
-		<div id="listRacc">
-			<div style="display: grid; flex-wrap: wrap; gap: 10px; justify-content: center;">
-                <span class="carreaux" style="background-color:#657379 ;color: white;" id="fullscreen_btn" onclick="toggleFullscreen(this)">
+    <div style="display: flex;justify-content: space-between; align-items: flex-start; width: 100%;">
+        <div id="listRacc">
+            <div style="display: grid; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                <span class="carreaux" style="background-color:#657379 ;color: white;" id="fullscreen_btn"
+                    onclick="toggleFullscreen(this)">
                     <div><?php echo $this->lang->line('sidebar_agrandir'); ?></div>
                     <i class="fas fa-expand" id="fullscreen-icon"></i>
                 </span>
-				<script>
+                <script>
                     function toggleFullscreen(element) {
                         const icon = document.getElementById("fullscreen-icon");
                         const text = element.querySelector("div");
@@ -294,15 +346,17 @@
                             text.innerHTML = "<?php echo $this->lang->line('sidebar_agrandir'); ?>";
                         }
                     }
-				</script>
+                </script>
 
-				<span class="carreaux"  style="background-color: #1E88E5;color: white" onclick="selectUniqueCarreau(this,'e_a')" title="<?php echo $this->lang->line('sidebar_ad_tooltip'); ?>">
+                <span class="carreaux" style="background-color: #1E88E5;color: white"
+                    onclick="selectUniqueCarreau(this,'e_a')"
+                    title="<?php echo $this->lang->line('sidebar_ad_tooltip'); ?>">
                     <div class="title_carr"><?php echo $this->lang->line('sidebar_cours'); ?></div>
                     <i class="fa fa-play-circle"></i>
                 </span>
-			</div>
-		</div>
-	</div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <?php include('v1_modal_test_calque.php'); ?>
@@ -351,8 +405,8 @@
         const sidebarRect = sidebar.getBoundingClientRect();
         tooltip.style.top = `${sidebarRect.top}px`;
         tooltip.style.left = `${sidebarRect.right + 10}px`;
-        tooltip.style.minHeight ='50%'; 
-        tooltip.style.maxHeight ='80%'; 
+        tooltip.style.minHeight = '50%';
+        tooltip.style.maxHeight = '80%';
         tooltip.style.display = 'block';
 
         document.querySelectorAll('.carreaux').forEach(carreau => carreau.classList.remove('selected'));
@@ -404,6 +458,15 @@
         const sousChapList = document.getElementById(`sous-chap-${idChapitre}`);
         const isExpanded = sousChapList.classList.contains('expanded');
 
+        // Fermer tous les autres sous-chapitres
+        document.querySelectorAll('.sous-chapitres-list.expanded').forEach(list => {
+            if (list !== sousChapList) {
+                list.classList.remove('expanded');
+                const arrow = list.closest('.chapter-item').querySelector('.accordion-arrow');
+                if (arrow) arrow.classList.remove('expanded');
+            }
+        });
+
         // Fermer si déjà ouvert
         if (isExpanded) {
             sousChapList.classList.remove('expanded');
@@ -427,27 +490,22 @@
         // Charger via AJAX
         fetch("<?php echo base_url(); ?>home/get_SousChapitres", {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ idChap: idChapitre })
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Erreur réseau: ' + response.status);
-            }
-            return response.json();
-        })
-        .then(result => {
-            // Si vous avez modifié le contrôleur pour retourner {success, data}
-            const data = result.data ? result.data : result;
-            sousChapitresCache[idChapitre] = data;
-            afficherSousChapitres(sousChapList, data);
-        })
-        .catch(error => {
-            console.error('Erreur lors du chargement des sous-chapitres:', error);
-            sousChapList.innerHTML = '<li class="loading-sous-chapitres" style="color: red;">Erreur de chargement</li>';
-        });
+            .then(response => {
+                if (!response.ok) throw new Error('Erreur réseau: ' + response.status);
+                return response.json();
+            })
+            .then(result => {
+                const data = result.data ? result.data : result;
+                sousChapitresCache[idChapitre] = data;
+                afficherSousChapitres(sousChapList, data);
+            })
+            .catch(error => {
+                console.error('Erreur lors du chargement des sous-chapitres:', error);
+                sousChapList.innerHTML = '<li class="loading-sous-chapitres" style="color: red;">Erreur de chargement</li>';
+            });
     }
 
     // Fonction pour afficher les sous-chapitres
@@ -459,7 +517,7 @@
 
         let html = '';
         data.forEach(sousChap => {
-            html += `<li class="sous-chapitre-item" onclick="selectSousChapitre('${sousChap.IDSousChapitre}', this)">
+            html += `<li class="sous-chapitre-item" onclick="selectSousChapitre('${sousChap.IDSousChapitre}', '${sousChap.IDChapitre}', this, event)">
                 ${sousChap.TitreSousChapitre || sousChap.desc || 'Sans titre'}
             </li>`;
         });
@@ -467,17 +525,45 @@
     }
 
     // Fonction pour sélectionner un sous-chapitre
-    function selectSousChapitre(idSousChapitre, element) {
+    function selectSousChapitre(idSousChapitre, idChapitre, element, event) {
+        event.stopPropagation(); // Empêche la propagation
+
         document.querySelectorAll('.sous-chapitre-item').forEach(el => el.classList.remove('selected'));
         element.classList.add('selected');
 
-        // Vous pouvez ajouter une redirection ou une action ici
+        const type_sel = window.selectedType;
+
+        if (!type_sel) {
+            alert("Veuillez d'abord sélectionner une action.");
+            return;
+        }
+
         console.log('Sous-chapitre sélectionné:', idSousChapitre);
-        
-        // Exemple de redirection
-        // let baseUrl = "<?php echo base_url(); ?>";
-        // let lang = "<?php echo $this->lang->line('siteLang'); ?>";
-        // window.location.href = `${baseUrl}${lang}sousChapitre/${idSousChapitre}`;
+
+        // Redirection vers le sous-chapitre
+        let baseUrl = "<?php echo base_url(); ?>";
+        let lang = "<?php echo $this->lang->line('siteLang'); ?>";
+        let redirectUrl = "";
+
+        switch (type_sel) {
+            case 'theme':
+                redirectUrl = `${baseUrl}${lang}livreCours/${idChapitre}/${idSousChapitre}`;
+                break;
+            case 'e_a':
+                redirectUrl = `${baseUrl}${lang}livreCours/${idChapitre}/${idSousChapitre}`;
+                break;
+            case 'calque':
+                redirectUrl = `${baseUrl}${lang}listCalque/${idChapitre}/${idSousChapitre}`;
+                break;
+            case 'test':
+                redirectUrl = `${baseUrl}${lang}livreCours/${idChapitre}/${idSousChapitre}`;
+                break;
+            default:
+                redirectUrl = `${baseUrl}${lang}livreCours/${idChapitre}/${idSousChapitre}`;
+        }
+
+        document.getElementById("listChapTooltip").style.display = 'none';
+        window.location.href = redirectUrl;
     }
 
     // Fermer si clic en dehors

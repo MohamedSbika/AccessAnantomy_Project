@@ -10,3 +10,8 @@ ERROR - 2025-10-24 14:17:46 --> Severity: Notice --> Undefined index: IDChapitre
 ERROR - 2025-10-24 15:23:43 --> 404 Page Not Found: Assets/js
 ERROR - 2025-10-24 15:23:47 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
 ERROR - 2025-10-24 15:30:15 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-24 15:35:38 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-24 15:37:11 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-24 15:40:24 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-24 15:41:16 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-24 15:59:44 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
