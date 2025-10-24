@@ -871,11 +871,13 @@
             </div>
         <?php } ?>
     </div>
-
-    <div class="col-md-8" style="font-size: 0.97rem; display: flex; align-items: center;">
+<div class="col-md-8" style="font-size: 0.97rem; display: flex; align-items: center;">
+    <?php if (in_array($value['IDLivre'], [20, 30, 31]) || in_array((int)$OneBook[0]["IDTheme"], [20, 30, 31])): ?>
         <span class="toggle-souschap" style="cursor: pointer; margin-right: 0.5em;">&#9654;</span>
-        <span><?= $value['TitreChapitre']; ?></span>
-    </div>
+    <?php endif; ?>
+    <span><?= $value['TitreChapitre']; ?></span>
+</div>
+
 </div>
 
 <!-- Container pour les sous-chapitres -->

@@ -10,7 +10,6 @@
 		overflow: hidden;
 		z-index: 1000;
 		top:110px;
-		/*transform: translateY(calc(0px + var(--scroll-y, 0px))); /* Suivre le scroll */
 		left: 5px;
 		font-size: 13px;
 		background: #eaebec94;
@@ -43,19 +42,16 @@
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
-		/*border: 1px solid #334867;*/
 	}
 	.carreaux i {
-		font-size: 21px; /* ✅ Taille des icônes */
+		font-size: 21px;
 	}
 	.carreaux.selected, .carreaux:hover {
 		background-color: #7387b8;
 	}
 
-
 	.toggle-btn {
 		position: relative;
-		/*left: 55%;*/
 		transform: translateX(-50%);
 		background: linear-gradient(135deg, #1d3557, #457b9d);
 		color: white;
@@ -119,8 +115,6 @@
 		transform: none;
 	}
 
-
-
 	/******************************************/
 
 	.tooltip-chapitre {
@@ -163,13 +157,74 @@
 		transition: background 0.2s;
 		color: #2c2c2c;
 		text-align: left;
+		position: relative;
 	}
 
 	.tooltip-chapitre .chapter-item:hover {
 		background-color: #f2f4f8;
 	}
 
+	/* Styles pour l'accordéon */
+	.chapter-item-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
 
+	.accordion-arrow {
+		font-size: 12px;
+		transition: transform 0.3s ease;
+		color: #1d3557;
+		margin-left: 8px;
+	}
+
+	.accordion-arrow.expanded {
+		transform: rotate(90deg);
+	}
+
+	.sous-chapitres-list {
+		list-style: none;
+		padding: 0;
+		margin: 8px 0 0 0;
+		max-height: 0;
+		overflow: hidden;
+		transition: max-height 0.3s ease;
+	}
+
+	.sous-chapitres-list.expanded {
+		max-height: 500px; /* Ajustez selon vos besoins */
+	}
+
+	.sous-chapitre-item {
+		padding: 6px 10px 6px 20px;
+		font-size: 12px;
+		color: #555;
+		cursor: pointer;
+		border-left: 2px solid #1d3557;
+		margin-left: 10px;
+		transition: all 0.2s;
+	}
+
+	.sous-chapitre-item:hover {
+		background-color: #e8f4f8;
+		border-left-color: #457b9d;
+		color: #1d3557;
+	}
+
+	.sous-chapitre-item.selected {
+		background-color: #d6e9f5;
+		font-weight: bold;
+		color: #1d3557;
+	}
+
+	/* Loader pour les sous-chapitres */
+	.loading-sous-chapitres {
+		padding: 8px;
+		text-align: center;
+		font-size: 11px;
+		color: #666;
+		font-style: italic;
+	}
 </style>
 
 <div id="listChapTooltip" class="tooltip-chapitre" style="display: none;">
@@ -190,10 +245,18 @@
 				id="curs_<?= $value['IDChapitre']; ?>"
 				data-id="<?= $value['IDChapitre']; ?>"
 				data-curs="<?= $value['NbreCours']; ?>"
-				data-resum="<?= $value['NbreResume']; ?>"
-				onclick="selectUniqueChapter(this)">
-				<div class="chapter-number"></div>
-				<div><?= htmlspecialchars($value['TitreChapitre']); ?></div>
+				data-resum="<?= $value['NbreResume']; ?>">
+				<div class="chapter-item-header">
+					<div onclick="selectUniqueChapter(this.parentElement.parentElement)">
+						<?= htmlspecialchars($value['TitreChapitre']); ?>
+					</div>
+					<span class="accordion-arrow" onclick="toggleSousChapitres(<?= $value['IDChapitre']; ?>, this, event)">
+						▶
+					</span>
+				</div>
+				<ul class="sous-chapitres-list" id="sous-chap-<?= $value['IDChapitre']; ?>">
+					<!-- Les sous-chapitres seront chargés ici dynamiquement -->
+				</ul>
 			</li>
 		<?php } ?>
 	</ul>
@@ -209,7 +272,6 @@
 		</button>
 	</div>
 
-	<!-- ✅ Icônes ajoutées avec texte en bas -->
 	<div style="display: flex;justify-content: space-between; align-items: flex-start; width: 100%;">
 		<div id="listRacc">
 			<div style="display: grid; flex-wrap: wrap; gap: 10px; justify-content: center;">
@@ -220,16 +282,16 @@
 				<script>
                     function toggleFullscreen(element) {
                         const icon = document.getElementById("fullscreen-icon");
-                        const text = element.querySelector("div"); // Récupère le texte du div
+                        const text = element.querySelector("div");
 
                         if (!document.fullscreenElement) {
                             document.documentElement.requestFullscreen();
                             icon.classList.replace("fa-expand", "fa-compress");
-                            text.innerHTML = "<?php echo $this->lang->line('sidebar_reduire'); ?>"; // Nouveau texte pour réduire
+                            text.innerHTML = "<?php echo $this->lang->line('sidebar_reduire'); ?>";
                         } else {
                             document.exitFullscreen();
                             icon.classList.replace("fa-compress", "fa-expand");
-                            text.innerHTML = "<?php echo $this->lang->line('sidebar_agrandir'); ?>"; // Nouveau texte pour agrandir
+                            text.innerHTML = "<?php echo $this->lang->line('sidebar_agrandir'); ?>";
                         }
                     }
 				</script>
@@ -238,175 +300,67 @@
                     <div class="title_carr"><?php echo $this->lang->line('sidebar_cours'); ?></div>
                     <i class="fa fa-play-circle"></i>
                 </span>
-				<!-- <span class="carreaux" style="background-color: #FB8C00;color: white;" onclick="document.getElementById('modalTestCALQUE').style.display = 'flex';" title="<?php echo $this->lang->line('sidebar_test_tooltip'); ?>">
-					<div class="title_carr"><?php echo $this->lang->line('lecture_mode'); ?></div>
-				</span> -->
-
 			</div>
 		</div>
-
-
 	</div>
 </div>
 
 <?php include('v1_modal_test_calque.php'); ?>
 
 <script>
+    // Cache pour éviter de recharger les sous-chapitres
+    const sousChapitresCache = {};
+
     function toggleSidebar() {
         const sidebar = document.getElementById('sidebar-racc');
-        //  const mainSection = document.getElementById('mainSection');
-        const btn 			= document.querySelector('.toggle-btn');
-        const arrow 		= btn.querySelector('.arrow');
+        const btn = document.querySelector('.toggle-btn');
+        const arrow = btn.querySelector('.arrow');
         const s_plan_retour = btn.querySelector('.s_plan_retour');
-        const toggleBloc 	= document.querySelector('.toggle_bloc');
+        const toggleBloc = document.querySelector('.toggle_bloc');
 
-        // Basculer l'état de la sidebar
         sidebar.classList.toggle('collapsed');
-        // mainSection.classList.toggle('expanded');
 
-        // Vérifier si la sidebar est fermée ou ouverte
         if (sidebar.classList.contains('collapsed')) {
-            // Flèche vers la droite
             arrow.style.transform = "rotate(0deg)";
-
-            // Mettre à jour le texte en fonction de la langue
             s_plan_retour.innerHTML = "<?php echo $this->lang->line('sidebar_plan'); ?>";
-
             toggleBloc.classList.remove('right');
-            toggleBloc.classList.add('left'); // Déplacement à gauche
+            toggleBloc.classList.add('left');
         } else {
-            // Flèche vers la gauche
             arrow.style.transform = "rotate(180deg)";
-
-            // Mettre à jour le texte en fonction de la langue
             s_plan_retour.innerHTML = "<?php echo $this->lang->line('sidebar_retour'); ?>";
-
             toggleBloc.classList.remove('left');
-            toggleBloc.classList.add('right'); // Déplacement à droite
-        }
-
-    }
-
-    function selectUniqueCarreau__(selectedElement, type_sel) {
-        // Marquage visuel
-        toggleSidebar();
-        document.querySelectorAll('.carreaux').forEach(carreau => carreau.classList.remove('selected'));
-        selectedElement.classList.add('selected');
-
-        // Enregistre le type (cours, qcm, etc.)
-        window.selectedType = type_sel;
-
-        // Optionnel : scroll vers la liste des chapitres
-        document.getElementById('chapterList').scrollIntoView({ behavior: "smooth" });
-    }
-
-
-    function selectUniqueChapter__(selectedItem, idChapitre) {
-        // Mise à jour visuelle
-        document.querySelectorAll('.chapter-item').forEach(chap => chap.classList.remove('selected'));
-        selectedItem.classList.add('selected');
-
-        // Récupérer le type sélectionné
-        const type_sel = window.selectedType;
-
-        if (!type_sel) {
-            alert("Veuillez d'abord sélectionner une action (cours, QCM...)");
-            return;
-        }
-
-        // Données chapitre
-        const NbreCours = selectedItem.getAttribute('data-curs');
-        const NbreResume = selectedItem.getAttribute('data-resum');
-
-        // Construction de l'URL
-        let baseUrl = "<?php echo base_url(); ?>";
-        let lang = "<?php echo $this->lang->line('siteLang'); ?>";
-        let redirectUrl = "";
-
-        switch (type_sel) {
-            case 'theme':
-                redirectUrl = `${baseUrl}${lang}livreCours/${idChapitre}`;
-                goFullscreen();
-                break;
-            case 'e_a':
-                redirectUrl = `${baseUrl}${lang}livreCours/${idChapitre}`;
-                break;
-            case 'calque':
-                redirectUrl = `${baseUrl}${lang}livreQcm/${idChapitre}`;
-                break;
-            case 'test':
-                redirectUrl = `${baseUrl}${lang}livreCours/${idChapitre}`;
-                break;
-            default:
-                redirectUrl = `${baseUrl}${lang}livreCours/${idChapitre}`;
-                break;
-        }
-
-        // Redirection
-        window.location.href = redirectUrl;
-    }
-
-    function goFullscreen() {
-        var elem = document.documentElement;  // Cibler l'élément <html> pour mettre toute la page en plein écran
-
-        // Vérifier si l'API Fullscreen est disponible et activer le plein écran
-        if (elem.requestFullscreen) {
-            elem.requestFullscreen();
-        } else if (elem.mozRequestFullScreen) { // Firefox
-            elem.mozRequestFullScreen();
-        } else if (elem.webkitRequestFullscreen) { // Chrome, Safari, Opera
-            elem.webkitRequestFullscreen();
-        } else if (elem.msRequestFullscreen) { // Internet Explorer/Edge
-            elem.msRequestFullscreen();
+            toggleBloc.classList.add('right');
         }
     }
-
-    /********************************/
 
     window.selectedType = null;
     window.selectedCarreauElement = null;
     window.selectedChapterId = null;
 
     function selectUniqueCarreau(element, type_sel) {
-        // Mise à jour visuelle
         if (window.selectedCarreauElement) {
             window.selectedCarreauElement.classList.remove('selected');
         }
         element.classList.add('selected');
         window.selectedCarreauElement = element;
-
-        // Stocker le type sélectionné
         window.selectedType = type_sel;
 
-        // Afficher le tooltip à droite de la sidebar
         const sidebar = document.getElementById("sidebar-racc");
         const tooltip = document.getElementById("listChapTooltip");
 
         const sidebarRect = sidebar.getBoundingClientRect();
         tooltip.style.top = `${sidebarRect.top}px`;
         tooltip.style.left = `${sidebarRect.right + 10}px`;
-        tooltip.style.minHeight ='50%'; // `${sidebarRect.height}px`;
-        tooltip.style.maxHeight ='80%'; // `${sidebarRect.height}px`;
+        tooltip.style.minHeight ='50%'; 
+        tooltip.style.maxHeight ='80%'; 
         tooltip.style.display = 'block';
 
-        // Supprimer la sélection précédente
         document.querySelectorAll('.carreaux').forEach(carreau => carreau.classList.remove('selected'));
         element.classList.add('selected');
-
-        // Trouver le chapitre actuellement sélectionné
-        let selectedChapter = document.querySelector('.chapter-item.selected');
-
-        let idChapitre = "<?php echo $this->session->userdata('curs_id'); ?>".replace(/^curs_/, "");
-        let idChap_select = selectedChapter.getAttribute('data-id') ;
-
-        idChapitre = (idChapitre != idChap_select) && idChap_select!= null ? idChap_select : idChapitre;
     }
-
 
     function selectUniqueChapter(chapterElement) {
         const idChapitre = chapterElement.getAttribute('data-id');
-        const NbreCours = chapterElement.getAttribute('data-curs');
-        const NbreResume = chapterElement.getAttribute('data-resum');
         const type_sel = window.selectedType;
 
         if (!type_sel) {
@@ -414,15 +368,10 @@
             return;
         }
 
-        // Marquer visuellement ce chapitre
         document.querySelectorAll('.chapter-item').forEach(el => el.classList.remove('selected'));
         chapterElement.classList.add('selected');
         window.selectedChapterId = idChapitre;
 
-        // Ajouter l'ID du chapitre dans un attribut data pour récupération
-        chapterElement.setAttribute('data-id', idChapitre);
-
-        // Construction de l’URL
         let baseUrl = "<?php echo base_url(); ?>";
         let lang = "<?php echo $this->lang->line('siteLang'); ?>";
         let redirectUrl = "";
@@ -444,13 +393,92 @@
                 redirectUrl = `${baseUrl}${lang}livreCours/${idChapitre}`;
         }
 
-        // Ferme le tooltip (facultatif)
         document.getElementById("listChapTooltip").style.display = 'none';
-
-        // Rediriger
         window.location.href = redirectUrl;
     }
 
+    // Fonction pour charger et afficher les sous-chapitres
+    function toggleSousChapitres(idChapitre, arrowElement, event) {
+        event.stopPropagation(); // Empêche la sélection du chapitre
+
+        const sousChapList = document.getElementById(`sous-chap-${idChapitre}`);
+        const isExpanded = sousChapList.classList.contains('expanded');
+
+        // Fermer si déjà ouvert
+        if (isExpanded) {
+            sousChapList.classList.remove('expanded');
+            arrowElement.classList.remove('expanded');
+            return;
+        }
+
+        // Vérifier si déjà en cache
+        if (sousChapitresCache[idChapitre]) {
+            afficherSousChapitres(sousChapList, sousChapitresCache[idChapitre]);
+            sousChapList.classList.add('expanded');
+            arrowElement.classList.add('expanded');
+            return;
+        }
+
+        // Afficher un loader
+        sousChapList.innerHTML = '<li class="loading-sous-chapitres">Chargement...</li>';
+        sousChapList.classList.add('expanded');
+        arrowElement.classList.add('expanded');
+
+        // Charger via AJAX
+        fetch("<?php echo base_url(); ?>home/get_SousChapitres", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ idChap: idChapitre })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erreur réseau: ' + response.status);
+            }
+            return response.json();
+        })
+        .then(result => {
+            // Si vous avez modifié le contrôleur pour retourner {success, data}
+            const data = result.data ? result.data : result;
+            sousChapitresCache[idChapitre] = data;
+            afficherSousChapitres(sousChapList, data);
+        })
+        .catch(error => {
+            console.error('Erreur lors du chargement des sous-chapitres:', error);
+            sousChapList.innerHTML = '<li class="loading-sous-chapitres" style="color: red;">Erreur de chargement</li>';
+        });
+    }
+
+    // Fonction pour afficher les sous-chapitres
+    function afficherSousChapitres(sousChapList, data) {
+        if (!data || data.length === 0) {
+            sousChapList.innerHTML = '<li class="loading-sous-chapitres">Aucun sous-chapitre</li>';
+            return;
+        }
+
+        let html = '';
+        data.forEach(sousChap => {
+            html += `<li class="sous-chapitre-item" onclick="selectSousChapitre('${sousChap.IDSousChapitre}', this)">
+                ${sousChap.TitreSousChapitre || sousChap.desc || 'Sans titre'}
+            </li>`;
+        });
+        sousChapList.innerHTML = html;
+    }
+
+    // Fonction pour sélectionner un sous-chapitre
+    function selectSousChapitre(idSousChapitre, element) {
+        document.querySelectorAll('.sous-chapitre-item').forEach(el => el.classList.remove('selected'));
+        element.classList.add('selected');
+
+        // Vous pouvez ajouter une redirection ou une action ici
+        console.log('Sous-chapitre sélectionné:', idSousChapitre);
+        
+        // Exemple de redirection
+        // let baseUrl = "<?php echo base_url(); ?>";
+        // let lang = "<?php echo $this->lang->line('siteLang'); ?>";
+        // window.location.href = `${baseUrl}${lang}sousChapitre/${idSousChapitre}`;
+    }
 
     // Fermer si clic en dehors
     document.addEventListener("click", function (e) {
@@ -462,9 +490,19 @@
         }
     });
 
+    function goFullscreen() {
+        var elem = document.documentElement;
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+        } else if (elem.mozRequestFullScreen) {
+            elem.mozRequestFullScreen();
+        } else if (elem.webkitRequestFullscreen) {
+            elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) {
+            elem.msRequestFullscreen();
+        }
+    }
 
-</script>
-<script>
     function updateScroll() {
         document.documentElement.style.setProperty('--scroll-y', window.scrollY + 'px');
     }
