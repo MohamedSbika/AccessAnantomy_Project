@@ -836,7 +836,7 @@
 
                                                     <td style="text-align: left;">
                                                        <div class="row">
-    <div class="col-md-4">
+ <div class="col-md-4">
         <?php if ((strlen($this->session->userdata('passTok')) == 200) && ($this->session->userdata('EstAdmin') == 1)) { ?>
             <div class="dropdown">
                 <a href="#" data-toggle="dropdown" data-display="static" aria-expanded="false" title="<?php echo $this->lang->line('actionEdit'); ?>">
@@ -844,7 +844,7 @@
                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                     </svg>
                 </a>
-                <a href="#" onclick="suppCh('<?php print base64_encode($value['IDChapitre']); ?> ')" name="<?php print str_replace("'", '&#39;', $value['TitreChapitre']); ?>" id="<?php print base64_encode($value['IDChapitre']); ?> ">
+                <a href="#" onclick="suppCh('<?php print base64_encode($value['IDChapitre']); ?>')" name="<?php print str_replace("'", '&#39;', $value['TitreChapitre']); ?>" id="<?php print base64_encode($value['IDChapitre']); ?>">
                     <i class="fa fa-trash-alt" title="<?php echo $this->lang->line('actionSupp'); ?>"></i>
                 </a>
                 <?php if ((strlen($this->session->userdata('passTok')) == 200) 
@@ -871,13 +871,13 @@
             </div>
         <?php } ?>
     </div>
-<div class="col-md-8" style="font-size: 0.97rem; display: flex; align-items: center;">
-    <?php if (in_array($value['IDLivre'], [20, 30, 31]) || in_array((int)$OneBook[0]["IDTheme"], [20, 30, 31])): ?>
-        <span class="toggle-souschap" style="cursor: pointer; margin-right: 0.5em;">&#9654;</span>
-    <?php endif; ?>
-    <span><?= $value['TitreChapitre']; ?></span>
-</div>
 
+    <div class="col-md-8" style="font-size: 0.97rem; display: flex; align-items: center;">
+        <?php if (in_array($value['IDLivre'], [20, 30, 31]) || in_array((int)$OneBook[0]["IDTheme"], [20, 30, 31])): ?>
+            <span class="toggle-souschap" style="cursor: pointer; margin-right: 0.5em;">&#9654;</span>
+        <?php endif; ?>
+        <span><?= $value['TitreChapitre']; ?></span>
+    </div>
 </div>
 
 <!-- Container pour les sous-chapitres -->
@@ -1375,13 +1375,13 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 $(document).ready(function() {
-    $('.toggle-souschap').click(function() {
+    $(document).on('click', '.toggle-souschap', function() {
         const arrow = $(this);
         const container = arrow.closest('.row').next('.souschap-container');
 
         if(container.is(':visible')) {
             container.slideUp();
-            arrow.html('&#9654;'); // flèche droite
+            arrow.html('&#9654;');
             return;
         }
 
@@ -1395,17 +1395,48 @@ $(document).ready(function() {
             dataType: "json",
             success: function(sousChaps) {
                 container.html('');
-                if(sousChaps.length > 0){
+                
+                if(sousChaps.length > 0) {
                     sousChaps.forEach(sc => {
-                        container.append('<div style="padding:2px 0;">- '+sc.TitreSousChapitre+'</div>');
+                        const idEncoded = btoa(sc.IDSousChapitre);
+                        const titre = sc.TitreSousChapitre.replace(/'/g, '&#39;');
+                        
+                        let html = '<div class="souschap-item" style="display: flex; align-items: center; padding: 0.5em 0; border-bottom: 1px solid #eee;">';
+                        html += '    <div style="flex: 1;">- ' + sc.TitreSousChapitre + '</div>';
+                        
+                        <?php if ((strlen($this->session->userdata('passTok')) == 200) && ($this->session->userdata('EstAdmin') == 1)) { ?>
+                        html += '    <div style="margin-left: auto; display: flex; gap: 0.8em;">';
+                        
+                        // Bouton édition
+                        html += '        <a href="#" onclick="editSousChap(\'' + idEncoded + '\'); return false;" title="Éditer" style="text-decoration: none;">';
+                        html += '            <i class="fa fa-edit" style="color: #3085d6; font-size: 1.1em;"></i>';
+                        html += '        </a>';
+                        
+                        // Bouton suppression - COMME suppCh
+                        html += '        <a href="#" onclick="return suppSousChap(\'' + idEncoded + '\');" ';
+                        html += '           name="' + titre + '" ';
+                        html += '           id="' + idEncoded + '" ';
+                        html += '           title="<?php echo $this->lang->line('actionSupp'); ?>" ';
+                        html += '           style="text-decoration: none;">';
+                        html += '            <i class="fa fa-trash-alt" style="color: #d33; font-size: 1.1em;"></i>';
+                        html += '        </a>';
+                        
+                        html += '    </div>';
+                        <?php } ?>
+                        
+                        html += '</div>';
+                        
+                        container.append(html);
                     });
                 } else {
-                    container.append('<div style="font-style:italic; color:#888;">Aucun sous-chapitre</div>');
+                    container.append('<div style="font-style:italic; color:#888; padding: 0.5em 0;">Aucun sous-chapitre</div>');
                 }
+                
                 container.slideDown();
-                arrow.html('&#9660;'); // flèche bas
+                arrow.html('&#9660;');
             },
-            error: function() {
+            error: function(xhr, status, error) {
+                console.error('Erreur AJAX:', error);
                 Swal.fire({
                     icon: 'error',
                     title: 'Erreur AJAX',
@@ -1415,7 +1446,6 @@ $(document).ready(function() {
         });
     });
 });
-
 </script>
 
     </body>
@@ -2713,6 +2743,90 @@ function submitSousChap() {
                 })
                 return false;
             }
+       function suppSousChap(idS) {
+    var tit = document.getElementById(idS).getAttribute('name');
+    
+    Swal.fire({
+        title: '<?php echo $this->lang->line('supp_title'); ?>' + ' <br> ' + tit,
+        text: '<?php echo $this->lang->line('supp_textC'); ?>',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '<?php echo $this->lang->line('supp_OK'); ?>'
+    }).then((result) => {
+        if (result.value) {
+            
+            Swal.fire({
+                title: '<?php echo $this->lang->line('supp_Inprgs'); ?>',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                }
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "<?php echo base_url(); ?>home/suppSousChap",
+                data: {
+                    idS: idS
+                },
+                timeout: 300000,
+                success: function(html) {
+                    console.log(html);
+                    var resu = JSON.parse(html);
+                    console.log(resu);
+
+                    if (resu[0]["id"] == 1) {
+                        Swal.fire({
+                            title: resu[0]["desc"],
+                            position: 'center',
+                            type: 'success',
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'OK',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false
+                        }).then((result) => {
+                            if (result.value) {
+                                // Supprimer du DOM
+                                $('#' + idS).closest('.souschap-item').slideUp(300, function() {
+                                    $(this).remove();
+                                });
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            position: 'center',
+                            type: 'error',
+                            title: resu[0]["desc"],
+                            showConfirmButton: false,
+                            timer: 4000
+                        });
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                        position: 'center',
+                        type: 'error',
+                        title: 'Erreur lors de la suppression',
+                        showConfirmButton: false,
+                        timer: 4000
+                    });
+                }
+            });
+        }
+    });
+    
+    return false;
+}
+
+function editSousChap(idEncoded) {
+    console.log('Édition:', idEncoded);
+    // À implémenter
+}
+
+
 
             function set_ChapBack() {
 
@@ -3437,18 +3551,69 @@ function set_LivSousChap(bookID) {
     return false;
 }
 
-public function get_SousChapitres() {
-    $idChap = $this->input->post('idChap');
-    
-    // On récupère uniquement si le chapitre appartient aux livres 20, 30 ou 31
-    $this->db->where('IDChapitre', $idChap);
-    $this->db->where_in('IDLivre', [20, 30, 31]);
-    $query = $this->db->get('_souschapitre');
-    
-    $sousChaps = $query->result_array();
-    echo json_encode($sousChaps);
-}
+ function getSousChapitres(idChap) {
+    Swal.fire({
+        title: 'Veuillez patienter ...<br> Chargement des sous-chapitres en cours ...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
 
+    $.ajax({
+        type: "POST",
+        url: "<?php echo base_url(); ?>home/get_SousChapitres",
+        data: JSON.stringify({ idChap: idChap }),
+        contentType: "application/json; charset=UTF-8",
+        timeout: 10000,
+        success: function(html) {
+            console.log("Réponse serveur :", html);
+            let resu;
+            try {
+                resu = JSON.parse(html);
+            } catch (e) {
+                console.error("Erreur de parsing JSON :", e, html);
+                Swal.fire({
+                    title: 'Erreur serveur',
+                    text: 'Impossible de traiter la réponse',
+                    icon: 'error'
+                });
+                return;
+            }
+
+            if (resu.length > 0 && resu[0].id !== '0') {
+                let sousChapHTML = '<ul>';
+                resu.forEach(sousChap => {
+                    sousChapHTML += `<li>${sousChap.TitreSousChapitre || 'Sous-chapitre sans titre'}</li>`;
+                });
+                sousChapHTML += '</ul>';
+                $('.souschap-container').html(sousChapHTML);
+                Swal.fire({
+                    title: 'Sous-chapitres chargés avec succès',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            } else {
+                Swal.fire({
+                    icon: 'info',
+                    title: resu[0]?.desc || 'Aucun sous-chapitre trouvé',
+                    timer: 4000
+                });
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Erreur AJAX :", status, error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Erreur lors de la récupération des sous-chapitres',
+                showConfirmButton: true
+            });
+        }
+    });
+
+    return false;
+}
 
             function delChap(iTH, xx) {
                 var elem = document.getElementsByClassName('row ' + xx);

@@ -154,6 +154,8 @@ $lang['supp_textQC']		= 'Le QCM sera supprimé';
 $lang['supp_textCRQ']		= 'Le QROC sera supprimé';
 $lang['supp_textFig']		= 'La figure sera supprimée';
 $lang['supp_textAllFig']	= 'Toutes les figures seront supprimées';
+$lang['supp_textS'] = "Êtes-vous sûr de vouloir supprimer ce sous-chapitre et tout son contenu ?";
+$lang['supp_souschap_succes'] = "Le sous-chapitre a été supprimé avec succès !";
 
 $lang['searchTitle']		= 'Résultat de la recherche';
 $lang['searchFound']		= 'Aucune donnée trouvée';

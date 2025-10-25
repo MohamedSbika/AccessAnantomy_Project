@@ -7727,4 +7727,37 @@ public function get_SousChapitres()
     echo json_encode($sousChaps); // ⚠ ici on renvoie juste le tableau pour le JS
 }
 
+public function suppSousChap() {
+    // Vérifier que l'utilisateur est admin
+    if (!((strlen($this->session->userdata('passTok')) == 200) && ($this->session->userdata('EstAdmin') == 1))) {
+        echo json_encode([["id" => '-1', "desc" => $this->lang->line('supp_delErr')]]);
+        return;
+    }
+
+    $id = $this->input->post('idS');
+    
+    if (empty($id)) {
+        echo json_encode([["id" => '0', "desc" => 'ID manquant']]);
+        return;
+    }
+
+    $idSousChap = base64_decode($id, true);
+    if ($idSousChap === false) {
+        echo json_encode([["id" => '0', "desc" => 'ID invalide']]);
+        return;
+    }
+
+    $idSousChap = intval($idSousChap);
+
+    // Suppression du sous-chapitre
+    $this->db->where('IDSousChapitre', $idSousChap);
+    $deleted = $this->db->delete('_souschapitre');
+
+    if ($deleted && $this->db->affected_rows() > 0) {
+        echo json_encode([["id" => '1', "desc" => $this->lang->line('supp_souschap_succes')]]);
+    } else {
+        echo json_encode([["id" => '0', "desc" => 'Erreur lors de la suppression ou sous-chapitre introuvable']]);
+    }
+}
+
 }
