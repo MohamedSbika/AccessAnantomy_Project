@@ -1,5 +1,5 @@
 <style>
-	/* Style de base du modal (caché par défaut) */
+	/* Style de base du modal */
 	.modal {
 		display: none;
 		position: fixed;
@@ -14,21 +14,17 @@
 		justify-content: center;
 	}
 
-	/* Contenu du modal */
 	.modal-content {
 		background-color: white;
 		padding: 20px;
 		border-radius: 8px;
 		width: 90%;
-		/* Prend 90% de la largeur de l'écran */
 		max-width: 400px;
-		/* Limite la largeur à 400px */
 		text-align: center;
 		box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 		position: relative;
 	}
 
-	/* Bouton de fermeture */
 	.close {
 		position: absolute;
 		top: 10px;
@@ -37,21 +33,36 @@
 		cursor: pointer;
 	}
 
-	/* Styles pour le formulaire */
 	.modal-body input {
 		width: 100%;
-		/* Les inputs prendront toute la largeur disponible */
 		padding: 12px;
-		/* Plus de padding pour un meilleur confort */
 		margin-top: 10px;
 		border-radius: 4px;
 		border: 1px solid #ccc;
 		font-size: 14px;
 		box-sizing: border-box;
-		/* Inclut le padding dans la largeur totale */
 	}
 
-	/* Bouton de connexion */
+	.password-wrapper {
+		position: relative;
+	}
+
+	.toggle-password {
+		position: absolute;
+		right: 12px;
+		top: 50%;
+		transform: translateY(-50%);
+		cursor: pointer;
+		width: 20px;
+		height: 20px;
+		fill: #555;
+		transition: 0.2s ease;
+	}
+
+	.toggle-password:hover {
+		fill: #000;
+	}
+
 	.btn-log {
 		background-color: #007bff;
 		color: white;
@@ -61,48 +72,19 @@
 		cursor: pointer;
 		font-size: 16px;
 		width: 100%;
-		/* Le bouton occupe toute la largeur disponible */
 		margin-top: 10px;
 	}
 
-	/* Styles sur les petites tailles d'écran (mobile) */
 	@media (max-width: 600px) {
 		.modal-content {
 			width: 90%;
-			/* Prend 90% de la largeur pour les petits écrans */
 			padding: 15px;
-		}
-
-		.modal-header h2 {
-			font-size: 18px;
-		}
-
-		.modal-body input {
-			padding: 10px;
-			font-size: 14px;
-			/* Ajuste la taille de la police sur mobile */
-		}
-
-		.btn-log {
-			padding: 12px 0;
-			font-size: 16px;
 		}
 	}
 
-	/* Sur les très petits écrans, réduire encore la taille du formulaire */
 	@media (max-width: 400px) {
 		.modal-content {
 			padding: 10px;
-		}
-
-		.modal-body input {
-			padding: 8px;
-			font-size: 13px;
-			/* Réduit la taille des champs */
-		}
-
-		.btn-log {
-			font-size: 14px;
 		}
 	}
 </style>
@@ -126,65 +108,85 @@
 				</div>
 				<div class="mb-3">
 					<label>Mot de passe</label>
-					<input type="password" name="password" id="password" placeholder="Votre mot de passe" required>
+					<div class="password-wrapper">
+						<input type="password" name="password" id="password" placeholder="Votre mot de passe" required>
+						<!-- Icône SVG œil -->
+						<svg id="eyeIcon" class="toggle-password" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+							<path
+								d="M12 5c-7 0-11 7-11 7s4 7 11 7 11-7 11-7-4-7-11-7zm0 12a5 5 0 110-10 5 5 0 010 10z" />
+							<circle cx="12" cy="12" r="2.5" />
+						</svg>
+					</div>
 				</div>
 				<div class="text-center mt-3">
 					<button type="submit" class="btn-log">Se connecter</button>
 				</div>
 			</form>
-
 		</div>
 	</div>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
-	// Fonction pour ouvrir le modal
 	function openModalLogin() {
 		document.getElementById("customModal").style.display = "flex";
 	}
-
-	// Fonction pour fermer le modal
 	function closeModal() {
 		document.getElementById("customModal").style.display = "none";
 	}
-
-	// Ferme le modal en cliquant à l'extérieur
 	window.onclick = function (event) {
 		let modal = document.getElementById("customModal");
 		if (event.target === modal) {
 			closeModal();
 		}
 	};
+
+	// 👁️ Fonction pour afficher / masquer le mot de passe
+	function togglePassword() {
+		const passwordInput = document.getElementById("password");
+		const eyeIcon = document.getElementById("eyeIcon");
+
+		if (passwordInput.type === "password") {
+			passwordInput.type = "text";
+			// Icône barrée
+			eyeIcon.innerHTML =
+				'<path d="M1 12s4-7 11-7c2.7 0 5.2 1.1 7.2 3l2.3-2.3 1.4 1.4-2.3 2.3C22 10.8 23 12 23 12s-4 7-11 7c-2.7 0-5.2-1.1-7.2-3l-2.3 2.3-1.4-1.4 2.3-2.3C2 13.2 1 12 1 12zm11 5a5 5 0 01-5-5c0-.9.2-1.7.6-2.4l6.8 6.8c-.7.4-1.5.6-2.4.6zm4.4-2.6l-6.8-6.8c.7-.4 1.5-.6 2.4-.6a5 5 0 015 5c0 .9-.2 1.7-.6 2.4z"/>';
+		} else {
+			passwordInput.type = "password";
+			// Œil normal
+			eyeIcon.innerHTML =
+				'<path d="M12 5c-7 0-11 7-11 7s4 7 11 7 11-7 11-7-4-7-11-7zm0 12a5 5 0 110-10 5 5 0 010 10z"/><circle cx="12" cy="12" r="2.5"/>';
+		}
+	}
+
+	// Associer l’action au clic
+	document.addEventListener("DOMContentLoaded", () => {
+		document.getElementById("eyeIcon").addEventListener("click", togglePassword);
+	});
 </script>
+
 <script>
 	document.addEventListener("DOMContentLoaded", function () {
-
-		// Fonction pour valider le formulaire
 		function validateForm() {
-			// Récupérer les valeurs des champs
 			var email = document.getElementById("email").value;
 			var password = document.getElementById("password").value;
 
-			// Vérifier si l'email est valide
 			var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 			if (!emailPattern.test(email)) {
 				alert("Veuillez entrer un email valide.");
 				return false;
 			}
 
-			// Vérifier si le mot de passe est vide
 			if (password.trim() === "") {
 				alert("Veuillez entrer un mot de passe.");
 				return false;
 			}
 
-			// Si tout est valide, retourner true
 			return true;
 		}
 
-		// Gestionnaire d'événement pour l'envoi du formulaire
 		document.getElementById("loginform").addEventListener("submit", function (e) {
 			e.preventDefault();
 
@@ -198,51 +200,38 @@
 
 				var formData = new FormData(document.getElementById("loginform"));
 
-$.ajax({
-    type: "POST",
-    url: "<?php echo base_url(); ?>home/login_process",
-    data: formData,
-    processData: false,
-    contentType: false,
-    xhrFields: { withCredentials: true },
-    timeout: 30000,
-    success: function(response) {
-        console.log("Réponse brute :", response);
-
-        var data = typeof response === "string" ? JSON.parse(response) : response;
-        console.log("Objet JSON parsé :", data);
-
-        console.log("Cookies avant redirection :", document.cookie);
-
-        if (data && data.length > 0 && parseInt(data[0]["id"]) === 1) {
-            Swal.fire({
-                icon: 'success',
-                title: 'Connexion réussie !',
-                timer: 1500,
-                showConfirmButton: false
-            }).then(() => {
-            window.location.href = window.location.href;
-            });
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: data && data[0]["desc"] ? data[0]["desc"] : "Erreur de connexion",
-                showConfirmButton: true
-            });
-        }
-    },
-    error: function(xhr, status, error) {
-        console.error("AJAX ERROR :", status, error);
-        console.log("ResponseText :", xhr.responseText);
-        Swal.fire("Erreur", "Une erreur s'est produite. Veuillez réessayer.", "error");
-    },
-    complete: function(xhr, status) {
-        console.log("AJAX COMPLETE, status :", status);
-    }
-});
-
+				$.ajax({
+					type: "POST",
+					url: "<?php echo base_url(); ?>home/login_process",
+					data: formData,
+					processData: false,
+					contentType: false,
+					xhrFields: { withCredentials: true },
+					timeout: 30000,
+					success: function (response) {
+						var data = typeof response === "string" ? JSON.parse(response) : response;
+						if (data && data.length > 0 && parseInt(data[0]["id"]) === 1) {
+							Swal.fire({
+								icon: 'success',
+								title: 'Connexion réussie !',
+								timer: 1500,
+								showConfirmButton: false
+							}).then(() => {
+								window.location.href = window.location.href;
+							});
+						} else {
+							Swal.fire({
+								icon: 'error',
+								title: data && data[0]["desc"] ? data[0]["desc"] : "Erreur de connexion",
+								showConfirmButton: true
+							});
+						}
+					},
+					error: function () {
+						Swal.fire("Erreur", "Une erreur s'est produite. Veuillez réessayer.", "error");
+					}
+				});
 			}
 		});
-
 	});
 </script>
