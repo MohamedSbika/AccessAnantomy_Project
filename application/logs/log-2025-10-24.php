@@ -15,3 +15,23 @@ ERROR - 2025-10-24 15:37:11 --> Severity: Notice --> Undefined index: IDChapitre
 ERROR - 2025-10-24 15:40:24 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
 ERROR - 2025-10-24 15:41:16 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
 ERROR - 2025-10-24 15:59:44 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-24 16:38:23 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-24 16:39:00 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-24 16:41:23 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-24 16:42:58 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-24 16:43:06 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-24 16:43:06 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-24 16:43:07 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-24 16:44:44 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-24 16:44:51 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-24 16:44:52 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-24 16:46:05 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-24 16:47:00 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-24 16:47:09 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-24 16:50:23 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-24 16:50:31 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-24 16:50:54 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-24 16:58:29 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
+ERROR - 2025-10-24 17:19:31 --> 404 Page Not Found: Assets/js
+ERROR - 2025-10-24 17:19:42 --> Query error: Table 'mezidxco_db_local.item' doesn't exist - Invalid query: SELECT id, name from item
+ERROR - 2025-10-24 17:19:42 --> Could not find the language line "db_error_heading"

@@ -162,13 +162,12 @@
         max-height: 100%;
     }
 
-    .chapter-list {
-        max-height: 500px;
-        /* ou la hauteur que tu veux */
-        overflow-y: auto;
-        padding-right: 5px;
-        /* pour éviter que le scroll masque le contenu */
-    }
+        .chapter-list {
+            max-height: 70vh;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #1d3557 #f0f0f0;
+        }
 
     .tooltip-chapitre .chapter-item {
         padding: 8px 10px;
@@ -190,13 +189,19 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 4px 0;
+        cursor: pointer;
     }
 
     .chapter-item-title {
         flex: 1;
         cursor: pointer;
     }
+
+    .chapter-item {
+    display: block; /* au lieu de flex s’il y avait du flex hérité */
+    position: relative;
+    }
+
 
     .accordion-arrow {
         font-size: 14px;
@@ -213,33 +218,23 @@
     }
 
     .sous-chapitres-list {
-        position: absolute;
-        /* positionne l'accordéon par rapport au parent */
-        top: 100%;
-        /* juste en dessous du chapitre */
-        left: 0;
-        right: 0;
+        position: relative; /* au lieu d’absolute */
         list-style: none;
-        padding: 0;
-        margin: 0;
+        padding-left: 20px; /* pour un léger retrait, bien aligné sous le titre */
+        margin: 5px 0 0 0;
         max-height: 0;
         overflow: hidden;
-        transition: max-height 0.4s ease, opacity 0.3s ease;
+        transition: max-height 0.4s ease, opacity 0.3s ease, margin 0.3s ease;
         opacity: 0;
         background-color: #f8f9fa;
         border-radius: 5px;
-        z-index: 2000;
-        /* au-dessus des autres éléments */
     }
 
     .sous-chapitres-list.expanded {
         max-height: 600px;
         opacity: 1;
         margin-top: 5px;
-        /* petit écart sous le chapitre */
-        margin-bottom: 5px;
     }
-
 
     .sous-chapitre-item {
         padding: 8px 15px;
