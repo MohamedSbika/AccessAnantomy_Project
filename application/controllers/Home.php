@@ -6284,6 +6284,46 @@ loadingTask.promise.then(function(pdf) {
         echo json_encode($arr_Res);
         exit;
     }
+    public function update_SousChapitre()
+{
+    // Récupération du corps JSON envoyé par AJAX
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    // Vérification des champs reçus
+    $idSousChap = isset($data['idSousChap']) ? $data['idSousChap'] : null;
+    $titre      = isset($data['titre']) ? trim($data['titre']) : '';
+
+    // Tableau de réponse
+    $response = ['success' => false, 'message' => 'Erreur inconnue'];
+
+    // Validation basique
+    if (empty($idSousChap) || empty($titre)) {
+        $response['message'] = 'Paramètres invalides.';
+        echo json_encode($response);
+        return;
+    }
+
+    // Mise à jour dans la base de données
+    try {
+        $updateData = ['TitreSousChapitre' => $titre];
+        $this->db->where('IDSousChapitre', $idSousChap);
+        $updated = $this->db->update('_souschapitre', $updateData);
+
+        if ($updated) {
+            $response['success'] = true;
+            $response['message'] = 'Sous-chapitre mis à jour avec succès.';
+        } else {
+            $response['message'] = 'La mise à jour a échoué.';
+        }
+
+    } catch (Exception $e) {
+        $response['message'] = 'Erreur SQL : ' . $e->getMessage();
+    }
+
+    echo json_encode($response);
+    exit;
+}
+
     public function set_ItemBack(){
 
         $idItems 		= $_POST["set_IdItm"];

@@ -1396,42 +1396,57 @@ $(document).ready(function() {
             success: function(sousChaps) {
                 container.html('');
                 
-                if(sousChaps.length > 0) {
+                if (sousChaps.length > 0) {
                     sousChaps.forEach(sc => {
-                        const idEncoded = btoa(sc.IDSousChapitre);
+                        const idEncoded = sc.IDSousChapitre;
                         const titre = sc.TitreSousChapitre.replace(/'/g, '&#39;');
                         
-                        let html = '<div class="souschap-item" style="display: flex; align-items: center; padding: 0.5em 0; border-bottom: 1px solid #eee;">';
-                        html += '    <div style="flex: 1;">- ' + sc.TitreSousChapitre + '</div>';
+                        let html = `
+                            <div class="souschap-item" style="display: flex; align-items: center; padding: 0.5em 0; border-bottom: 1px solid #eee; position: relative;">
+                                <div style="flex: 1;">- ${sc.TitreSousChapitre}</div>
+                        `;
                         
                         <?php if ((strlen($this->session->userdata('passTok')) == 200) && ($this->session->userdata('EstAdmin') == 1)) { ?>
-                        html += '    <div style="margin-left: auto; display: flex; gap: 0.8em;">';
-                        
-                        // Bouton édition
-                        html += '        <a href="#" onclick="editSousChap(\'' + idEncoded + '\'); return false;" title="Éditer" style="text-decoration: none;">';
-                        html += '            <i class="fa fa-edit" style="color: #3085d6; font-size: 1.1em;"></i>';
-                        html += '        </a>';
-                        
-                        // Bouton suppression - COMME suppCh
-                        html += '        <a href="#" onclick="return suppSousChap(\'' + idEncoded + '\');" ';
-                        html += '           name="' + titre + '" ';
-                        html += '           id="' + idEncoded + '" ';
-                        html += '           title="<?php echo $this->lang->line('actionSupp'); ?>" ';
-                        html += '           style="text-decoration: none;">';
-                        html += '            <i class="fa fa-trash-alt" style="color: #d33; font-size: 1.1em;"></i>';
-                        html += '        </a>';
-                        
-                        html += '    </div>';
+                        html += `
+                            <div style="margin-left: auto; display: flex; gap: 0.8em;">
+                                <!-- Bouton édition avec dropdown -->
+                                <div class="dropdown dropleft" style="position: relative;" onclick="event.stopPropagation()">
+                                    <a href="#" data-toggle="dropdown" aria-expanded="false" title="Modifier le titre">
+                                        <i class="fa fa-edit" style="color: #3085d6; font-size: 1.1em;"></i>
+                                    </a>
+                                    <div class="dropdown-menu" style="min-width: 20rem; padding: 1rem;">
+                                        <input type="text" id="editSousChap_${idEncoded}" 
+                                            class="form-control" 
+                                            placeholder="Nouveau titre..." 
+                                            value="${sc.TitreSousChapitre}" />
+                                        <div class="mt-2 text-center">
+                                            <span class="btn btn-info btn-sm" 
+                                                onclick="validerEditSousChap('${idEncoded}')">
+                                                Valider
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Bouton suppression -->
+                                <a href="#" onclick="return suppSousChap('${idEncoded}');"
+                                name="${titre}"
+                                id="${idEncoded}"
+                                title="<?php echo $this->lang->line('actionSupp'); ?>"
+                                style="text-decoration: none;">
+                                    <i class="fa fa-trash-alt" style="color: #d33; font-size: 1.1em;"></i>
+                                </a>
+                            </div>
+                        `;
                         <?php } ?>
                         
-                        html += '</div>';
-                        
+                        html += `</div>`;
                         container.append(html);
                     });
                 } else {
                     container.append('<div style="font-style:italic; color:#888; padding: 0.5em 0;">Aucun sous-chapitre</div>');
                 }
-                
+
                 container.slideDown();
                 arrow.html('&#9660;');
             },
@@ -1632,6 +1647,53 @@ function submitSousChap() {
 
             return false;
         }
+
+       function validerEditSousChap(idSousChap) {
+    const newTitle = $(`#editSousChap_${idSousChap}`).val();
+
+    if (!newTitle.trim()) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Titre vide',
+            text: 'Veuillez entrer un nouveau titre.'
+        });
+        return;
+    }
+
+    $.ajax({
+        url: "<?= base_url('home/update_SousChapitre'); ?>",
+        type: "POST",
+        data: JSON.stringify({ idSousChap: idSousChap, titre: newTitle }),
+        contentType: "application/json",
+        dataType: "json",
+        success: function(res) {
+            if (res.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sous-chapitre mis à jour',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+                // Recharger les sous-chapitres
+                $('.toggle-souschap').trigger('click');
+                $('.toggle-souschap').trigger('click');
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erreur',
+                    text: res.message || 'Impossible de mettre à jour le sous-chapitre.'
+                });
+            }
+        },
+        error: function() {
+            Swal.fire({
+                icon: 'error',
+                title: 'Erreur AJAX',
+                text: 'Une erreur est survenue lors de la mise à jour.'
+            });
+        }
+    });
+}
 
         function chargeVideos(idChapitre, titreChapitre, idType) {
 
