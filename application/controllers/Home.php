@@ -6028,18 +6028,27 @@ public function upload_Attach_Save_SubChap() {
                 $objReader = \PhpOffice\PhpWord\IOFactory::createReader('Word2007');
                 $contents = $objReader->load($file_nameTmp);
 
-                // Si tu ne fais pas de PDF, tu peux commenter cette partie
+                // PDF renderer si nécessaire
                 $rendername = \PhpOffice\PhpWord\Settings::PDF_RENDERER_TCPDF;
                 $renderLibrary = "tcpdf";
                 $renderLibraryPath = APPPATH."third_party/wordToPh/".$renderLibrary;
                 if(!\PhpOffice\PhpWord\Settings::setPdfRenderer($rendername, $renderLibraryPath)){
-                    // Pas grave si tu ne fais que du HTML
+                    // Ignorer si pas utilisé
                 }
 
+                // Définir le chemin du fichier HTML
                 $outputPath = FCPATH.'PlatFormeConvert/'.$idSubChap."_Sub.HTML";
+
+                // ⚠ Supprimer l'ancien fichier s'il existe
+                if(file_exists($outputPath)){
+                    unlink($outputPath);
+                }
+
+                // Création du nouveau fichier HTML
                 $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($contents, 'HTML');
                 $objWriter->save($outputPath);
 
+                // Lecture du contenu si nécessaire
                 $content = htmlentities(file_get_contents($outputPath, true));
 
                 // Vérifie si le sous-chapitre existe déjà
@@ -6065,9 +6074,6 @@ public function upload_Attach_Save_SubChap() {
                     ];
                     $this->db->insert('_souschapitre', $dataInsert);
                 }
-
-                // Tu peux supprimer le fichier HTML temporaire si tu veux, mais ici on le garde
-                // unlink($outputPath);
             }
         }
 
@@ -6080,6 +6086,7 @@ public function upload_Attach_Save_SubChap() {
     echo json_encode($arr_Res);
     exit;
 }
+
     public function upload_Attach_Save_Curs_PDF(){
 
         //$send_ID = "'".$_POST["attach_file"]."'";
@@ -7828,14 +7835,16 @@ public function get_SousChapitres()
     }
 
     // Récupère tous les sous-chapitres du chapitre
-    $this->db->select('*');
+    $this->db->select('IDSousChapitre, TitreSousChapitre, IDChapitre, IDLivre, FichierHTML'); // Ajouter FichierHTML
     $this->db->where('IDChapitre', $idChap);
     $this->db->order_by('IDSousChapitre', 'ASC');
     $query = $this->db->get('_souschapitre');
     $sousChaps = $query->result_array();
 
-    echo json_encode($sousChaps); // ⚠ ici on renvoie juste le tableau pour le JS
+    // Renvoie le JSON au JS
+    echo json_encode($sousChaps);
 }
+
 
 public function suppSousChap() {
     // Vérifier que l'utilisateur est admin

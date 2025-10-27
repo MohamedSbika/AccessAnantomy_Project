@@ -1447,7 +1447,15 @@ $(document).ready(function() {
                                     <span>- ${sc.TitreSousChapitre}</span>
                                 </div>
                         `;
-
+                         if (sc.FichierHTML && sc.FichierHTML.length > 0) {
+                                html += `
+                                    <div style="margin-left: 1em;">
+                                        <a href="<?= base_url('PlatFormeConvert/'); ?>${sc.FichierHTML}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                            Voir cours
+                                        </a>
+                                    </div>
+                                `;
+                            }
                         <?php if ((strlen($this->session->userdata('passTok')) == 200) && ($this->session->userdata('EstAdmin') == 1)) { ?>
                         html += `
                             <div style="margin-left: auto; display: flex; gap: 0.8em;">

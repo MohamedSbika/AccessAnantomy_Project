@@ -32,3 +32,4 @@ ERROR - 2025-10-27 11:16:44 --> Could not find the language line "db_error_headi
 ERROR - 2025-10-27 11:20:16 --> Query error: Unknown column 'FichierHTML' in 'field list' - Invalid query: UPDATE `_souschapitre` SET `FichierHTML` = '21_Sub.HTML', `DateModif` = '2025-10-27 11:20:16'
 WHERE `IDSousChapitre` = '21'
 ERROR - 2025-10-27 11:20:16 --> Could not find the language line "db_error_heading"
+ERROR - 2025-10-27 11:57:46 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 559
