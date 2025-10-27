@@ -1379,7 +1379,7 @@ $(document).ready(function() {
         const arrow = $(this);
         const container = arrow.closest('.row').next('.souschap-container');
 
-        if(container.is(':visible')) {
+        if (container.is(':visible')) {
             container.slideUp();
             arrow.html('&#9654;');
             return;
@@ -1395,21 +1395,63 @@ $(document).ready(function() {
             dataType: "json",
             success: function(sousChaps) {
                 container.html('');
-                
+
                 if (sousChaps.length > 0) {
                     sousChaps.forEach(sc => {
                         const idEncoded = sc.IDSousChapitre;
                         const titre = sc.TitreSousChapitre.replace(/'/g, '&#39;');
-                        
+
                         let html = `
                             <div class="souschap-item" style="display: flex; align-items: center; padding: 0.5em 0; border-bottom: 1px solid #eee; position: relative;">
-                                <div style="flex: 1;">- ${sc.TitreSousChapitre}</div>
+                                <div style="flex: 1; display: flex; align-items: center; gap: 0.5em;">
+                                    <!-- Icône dropdown devant le titre -->
+                                    <div class="dropdown" style="position: relative;">
+                                        <a href="#" data-toggle="dropdown" data-display="static" aria-expanded="false" title="Modifier / gérer le fichier">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 align-middle">
+                                                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                                            </svg>
+                                        </a>
+
+                                        <div class="dropdown-menu p-2" style="min-width: 18rem;">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <input type="file" name="mFile_${idEncoded}" id="mFile_${idEncoded}" class="form-control form-control-sm mb-2" accept=".docx">
+                                                    <input type="hidden" name="attach_file_${idEncoded}" value="${idEncoded}">
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-12 text-center">
+                                                    <span class="btn btn-info btn-sm mt-1" onclick="set_SubChapCurs('${idEncoded}')">
+                                                        <i class="fas fa-upload"></i> Upload (COURS.docx)
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <hr>
+
+                                            <div class="row">
+                                                <div class="col-12 text-center">
+                                                    <span class="btn btn-danger btn-sm" 
+                                                        onclick="suppCurs('${idEncoded}')"
+                                                        name="${titre}"
+                                                        id="${idEncoded}">
+                                                        <i class="fa fa-trash-alt"></i> Supprimer
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Titre du sous-chapitre -->
+                                    <span>- ${sc.TitreSousChapitre}</span>
+                                </div>
                         `;
-                        
+
                         <?php if ((strlen($this->session->userdata('passTok')) == 200) && ($this->session->userdata('EstAdmin') == 1)) { ?>
                         html += `
                             <div style="margin-left: auto; display: flex; gap: 0.8em;">
-                                <!-- Bouton édition avec dropdown -->
+                                <!-- Édition simple du titre -->
                                 <div class="dropdown dropleft" style="position: relative;" onclick="event.stopPropagation()">
                                     <a href="#" data-toggle="dropdown" aria-expanded="false" title="Modifier le titre">
                                         <i class="fa fa-edit" style="color: #3085d6; font-size: 1.1em;"></i>
@@ -1428,18 +1470,18 @@ $(document).ready(function() {
                                     </div>
                                 </div>
 
-                                <!-- Bouton suppression -->
+                                <!-- Suppression du sous-chapitre -->
                                 <a href="#" onclick="return suppSousChap('${idEncoded}');"
-                                name="${titre}"
-                                id="${idEncoded}"
-                                title="<?php echo $this->lang->line('actionSupp'); ?>"
-                                style="text-decoration: none;">
+                                   name="${titre}"
+                                   id="${idEncoded}"
+                                   title="Supprimer le sous-chapitre"
+                                   style="text-decoration: none;">
                                     <i class="fa fa-trash-alt" style="color: #d33; font-size: 1.1em;"></i>
                                 </a>
                             </div>
                         `;
                         <?php } ?>
-                        
+
                         html += `</div>`;
                         container.append(html);
                     });
@@ -3075,6 +3117,76 @@ function editSousChap(idEncoded) {
 
                 return false;
             }
+
+            function set_SubChapCurs(idSousChap) {
+                const fileInput = document.getElementById(`mFile_${idSousChap}`);
+
+                if (!fileInput || !fileInput.files.length) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Aucun fichier sélectionné',
+                        text: 'Veuillez choisir un fichier .docx avant de continuer.'
+                    });
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('mFile[]', fileInput.files[0]);
+                formData.append('attach_file[]', idSousChap);
+
+                Swal.fire({
+                    title: 'Veuillez patienter...',
+                    html: 'Upload et conversion du fichier en cours...',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    didOpen: () => Swal.showLoading()
+                });
+
+                $.ajax({
+                    url: "<?= base_url('home/upload_Attach_Save_SubChap'); ?>", // ✅ nouvelle méthode backend
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        console.log(response);
+                        try {
+                            const res = JSON.parse(response);
+
+                            if (res[0]?.id == '1') {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Fichier attaché avec succès',
+                                    text: 'Le fichier du sous-chapitre a été converti et enregistré.',
+                                    confirmButtonText: 'OK'
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Erreur',
+                                    text: res[0]?.desc || 'Une erreur est survenue.'
+                                });
+                            }
+                        } catch (e) {
+                            console.error('Erreur JSON:', e, response);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Erreur serveur',
+                                text: 'Réponse du serveur invalide.'
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Erreur AJAX:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Erreur lors de l’envoi du fichier',
+                            text: 'Veuillez réessayer plus tard.'
+                        });
+                    }
+                });
+            }
+
 
             function set_FigResum() {
 

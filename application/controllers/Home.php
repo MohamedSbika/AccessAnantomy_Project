@@ -6010,6 +6010,76 @@ loadingTask.promise.then(function(pdf) {
         echo json_encode($arr_Res);
         exit;
     }
+
+public function upload_Attach_Save_SubChap() {
+    try {
+        $f = $_FILES;
+        $listSubChap = $_POST['attach_file']; // tableau des IDSousChapitre
+        $err_desc = '';
+
+        foreach($f['mFile']['name'] as $key => $p) {
+            $file_size  = $f['mFile']['size'][$key];
+            $file_nameTmp = $f['mFile']['tmp_name'][$key];
+            $idSubChap = $listSubChap[$key];
+
+            if($file_size > 0){
+                require_once APPPATH."third_party/wordToPh/vendor/autoload.php";
+
+                $objReader = \PhpOffice\PhpWord\IOFactory::createReader('Word2007');
+                $contents = $objReader->load($file_nameTmp);
+
+                // Si tu ne fais pas de PDF, tu peux commenter cette partie
+                $rendername = \PhpOffice\PhpWord\Settings::PDF_RENDERER_TCPDF;
+                $renderLibrary = "tcpdf";
+                $renderLibraryPath = APPPATH."third_party/wordToPh/".$renderLibrary;
+                if(!\PhpOffice\PhpWord\Settings::setPdfRenderer($rendername, $renderLibraryPath)){
+                    // Pas grave si tu ne fais que du HTML
+                }
+
+                $outputPath = FCPATH.'PlatFormeConvert/'.$idSubChap."_Sub.HTML";
+                $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($contents, 'HTML');
+                $objWriter->save($outputPath);
+
+                $content = htmlentities(file_get_contents($outputPath, true));
+
+                // Vérifie si le sous-chapitre existe déjà
+                $this->db->select('*');
+                $this->db->from('_souschapitre');
+                $this->db->where('IDSousChapitre', $idSubChap);
+                $res = $this->db->get()->result_array();
+
+                if(count($res) > 0){
+                    // Mise à jour
+                    $dataUpdate = [
+                        'FichierHTML' => $idSubChap."_Sub.HTML",
+                        'DateModif' => date('Y-m-d H:i:s')
+                    ];
+                    $this->db->where('IDSousChapitre', $idSubChap);
+                    $this->db->update('_souschapitre', $dataUpdate);
+                } else {
+                    // Création
+                    $dataInsert = [
+                        'IDSousChapitre' => $idSubChap,
+                        'FichierHTML' => $idSubChap."_Sub.HTML",
+                        'DateCreation' => date('Y-m-d H:i:s')
+                    ];
+                    $this->db->insert('_souschapitre', $dataInsert);
+                }
+
+                // Tu peux supprimer le fichier HTML temporaire si tu veux, mais ici on le garde
+                // unlink($outputPath);
+            }
+        }
+
+        $arr_Res[] = ["id"=>'1', "desc"=>$err_desc];
+    } catch(Exception $e){
+        log_message('error', 'upload_Attach_Save_SubChap: '.$e->getMessage());
+        $arr_Res[] = ["id"=>'0', "desc"=>"Erreur: ".$e->getMessage()];
+    }
+
+    echo json_encode($arr_Res);
+    exit;
+}
     public function upload_Attach_Save_Curs_PDF(){
 
         //$send_ID = "'".$_POST["attach_file"]."'";
