@@ -7878,5 +7878,133 @@ public function suppSousChap() {
         echo json_encode([["id" => '0', "desc" => 'Erreur lors de la suppression ou sous-chapitre introuvable']]);
     }
 }
+// Méthode pour récupérer le contenu d’un chapitre
+public function getContentChapter()
+{
+    $postData = json_decode(file_get_contents('php://input'), true);
+
+    if (!isset($postData['idChap']) || empty($postData['idChap'])) {
+        echo "Chapitre non défini.";
+        return;
+    }
+
+    $idChap = $postData['idChap'];
+
+    // Récupérer le chapitre depuis la table _chapitre
+    $this->db->where('IDChapitre', $idChap);
+    $query = $this->db->get('_chapitre');
+    $chapitre = $query->row_array();
+
+    if (!$chapitre) {
+        echo "Chapitre introuvable.";
+        return;
+    }
+
+    // Construire le HTML
+    $html = '<h2>' . htmlspecialchars($chapitre['TitreChapitre']) . '</h2>';
+    $html .= '<div>' . ($chapitre['FichierHTML'] ?? 'Contenu vide') . '</div>';
+
+    echo $html;
+}
+
+// Méthode pour récupérer le contenu d’un sous-chapitre
+public function getContentSousChapitre() {
+        $postData = json_decode(file_get_contents('php://input'), true);
+        $idChap = $postData['idChap'];
+        $idSousChap = $postData['idSousChap'];
+
+        // Requête SQL pour récupérer le sous-chapitre
+        $this->db->select('*');
+        $this->db->from('_souschapitre');
+        $this->db->where('IDSousChapitre', $idSousChap);
+        $this->db->where('IDChapitre', $idChap);
+        $query = $this->db->get();
+
+        $sousChapitre = $query->row();
+
+        if ($sousChapitre) {
+            echo json_encode([
+                'status' => 'success',
+                'FichierHTML' => $sousChapitre->FichierHTML,
+                'TitreSousChapitre' => $sousChapitre->TitreSousChapitre
+            ]);
+        } else {
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Sous-chapitre non trouvé'
+            ]);
+        }
+    }
+
+public function PlatFormeConvert($fichierHTML)
+{
+    $data = [];
+
+    // === 1. Charger le fichier HTML ===
+    $fichierHTML = str_replace(['..', '/'], '', $fichierHTML);
+    $file_path = FCPATH . 'PlatFormeConvert/' . $fichierHTML;
+
+    if (file_exists($file_path)) {
+        $data['CursShow'] = file_get_contents($file_path);
+    } else {
+        $data['CursShow'] = '<p style="color:red;">Fichier non trouvé : ' . htmlspecialchars($fichierHTML) . '</p>';
+        log_message('error', 'Fichier HTML non trouvé : ' . $file_path);
+    }
+
+    // === 2. Détecter la langue dans l'URL ===
+    $lang = strtoupper($this->uri->segment(1)); // FR, EN, ES
+
+    // === 3. Mapper langue → IDTheme ===
+    $themeMap = [
+        'FR' => 20,
+        'EN' => 31,
+        'ES' => 36
+    ];
+    $idTheme = $themeMap[$lang] ?? 20; // FR par défaut
+
+    // === 4. Simuler OneBook avec IDTheme ===
+    $titres = [
+        20 => 'Pathologie',
+        31 => 'Pathology',
+        36 => 'Patología'
+    ];
+
+    $data['OneBook'] = [[
+        'IDLivre'     => $idTheme,  // On réutilise IDTheme comme IDLivre (ou tu peux garder un vrai IDLivre si tu veux)
+        'IDTheme'     => $idTheme,
+        'IDCategory'  => 0,
+        'TitreLivre'  => $titres[$idTheme]
+    ]];
+
+    // === 5. Charger les chapitres liés à IDTheme via _livre.IDLivre ===
+    $this->db->select('c.IDChapitre, c.IDLivre, c.TitreChapitre, c.NbreCours, c.NbreResume');
+    $this->db->from('_chapitre c');
+    $this->db->join('_livre l', 'c.IDLivre = l.IDLivre', 'inner');
+    $this->db->where('l.IDTheme', $idTheme);
+    $query = $this->db->get();
+    $data['listChap'] = $query->result_array();
+
+    // === 6. Charger les sous-chapitres liés ===
+    $data['listSousChap'] = [];
+    if (!empty($data['listChap'])) {
+        $chapterIds = array_column($data['listChap'], 'IDChapitre');
+
+        $this->db->select('IDSousChapitre, IDChapitre, TitreSousChapitre, FichierHTML');
+        $this->db->from('_souschapitre');
+        $this->db->where_in('IDChapitre', $chapterIds);
+        $query = $this->db->get();
+        $data['listSousChap'] = $query->result_array();
+    }
+
+    // === 7. Données de base ===
+    $data['page'] = 'livreCours';
+    $data['listCat'] = $this->getListCategory();
+    $data['indexSearch'] = '';
+    $data['listFig'] = [];
+
+    // === 8. Charger la vue (la sidebar est dans v1_racourci_pathologie.php) ===
+    $this->load->view($this->getTypePlatform() ? 'v1_livreCours' : 'livreCours', $data);
+}
+
 
 }

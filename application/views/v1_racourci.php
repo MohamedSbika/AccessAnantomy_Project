@@ -1,6 +1,13 @@
 <?php
-$bookId = (int)$OneBook[0]["IDLivre"];
+$bookId = 0;
+$themeId = 0;
+$categoryId = 0;
 
+if (isset($OneBook) && is_array($OneBook) && !empty($OneBook) && isset($OneBook[0])) {
+    $bookId = isset($OneBook[0]['IDLivre']) ? (int)$OneBook[0]['IDLivre'] : 0;
+    $themeId = isset($OneBook[0]['IDTheme']) ? (int)$OneBook[0]['IDTheme'] : 0;
+    $categoryId = isset($OneBook[0]['IDCategory']) ? (int)$OneBook[0]['IDCategory'] : 0;
+}
 // Vérification pour afficher v1_racourci_pathologie
 if (in_array($bookId, [20, 30, 31]) || in_array((int)$OneBook[0]["IDTheme"], [20, 30, 31])) {
 	include('v1_racourci_pathologie.php');

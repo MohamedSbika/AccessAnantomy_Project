@@ -408,43 +408,43 @@
         element.classList.add('selected');
     }
 
-    function selectUniqueChapter(chapterElement) {
-        const idChapitre = chapterElement.getAttribute('data-id');
-        const type_sel = window.selectedType;
+    // function selectUniqueChapter(chapterElement) {
+    //     const idChapitre = chapterElement.getAttribute('data-id');
+    //     const type_sel = window.selectedType;
 
-        if (!type_sel) {
-            alert("Veuillez d'abord sélectionner une action.");
-            return;
-        }
+    //     if (!type_sel) {
+    //         alert("Veuillez d'abord sélectionner une action.");
+    //         return;
+    //     }
 
-        document.querySelectorAll('.chapter-item').forEach(el => el.classList.remove('selected'));
-        chapterElement.classList.add('selected');
-        window.selectedChapterId = idChapitre;
+    //     document.querySelectorAll('.chapter-item').forEach(el => el.classList.remove('selected'));
+    //     chapterElement.classList.add('selected');
+    //     window.selectedChapterId = idChapitre;
 
-        let baseUrl = "<?php echo base_url(); ?>";
-        let lang = "<?php echo $this->lang->line('siteLang'); ?>";
-        let redirectUrl = "";
+    //     let baseUrl = "<?php echo base_url(); ?>";
+    //     let lang = "<?php echo $this->lang->line('siteLang'); ?>";
+    //     let redirectUrl = "";
 
-        switch (type_sel) {
-            case 'theme':
-                redirectUrl = `${baseUrl}${lang}livreCours/${idChapitre}`;
-                break;
-            case 'e_a':
-                redirectUrl = `${baseUrl}${lang}livreCours/${idChapitre}`;
-                break;
-            case 'calque':
-                redirectUrl = `${baseUrl}${lang}listCalque/${idChapitre}`;
-                break;
-            case 'test':
-                redirectUrl = `${baseUrl}${lang}livreCours/${idChapitre}`;
-                break;
-            default:
-                redirectUrl = `${baseUrl}${lang}livreCours/${idChapitre}`;
-        }
+    //     switch (type_sel) {
+    //         case 'theme':
+    //             redirectUrl = `${baseUrl}${lang}livreCours/${idChapitre}`;
+    //             break;
+    //         case 'e_a':
+    //             redirectUrl = `${baseUrl}${lang}livreCours/${idChapitre}`;
+    //             break;
+    //         case 'calque':
+    //             redirectUrl = `${baseUrl}${lang}listCalque/${idChapitre}`;
+    //             break;
+    //         case 'test':
+    //             redirectUrl = `${baseUrl}${lang}livreCours/${idChapitre}`;
+    //             break;
+    //         default:
+    //             redirectUrl = `${baseUrl}${lang}livreCours/${idChapitre}`;
+    //     }
 
-        document.getElementById("listChapTooltip").style.display = 'none';
-        window.location.href = redirectUrl;
-    }
+    //     document.getElementById("listChapTooltip").style.display = 'none';
+    //     window.location.href = redirectUrl;
+    // }
 
     // Fonction pour charger et afficher les sous-chapitres
     function toggleSousChapitres(idChapitre, arrowElement, event) {
@@ -519,47 +519,70 @@
         sousChapList.innerHTML = html;
     }
 
-    // Fonction pour sélectionner un sous-chapitre
-    function selectSousChapitre(idSousChapitre, idChapitre, element, event) {
-        event.stopPropagation(); // Empêche la propagation
+// Sélection sous-chapitre
+// Sélection sous-chapitre
+function selectSousChapitre(idSousChapitre, idChapitre, element, event) {
+    event.stopPropagation(); // Empêche la propagation au chapitre parent
 
-        document.querySelectorAll('.sous-chapitre-item').forEach(el => el.classList.remove('selected'));
-        element.classList.add('selected');
+    // Mettre à jour la sélection visuelle
+    document.querySelectorAll('.sous-chapitre-item').forEach(el => el.classList.remove('selected'));
+    element.classList.add('selected');
 
-        const type_sel = window.selectedType;
-
-        if (!type_sel) {
-            alert("Veuillez d'abord sélectionner une action.");
-            return;
-        }
-
-        console.log('Sous-chapitre sélectionné:', idSousChapitre);
-
-        // Redirection vers le sous-chapitre
-        let baseUrl = "<?php echo base_url(); ?>";
-        let lang = "<?php echo $this->lang->line('siteLang'); ?>";
-        let redirectUrl = "";
-
-        switch (type_sel) {
-            case 'theme':
-                redirectUrl = `${baseUrl}${lang}livreCours/${idChapitre}/${idSousChapitre}`;
-                break;
-            case 'e_a':
-                redirectUrl = `${baseUrl}${lang}livreCours/${idChapitre}/${idSousChapitre}`;
-                break;
-            case 'calque':
-                redirectUrl = `${baseUrl}${lang}listCalque/${idChapitre}/${idSousChapitre}`;
-                break;
-            case 'test':
-                redirectUrl = `${baseUrl}${lang}livreCours/${idChapitre}/${idSousChapitre}`;
-                break;
-            default:
-                redirectUrl = `${baseUrl}${lang}livreCours/${idChapitre}/${idSousChapitre}`;
-        }
-
-        document.getElementById("listChapTooltip").style.display = 'none';
-        window.location.href = redirectUrl;
+    // Vérifier si un type est sélectionné
+    const type_sel = window.selectedType;
+    if (!type_sel) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Aucune action sélectionnée',
+            text: 'Veuillez d\'abord sélectionner une action (par exemple, cours).'
+        });
+        return;
     }
+
+    // Récupérer les informations du sous-chapitre via AJAX
+    fetch(`<?php echo base_url(); ?>home/getContentSousChapitre`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idChap: idChapitre, idSousChap: idSousChapitre })
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Erreur réseau: ' + response.status);
+        return response.json();
+    })
+    .then(data => {
+        // Cacher le tooltip
+        document.getElementById("listChapTooltip").style.display = 'none';
+
+        // Vérifier si FichierHTML existe
+        const fichierHTML = data.FichierHTML || null;
+
+        if (fichierHTML) {
+            // Rediriger vers l'URL du fichier HTML avec le préfixe de langue
+            const lang = '<?php echo $this->lang->line('siteLang'); ?>';
+            const redirectUrl = `<?php echo base_url(); ?>${lang}/PlatFormeConvert/${fichierHTML}`;
+            window.location.href = redirectUrl;
+        } else {
+            // Gérer le cas où FichierHTML est NULL
+            Swal.fire({
+                icon: 'warning',
+                title: 'Aucun contenu disponible',
+                text: 'Ce sous-chapitre n’a pas encore de fichier attaché.'
+            });
+            // Optionnel : rediriger vers une page par défaut
+            // const lang = '<?php echo $this->lang->line('siteLang'); ?>';
+            // const redirectUrl = `<?php echo base_url(); ?>${lang}/livreCours/${idChapitre}/${idSousChapitre}`;
+            // window.location.href = redirectUrl;
+        }
+    })
+    .catch(err => {
+        console.error('Erreur lors de la récupération du sous-chapitre:', err);
+        Swal.fire({
+            icon: 'error',
+            title: 'Erreur de chargement',
+            text: 'Impossible de charger le contenu du sous-chapitre.'
+        });
+    });
+}
 
     // Fermer si clic en dehors
     document.addEventListener("click", function (e) {

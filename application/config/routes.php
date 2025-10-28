@@ -201,5 +201,9 @@ $route['^ES/v1_livre'] 				    = "home/v1_livre";
 $route['404_override'] = 'errors/page_missing';
 $route['translate_uri_dashes'] = FALSE;
 
+$route['^FR/PlatFormeConvert/(:any)'] = 'home/PlatFormeConvert/$1';
+$route['^EN/PlatFormeConvert/(:any)'] = 'home/PlatFormeConvert/$1';
+$route['^ES/PlatFormeConvert/(:any)'] = 'home/PlatFormeConvert/$1';
+
 
 
