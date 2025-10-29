@@ -160,6 +160,12 @@
         {
             overflow: scroll !important;
         }
+
+        .select-chapitre-associe option,
+.select-chapitre-associe optgroup {
+    color: #000 !important;
+    background: #fff !important;
+}
     </style>
 
 
@@ -512,12 +518,79 @@
                 <div class="modal-content">
 
                     <div class="modal-header">
-                        <h3 class="h2 mb-1" style="font-family: Georgia, serif;font-size: 180%;"><?= $OneBook[0]['Titre']; ?></h3>
-                        <!-- ID unique pour le bookID -->
+                        <h3 class="h2 mb-1" style="font-family: Georgia, serif;font-size: 180%;">
+                            <?= $OneBook[0]['Titre']; ?>
+                        </h3>
                         <input type="hidden" name="bookID" id="bookID_<?= $OneBook[0]['IDLivre']; ?>" value="<?= $OneBook[0]['IDLivre']; ?>">
                     </div>
 
                     <div class="card-body">
+                        <?php 
+                        $idTheme = $OneBook[0]['IDTheme']; // thème du livre actuel
+                        
+                        // Si le livre appartient à l’un des thèmes cibles
+                        if (in_array($idTheme, [20, 31, 36])): 
+                            // Déterminer le(s) thème(s) à afficher selon la langue
+                            $themesCibles = [];
+                            if ($idTheme == 20) $themesCibles = [1];   // FR → thèmes FR
+                            if ($idTheme == 31) $themesCibles = [21];  // EN → thèmes EN
+                            if ($idTheme == 36) $themesCibles = [33];  // AR → thèmes AR
+
+                            // Récupération des livres liés à ces thèmes
+                            $livres = $this->db->where_in('IDTheme', $themesCibles)->get('_livre')->result_array();
+                        ?>
+                            <div class="form-group mb-3">
+                                <label for="chapitreAssocie_<?= $OneBook[0]['IDLivre']; ?>" style="font-weight:bold;">
+                                    Sélectionner un chapitre associé <span style="color:red;">*</span>
+                                </label>
+
+                                <!-- CLASSE AJOUTÉE ICI -->
+                                <select name="chapitreAssocie" 
+                                        id="chapitreAssocie_<?= $OneBook[0]['IDLivre']; ?>" 
+                                        class="form-control select-chapitre-associe" 
+                                        required>
+                                    <option value="">-- Choisissez un chapitre --</option>
+
+                                    <?php
+                                    foreach ($livres as $livre) {
+                                        echo "<optgroup label='" . htmlspecialchars($livre['Titre']) . "'>";
+
+                                        // Récupérer les chapitres de chaque livre
+                                        $chapitres = $this->db
+                                            ->where('IDLivre', $livre['IDLivre'])
+                                            ->get('_chapitre')
+                                            ->result_array();
+
+                                        if (count($chapitres) > 0) {
+                                            foreach ($chapitres as $chapitre) {
+echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chapitre['TitreChapitre']) . "</option>";
+                                            }
+                                        } else {
+                                            echo "<option disabled>(Aucun chapitre)</option>";
+                                        }
+
+                                        echo "</optgroup>";
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+
+                            <!-- STYLE AJOUTÉ ICI (dans le modal, juste après le select) -->
+                            <style>
+                            .select-chapitre-associe,
+                            .select-chapitre-associe option,
+                            .select-chapitre-associe optgroup {
+                                color: #000 !important;
+                                background-color: #fff !important;
+                            }
+                            /* Optionnel : forcer le select lui-même */
+                            .select-chapitre-associe {
+                                -webkit-appearance: menulist !important;
+                                appearance: menulist !important;
+                            }
+                            </style>
+                        <?php endif; ?>
+
                         <div class="list_wrapper_<?= $OneBook[0]['IDLivre']; ?>">
                             <div class="row">
                                 <div class="col-xs-7 col-sm-7 col-md-7">
@@ -536,8 +609,8 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" onclick="set_LivChap(<?= $OneBook[0]['IDLivre']; ?>)">Save changes</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                        <button type="button" class="btn btn-primary" onclick="set_LivChap(<?= $OneBook[0]['IDLivre']; ?>)">Enregistrer</button>
                     </div>
 
                 </div>
