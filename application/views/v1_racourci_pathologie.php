@@ -281,29 +281,33 @@
         ?>
     </div>
 
-    <ul class="chapter-list" id="chapterListTooltip">
-        <?php foreach ($listChap as $value) {
-            $selected = ($curs_id === "curs_" . $value['IDChapitre']) ? 'selected' : '';
-            ?>
-            <li class="chapter-item <?= $selected; ?>" id="curs_<?= $value['IDChapitre']; ?>"
-                data-id="<?= $value['IDChapitre']; ?>" data-curs="<?= $value['NbreCours']; ?>"
-                data-resum="<?= $value['NbreResume']; ?>">
-                <div class="chapter-item-header"
-                    onclick="toggleSousChapitres(<?= $value['IDChapitre']; ?>, this.querySelector('.accordion-arrow'), event)">
-                    <div class="chapter-item-title">
-                        <?= htmlspecialchars($value['TitreChapitre']); ?>
-                    </div>
-                    <span class="accordion-arrow">
-                        ▶
-                    </span>
+<ul class="chapter-list" id="chapterListTooltip">
+    <?php foreach ($listChap as $value) {
+        $selected = ($curs_id === "curs_" . $value['IDChapitre']) ? 'selected' : '';
+    ?>
+        <li class="chapter-item <?= $selected; ?>" 
+            id="curs_<?= $value['IDChapitre']; ?>" 
+            data-id="<?= $value['IDChapitre']; ?>" 
+            data-id-rappel="<?= $value['IdChapterRappel'] ?? '' ?>" 
+            data-curs="<?= $value['NbreCours']; ?>" 
+            data-resum="<?= $value['NbreResume']; ?>">
+            
+            <div class="chapter-item-header"
+                onclick="toggleSousChapitres(<?= $value['IDChapitre']; ?>, this.querySelector('.accordion-arrow'), event)">
+                <div class="chapter-item-title">
+                    <?= htmlspecialchars($value['TitreChapitre']); ?>
                 </div>
+                <span class="accordion-arrow">▶</span>
+            </div>
 
-                <ul class="sous-chapitres-list" id="sous-chap-<?= $value['IDChapitre']; ?>">
-                    <!-- Les sous-chapitres seront chargés ici dynamiquement -->
-                </ul>
-            </li>
-        <?php } ?>
-    </ul>
+            <ul class="sous-chapitres-list" id="sous-chap-<?= $value['IDChapitre']; ?>">
+                <!-- Le rappel et les sous-chapitres seront ajoutés via JS -->
+            </ul>
+        </li>
+    <?php } ?>
+</ul>
+
+
 </div>
 
 <div class="sidebar-racc collapsed" id="sidebar-racc">
@@ -504,20 +508,57 @@
     }
 
     // Fonction pour afficher les sous-chapitres
-    function afficherSousChapitres(sousChapList, data) {
-        if (!data || data.length === 0) {
-            sousChapList.innerHTML = '<li class="loading-sous-chapitres">Aucun sous-chapitre</li>';
-            return;
-        }
+function afficherSousChapitres(sousChapList, data) {
+    const chapterEl = sousChapList.closest('.chapter-item');
+    let idChapterRappel = chapterEl.dataset.idRappel; 
 
-        let html = '';
+    // Sauvegarder dans localStorage si existe
+    if (idChapterRappel) {
+        localStorage.setItem('idChapterRappel', idChapterRappel);
+    } else {
+        // Récupérer depuis localStorage si absent
+        idChapterRappel = localStorage.getItem('idChapterRappel');
+    }
+
+    let html = '';
+
+    // Ajouter le Rappel Cours en premier
+    html += `<li class="sous-chapitre-item rappel-item" style="font-weight:bold; color:#1d3557; background-color:#dce6f1; cursor:pointer;">
+        Rappel Cours
+    </li>`;
+
+    setTimeout(() => {
+        const rappelItem = sousChapList.querySelector('.rappel-item');
+        if (rappelItem) {
+            rappelItem.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (!idChapterRappel) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Aucun rappel disponible',
+                        text: 'Ce chapitre n’a pas de cours de rappel.'
+                    });
+                    return;
+                }
+                const lang = '<?php echo $this->lang->line('siteLang'); ?>';
+                window.location.href = `<?php echo base_url(); ?>${lang}/livreCours/${idChapterRappel}`;
+            });
+        }
+    }, 0);
+
+    if (!data || data.length === 0) {
+        html += '<li class="loading-sous-chapitres">Aucun sous-chapitre</li>';
+    } else {
         data.forEach(sousChap => {
             html += `<li class="sous-chapitre-item" onclick="selectSousChapitre('${sousChap.IDSousChapitre}', '${sousChap.IDChapitre}', this, event)">
                 ${sousChap.TitreSousChapitre || sousChap.desc || 'Sans titre'}
             </li>`;
         });
-        sousChapList.innerHTML = html;
     }
+
+    sousChapList.innerHTML = html;
+}
+
 
 // Sélection sous-chapitre
 // Sélection sous-chapitre

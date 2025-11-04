@@ -3681,9 +3681,20 @@ function editSousChap(idEncoded) {
                 return false;
             }
 
-           function set_LivChap(bookID) {
-    var form = $('#pageForm_SetChap_' + bookID)[0]; // sélectionner le bon formulaire
+          function set_LivChap(bookID) {
+    var form = $('#pageForm_SetChap_' + bookID)[0]; // sélectionner le formulaire
     var data_plat = new FormData(form);
+
+    // ✅ Vérification du select obligatoire seulement s'il existe
+    var chapitreAssocieField = form.chapitreAssocie;
+    if (chapitreAssocieField && !chapitreAssocieField.value) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Sélection obligatoire',
+            text: 'Veuillez choisir un chapitre associé avant de continuer.'
+        });
+        return false; // Stop l'envoi
+    }
 
     Swal.fire({
         title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
@@ -3721,7 +3732,7 @@ function editSousChap(idEncoded) {
                 Swal.fire({
                     title: resu[0]["desc"],
                     icon: 'success',
-                    text: 'chapitre Ajouters avec succès',
+                    text: 'Chapitre(s) ajoutés avec succès',
                     confirmButtonText: 'OK'
                 }).then(() => location.reload());
             } else {

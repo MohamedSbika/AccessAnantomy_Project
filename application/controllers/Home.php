@@ -4921,37 +4921,44 @@ loadingTask.promise.then(function(pdf) {
         exit;
     }
 
-    public function set_LivChap(){
+  public function set_LivChap() {
 
-        $IDLivr 			= $_POST["bookID"];
-        $OrdreChap 			= $_POST["list"];
-        //print_r($OrdreCat);
-        $desc = '' ;//$newTitre;
+    $IDLivr     = $_POST["bookID"];
+    $OrdreChap  = $_POST["list"];
+    $IdChapRappel = isset($_POST["chapitreAssocie"]) && !empty($_POST["chapitreAssocie"]) ? $_POST["chapitreAssocie"] : null;
+    
+    $desc = '';
 
-        foreach ($OrdreChap as $key=>$titleChap){
-            if(trim($titleChap) != ''){
+    foreach ($OrdreChap as $key => $titleChap) {
+        if (trim($titleChap) != '') {
 
-//					print_r($titleBook);
-//					print_r('<br>');
-                $this->db->select('*');
-                $this->db->from('_chapitre');
-                $this->db->Where('TitreChapitre',$titleChap);
-                $this->db->Where('IDLivre',$IDLivr);
-                $resC = $this->db->get()->result_array();
-                if(count($resC) == 0) {
-                    $dataChap = array(
-                        'TitreChapitre' 	=> $titleChap,
-                        'IDLivre' 			=> $IDLivr
-                    );
-                    $idChap = $this->insert_dd('_chapitre', $dataChap);
-                }
+            // Vérifier si le chapitre existe déjà pour ce livre
+            $this->db->select('*');
+            $this->db->from('_chapitre');
+            $this->db->where('TitreChapitre', $titleChap);
+            $this->db->where('IDLivre', $IDLivr);
+            $resC = $this->db->get()->result_array();
+
+            if (count($resC) == 0) {
+                // Préparer les données à insérer
+                $dataChap = array(
+                    'TitreChapitre'   => $titleChap,
+                    'IDLivre'         => $IDLivr,
+                    'IdChapterRappel' => $IdChapRappel // si null, la base accepte NULL
+                );
+
+                // Insertion
+                $idChap = $this->insert_dd('_chapitre', $dataChap);
             }
         }
-        $arr_Res[] = array("id" => '1', "desc" => $desc) ;
-
-        echo json_encode($arr_Res);
-        exit;
     }
+
+    $arr_Res[] = array("id" => '1', "desc" => $desc);
+
+    echo json_encode($arr_Res);
+    exit;
+}
+
 
     public function set_LivreBack(){
 
