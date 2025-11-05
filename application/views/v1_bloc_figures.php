@@ -365,7 +365,7 @@
 	</div>
 
 	<?php
-if (in_array((int)$OneBook[0]["IDLivre"], [70, 71]) || in_array((int)$OneBook[0]["IDCategory"], [4, 9])) {
+if (in_array((int)$OneBook[0]["IDLivre"], [70, 71]) || in_array((int)$OneBook[0]["IDTheme"], [16, 27, 34])) {
 	 $showScroll = true;
 } else { ?>
 	<?php $showScroll = false; } ?>

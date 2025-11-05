@@ -563,13 +563,16 @@ function afficherSousChapitres(sousChapList, data) {
 // Sélection sous-chapitre
 // Sélection sous-chapitre
 function selectSousChapitre(idSousChapitre, idChapitre, element, event) {
-    event.stopPropagation(); // Empêche la propagation au chapitre parent
+    // === 1. Stop propagation pour éviter le clic parent ===
+    if (event && typeof event.stopPropagation === 'function') {
+        event.stopPropagation();
+    }
 
-    // Mettre à jour la sélection visuelle
+    // === 2. Met à jour la sélection visuelle ===
     document.querySelectorAll('.sous-chapitre-item').forEach(el => el.classList.remove('selected'));
-    element.classList.add('selected');
+    if (element) element.classList.add('selected');
 
-    // Vérifier si un type est sélectionné
+    // === 3. Vérifie si un type est sélectionné ===
     const type_sel = window.selectedType;
     if (!type_sel) {
         Swal.fire({
@@ -580,8 +583,11 @@ function selectSousChapitre(idSousChapitre, idChapitre, element, event) {
         return;
     }
 
-    // Récupérer les informations du sous-chapitre via AJAX
-    fetch(`<?php echo base_url(); ?>home/getContentSousChapitre`, {
+    // === 4. Définir baseUrl dynamiquement ===
+    const baseUrl = "<?php echo base_url(); ?>";
+
+    // === 5. Requête AJAX pour récupérer les infos du sous-chapitre ===
+    fetch(`${baseUrl}home/getContentSousChapitre`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ idChap: idChapitre, idSousChap: idSousChapitre })
@@ -591,32 +597,29 @@ function selectSousChapitre(idSousChapitre, idChapitre, element, event) {
         return response.json();
     })
     .then(data => {
-        // Cacher le tooltip
-        document.getElementById("listChapTooltip").style.display = 'none';
+        // === 6. Cacher le tooltip si présent ===
+        const tooltip = document.getElementById("listChapTooltip");
+        if (tooltip) tooltip.style.display = 'none';
 
-        // Vérifier si FichierHTML existe
+        console.log("🔹 Données du sous-chapitre :", data);
+
+        // === 7. Gérer le fichier HTML ===
         const fichierHTML = data.FichierHTML || null;
-
         if (fichierHTML) {
-            // Rediriger vers l'URL du fichier HTML avec le préfixe de langue
-            const lang = '<?php echo $this->lang->line('siteLang'); ?>';
-            const redirectUrl = `<?php echo base_url(); ?>${lang}/PlatFormeConvert/${fichierHTML}`;
+            const lang = "<?php echo strtoupper($this->uri->segment(1)); ?>";
+            const redirectUrl = `${baseUrl}${lang}/PlatFormeConvert/${fichierHTML}`;
+            console.log("🔸 Redirection vers :", redirectUrl);
             window.location.href = redirectUrl;
         } else {
-            // Gérer le cas où FichierHTML est NULL
             Swal.fire({
                 icon: 'warning',
                 title: 'Aucun contenu disponible',
                 text: 'Ce sous-chapitre n’a pas encore de fichier attaché.'
             });
-            // Optionnel : rediriger vers une page par défaut
-            // const lang = '<?php echo $this->lang->line('siteLang'); ?>';
-            // const redirectUrl = `<?php echo base_url(); ?>${lang}/livreCours/${idChapitre}/${idSousChapitre}`;
-            // window.location.href = redirectUrl;
         }
     })
     .catch(err => {
-        console.error('Erreur lors de la récupération du sous-chapitre:', err);
+        console.error('❌ Erreur lors de la récupération du sous-chapitre:', err);
         Swal.fire({
             icon: 'error',
             title: 'Erreur de chargement',

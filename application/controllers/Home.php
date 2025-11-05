@@ -7854,7 +7854,6 @@ public function get_SousChapitres()
 
 
 public function suppSousChap() {
-    // Vérifier que l'utilisateur est admin
     if (!((strlen($this->session->userdata('passTok')) == 200) && ($this->session->userdata('EstAdmin') == 1))) {
         echo json_encode([["id" => '-1', "desc" => $this->lang->line('supp_delErr')]]);
         return;
@@ -7867,13 +7866,7 @@ public function suppSousChap() {
         return;
     }
 
-    $idSousChap = base64_decode($id, true);
-    if ($idSousChap === false) {
-        echo json_encode([["id" => '0', "desc" => 'ID invalide']]);
-        return;
-    }
-
-    $idSousChap = intval($idSousChap);
+    $idSousChap = intval($id);  // ✅ Conversion directe, pas de décodage
 
     // Suppression du sous-chapitre
     $this->db->where('IDSousChapitre', $idSousChap);
@@ -7947,71 +7940,145 @@ public function PlatFormeConvert($fichierHTML)
 {
     $data = [];
 
-    // === 1. Charger le fichier HTML ===
+    // === 1️⃣ Helper pour afficher les logs dans la console navigateur ===
+    function console_log($msg) {
+        echo "<script>console.log(" . json_encode($msg) . ");</script>";
+    }
+
+    log_message('debug', "🟦 [PlatFormeConvert] Début du chargement pour le fichier: $fichierHTML");
+    console_log("🟦 [PlatFormeConvert] Début du chargement pour le fichier: $fichierHTML");
+
+    // === 2️⃣ Charger le fichier HTML ===
     $fichierHTML = str_replace(['..', '/'], '', $fichierHTML);
     $file_path = FCPATH . 'PlatFormeConvert/' . $fichierHTML;
 
     if (file_exists($file_path)) {
         $data['CursShow'] = file_get_contents($file_path);
+        log_message('debug', "✅ Fichier HTML trouvé: $file_path");
+        console_log("✅ Fichier HTML trouvé: $file_path");
     } else {
         $data['CursShow'] = '<p style="color:red;">Fichier non trouvé : ' . htmlspecialchars($fichierHTML) . '</p>';
-        log_message('error', 'Fichier HTML non trouvé : ' . $file_path);
+        log_message('error', "❌ Fichier HTML non trouvé: $file_path");
+        console_log("❌ Fichier HTML non trouvé: $file_path");
     }
 
-    // === 2. Détecter la langue dans l'URL ===
-    $lang = strtoupper($this->uri->segment(1)); // FR, EN, ES
+    // === 3️⃣ Identifier le sous-chapitre actif ===
+    $this->db->select('IDSousChapitre, IDChapitre');
+    $this->db->from('_souschapitre');
+    $this->db->where('FichierHTML', $fichierHTML);
+    $sousChap = $this->db->get()->row_array();
 
-    // === 3. Mapper langue → IDTheme ===
-    $themeMap = [
-        'FR' => 20,
-        'EN' => 31,
-        'ES' => 36
-    ];
-    $idTheme = $themeMap[$lang] ?? 20; // FR par défaut
+    if (!$sousChap) {
+        log_message('error', "❌ Aucun sous-chapitre trouvé pour le fichier: $fichierHTML");
+        console_log("❌ Aucun sous-chapitre trouvé pour le fichier: $fichierHTML");
+        $data['listFig'] = [];
+    } else {
+        log_message('debug', '✅ Sous-chapitre trouvé: ' . json_encode($sousChap));
+        console_log('✅ Sous-chapitre trouvé: ' . json_encode($sousChap));
 
-    // === 4. Simuler OneBook avec IDTheme ===
-    $titres = [
-        20 => 'Pathologie',
-        31 => 'Pathology',
-        36 => 'Patología'
-    ];
+        $idChapitre = $sousChap['IDChapitre'];
 
-    $data['OneBook'] = [[
-        'IDLivre'     => $idTheme,  // On réutilise IDTheme comme IDLivre (ou tu peux garder un vrai IDLivre si tu veux)
-        'IDTheme'     => $idTheme,
-        'IDCategory'  => 0,
-        'TitreLivre'  => $titres[$idTheme]
-    ]];
+        // === 4️⃣ Trouver le chapitre parent ===
+        $chapitre = $this->db->where('IDChapitre', $idChapitre)->get('_chapitre')->row_array();
 
-    // === 5. Charger les chapitres liés à IDTheme via _livre.IDLivre ===
-    $this->db->select('c.IDChapitre, c.IDLivre, c.TitreChapitre, c.NbreCours, c.NbreResume');
-    $this->db->from('_chapitre c');
-    $this->db->join('_livre l', 'c.IDLivre = l.IDLivre', 'inner');
-    $this->db->where('l.IDTheme', $idTheme);
-    $query = $this->db->get();
-    $data['listChap'] = $query->result_array();
+        if (!$chapitre) {
+            log_message('error', "❌ Chapitre non trouvé pour ID $idChapitre");
+            console_log("❌ Chapitre non trouvé pour ID $idChapitre");
+            $data['listFig'] = [];
+        } else {
+            log_message('debug', "📘 Chapitre trouvé: " . json_encode($chapitre));
+            console_log("📘 Chapitre trouvé: " . json_encode($chapitre));
 
-    // === 6. Charger les sous-chapitres liés ===
-    $data['listSousChap'] = [];
-    if (!empty($data['listChap'])) {
-        $chapterIds = array_column($data['listChap'], 'IDChapitre');
+            // === 5️⃣ Vérifier s'il y a un chapitre de rappel ===
+            $idChapitreRappel = $chapitre['IdChapterRappel'] ?? null;
 
-        $this->db->select('IDSousChapitre, IDChapitre, TitreSousChapitre, FichierHTML');
-        $this->db->from('_souschapitre');
-        $this->db->where_in('IDChapitre', $chapterIds);
-        $query = $this->db->get();
-        $data['listSousChap'] = $query->result_array();
+            if (!$idChapitreRappel) {
+                log_message('debug', "⚠️ Aucun chapitre de rappel trouvé pour le chapitre $idChapitre");
+                console_log("⚠️ Aucun chapitre de rappel trouvé pour le chapitre $idChapitre");
+                $data['listFig'] = [];
+            } else {
+                log_message('debug', "🔁 Chapitre rappel trouvé: $idChapitreRappel");
+                console_log("🔁 Chapitre rappel trouvé: $idChapitreRappel");
+
+                // === 6️⃣ Récupérer les cours du chapitre rappel ===
+                $coursList = $this->db
+                    ->select('IDCours, TitreCours')
+                    ->from('_cours')
+                    ->where('IDChapitre', $idChapitreRappel)
+                    ->get()
+                    ->result_array();
+
+                if (empty($coursList)) {
+                    log_message('debug', "❌ Aucun cours trouvé pour le chapitre rappel $idChapitreRappel");
+                    console_log("❌ Aucun cours trouvé pour le chapitre rappel $idChapitreRappel");
+                    $data['listFig'] = [];
+                } else {
+                    $coursIds = array_column($coursList, 'IDCours');
+                    log_message('debug', "📘 Cours trouvés pour chapitre rappel ($idChapitreRappel): " . implode(',', $coursIds));
+                    console_log("📘 Cours trouvés pour chapitre rappel ($idChapitreRappel): " . implode(',', $coursIds));
+
+                    // === 7️⃣ Récupérer les figures liées à ces cours ===
+                    $this->db->select('IDFigure, TitreFigure, UrlFigure, encryptFigure, IDCours');
+                    $this->db->from('_figure');
+                    $this->db->where_in('IDCours', $coursIds);
+                    $query = $this->db->get();
+                    $data['listFig'] = $query->result_array();
+
+                    log_message('debug', "🖼️ Figures trouvées: " . count($data['listFig']));
+                    console_log("🖼️ Figures trouvées: " . count($data['listFig']));
+                }
+            }
+        }
     }
 
-    // === 7. Données de base ===
+    // === 🔁 Déterminer le livre correspondant à ce sous-chapitre ===
+    if (!empty($sousChap)) {
+        $livre = $this->db
+            ->select('l.IDLivre, l.Titre, l.IDTheme')
+            ->from('_livre l')
+            ->join('_chapitre c', 'c.IDLivre = l.IDLivre', 'inner')
+            ->where('c.IDChapitre', $sousChap['IDChapitre'])
+            ->get()
+            ->row_array();
+
+        if ($livre) {
+            $data['OneBook'] = [ $livre ];
+            log_message('debug', "📗 Livre associé trouvé: " . json_encode($livre));
+            console_log("📗 Livre associé trouvé: " . json_encode($livre));
+            
+            // === ✅ CORRECTION : Récupérer la liste des chapitres du livre ===
+            $data['listChap'] = $this->db
+                ->select('IDChapitre, TitreChapitre, IdChapterRappel, NbreCours, NbreResume')
+                ->from('_chapitre')
+                ->where('IDLivre', $livre['IDLivre'])
+                ->order_by('IDChapitre', 'ASC')
+                ->get()
+                ->result_array();
+            
+            log_message('debug', "📚 Chapitres récupérés: " . count($data['listChap']));
+            console_log("📚 Chapitres récupérés: " . count($data['listChap']));
+        } else {
+            $data['OneBook'] = [];
+            $data['listChap'] = []; 
+            log_message('debug', "⚠️ Aucun livre associé trouvé pour le chapitre " . $sousChap['IDChapitre']);
+            console_log("⚠️ Aucun livre associé trouvé pour le chapitre " . $sousChap['IDChapitre']);
+        }
+    } else {
+        $data['OneBook'] = [];
+        $data['listChap'] = []; 
+    }
+
+    // === 8️⃣ Charger la vue ===
     $data['page'] = 'livreCours';
     $data['listCat'] = $this->getListCategory();
     $data['indexSearch'] = '';
-    $data['listFig'] = [];
+    
+    $this->load->view('v1_livreCours_platforme', $data);
 
-    // === 8. Charger la vue (la sidebar est dans v1_racourci_pathologie.php) ===
-    $this->load->view($this->getTypePlatform() ? 'v1_livreCours' : 'livreCours', $data);
+    log_message('debug', "✅ [PlatFormeConvert] Fin du chargement pour le fichier: $fichierHTML");
+    console_log("✅ [PlatFormeConvert] Fin du chargement pour le fichier: $fichierHTML");
 }
+
 
 
 }
