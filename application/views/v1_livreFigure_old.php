@@ -375,7 +375,6 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
             var namelistFig = document.getElementById("namelistFig")
             namelistFig.setAttribute("style", "padding: 0rem; margin-right:-50px; z-index:20; width:"+blockImages.offsetWidth +"px;")
             blockImages.setAttribute("style", "position:relative;")
-            // blockImages.setAttribute("style", "padding: 0rem; position:relative; margin-top:"+namelistFig.offsetHeight +"px;")
 
 			<?php $counter = 1;
 			foreach ($listFig as $value) { ?>
@@ -392,22 +391,18 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
         var slideIndex = 1;
         showSlides(slideIndex);
 
-        // Next/previous controls
         function plusSlides(n) {
             showSlides(slideIndex += n);
         }
 
-        // Thumbnail image controls
         function currentSlide(n) {
             showSlides(slideIndex = n);
 
-            // Remove 'active' class from all dots
             var dots = document.getElementsByClassName("dot");
             for (var i = 0; i < dots.length; i++) {
                 dots[i].classList.remove("active");
             }
 
-            // Add 'active' class to the clicked dot
             dots[n - 1].classList.add("active");
         }
 
@@ -439,7 +434,6 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
             window.location.href = '<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>' + 'login';
         }
 
-        //disable cut copy past
         var message = "";
 
         function clickIE() {
@@ -521,7 +515,6 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
                                 console.log(resu);
 
                                 if (resu[0]["id"] == 1) {
-                                    // $('#namelistFig').load(" #namelistFig > *");
                                     Swal.fire({
                                         title: resu[0]["desc"],
                                         position: 'center',
@@ -533,7 +526,6 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
                                         allowEscapeKey: false
                                     }).then((result) => {
                                         if (result.value) {
-                                            //location.reload();
                                             document.getElementById("cmpFig").value = document.getElementById("cmpFig").value - 1;
                                             var cmpFig = document.getElementById("cmpFig").value;
 
@@ -564,9 +556,7 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 
                             },
                             error: function() {
-                                // SHOW AN ERROR { if php failed to fetch }
 
-                                //$("#user_message_error_pretech").show();
                                 $('.modal-message').html("Sorry, File not Uploaded");
                                 $('#modal-confirm-all').modal('show');
                             }

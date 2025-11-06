@@ -163,7 +163,6 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 			}
 		}
 
-		/* Champ de recherche */
 		.input-group-navbar {
 			flex-wrap: wrap;
 		}

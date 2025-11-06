@@ -233,26 +233,21 @@ if (strlen($this->session->userdata('passTok')) == 200) {
     var currentHighlightIndex = 0;
     var highlights = [];
 
-    // Variable pour savoir si une recherche est active
     var isSearchActive = false;
 
-    // Recherche au clavier (Enter)
     var input = document.getElementById("keywordsIN");
     input.addEventListener("keyup", function(event) {
         if (event.keyCode === 13) {
             event.preventDefault();
             
-            // Si une recherche est déjà active, passer au résultat suivant
             if (isSearchActive && highlights.length > 0) {
                 nextSearchResult();
             } else {
-                // Sinon, lancer une nouvelle recherche
                 mySearchIndx();
             }
         }
     });
 
-    // Fonction principale de recherche
     function mySearchIndx() {
         var searchTerm = document.getElementById("keywordsIN").value.trim();
         var coursContainer = document.querySelector('.bloc-cours');
@@ -263,32 +258,24 @@ if (strlen($this->session->userdata('passTok')) == 200) {
             return;
         }
         
-        // Supprimer les anciens surlignages
         removeHighlights();
         
-        // Rechercher et surligner le texte
         highlightText(coursContainer, searchTerm);
         
-        // Récupérer tous les résultats
         highlights = document.querySelectorAll('.search-highlight');
         
         if (highlights.length > 0) {
-            // Marquer la recherche comme active
             isSearchActive = true;
             
-            // Afficher les boutons de navigation
             document.getElementById('searchNavigation').classList.add('active');
             document.getElementById('clearSearchBtn').classList.add('active');
             
-            // Scroller vers le premier résultat
             currentHighlightIndex = 0;
             highlights[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
             highlightCurrent();
             
-            // Afficher un message de succès
             showSearchMessage(highlights.length);
         } else {
-            // Aucun résultat trouvé
             isSearchActive = false;
             
             Swal.fire({
@@ -299,13 +286,11 @@ if (strlen($this->session->userdata('passTok')) == 200) {
                 showConfirmButton: false
             });
             
-            // Cacher les boutons
             document.getElementById('searchNavigation').classList.remove('active');
             document.getElementById('clearSearchBtn').classList.remove('active');
         }
     }
 
-    // Fonction pour surligner le texte
     function highlightText(container, searchTerm) {
         var regex = new RegExp('(' + escapeRegex(searchTerm) + ')', 'gi');
         var walker = document.createTreeWalker(
@@ -331,7 +316,6 @@ if (strlen($this->session->userdata('passTok')) == 200) {
         });
     }
 
-    // Fonction pour supprimer les surlignages
     function removeHighlights() {
         var highlights = document.querySelectorAll('.search-highlight');
         highlights.forEach(function(highlight) {
@@ -340,22 +324,18 @@ if (strlen($this->session->userdata('passTok')) == 200) {
             parent.normalize();
         });
         
-        // Réinitialiser l'état de la recherche
         isSearchActive = false;
         currentHighlightIndex = 0;
         highlights = [];
         
-        // Cacher les boutons de navigation
         document.getElementById('searchNavigation').classList.remove('active');
         document.getElementById('clearSearchBtn').classList.remove('active');
     }
 
-    // Échapper les caractères spéciaux pour regex
     function escapeRegex(string) {
         return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
 
-    // Afficher le nombre de résultats
     function showSearchMessage(count) {
         var message = count + (count > 1 ? ' résultats trouvés' : ' résultat trouvé');
         
@@ -384,9 +364,7 @@ if (strlen($this->session->userdata('passTok')) == 200) {
         }, 3000);
     }
 
-    // Afficher la position actuelle dans les résultats
     function showPositionBadge() {
-        // Supprimer l'ancien badge s'il existe
         var oldBadge = document.querySelector('.position-badge');
         if (oldBadge) oldBadge.remove();
         
@@ -418,7 +396,6 @@ if (strlen($this->session->userdata('passTok')) == 200) {
         }, 1500);
     }
 
-    // Navigation : Résultat suivant
     function nextSearchResult() {
         if (highlights.length === 0) return;
         
@@ -426,11 +403,9 @@ if (strlen($this->session->userdata('passTok')) == 200) {
         highlights[currentHighlightIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
         highlightCurrent();
         
-        // Afficher un badge avec la position actuelle
         showPositionBadge();
     }
 
-    // Navigation : Résultat précédent
     function previousSearchResult() {
         if (highlights.length === 0) return;
         
@@ -438,11 +413,9 @@ if (strlen($this->session->userdata('passTok')) == 200) {
         highlights[currentHighlightIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
         highlightCurrent();
         
-        // Afficher un badge avec la position actuelle
         showPositionBadge();
     }
 
-    // Mettre en évidence le résultat actuel
     function highlightCurrent() {
         highlights.forEach(function(h, index) {
             if (index === currentHighlightIndex) {
@@ -455,18 +428,15 @@ if (strlen($this->session->userdata('passTok')) == 200) {
         });
     }
 
-    // Effacer la recherche
     function clearSearch() {
         document.getElementById("keywordsIN").value = '';
         removeHighlights();
     }
 
-    // Réinitialiser la recherche quand on efface le champ
     document.getElementById("keywordsIN").addEventListener('input', function() {
         if (this.value.trim() === '') {
             clearSearch();
         } else {
-            // Si l'utilisateur modifie le texte, désactiver la recherche active
             if (isSearchActive) {
                 isSearchActive = false;
             }

@@ -184,7 +184,6 @@
         background-color: #f2f4f8;
     }
 
-    /* Styles pour l'accordéon */
     .chapter-item-header {
         display: flex;
         justify-content: space-between;
@@ -198,7 +197,7 @@
     }
 
     .chapter-item {
-    display: block; /* au lieu de flex s’il y avait du flex hérité */
+    display: block; 
     position: relative;
     }
 
@@ -218,9 +217,9 @@
     }
 
     .sous-chapitres-list {
-        position: relative; /* au lieu d’absolute */
+        position: relative; 
         list-style: none;
-        padding-left: 20px; /* pour un léger retrait, bien aligné sous le titre */
+        padding-left: 20px; 
         margin: 5px 0 0 0;
         max-height: 0;
         overflow: hidden;
@@ -261,7 +260,6 @@
         color: #1d3557;
     }
 
-    /* Loader pour les sous-chapitres */
     .loading-sous-chapitres {
         padding: 8px;
         text-align: center;
@@ -301,7 +299,6 @@
             </div>
 
             <ul class="sous-chapitres-list" id="sous-chap-<?= $value['IDChapitre']; ?>">
-                <!-- Le rappel et les sous-chapitres seront ajoutés via JS -->
             </ul>
         </li>
     <?php } ?>
@@ -361,7 +358,6 @@
 <?php include('v1_modal_test_calque.php'); ?>
 
 <script>
-    // Cache pour éviter de recharger les sous-chapitres
     const sousChapitresCache = {};
 
     function toggleSidebar() {
@@ -466,14 +462,12 @@
             }
         });
 
-        // Fermer si déjà ouvert
         if (isExpanded) {
             sousChapList.classList.remove('expanded');
             arrowElement.classList.remove('expanded');
             return;
         }
 
-        // Vérifier si déjà en cache
         if (sousChapitresCache[idChapitre]) {
             afficherSousChapitres(sousChapList, sousChapitresCache[idChapitre]);
             sousChapList.classList.add('expanded');
@@ -481,12 +475,10 @@
             return;
         }
 
-        // Afficher un loader
         sousChapList.innerHTML = '<li class="loading-sous-chapitres">Chargement...</li>';
         sousChapList.classList.add('expanded');
         arrowElement.classList.add('expanded');
 
-        // Charger via AJAX
         fetch("<?php echo base_url(); ?>home/get_SousChapitres", {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -507,22 +499,18 @@
             });
     }
 
-    // Fonction pour afficher les sous-chapitres
 function afficherSousChapitres(sousChapList, data) {
     const chapterEl = sousChapList.closest('.chapter-item');
     let idChapterRappel = chapterEl.dataset.idRappel; 
 
-    // Sauvegarder dans localStorage si existe
     if (idChapterRappel) {
         localStorage.setItem('idChapterRappel', idChapterRappel);
     } else {
-        // Récupérer depuis localStorage si absent
         idChapterRappel = localStorage.getItem('idChapterRappel');
     }
 
     let html = '';
 
-    // Ajouter le Rappel Cours en premier
     html += `<li class="sous-chapitre-item rappel-item" style="font-weight:bold; color:#1d3557; background-color:#dce6f1; cursor:pointer;">
         Rappel Cours
     </li>`;
@@ -561,18 +549,14 @@ function afficherSousChapitres(sousChapList, data) {
 
 
 // Sélection sous-chapitre
-// Sélection sous-chapitre
 function selectSousChapitre(idSousChapitre, idChapitre, element, event) {
-    // === 1. Stop propagation pour éviter le clic parent ===
     if (event && typeof event.stopPropagation === 'function') {
         event.stopPropagation();
     }
 
-    // === 2. Met à jour la sélection visuelle ===
     document.querySelectorAll('.sous-chapitre-item').forEach(el => el.classList.remove('selected'));
     if (element) element.classList.add('selected');
 
-    // === 3. Vérifie si un type est sélectionné ===
     const type_sel = window.selectedType;
     if (!type_sel) {
         Swal.fire({
@@ -583,10 +567,8 @@ function selectSousChapitre(idSousChapitre, idChapitre, element, event) {
         return;
     }
 
-    // === 4. Définir baseUrl dynamiquement ===
     const baseUrl = "<?php echo base_url(); ?>";
 
-    // === 5. Requête AJAX pour récupérer les infos du sous-chapitre ===
     fetch(`${baseUrl}home/getContentSousChapitre`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -597,13 +579,11 @@ function selectSousChapitre(idSousChapitre, idChapitre, element, event) {
         return response.json();
     })
     .then(data => {
-        // === 6. Cacher le tooltip si présent ===
         const tooltip = document.getElementById("listChapTooltip");
         if (tooltip) tooltip.style.display = 'none';
 
         console.log("🔹 Données du sous-chapitre :", data);
 
-        // === 7. Gérer le fichier HTML ===
         const fichierHTML = data.FichierHTML || null;
         if (fichierHTML) {
             const lang = "<?php echo strtoupper($this->uri->segment(1)); ?>";
@@ -628,7 +608,6 @@ function selectSousChapitre(idSousChapitre, idChapitre, element, event) {
     });
 }
 
-    // Fermer si clic en dehors
     document.addEventListener("click", function (e) {
         const tooltip = document.getElementById("listChapTooltip");
         const sidebar = document.getElementById("sidebar-racc");

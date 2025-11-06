@@ -15,7 +15,6 @@ if (strlen($this->session->userdata('passTok')) == 200) {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="<?php echo HTTP_CSS; ?>v1_app.css" rel="stylesheet">
     <style>
-        /* CSS inchangé */
         body {
             margin: 0;
             font-size: 0px;
@@ -171,7 +170,6 @@ if (strlen($this->session->userdata('passTok')) == 200) {
             align-items: center;
             font-weight: bold;
         }
-        /* Additional styles */
         * {
             box-sizing: border-box;
         }

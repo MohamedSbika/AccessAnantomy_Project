@@ -8,15 +8,12 @@ if (isset($OneBook) && is_array($OneBook) && !empty($OneBook) && isset($OneBook[
     $themeId = isset($OneBook[0]['IDTheme']) ? (int)$OneBook[0]['IDTheme'] : 0;
     $categoryId = isset($OneBook[0]['IDCategory']) ? (int)$OneBook[0]['IDCategory'] : 0;
 }
-// Vérification pour afficher v1_racourci_pathologie
 if (in_array($bookId, [20, 30, 31]) || in_array((int)$OneBook[0]["IDTheme"], [20, 30, 31])) {
 	include('v1_racourci_pathologie.php');
 } 
-// Vérification pour afficher v1_racourci_atlas
 elseif (in_array($bookId, [70, 71]) || in_array((int)$OneBook[0]["IDCategory"], [4, 9])) {
 	include('v1_racourci_atlas.php');
 } 
-// Affichage du raccourci par défaut
 else { ?>
 
 	<style>
@@ -31,7 +28,6 @@ else { ?>
 			overflow: hidden;
 			z-index: 1000;
 			top:110px;
-			/*transform: translateY(calc(0px + var(--scroll-y, 0px))); /* Suivre le scroll */
 			left: 5px;
 			font-size: 13px;
 			background: #eaebec94;
@@ -64,10 +60,9 @@ else { ?>
 			flex-direction: column;
 			justify-content: center;
 			align-items: center;
-			/*border: 1px solid #334867;*/
 		}
 		.carreaux i {
-			font-size: 21px; /* ✅ Taille des icônes */
+			font-size: 21px; 
 		}
 		.carreaux.selected, .carreaux:hover {
 			background-color: #7387b8;
@@ -75,7 +70,6 @@ else { ?>
 
 		.toggle-btn {
 			position: relative;
-			/*left: 55%;*/
 			transform: translateX(-50%);
 			background: linear-gradient(135deg, #1d3557, #457b9d);
 			color: white;
@@ -227,7 +221,6 @@ else { ?>
 			</button>
 		</div>
 
-		<!-- ✅ Icônes ajoutées avec texte en bas -->
 		<div style="display: flex;justify-content: space-between; align-items: flex-start; width: 100%;">
 			<div id="listRacc">
 				<div style="display: grid; flex-wrap: wrap; gap: 10px; justify-content: center;">
@@ -238,16 +231,15 @@ else { ?>
 					<script>
                         function toggleFullscreen(element) {
                             const icon = document.getElementById("fullscreen-icon");
-                            const text = element.querySelector("div"); // Récupère le texte du div
+                            const text = element.querySelector("div");
 
                             if (!document.fullscreenElement) {
                                 document.documentElement.requestFullscreen();
                                 icon.classList.replace("fa-expand", "fa-compress");
-                                text.innerHTML = "<?php echo $this->lang->line('sidebar_reduire'); ?>"; // Nouveau texte pour réduire
-                            } else {
+                                text.innerHTML = "<?php echo $this->lang->line('sidebar_reduire'); ?>";
                                 document.exitFullscreen();
                                 icon.classList.replace("fa-compress", "fa-expand");
-                                text.innerHTML = "<?php echo $this->lang->line('sidebar_agrandir'); ?>"; // Nouveau texte pour agrandir
+                                text.innerHTML = "<?php echo $this->lang->line('sidebar_agrandir'); ?>"; 
                             }
                         }
 					</script>
@@ -289,59 +281,46 @@ else { ?>
 	<script>
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar-racc');
-            //  const mainSection = document.getElementById('mainSection');
             const btn 			= document.querySelector('.toggle-btn');
             const arrow 		= btn.querySelector('.arrow');
             const s_plan_retour = btn.querySelector('.s_plan_retour');
             const toggleBloc 	= document.querySelector('.toggle_bloc');
 
-            // Basculer l'état de la sidebar
             sidebar.classList.toggle('collapsed');
-            // mainSection.classList.toggle('expanded');
 
-            // Vérifier si la sidebar est fermée ou ouverte
             if (sidebar.classList.contains('collapsed')) {
-                // Flèche vers la droite
                 arrow.style.transform = "rotate(0deg)";
 
-                // Mettre à jour le texte en fonction de la langue
                 s_plan_retour.innerHTML = "<?php echo $this->lang->line('sidebar_plan'); ?>";
 
                 toggleBloc.classList.remove('right');
-                toggleBloc.classList.add('left'); // Déplacement à gauche
+                toggleBloc.classList.add('left'); 
             } else {
-                // Flèche vers la gauche
                 arrow.style.transform = "rotate(180deg)";
 
-                // Mettre à jour le texte en fonction de la langue
                 s_plan_retour.innerHTML = "<?php echo $this->lang->line('sidebar_retour'); ?>";
 
                 toggleBloc.classList.remove('left');
-                toggleBloc.classList.add('right'); // Déplacement à droite
+                toggleBloc.classList.add('right'); 
             }
 
         }
 
         function selectUniqueCarreau__(selectedElement, type_sel) {
-            // Marquage visuel
             toggleSidebar();
             document.querySelectorAll('.carreaux').forEach(carreau => carreau.classList.remove('selected'));
             selectedElement.classList.add('selected');
 
-            // Enregistre le type (cours, qcm, etc.)
             window.selectedType = type_sel;
 
-            // Optionnel : scroll vers la liste des chapitres
             document.getElementById('chapterList').scrollIntoView({ behavior: "smooth" });
         }
 
 
         function selectUniqueChapter__(selectedItem, idChapitre) {
-            // Mise à jour visuelle
             document.querySelectorAll('.chapter-item').forEach(chap => chap.classList.remove('selected'));
             selectedItem.classList.add('selected');
 
-            // Récupérer le type sélectionné
             const type_sel = window.selectedType;
 
             if (!type_sel) {
@@ -349,11 +328,9 @@ else { ?>
                 return;
             }
 
-            // Données chapitre
             const NbreCours = selectedItem.getAttribute('data-curs');
             const NbreResume = selectedItem.getAttribute('data-resum');
 
-            // Construction de l'URL
             let baseUrl = "<?php echo base_url(); ?>";
             let lang = "<?php echo $this->lang->line('siteLang'); ?>";
             let redirectUrl = "";
@@ -382,21 +359,20 @@ else { ?>
                     break;
             }
 
-            // Redirection
             window.location.href = redirectUrl;
         }
 
         function goFullscreen() {
-            var elem = document.documentElement;  // Cibler l'élément <html> pour mettre toute la page en plein écran
+            var elem = document.documentElement;  
 
             // Vérifier si l'API Fullscreen est disponible et activer le plein écran
             if (elem.requestFullscreen) {
                 elem.requestFullscreen();
-            } else if (elem.mozRequestFullScreen) { // Firefox
+            } else if (elem.mozRequestFullScreen) { 
                 elem.mozRequestFullScreen();
-            } else if (elem.webkitRequestFullscreen) { // Chrome, Safari, Opera
+            } else if (elem.webkitRequestFullscreen) { 
                 elem.webkitRequestFullscreen();
-            } else if (elem.msRequestFullscreen) { // Internet Explorer/Edge
+            } else if (elem.msRequestFullscreen) {
                 elem.msRequestFullscreen();
             }
         }
@@ -408,32 +384,27 @@ else { ?>
         window.selectedChapterId = null;
 
         function selectUniqueCarreau(element, type_sel) {
-            // Mise à jour visuelle
             if (window.selectedCarreauElement) {
                 window.selectedCarreauElement.classList.remove('selected');
             }
             element.classList.add('selected');
             window.selectedCarreauElement = element;
 
-            // Stocker le type sélectionné
             window.selectedType = type_sel;
 
-            // Afficher le tooltip à droite de la sidebar
             const sidebar = document.getElementById("sidebar-racc");
             const tooltip = document.getElementById("listChapTooltip");
 
             const sidebarRect = sidebar.getBoundingClientRect();
             tooltip.style.top = `${sidebarRect.top}px`;
             tooltip.style.left = `${sidebarRect.right + 10}px`;
-            tooltip.style.minHeight ='50%'; // `${sidebarRect.height}px`;
-            tooltip.style.maxHeight ='80%'; // `${sidebarRect.height}px`;
+            tooltip.style.minHeight ='50%'; 
+            tooltip.style.maxHeight ='80%'; 
             tooltip.style.display = 'block';
 
-            // Supprimer la sélection précédente
             document.querySelectorAll('.carreaux').forEach(carreau => carreau.classList.remove('selected'));
             element.classList.add('selected');
 
-            // Trouver le chapitre actuellement sélectionné
             let selectedChapter = document.querySelector('.chapter-item.selected');
 
             let idChapitre = "<?php echo $this->session->userdata('curs_id'); ?>".replace(/^curs_/, "");
@@ -454,15 +425,12 @@ else { ?>
                 return;
             }
 
-            // Marquer visuellement ce chapitre
             document.querySelectorAll('.chapter-item').forEach(el => el.classList.remove('selected'));
             chapterElement.classList.add('selected');
             window.selectedChapterId = idChapitre;
 
-            // Ajouter l'ID du chapitre dans un attribut data pour récupération
             chapterElement.setAttribute('data-id', idChapitre);
 
-            // Construction de l’URL
             let baseUrl = "<?php echo base_url(); ?>";
             let lang = "<?php echo $this->lang->line('siteLang'); ?>";
             let redirectUrl = "";
@@ -489,15 +457,12 @@ else { ?>
                     redirectUrl = `${baseUrl}${lang}livreCours/${idChapitre}`;
             }
 
-            // Ferme le tooltip (facultatif)
             document.getElementById("listChapTooltip").style.display = 'none';
 
-            // Rediriger
             window.location.href = redirectUrl;
         }
 
 
-        // Fermer si clic en dehors
         document.addEventListener("click", function (e) {
             const tooltip = document.getElementById("listChapTooltip");
             const sidebar = document.getElementById("sidebar-racc");

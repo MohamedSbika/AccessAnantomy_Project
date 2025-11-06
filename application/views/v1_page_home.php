@@ -15,14 +15,12 @@
 
 	<style>
 		body {
-			/*font-family: 'Manrope', sans-serif;*/
 			font-family: 'Roboto', sans-serif;
 			margin: 0;
 			padding: 0;
 			background-color: #f5f5f5;
 			color: white;
 			overflow-x: hidden;
-			/* Prevent horizontal scrolling */
 		}
 
 		h1,
@@ -38,38 +36,31 @@
 
 		h1 {
 			font-weight: 600;
-			/* Pour un titre plus bold */
 		}
 
 		h2 {
 			font-weight: 500;
-			/* Moins bold que h1 */
 		}
 
 		h3 {
 			font-weight: 400;
-			/* Poids normal pour h3 */
 		}
 
 		h4 {
 			font-weight: 300;
-			/* Poids normal pour h3 */
 		}
 
 		h5 {
 			font-weight: 200;
-			/* Poids normal pour h3 */
 		}
 
 		.top-bar {
-			/*background: #0E2A47;*/
 			color: white;
 			padding: 10px 5%;
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
 			flex-wrap: wrap;
-			/* Allows stacking on small screens */
 		}
 
 		.top-bar nav a {
@@ -78,17 +69,14 @@
 			text-decoration: none;
 		}
 
-		/* Sidebar (initially hidden) */
 		.side-nav {
 			position: fixed;
 			top: 0;
 			left: -250px;
-			/* Hidden offscreen initially */
 			width: 250px;
 			height: 100%;
 			background-color: #0E2A47;
 			transition: 0.3s;
-			/* Smooth transition */
 			z-index: 1000;
 			padding-top: 60px;
 			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -120,7 +108,6 @@
 		/* Hamburger menu button */
 		.menu-btn {
 			display: none;
-			/* Hide by default */
 			font-size: 30px;
 			color: white;
 			background: none;
@@ -128,10 +115,8 @@
 			cursor: pointer;
 		}
 
-		/* Main navigation bar */
 		.main-nav {
 			width: 90%;
-			/* margin-left: 5%; */
 			font-size: 10px;
 			background: white;
 			color: #120E47;
@@ -141,8 +126,6 @@
 			align-items: center;
 			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 			flex-wrap: wrap;
-			/* Wraps navigation items on small screens */
-			/* border-radius: 10px; */
 		}
 
 		.btn {
@@ -160,7 +143,6 @@
 			padding: 10px 22px;
 		}
 
-		/* Media Queries for Mobile */
 		@media (max-width: 768px) {
 			.menu-btn {
 				display: flex;
@@ -170,25 +152,20 @@
 				width: 40px;
 			}
 
-			/* Sidebar navigation visible when toggled */
 			.side-nav {
 				padding-top: 80px;
 			}
 		}
 
-		/* Adjust the layout for larger screens */
 		@media (min-width: 769px) {
 			.side-nav {
 				display: none;
-				/* Sidebar hidden by default on large screens */
 			}
 
 			.main-nav ul {
 				display: flex;
 			}
 		}
-
-		/* Show the toggle button on smaller screens */
 		@media (max-width: 768px) {
 			.menu-btn {
 				display: flex;
@@ -199,16 +176,13 @@
 
 			.main-nav {
 				display: none;
-				/* Hide default nav on small screens */
 			}
 
 			.side-nav {
 				padding-top: 80px;
-				/* Adjust padding for mobile */
 			}
 		}
 
-		/* Adjust main-nav for mobile */
 		@media (min-width: 769px) {
 			.main-nav ul {
 				display: flex;
@@ -217,14 +191,12 @@
 
 
 		.top-bar {
-			/*background: #0E2A47;*/
 			color: white;
 			padding: 10px 5%;
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
 			flex-wrap: wrap;
-			/* Allows stacking on small screens */
 		}
 
 		.top-bar nav a {
@@ -271,7 +243,6 @@
 			padding: 20px 5%;
 			background: white;
 			flex-wrap: wrap;
-			/* Allow elements to stack on small screens */
 		}
 
 		.hero-text {
@@ -533,19 +504,17 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 	</header>
 
 	<script>
-		// Function to open the sidebar menu
 		function toggleNav() {
 			var sideNav = document.getElementById("sideNav");
 			if (sideNav.style.left === "0px") {
-				sideNav.style.left = "-250px";  // Close menu
+				sideNav.style.left = "-250px"; 
 			} else {
-				sideNav.style.left = "0";  // Open menu
+				sideNav.style.left = "0";  
 			}
 		}
 
-		// Function to close the sidebar
 		function closeNav() {
-			document.getElementById("sideNav").style.left = "-250px";  // Close menu
+			document.getElementById("sideNav").style.left = "-250px"; 
 		}
 	</script>
 
@@ -564,11 +533,8 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 						.buttons {
 							display: flex;
 							justify-content: space-between;
-							/* Aligne les boutons horizontalement avec un espace entre eux */
 							gap: 20px;
-							/* Espace entre les deux boutons */
 							align-items: center;
-							/* Aligne verticalement les boutons si nécessaire */
 						}
 
 
@@ -576,18 +542,14 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 							background: none;
 							padding: 10px 20px;
 							border-radius: 30px;
-							/* Bord arrondi pour avoir un bouton légèrement arrondi */
 							text-decoration: none;
 							color: #120E47;
 							font-weight: bold;
 							display: flex;
 							align-items: center;
-							/* Aligne l'icône et le texte verticalement */
 							font-size: 1em;
 							white-space: nowrap;
-							/* Empêche le texte de se couper */
 							gap: 10px;
-							/* Ajoute un espacement entre l'icône et le texte */
 						}
 
 						.play-icon {
@@ -1091,7 +1053,6 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 
 					<div class="step-card">
 
-						<!-- Bloc gauche -->
 						<div class="left-box">
 							<h1 style="margin: 0; font-size: 25px;">3</h1>
 							<h2 style="font-size: 14px; text-transform: uppercase;">
@@ -1099,7 +1060,6 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 							</h2>
 						</div>
 
-						<!-- Bloc droit -->
 						<div class="right-box" style="padding: 10px; flex: 1;">
 							<p style="margin: 0; color: #333;font-size: 13px;">
 								<?php echo $this->lang->line('step_3_desc'); ?>
@@ -1111,15 +1071,12 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 					<div class="step-card"
 						style="display: flex; background: #f5f5f5; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); overflow: hidden; margin-bottom: 15px;">
 
-						<!-- Bloc gauche -->
-						<div class="left-box">
 							<h1 style="margin: 0; font-size: 25px;">4</h1>
 							<h2 style="font-size: 14px; text-transform: uppercase;">
 								<?php echo $this->lang->line('step_4_title'); ?>
 							</h2>
 						</div>
 
-						<!-- Bloc droit -->
 						<div class="right-box" style="padding: 10px; flex: 1;">
 							<p style="margin: 0; color: #333;font-size: 13px;">
 								<?php echo $this->lang->line('step_4_desc'); ?>
@@ -1130,7 +1087,6 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 
 					<div class="step-card" style="margin-bottom: 0px !important;">
 
-						<!-- Bloc gauche -->
 						<div class="left-box">
 							<h1 style="margin: 0; font-size: 25px;">5</h1>
 							<h2 style="font-size: 14px; text-transform: uppercase;">
@@ -1138,7 +1094,6 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 							</h2>
 						</div>
 
-						<!-- Bloc droit -->
 						<div class="right-box" style="padding: 10px; flex: 1;">
 							<p style="margin: 0; color: #333;font-size: 13px;">
 								<?php echo $this->lang->line('step_5_desc'); ?>
@@ -1345,7 +1300,6 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 					background: #d39e00;
 				}
 
-				/* Media Queries for smaller screens */
 				@media (max-width: 768px) {
 					.section-price-plan {
 						padding: 10px 2%;
@@ -1359,7 +1313,6 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 					.plan {
 						margin-bottom: 10px;
 						min-width: auto;
-						/* Allow plan width to shrink */
 					}
 
 					.price {
@@ -1407,14 +1360,11 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 					}
 				}
 
-				/* Appliquer la croix (X) uniquement dans le bloc Basique */
 				.plan:nth-child(1) .features li:nth-child(5)::before,
 				.plan:nth-child(1) .features li:nth-child(6)::before,
 				.plan:nth-child(1) .features li:nth-child(7)::before {
 					content: '\2716';
-					/* Symbole "X" */
 					color: white;
-					/* Couleur de la croix */
 					background-color: red;
 					border-radius: 50%;
 					width: 20px;
@@ -1450,12 +1400,10 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 	<?php $button_text = $this->lang->line('chatbot_button') ?? 'hello'; ?>
 
 	<?php if ($this->session->userdata('user_id') > 0): ?>
-		<!-- ✅ Si l'utilisateur est connecté -->
 		<a href="http://localhost:5173" class="btn-chatbot" target="_blank">
 			<?= $button_text; ?>
 		</a>
 	<?php else: ?>
-		<!-- ❌ Si non connecté → ouvre la modale de login existante -->
 		<a href="#" class="btn-chatbot" onclick="openModalLogin(); return false;">
 			<?= $button_text; ?>
 		</a>
@@ -1465,7 +1413,6 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 					.section-info .btn-chatbot {
 						display: inline-block;
 						padding: 15px 40px;
-						/* Padding réduit pour un bouton plus normal */
 						margin-top: 15px;
 						background-color: #2A9D8F;
 						color: #fff;
@@ -1476,16 +1423,13 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 						transition: background 0.3s ease;
 						text-align: center;
 						min-width: 120px;
-						/* Largeur minimum */
 					}
 
 					.section-info .btn-chatbot:hover {
 						background-color: #203b6f;
 						color: #fff;
-						/* Assure que le texte reste blanc au hover */
 					}
 
-					/* Assure que le lien ne hérite pas de styles indésirables */
 					.section-info .btn-chatbot:link,
 					.section-info .btn-chatbot:visited {
 						color: #fff;
@@ -1547,7 +1491,6 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 					font-size: 18px;
 					background: #fff;
 
-					/* Center slide text vertically */
 					display: -webkit-box;
 					display: -ms-flexbox;
 					display: -webkit-flex;
@@ -1565,13 +1508,10 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 				.swiper-slide img {
 					display: block;
 					width: 100%;
-					/* Modifier ici pour ajuster la largeur de l'image */
 					height: auto;
-					/* Maintient le ratio d'aspect de l'image */
 					object-fit: cover;
 					box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7),
 						0 6px 20px rgba(0, 0, 0, 0.3);
-					/* Double ombre pour plus de réalisme */
 					border-radius: 8px;
 				}
 
@@ -1627,7 +1567,6 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 			<style>
 				.swiper-wrapper {
 					transition-timing-function: linear !important;
-					/* Assure un mouvement constant */
 				}
 			</style>
 
@@ -1637,13 +1576,13 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 					slidesPerView: 4,
 					spaceBetween: 30,
 					autoplay: {
-						delay: 0, // Pas d'arrêt
+						delay: 0, 
 						disableOnInteraction: false
 					},
-					speed: 4000, // Ajustez pour un mouvement plus fluide et continu
-					freeMode: true, // Permet un défilement continu
-					freeModeMomentum: false, // Empêche les arrêts naturels
-					freeModeSticky: false, // Garantit un mouvement fluide
+					speed: 4000, 
+					freeMode: true, 
+					freeModeMomentum: false, 
+					freeModeSticky: false, 
 					pagination: { el: '.swiper-pagination', clickable: true },
 					navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
 				});
@@ -1671,9 +1610,7 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 				max-width: 1200px;
 				width: 100%;
 				flex-wrap: wrap;
-				/* Allow wrapping on small screens */
 				gap: 20px;
-				/* Space between left and right sections */
 			}
 
 			.left {
@@ -1748,7 +1685,6 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 			@media (max-width: 768px) {
 				.container-contact {
 					flex-direction: column;
-					/* Stack left and right sections */
 					padding: 10px;
 				}
 
@@ -1757,7 +1693,6 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 					flex: 1;
 					padding: 15px;
 					margin-bottom: 20px;
-					/* Add space between the sections */
 				}
 
 				.left h1 {
@@ -1770,7 +1705,6 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 
 				.contact-info img {
 					width: 35px;
-					/* Reduce image size */
 				}
 
 				.right h2 {
@@ -1799,7 +1733,6 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 
 				.contact-info img {
 					width: 30px;
-					/* Further reduce image size */
 				}
 
 				.right h2 {

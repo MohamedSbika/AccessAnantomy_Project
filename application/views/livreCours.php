@@ -46,8 +46,6 @@
             box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.21);
             margin-bottom: 28px;
         }
-        /* webkit requires explicit width, height = 100% of sceeen */
-        /* webkit also takes margin into account in full screen also - so margin should be removed (otherwise black areas will be seen) */
         #element:-webkit-full-screen {
             width: 100%;
             height: 100%;
@@ -65,7 +63,6 @@
             margin: 0;
         }
 
-        /* W3C proposal that will eventually come in all browsers */
         #element:fullscreen {
             background-color: white;
             margin: 0;
@@ -77,10 +74,10 @@
             position: initial;
         }
         #outerContainer #mainContainer div.toolbar {
-            display: none !important; /* hide PDF viewer toolbar */
+            display: none !important; 
         }
         #outerContainer #mainContainer #viewerContainer {
-            top: 0 !important; /* move doc up into empty bar space */
+            top: 0 !important; 
         }
         .btn-outline-primary {
             color: #000000;
@@ -116,19 +113,18 @@
             height: 100%;
         }
         .image img {
-            /* La transition s'applique à la fois sur la largeur et la hauteur, avec une durée d'une seconde. */
-            -webkit-transition: all 1s ease; /* Safari et Chrome */
-            -moz-transition: all 1s ease; /* Firefox */
-            -ms-transition: all 1s ease; /* Internet Explorer 9 */
-            -o-transition: all 1s ease; /* Opera */
+            -webkit-transition: all 1s ease; 
+            -moz-transition: all 1s ease; 
+            -ms-transition: all 1s ease; 
+            -o-transition: all 1s ease; 
             transition: all 1s ease;
         }
         .image:hover img {
             /* L'image est grossie de 25% */
-            -webkit-transform:scale(1.25); /* Safari et Chrome */
-            -moz-transform:scale(1.25); /* Firefox */
-            -ms-transform:scale(1.25); /* Internet Explorer 9 */
-            -o-transform:scale(1.25); /* Opera */
+            -webkit-transform:scale(1.25);
+            -moz-transform:scale(1.25);
+            -ms-transform:scale(1.25); 
+            -o-transform:scale(1.25); 
             transform:scale(1.25);
         }
         .zoom {
@@ -139,7 +135,6 @@
 
         }
 
-        /* magnifying glass icon */
         .zoom:after {
             content:'';
             display:block;
@@ -199,24 +194,23 @@
         .slider-container {
             position: relative;
             width: 100%;
-            max-width: 650px; /* Largeur maximale du slider */
+            max-width: 650px; 
             margin: auto;
-            overflow: hidden; /* Cacher les images qui dépassent */
+            overflow: hidden; 
             max-height: 200px;
         }
 
         .slider {
             display: flex;
-            transition: transform 0.5s ease; /* Animation de transition pour le slider */
+            transition: transform 0.5s ease; 
         }
 
         .slider-image {
-            width: 33.33%; /* Afficher 3 images à la fois */
+            width: 33.33%; 
             object-fit: cover;
-            padding: 5px; /* Espacement entre les images */
+            padding: 5px; 
         }
 
-        /* Style des boutons next/prev */
         .prev , .next {
             position: absolute;
             top: 30%;
@@ -287,13 +281,13 @@
 
         @media (max-width: 768px) {
             .container {
-                height: 40vh;  /* Increase height on smaller screens */
+                height: 40vh; 
             }
         }
 
         @media (min-width: 1200px) {
             .container {
-                height: 85vh;  /* Decrease height on larger screens */
+                height: 85vh;  
             }
         }
 
@@ -320,7 +314,6 @@
             cursor: pointer;
         }
 
-        /* No zoom effect here, we will handle it with JS */
         .zoomable {
             transition: transform 0.5s ease;
         }
@@ -361,13 +354,9 @@
                     <script>
                         var input = document.getElementById("keywordsIN");
 
-                        // Execute a function when the user releases a key on the keyboard
                         input.addEventListener("keyup", function(event) {
-                            // Number 13 is the "Enter" key on the keyboard
                             if (event.keyCode === 13) {
-                                // Cancel the default action, if needed
                                 event.preventDefault();
-                                // Trigger the button element with a click
                                 mySearchIndx();
                             }
                             document.getElementById("keywordsIN").focus();
@@ -404,10 +393,9 @@
                     <?php
                     $counter = -1;
                     foreach ($listFig as $value) {
-                        // Determine the width based on the number of images
-                        $imageWidth = '45px';//count($listFig) > 3 ? '80%' : '40%'; // Set width to 80% if more than 2 images, otherwise 30%
-                        $imageHeight = '45px'; //count($listFig) > 3 ? '40%' : '30%'; // Set width to 80% if more than 2 images, otherwise 30%
-                        $objectFit = count($listFig) > 3 ? '' : 'object-fit: initial;'; // Set width to 80% if more than 2 images, otherwise 30%
+                        $imageWidth = '45px';
+                        $imageHeight = '45px'; 
+                        $objectFit = count($listFig) > 3 ? '' : 'object-fit: initial;';
 
                         echo '<div class="image-container" style="position: relative; display: inline-block; padding-top: 0.2rem;">';
 
@@ -441,8 +429,8 @@
 
             <script>
                 let currentSlide = 0;
-                let zoomedIn = false; // Track whether zoom is active or not
-                let lastTouchX = 0, lastTouchY = 0; // For tracking touch positions
+                let zoomedIn = false; 
+                let lastTouchX = 0, lastTouchY = 0;
 
                 function moveSlide(direction) {
                     const images = document.querySelectorAll('.slider-image');
@@ -463,64 +451,55 @@
                     expandImg.parentElement.style.display = "block";
                 }
 
-                // Toggle zoom effect on click
                 function toggleZoom() {
                     var expandImg = document.getElementById("expandedImg");
 
                     if (!zoomedIn) {
-                        // Activate zoom on hover or touch
                         expandImg.addEventListener("mousemove", zoomImage);
                         expandImg.addEventListener("touchmove", zoomImageTouch);
                         zoomedIn = true;
                     } else {
-                        // Deactivate zoom effect
                         expandImg.removeEventListener("mousemove", zoomImage);
                         expandImg.removeEventListener("touchmove", zoomImageTouch);
-                        expandImg.style.transform = "scale(1)"; // Reset zoom
+                        expandImg.style.transform = "scale(1)"; 
                         zoomedIn = false;
                     }
                 }
 
-                // Zoom effect on hover (after first click)
                 function zoomImage(e) {
                     var img = e.target;
                     var offsetX = e.offsetX / img.width;
                     var offsetY = e.offsetY / img.height;
-                    var scale = 2; // The zoom scale factor
+                    var scale = 2;
 
                     img.style.transformOrigin = `${offsetX * 100}% ${offsetY * 100}%`;
                     img.style.transform = `scale(${scale})`;
                 }
 
-                // Zoom effect for touch events (on mobile devices)
                 function zoomImageTouch(e) {
-                    e.preventDefault(); // Prevent default touch behavior like scrolling
+                    e.preventDefault(); 
                     var img = e.target;
 
-                    // Calculate touch position relative to the image
                     var touch = e.touches[0];
                     var offsetX = (touch.clientX - img.offsetLeft) / img.width;
                     var offsetY = (touch.clientY - img.offsetTop) / img.height;
-                    var scale = 2; // The zoom scale factor
+                    var scale = 2; 
 
                     img.style.transformOrigin = `${offsetX * 100}% ${offsetY * 100}%`;
                     img.style.transform = `scale(${scale})`;
 
-                    // Track touch movement for better zooming
                     lastTouchX = touch.clientX;
                     lastTouchY = touch.clientY;
                 }
 
-                // Reset zoom if touch ends
                 document.getElementById("expandedImg").addEventListener("touchend", function () {
                     var img = document.getElementById("expandedImg");
-                    img.style.transform = "scale(1)"; // Reset zoom
+                    img.style.transform = "scale(1)"; 
                     zoomedIn = false;
                 });
 
-                // Adjust zoom behavior for small screens (optional)
-                if (window.innerWidth <= 768) { // For mobile/tablet screens
-                    document.getElementById("expandedImg").style.cursor = "pointer"; // Remove the zoom-in cursor
+                if (window.innerWidth <= 768) { 
+                    document.getElementById("expandedImg").style.cursor = "pointer";
                 }
 
             </script>
@@ -541,24 +520,18 @@
                 e.preventDefault();
             }, false);
             document.addEventListener("keydown", function (e) {
-                //document.onkeydown = function(e) {
-                //"I" key
                 if (e.ctrlKey && e.shiftKey && e.keyCode == 73) {
                     disabledEvent(e);
                 }
-                //"J" key
                 if (e.ctrlKey && e.shiftKey && e.keyCode == 74) {
                     disabledEvent(e);
                 }
-                //"S" key + macOS
                 if (e.keyCode == 83 && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
                     disabledEvent(e);
                 }
-                //"U" key
                 if (e.ctrlKey && e.keyCode == 85) {
                     disabledEvent(e);
                 }
-                //"F12" key
                 if (event.keyCode == 123) {
                     disabledEvent(e);
                 }
@@ -573,7 +546,6 @@
                 return false;
             }
         }
-        //edit: removed ";" from last "}" because of javascript error
     </script>
 
     <script type='text/javascript'>
@@ -586,11 +558,10 @@
                 "bLengthChange": false,
                 "bFilter": false,
                 "bPaginate": false,
-                "processing": true, //Feature control the processing indicator.
-                "serverSide": true, //Feature control DataTables' server-side processing mode.
-                "order": [], //Initial no order.
+                "processing": true, 
+                "serverSide": true, 
+                "order": [], 
                 "pageLength": 1,
-                // Load data for the table's content from an Ajax source
                 "aoColumns": [
                     null
                 ],
@@ -602,10 +573,9 @@
                         d.indexSearch 	= "<?php print $indexSearch; ?>";
                     }
                 },
-                //Set column definition initialisation properties.
                 "columnDefs": [
                     {
-                        "targets": [0], //first column / numbering column
+                        "targets": [0], 
                         "sClass": "text-left",
                         "orderable": false,
                     },{"sClass": "text-center", "aTargets": [0]},
@@ -675,7 +645,7 @@
                     if(ar[0]["id"]==1)
                     {
                         ur = ar[0]["desc"];
-                        titur = '';// ar[0]["desc"][0]["TitreFigure"];
+                        titur = '';
 
                         $("#figZoo").html(ur);
 
@@ -697,9 +667,9 @@
         function openFullscreen() {
             if (elem.requestFullscreen) {
                 elem.requestFullscreen();
-            } else if (elem.webkitRequestFullscreen) { /* Safari */
+            } else if (elem.webkitRequestFullscreen) { 
                 elem.webkitRequestFullscreen();
-            } else if (elem.msRequestFullscreen) { /* IE11 */
+            } else if (elem.msRequestFullscreen) {
                 elem.msRequestFullscreen();
             }
         }
@@ -716,7 +686,6 @@
 
     <script>
 
-        /* Get into full screen */
         function GoInFullscreen(element) {
             if(element.requestFullscreen)
                 element.requestFullscreen();
@@ -728,7 +697,6 @@
                 element.msRequestFullscreen();
         }
 
-        /* Get out of full screen */
         function GoOutFullscreen() {
             if(document.exitFullscreen)
                 document.exitFullscreen();
@@ -740,11 +708,9 @@
                 document.msExitFullscreen();
         }
 
-        /* Is currently in full screen or not */
         function IsFullScreenCurrently() {
             var full_screen_element = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement || null;
 
-            // If no element is in full-screen
             if(full_screen_element === null)
                 return false;
             else
@@ -813,7 +779,6 @@
 
                                 if(resu[0]["id"]==1)
                                 {
-                                    // $('#namelistFig').load(" #namelistFig > *");
                                     Swal.fire({
                                         title: resu[0]["desc"],
                                         position: 'center',
@@ -849,9 +814,7 @@
 
                             },
                             error: function() {
-                                // SHOW AN ERROR { if php failed to fetch }
 
-                                //$("#user_message_error_pretech").show();
                                 $('.modal-message').html("Sorry, File not Uploaded");
                                 $('#modal-confirm-all').modal('show');
                             }

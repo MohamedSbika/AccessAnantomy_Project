@@ -1,5 +1,4 @@
 <style>
-	/* Style de base du modal */
 	.modal {
 		display: none;
 		position: fixed;
@@ -143,25 +142,21 @@
 		}
 	};
 
-	// 👁️ Fonction pour afficher / masquer le mot de passe
 	function togglePassword() {
 		const passwordInput = document.getElementById("password");
 		const eyeIcon = document.getElementById("eyeIcon");
 
 		if (passwordInput.type === "password") {
 			passwordInput.type = "text";
-			// Icône barrée
 			eyeIcon.innerHTML =
 				'<path d="M1 12s4-7 11-7c2.7 0 5.2 1.1 7.2 3l2.3-2.3 1.4 1.4-2.3 2.3C22 10.8 23 12 23 12s-4 7-11 7c-2.7 0-5.2-1.1-7.2-3l-2.3 2.3-1.4-1.4 2.3-2.3C2 13.2 1 12 1 12zm11 5a5 5 0 01-5-5c0-.9.2-1.7.6-2.4l6.8 6.8c-.7.4-1.5.6-2.4.6zm4.4-2.6l-6.8-6.8c.7-.4 1.5-.6 2.4-.6a5 5 0 015 5c0 .9-.2 1.7-.6 2.4z"/>';
 		} else {
 			passwordInput.type = "password";
-			// Œil normal
 			eyeIcon.innerHTML =
 				'<path d="M12 5c-7 0-11 7-11 7s4 7 11 7 11-7 11-7-4-7-11-7zm0 12a5 5 0 110-10 5 5 0 010 10z"/><circle cx="12" cy="12" r="2.5"/>';
 		}
 	}
 
-	// Associer l’action au clic
 	document.addEventListener("DOMContentLoaded", () => {
 		document.getElementById("eyeIcon").addEventListener("click", togglePassword);
 	});

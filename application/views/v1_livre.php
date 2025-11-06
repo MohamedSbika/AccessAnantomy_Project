@@ -49,8 +49,8 @@
 			padding: 20px;
 			border-radius: 8px;
 			max-width: 50%;
-			max-height: 80vh; /* Définit la hauteur maximale à 80% de la hauteur de l'écran */
-			overflow-y: auto; /* Active le défilement vertical */
+			max-height: 80vh; 
+			overflow-y: auto;
 			box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 		}
 
@@ -126,13 +126,13 @@
 			margin-right: 20px;
 			margin-left: 20px;
 			padding-right: 10px;
-			margin-bottom: 30px; /* Ajoute un espace entre les sections */
+			margin-bottom: 30px;
  			border-radius: 10px;
 			color: white;
 			font-size: 16px;
 			line-height: 1.6;
-			max-height: 500px; /* Fixe une hauteur maximale pour la section */
-			overflow-y: auto;  /* Active l'ascenseur vertical */
+			max-height: 500px; 
+			overflow-y: auto; 
 			padding-top: 15px;
 			box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.74);
 		}

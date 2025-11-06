@@ -8,7 +8,6 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Membre Supérieur - Atlas d'Anatomie Humaine</title>
-		<!-- ✅ Lien vers Font Awesome pour les icônes -->
 
 		<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700&display=swap" rel="stylesheet">
@@ -48,8 +47,6 @@
 				margin-top: .0rem !important;
 			}
 
-			/* webkit requires explicit width, height = 100% of sceeen */
-			/* webkit also takes margin into account in full screen also - so margin should be removed (otherwise black areas will be seen) */
 
 			.image-item img {
 				margin-left: 0;
@@ -62,12 +59,10 @@
 
 			#outerContainer #mainContainer div.toolbar {
 				display: none !important;
-				/* hide PDF viewer toolbar */
 			}
 
 			#outerContainer #mainContainer #viewerContainer {
 				top: 0 !important;
-				/* move doc up into empty bar space */
 			}
 
 			.btn-outline-primary {
@@ -93,33 +88,22 @@
 			}
 
 			.image img {
-				/* La transition s'applique à la fois sur la largeur et la hauteur, avec une durée d'une seconde. */
 				-webkit-transition: all 1s ease;
-				/* Safari et Chrome */
 				-moz-transition: all 1s ease;
-				/* Firefox */
 				-ms-transition: all 1s ease;
-				/* Internet Explorer 9 */
 				-o-transition: all 1s ease;
-				/* Opera */
 				transition: all 1s ease;
 			}
 
 			.image:hover img {
-				/* L'image est grossie de 25% */
 				-webkit-transform: scale(1.25);
-				/* Safari et Chrome */
 				-moz-transform: scale(1.25);
-				/* Firefox */
 				-ms-transform: scale(1.25);
-				/* Internet Explorer 9 */
 				-o-transform: scale(1.25);
-				/* Opera */
 				transform: scale(1.25);
 			}
 
 
-			/* magnifying glass icon */
 
 			.demo_container {
 				margin: 0 auto;
@@ -129,10 +113,8 @@
 
 				position: relative;
 				clear: both;
-				/*cursor: zoom-in;*/
 			}
 
-			/* magnifying glass icon */
 			.zoom:after {
 				content: '';
 				display: block;
@@ -157,19 +139,16 @@
 				box-sizing: border-box
 			}
 
-			/* Slideshow container */
 			.slideshow-container {
 				max-width: 1000px;
 				position: relative;
 				margin: auto;
 			}
 
-			/* Hide the images by default */
 			.mySlides {
 				display: none;
 			}
 
-			/* Next & previous buttons */
 			.prev,
 			.next {
 				cursor: pointer;
@@ -186,7 +165,6 @@
 				user-select: none;
 			}
 
-			/* Position the "next button" to the right */
 			.prev {
 				left: -10%;
 			}
@@ -196,13 +174,11 @@
 				border-radius: 3px 0 0 3px;
 			}
 
-			/* On hover, add a black background color with a little bit see-through */
 			.prev:hover,
 			.next:hover {
 				background-color: rgba(0, 0, 0, 0.8);
 			}
 
-			/* Caption text */
 			.text {
 				color: #f2f2f2;
 				font-size: 15px;
@@ -212,7 +188,6 @@
 				width: 100%;
 			}
 
-			/* Number text (1/3 etc) */
 			.numbertext {
 				color: #f2f2f2;
 				font-size: 12px;
@@ -221,11 +196,9 @@
 				top: 0;
 			}
 
-			/* The dots/bullets/indicators */
 			.dot {
 				cursor: pointer;
 				margin: 0 2px;
-				/*background-color: #bbb;*/
 				background-color: transparent;
 				border-radius: 10%;
 				display: inline-block;
@@ -233,7 +206,6 @@
 				font-size: 1rem;
 			}
 
-			/* Fading animation */
 			.fade {
 				-webkit-animation-name: fade;
 				-webkit-animation-duration: 1.5s;
@@ -276,7 +248,7 @@
 			}
 
 			.dot.active {
-				background-color: #c5daef; /* Light blue background for active dot */
+				background-color: #c5daef; 
 			}
 		</style>
 	</head>

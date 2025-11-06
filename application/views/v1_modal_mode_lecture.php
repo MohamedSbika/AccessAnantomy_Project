@@ -1,5 +1,4 @@
 <style>
-	/* Style de base du modal (caché par défaut) */
 	.modal {
 		display: none;
 		position: fixed;
@@ -10,8 +9,6 @@
 		align-items: center;
 		justify-content: center;
 	}
-
-	/* Contenu du modal */
 	.modal-content {
 		background-color: white;
 		border-radius: 8px;
@@ -23,7 +20,6 @@
 		padding: 20px;
 	}
 
-	/* Bouton de fermeture */
 	.close {
 		position: absolute;
 		top: 10px;
@@ -32,7 +28,6 @@
 		cursor: pointer;
 	}
 
-	/* Style des labels et inputs */
 	.row {
 		margin: 10px 0;
 		display: flex;
@@ -56,7 +51,6 @@
 		margin-right: 10px;
 	}
 
-	/* Style du select */
 	select {
 		width: 100%;
 		padding: 8px;
@@ -65,7 +59,6 @@
 		border-radius: 4px;
 	}
 
-	/* Bouton de confirmation */
 	.btn-log {
 		background-color: #007bff;
 		color: white;
@@ -95,7 +88,6 @@
 		</div>
 
 		<div class="modal-body">
-			<!-- Mode lecture (coche unique) -->
 			<div class="radio-group">
 				<label class="checkLecture"><input type="radio" name="modeLecture" value="seule"><?php echo $this->lang->line('lecture_perso'); ?></label>
 				<label class="checkLecture"><input type="radio" name="modeLecture" value="schema"><?php echo $this->lang->line('lecture_auto_shemas'); ?></label>
@@ -104,7 +96,6 @@
 			</div>
 			<hr>
 
-			<!-- Sélection de la vitesse de lecture -->
 			<div class="row">
 				<label for="vitesseLecture"><?php echo $this->lang->line('lecture_vitesse'); ?></label>
 				<select id="vitesseLecture">
@@ -116,7 +107,6 @@
 				</select>
 			</div>
 
-			<!-- Bouton de validation -->
 			<button onclick="toggleSpeech()" class="btn-log"><?php echo $this->lang->line('lecture_valider'); ?></button>
 		</div>
 
@@ -176,7 +166,7 @@
     }
 
     function speak() {
-        window.speechSynthesis.cancel(); // Arrêter toute lecture en cours
+        window.speechSynthesis.cancel(); 
 
         let iframe = document.getElementById('iframeID');
 
@@ -185,19 +175,16 @@
 
             if (textToRead.length > 0) {
                 msg = new SpeechSynthesisUtterance();
-                msg.text = textToRead.replace(/♦/g, '').replace(/\bcarreaux\b/gi, ''); // 🔹 Suppression de "carreaux" et du symbole ♦
-               // msg.text = textToRead;
+                msg.text = textToRead.replace(/♦/g, '').replace(/\bcarreaux\b/gi, ''); 
 
                 let lang = "FR".toUpperCase();
                 msg.lang = (lang === "FR") ? "fr-FR" : "en-US";
 
-                // ✅ Récupération de la vitesse sélectionnée
                 let vitesseSelectionnee = parseFloat(document.getElementById("vitesseLecture").value);
                 msg.rate = vitesseSelectionnee;
 
                 function setVoice() {
                     let voices = window.speechSynthesis.getVoices();
-                   // console.log("Voices disponibles :", voices);
 
                     let maleVoiceKeywords = (lang === "FR")
                         ? ["Paul", "Thomas", "Yannick", "Google français", "Daniel", "Male", "Man"]
@@ -215,12 +202,9 @@
                         if (defaultVoice) msg.voice = defaultVoice;
                     }
 
-                  //  console.log("Voix sélectionnée :", msg.voice ? msg.voice.name : "Aucune voix trouvée");
 
-                    // ✅ Détection des images dans le texte
                     msg.onboundary = function (event) {
                         let fullText = msg.text.substring(event.charIndex).replace(/[♦\u2022\u25AA\u2023]/g, '').trim();
-                        // console.log("Texte en cours de lecture :", fullText);
 
                         let cleanedText = fullText.replace(/[\(\),;!?]/g, '').trim();
 
@@ -244,7 +228,6 @@
                                 });
 
                             if (targetImg) {
-                              //  console.log("Image trouvée, déclenchement du clic :", targetImg);
                                 targetImg.click();
                             } else {
                                 console.warn("Aucune image trouvée avec data-name =", figName);
@@ -271,31 +254,27 @@
     }
 
     async function speak_shemas() {
-        // Sélectionner toutes les images ayant la classe "slider-image zoomable"
         let images = document.querySelectorAll(".slider-image.zoomable");
 
-        // Parcourir chaque image et procéder à l'analyse
         for (let index = 0; index < images.length; index++) {
             let img = images[index];
-            let imgSrc = img.src; // Récupérer l'URL de l'image
+            let imgSrc = img.src;
             img.click();
-            // Vérifier si l'image est bien chargée avant d'appeler la fonction
             if (img.complete) {
                 console.log(`🔍 Analyse de l'image ${index + 1}:`, imgSrc);
-                await extractTextFromImage(imgSrc); // Attendre que l'extraction du texte soit terminée
+                await extractTextFromImage(imgSrc); 
             } else {
-                // Si l'image n'est pas encore chargée, attendre son chargement
                 await new Promise((resolve) => {
                     img.onload = function () {
                         console.log(`🔍 Analyse de l'image ${index + 1} après chargement:`, imgSrc);
                         extractTextFromImage(imgSrc);
-                        resolve(); // Résoudre la promesse une fois l'image chargée et traitée
+                        resolve(); 
                     };
                 });
             }
         }
 
-        closeModalModeLecture(); // Fermer le modal après toutes les analyses
+        closeModalModeLecture(); 
     }
 
 </script>
@@ -338,32 +317,27 @@
 
                 let tesseractLang = lang === 'fr-FR' ? 'fra' : 'eng';
 
-                // Extraction du texte de la partie titre (si nécessaire)
                 let { data: { text: titleText } } = await Tesseract.recognize(titleDataURL, tesseractLang);
                 let cleanedTitle = cleanText(titleText);
                 console.log("Title:", cleanedTitle);
 
-                // Extraction du texte de la partie gauche (gauche de l'image)
                 let { data: { text: leftText } } = await Tesseract.recognize(leftDataURL, tesseractLang);
                 let cleanedLeft = cleanText(leftText);
                 console.log("Left Text:", cleanedLeft);
 
-                // Diviser le texte extrait en blocs
-                let leftTextBlocks = cleanedLeft.split(/(?<=\w[\s\S]{2,})\s/);  // Divise par bloc (phrase, groupe de mots)
+                let leftTextBlocks = cleanedLeft.split(/(?<=\w[\s\S]{2,})\s/);  
                 for (let block of leftTextBlocks) {
-                    console.log("Left Block:", block);  // Affiche chaque bloc à gauche
+                    console.log("Left Block:", block);  
                 }
                 console.log("Fin des blocs à gauche");
 
-                // Extraction du texte de la partie droite (droite de l'image)
                 let { data: { text: rightText } } = await Tesseract.recognize(rightDataURL, tesseractLang);
                 let cleanedRight = cleanText(rightText);
                 console.log("Right Text:", cleanedRight);
 
-                // Diviser le texte extrait en blocs
-                let rightTextBlocks = cleanedRight.split(/(?<=\w[\s\S]{2,})\s/);  // Divise par bloc (phrase, groupe de mots)
+                let rightTextBlocks = cleanedRight.split(/(?<=\w[\s\S]{2,})\s/); 
                 for (let block of rightTextBlocks) {
-                    console.log("Right Block:", block);  // Affiche chaque bloc à droite
+                    console.log("Right Block:", block); 
                 }
                 console.log("Fin des blocs à droite");
 
@@ -380,15 +354,13 @@
                 let canvas = document.createElement("canvas");
                 let ctx = canvas.getContext("2d");
 
-                // Taille du canvas = taille de l'image
                 canvas.width = img.width;
                 canvas.height = img.height;
 
                 let halfWidth = img.width / 2;
-                let titleHeight = img.height * 0.15; // 15% de la hauteur pour le titre
-                let contentHeight = img.height - titleHeight; // Le reste pour le contenu
+                let titleHeight = img.height * 0.15; 
+                let contentHeight = img.height - titleHeight; 
 
-                // 🎯 Partie Titre (bande du bas)
                 let titleCanvas = document.createElement("canvas");
                 titleCanvas.width = img.width;
                 titleCanvas.height = titleHeight;
@@ -396,7 +368,6 @@
                 titleCtx.drawImage(img, 0, contentHeight, img.width, titleHeight, 0, 0, img.width, titleHeight);
                 let titleDataURL = titleCanvas.toDataURL("image/png");
 
-                // 🎯 Partie Gauche (sans le titre)
                 let leftCanvas = document.createElement("canvas");
                 leftCanvas.width = halfWidth;
                 leftCanvas.height = contentHeight;
@@ -404,7 +375,6 @@
                 leftCtx.drawImage(img, 0, 0, halfWidth, contentHeight, 0, 0, halfWidth, contentHeight);
                 let leftDataURL = leftCanvas.toDataURL("image/png");
 
-                // 🎯 Partie Droite (sans le titre)
                 let rightCanvas = document.createElement("canvas");
                 rightCanvas.width = halfWidth;
                 rightCanvas.height = contentHeight;
@@ -412,16 +382,13 @@
                 rightCtx.drawImage(img, halfWidth, 0, halfWidth, contentHeight, 0, 0, halfWidth, contentHeight);
                 let rightDataURL = rightCanvas.toDataURL("image/png");
 
-                // 📝 Fonction pour nettoyer le texte (évite les caractères spéciaux)
                 function cleanText(text) {
                     return text.replace(/[^a-zA-ZÀ-ÿ\s]/g, "").replace(/\s+/g, " ").trim();
                 }
 
 
 
-                // Fonction pour choisir la voix selon la langue
                 function selectVoice(lang) {
-                    // Sélectionner la voix à utiliser
                     let voices = window.speechSynthesis.getVoices();
                     console.log("voices :", voices);
                     let maleVoiceKeywords = (lang === "FR")
@@ -436,52 +403,46 @@
                     return maleVoice || voices.find(voice => voice.lang.startsWith(lang));
                 }
 
-                // 🎯 Étape 1 : Analyse et lecture du **titre** en premier
                 Tesseract.recognize(titleDataURL, 'fra', { logger: info => console.log("Titre:", info) })
                     .then(({ data: { text } }) => {
                         let cleanedText = cleanText(text);
                         console.log("Titre :", cleanedText);
 
-                        // Sélectionner la voix en fonction de la langue (ici "fr" pour le français)
                         let selectedVoice = selectVoice("FR");
 
                         let utterance = new SpeechSynthesisUtterance("Titre: " + cleanedText);
                         utterance.lang = 'fr-FR';
-                        utterance.voice = selectedVoice;  // Appliquer la voix sélectionnée
+                        utterance.voice = selectedVoice; 
 						console.log(selectedVoice)
                         window.speechSynthesis.speak(utterance);
 
-                        // 🎯 Étape 2 : Après le titre, analyser la partie gauche
                         return Tesseract.recognize(leftDataURL, 'fra', { logger: info => console.log("Gauche:", info) });
                     })
                     .then(({ data: { text } }) => {
                         let cleanedText = cleanText(text);
                         console.log("Texte gauche :", cleanedText);
 
-                        // Sélectionner la voix en fonction de la langue (ici "fr" pour le français)
                         let selectedVoice = selectVoice("fr");
 
                         let utterance = new SpeechSynthesisUtterance("Texte gauche: " + cleanedText);
                         utterance.lang = 'fr-FR';
-                        utterance.voice = selectedVoice;  // Appliquer la voix sélectionnée
+                        utterance.voice = selectedVoice;  
                         window.speechSynthesis.speak(utterance);
 
-                        // 🎯 Étape 3 : Après la gauche, analyser la partie droite
                         return Tesseract.recognize(rightDataURL, 'fra', { logger: info => console.log("Droite:", info) });
                     })
                     .then(({ data: { text } }) => {
                         let cleanedText = cleanText(text);
                         console.log("Texte droite :", cleanedText);
 
-                        // Sélectionner la voix en fonction de la langue (ici "fr" pour le français)
                         let selectedVoice = selectVoice("fr");
 
                         let utterance = new SpeechSynthesisUtterance("Texte droite: " + cleanedText);
                         utterance.lang = 'fr-FR';
-                        utterance.voice = selectedVoice;  // Appliquer la voix sélectionnée
+                        utterance.voice = selectedVoice;  
                         window.speechSynthesis.speak(utterance);
 
-                        resolve(); // Résoudre la promesse après que tout le texte a été lu
+                        resolve(); 
                     });
             };
         });
@@ -494,14 +455,11 @@
             let canvas = document.createElement("canvas");
             let ctx = canvas.getContext("2d");
 
-            // Définir la taille du canvas selon l'image
             canvas.width = img.width;
             canvas.height = img.height;
 
-            // Diviser l'image en deux
             let halfWidth = img.width / 2;
 
-            // Partie gauche
             let leftCanvas = document.createElement("canvas");
             leftCanvas.width = halfWidth;
             leftCanvas.height = img.height;
@@ -509,7 +467,6 @@
             leftCtx.drawImage(img, 0, 0, halfWidth, img.height, 0, 0, halfWidth, img.height);
             let leftDataURL = leftCanvas.toDataURL("image/png");
 
-            // Partie droite
             let rightCanvas = document.createElement("canvas");
             rightCanvas.width = halfWidth;
             rightCanvas.height = img.height;
@@ -517,7 +474,6 @@
             rightCtx.drawImage(img, halfWidth, 0, halfWidth, img.height, 0, 0, halfWidth, img.height);
             let rightDataURL = rightCanvas.toDataURL("image/png");
 
-            // Analyser la partie gauche
             Tesseract.recognize(leftDataURL, 'fra', { logger: info => console.log("Gauche:", info) })
                 .then(({ data: { text } }) => {
                     console.log("Texte gauche :", text);
@@ -525,7 +481,6 @@
                     window.speechSynthesis.speak(utterance);
                 });
 
-            // Analyser la partie droite
             Tesseract.recognize(rightDataURL, 'fra', { logger: info => console.log("Droite:", info) })
                 .then(({ data: { text } }) => {
                     console.log("Texte droite :", text);
@@ -545,7 +500,6 @@
         ).then(({ data: { text } }) => {
             console.log("Texte détecté :", text);
 
-            // Synthèse vocale
             let utterance = new SpeechSynthesisUtterance(text);
             window.speechSynthesis.speak(utterance);
         }).catch(error => console.error("Erreur de reconnaissance OCR :", error));
@@ -620,7 +574,7 @@
                 if (listVideos.length === 0) {
                     videoHtml = "<p>Aucune vidéo disponible.</p>";
                 } else {
-                    videoHtml += `<div class="video-grid">`; // Ouvre la grille ici
+                    videoHtml += `<div class="video-grid">`; 
 
                     listVideos.forEach(video => {
                         const fullPath = "<?php echo base_url(); ?>" + video.path;
@@ -637,30 +591,26 @@
         `;
                     });
 
-                    videoHtml += `</div>`; // Ferme la grille ici
+                    videoHtml += `</div>`; 
                 }
 
 
                 document.getElementById("videoListContainer").innerHTML = videoHtml;
 
-				// Afficher le modal des vidéos
                 const modal = document.getElementById("customModal_videos");
                 const sidebar = document.getElementById("sidebar-racc");
                 const sidebarRect = sidebar.getBoundingClientRect();
 
-				// Positionner le modal à droite du sidebar
                 modal.style.top 	= `${window.scrollY + sidebarRect.top}px`;
                 modal.style.left 	 = `${window.scrollX + sidebarRect.right + 15}px`;
                 document.getElementById("customModal_videos").style.display = "flex";
 
-                Swal.close(); // Ferme le loader si encore ouvert
+                Swal.close();
 
 
             },
             error: function() {
-                // SHOW AN ERROR { if php failed to fetch }
 
-                //$("#user_message_error_pretech").show();
                 $('.modal-message').html("Sorry, File not Uploaded");
                 $('#modal-confirm-all').modal('show');
             }

@@ -16,7 +16,6 @@
             text-align: center;
             font-family: arial;
             flex: 0 1 24%;
-            /* flex-grow: 1; */
         }
 
         .card-video p{
@@ -526,17 +525,14 @@
 
                     <div class="card-body">
                         <?php 
-                        $idTheme = $OneBook[0]['IDTheme']; // thème du livre actuel
+                        $idTheme = $OneBook[0]['IDTheme'];
                         
-                        // Si le livre appartient à l’un des thèmes cibles
                         if (in_array($idTheme, [20, 31, 36])): 
-                            // Déterminer le(s) thème(s) à afficher selon la langue
                             $themesCibles = [];
-                            if ($idTheme == 20) $themesCibles = [1];   // FR → thèmes FR
-                            if ($idTheme == 31) $themesCibles = [21];  // EN → thèmes EN
-                            if ($idTheme == 36) $themesCibles = [33];  // AR → thèmes AR
+                            if ($idTheme == 20) $themesCibles = [1];   
+                            if ($idTheme == 31) $themesCibles = [21];  
+                            if ($idTheme == 36) $themesCibles = [33];  
 
-                            // Récupération des livres liés à ces thèmes
                             $livres = $this->db->where_in('IDTheme', $themesCibles)->get('_livre')->result_array();
                         ?>
                             <div class="form-group mb-3">
@@ -544,7 +540,6 @@
                                     Sélectionner un chapitre associé <span style="color:red;">*</span>
                                 </label>
 
-                                <!-- CLASSE AJOUTÉE ICI -->
                                 <select name="chapitreAssocie" 
                                         id="chapitreAssocie_<?= $OneBook[0]['IDLivre']; ?>" 
                                         class="form-control select-chapitre-associe" 
@@ -555,7 +550,6 @@
                                     foreach ($livres as $livre) {
                                         echo "<optgroup label='" . htmlspecialchars($livre['Titre']) . "'>";
 
-                                        // Récupérer les chapitres de chaque livre
                                         $chapitres = $this->db
                                             ->where('IDLivre', $livre['IDLivre'])
                                             ->get('_chapitre')
@@ -575,7 +569,6 @@ echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chap
                                 </select>
                             </div>
 
-                            <!-- STYLE AJOUTÉ ICI (dans le modal, juste après le select) -->
                             <style>
                             .select-chapitre-associe,
                             .select-chapitre-associe option,
@@ -583,7 +576,6 @@ echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chap
                                 color: #000 !important;
                                 background-color: #fff !important;
                             }
-                            /* Optionnel : forcer le select lui-même */
                             .select-chapitre-associe {
                                 -webkit-appearance: menulist !important;
                                 appearance: menulist !important;
@@ -953,7 +945,6 @@ echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chap
     </div>
 </div>
 
-<!-- Container pour les sous-chapitres -->
 <div class="souschap-container" style="display: none; padding-left: 2em; margin-bottom: 1em;"></div>
 
                                                     </td>
@@ -1421,13 +1412,11 @@ echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chap
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/bootstrap-tokenfield.js"></script>
 
-<!-- Modal pour ajouter des sous-chapitres -->
 <div class="modal fade" id="modalSousChap" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content p-3">
       <h5>Ajouter des sous-chapitres</h5>
       <form id="formSousChap">
-        <!-- Ces champs sont remplis automatiquement -->
         <input type="hidden" name="bookID" id="sousChap_bookID">
         <input type="hidden" name="chapters[0][idChap]" id="sousChap_chapID">
 
@@ -1591,7 +1580,6 @@ $(document).ready(function() {
     </html>
 
     <script language="JavaScript">
-        //script for add test
 
         var reset_Image = function(event, id) {
             var parent = event.target.parentElement
@@ -1612,7 +1600,6 @@ function openSousChapForm(chapID, bookID) {
 
     document.getElementById('sousChaps').value = '';
 
-    // On affiche le modal
     $('#modalSousChap').modal('show');
 }
 
@@ -1699,7 +1686,6 @@ function submitSousChap() {
         }
     });
 }
-        //add Figure
         function add_Figure(id) {
 
             var data_plat = new FormData($('#' + id)[0]);
@@ -1759,9 +1745,7 @@ function submitSousChap() {
 
                 },
                 error: function() {
-                    // SHOW AN ERROR { if php failed to fetch }
 
-                    //$("#user_message_error_pretech").show();
                     $('.modal-message').html("Sorry, File not Uploaded");
                     $('#modal-confirm-all').modal('show');
                 }
@@ -1797,7 +1781,6 @@ function submitSousChap() {
                     timer: 1500,
                     showConfirmButton: false
                 });
-                // Recharger les sous-chapitres
                 $('.toggle-souschap').trigger('click');
                 $('.toggle-souschap').trigger('click');
             } else {
@@ -1914,9 +1897,7 @@ function submitSousChap() {
 
                 },
                 error: function() {
-                    // SHOW AN ERROR { if php failed to fetch }
 
-                    //$("#user_message_error_pretech").show();
                     $('.modal-message').html("Sorry, File not Uploaded");
                     $('#modal-confirm-all').modal('show');
                 }
@@ -2017,7 +1998,6 @@ function submitSousChap() {
 
 
 
-        //add Video
         function addEdit_video(id) {
 
             var data_plat = new FormData($(id)[0]);
@@ -2058,7 +2038,6 @@ function submitSousChap() {
                         }).then((result) => {
                             if (result.value) {
                                 $('#setCouv').load(" #setCouv > *");
-                                //window.location.reload()
                                 $('#addVideoModal').modal('hide');
                                 var idChapitre = document.getElementById("IDChapitreVideo").value
                                 var idType = document.getElementById("IDTypeVideo").value
@@ -2077,9 +2056,7 @@ function submitSousChap() {
                     }
                 },
                 error: function() {
-                    // SHOW AN ERROR { if php failed to fetch }
 
-                    //$("#user_message_error_pretech").show();
                     $('.modal-message').html("Sorry, File not Uploaded");
                     $('#modal-confirm-all').modal('show');
                 }
@@ -2093,7 +2070,6 @@ function submitSousChap() {
     </script>
 
     <script type="text/javascript">
-        //add Video
         function deleteVideo(id) {
 
             var data_plat = new FormData($("#deleteVideoModal")[0]);
@@ -2158,9 +2134,7 @@ function submitSousChap() {
 
                 },
                 error: function() {
-                    // SHOW AN ERROR { if php failed to fetch }
 
-                    //$("#user_message_error_pretech").show();
                     $('.modal-message').html("Sorry, File not Uploaded");
                     $('#modal-confirm-all').modal('show');
                 }
@@ -2177,24 +2151,18 @@ function submitSousChap() {
                 e.preventDefault();
             }, false);
             document.addEventListener("keydown", function(e) {
-                //document.onkeydown = function(e) {
-                //"I" key
                 if (e.ctrlKey && e.shiftKey && e.keyCode == 73) {
                     disabledEvent(e);
                 }
-                //"J" key
                 if (e.ctrlKey && e.shiftKey && e.keyCode == 74) {
                     disabledEvent(e);
                 }
-                //"S" key + macOS
                 if (e.keyCode == 83 && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
                     disabledEvent(e);
                 }
-                //"U" key
                 if (e.ctrlKey && e.keyCode == 85) {
                     disabledEvent(e);
                 }
-                //"F12" key
                 if (event.keyCode == 123) {
                     disabledEvent(e);
                 }
@@ -2210,7 +2178,6 @@ function submitSousChap() {
                 return false;
             }
         }
-        //edit: removed ";" from last "}" because of javascript error
     </script>
     <?php if ((strlen($this->session->userdata('passTok')) == 200) && ($this->session->userdata('EstAdmin') == 1)) { ?>
 
@@ -2291,9 +2258,7 @@ function submitSousChap() {
 
                             },
                             error: function() {
-                                // SHOW AN ERROR { if php failed to fetch }
 
-                                //$("#user_message_error_pretech").show();
                                 $('.modal-message').html("Sorry, File not Uploaded");
                                 $('#modal-confirm-all').modal('show');
                             }
@@ -2369,9 +2334,7 @@ function submitSousChap() {
 
                             },
                             error: function() {
-                                // SHOW AN ERROR { if php failed to fetch }
 
-                                //$("#user_message_error_pretech").show();
                                 $('.modal-message').html("Sorry, File not Uploaded");
                                 $('#modal-confirm-all').modal('show');
                             }
@@ -2447,9 +2410,7 @@ function submitSousChap() {
 
                             },
                             error: function() {
-                                // SHOW AN ERROR { if php failed to fetch }
 
-                                //$("#user_message_error_pretech").show();
                                 $('.modal-message').html("Sorry, File not Uploaded");
                                 $('#modal-confirm-all').modal('show');
                             }
@@ -2525,9 +2486,7 @@ function submitSousChap() {
 
                             },
                             error: function() {
-                                // SHOW AN ERROR { if php failed to fetch }
 
-                                //$("#user_message_error_pretech").show();
                                 $('.modal-message').html("Sorry, File not Uploaded");
                                 $('#modal-confirm-all').modal('show');
                             }
@@ -2603,9 +2562,7 @@ function submitSousChap() {
 
                             },
                             error: function() {
-                                // SHOW AN ERROR { if php failed to fetch }
 
-                                //$("#user_message_error_pretech").show();
                                 $('.modal-message').html("Sorry, File not Uploaded");
                                 $('#modal-confirm-all').modal('show');
                             }
@@ -2681,9 +2638,7 @@ function submitSousChap() {
 
                             },
                             error: function() {
-                                // SHOW AN ERROR { if php failed to fetch }
 
-                                //$("#user_message_error_pretech").show();
                                 $('.modal-message').html("Sorry, File not Uploaded");
                                 $('#modal-confirm-all').modal('show');
                             }
@@ -2759,9 +2714,7 @@ function submitSousChap() {
 
                             },
                             error: function() {
-                                // SHOW AN ERROR { if php failed to fetch }
 
-                                //$("#user_message_error_pretech").show();
                                 $('.modal-message').html("Sorry, File not Uploaded");
                                 $('#modal-confirm-all').modal('show');
                             }
@@ -2837,9 +2790,7 @@ function submitSousChap() {
 
                             },
                             error: function() {
-                                // SHOW AN ERROR { if php failed to fetch }
 
-                                //$("#user_message_error_pretech").show();
                                 $('.modal-message').html("Sorry, File not Uploaded");
                                 $('#modal-confirm-all').modal('show');
                             }
@@ -2915,9 +2866,7 @@ function submitSousChap() {
 
                             },
                             error: function() {
-                                // SHOW AN ERROR { if php failed to fetch }
 
-                                //$("#user_message_error_pretech").show();
                                 $('.modal-message').html("Sorry, File not Uploaded");
                                 $('#modal-confirm-all').modal('show');
                             }
@@ -2974,7 +2923,6 @@ function submitSousChap() {
                             allowEscapeKey: false
                         }).then((result) => {
                             if (result.value) {
-                                // Supprimer du DOM
                                 $('#' + idS).closest('.souschap-item').slideUp(300, function() {
                                     $(this).remove();
                                 });
@@ -3016,7 +2964,6 @@ function editSousChap(idEncoded) {
             function set_ChapBack() {
 
                 var data_plat = new FormData($('#pageForm_Chap')[0]);
-                //console.log(data_plat);
                 Swal.fire({
                     title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
                     allowOutsideClick: false,
@@ -3037,9 +2984,7 @@ function editSousChap(idEncoded) {
                     timeout: 3000000,
                     success: function(html) {
 
-                        //console.log(html);
                         var resu = JSON.parse(html);
-                        //console.log(resu);
 
                         if (resu[0]["id"] == 1) {
                             Swal.fire({
@@ -3069,9 +3014,7 @@ function editSousChap(idEncoded) {
 
                     },
                     error: function() {
-                        // SHOW AN ERROR { if php failed to fetch }
 
-                        //$("#user_message_error_pretech").show();
                         $('.modal-message').html("Sorry, File not Uploaded");
                         $('#modal-confirm-all').modal('show');
                     }
@@ -3084,7 +3027,6 @@ function editSousChap(idEncoded) {
             function set_Curs() {
 
                 var data_plat = new FormData($('#pageForm_Chap')[0]);
-                //console.log(data_plat);
                 Swal.fire({
                     title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
                     allowOutsideClick: false,
@@ -3105,9 +3047,7 @@ function editSousChap(idEncoded) {
                     timeout: 30000000,
                     success: function(html) {
 
-                        //console.log(html);
                         var resu = JSON.parse(html);
-                        //console.log(resu);
 
                         Swal.fire({
                             title: resu[0]["desc"],
@@ -3120,7 +3060,6 @@ function editSousChap(idEncoded) {
                             allowEscapeKey: false
                         }).then((result) => {
                             if (result.value) {
-                                //$('#serChap').load(" #serChap > *");
                                 location.reload();
                             }
                         })
@@ -3128,9 +3067,7 @@ function editSousChap(idEncoded) {
 
                     },
                     error: function() {
-                        // SHOW AN ERROR { if php failed to fetch }
 
-                        //$("#user_message_error_pretech").show();
                         $('.modal-message').html("Sorry, File not Uploaded");
                         $('#modal-confirm-all').modal('show');
                     }
@@ -3143,7 +3080,6 @@ function editSousChap(idEncoded) {
             function set_Resum() {
 
                 var data_plat = new FormData($('#pageForm_Chap')[0]);
-                //console.log(data_plat);
                 Swal.fire({
                     title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
                     allowOutsideClick: false,
@@ -3164,9 +3100,7 @@ function editSousChap(idEncoded) {
                     timeout: 30000000,
                     success: function(html) {
 
-                        //console.log(html);
                         var resu = JSON.parse(html);
-                        //console.log(resu);
 
                         Swal.fire({
                             title: resu[0]["desc"],
@@ -3179,7 +3113,6 @@ function editSousChap(idEncoded) {
                             allowEscapeKey: false
                         }).then((result) => {
                             if (result.value) {
-                                //$('#serChap').load(" #serChap > *");
                                 location.reload();
                             }
                         })
@@ -3187,9 +3120,7 @@ function editSousChap(idEncoded) {
 
                     },
                     error: function() {
-                        // SHOW AN ERROR { if php failed to fetch }
 
-                        //$("#user_message_error_pretech").show();
                         $('.modal-message').html("Sorry, File not Uploaded");
                         $('#modal-confirm-all').modal('show');
                     }
@@ -3224,7 +3155,7 @@ function editSousChap(idEncoded) {
                 });
 
                 $.ajax({
-                    url: "<?= base_url('home/upload_Attach_Save_SubChap'); ?>", // ✅ nouvelle méthode backend
+                    url: "<?= base_url('home/upload_Attach_Save_SubChap'); ?>", 
                     type: "POST",
                     data: formData,
                     contentType: false,
@@ -3272,7 +3203,6 @@ function editSousChap(idEncoded) {
             function set_FigResum() {
 
                 var data_plat = new FormData($('#pageForm_Chap')[0]);
-                //console.log(data_plat);
                 Swal.fire({
                     title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
                     allowOutsideClick: false,
@@ -3293,9 +3223,7 @@ function editSousChap(idEncoded) {
                     timeout: 30000000,
                     success: function(html) {
 
-                        //console.log(html);
                         var resu = JSON.parse(html);
-                        //console.log(resu);
 
                         if (resu[0]["id"] == 1) {
                             Swal.fire({
@@ -3309,7 +3237,6 @@ function editSousChap(idEncoded) {
                                 allowEscapeKey: false
                             }).then((result) => {
                                 if (result.value) {
-                                    //$('#serChap').load(" #serChap > *");
                                     location.reload();
                                 }
                             })
@@ -3327,9 +3254,7 @@ function editSousChap(idEncoded) {
 
                     },
                     error: function() {
-                        // SHOW AN ERROR { if php failed to fetch }
 
-                        //$("#user_message_error_pretech").show();
                         $('.modal-message').html("Sorry, File not Uploaded");
                         $('#modal-confirm-all').modal('show');
                     }
@@ -3342,7 +3267,6 @@ function editSousChap(idEncoded) {
             function set_Fig() {
 
                 var data_plat = new FormData($('#pageForm_Chap')[0]);
-                //console.log(data_plat);
                 Swal.fire({
                     title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
                     allowOutsideClick: false,
@@ -3363,9 +3287,7 @@ function editSousChap(idEncoded) {
                     timeout: 30000000,
                     success: function(html) {
 
-                        //console.log(html);
                         var resu = JSON.parse(html);
-                        //console.log(resu);
 
                         if (resu[0]["id"] == 1) {
                             Swal.fire({
@@ -3379,7 +3301,6 @@ function editSousChap(idEncoded) {
                                 allowEscapeKey: false
                             }).then((result) => {
                                 if (result.value) {
-                                    //$('#serChap').load(" #serChap > *");
                                     location.reload();
                                 }
                             })
@@ -3397,9 +3318,7 @@ function editSousChap(idEncoded) {
 
                     },
                     error: function() {
-                        // SHOW AN ERROR { if php failed to fetch }
 
-                        //$("#user_message_error_pretech").show();
                         $('.modal-message').html("Sorry, File not Uploaded");
                         $('#modal-confirm-all').modal('show');
                     }
@@ -3412,7 +3331,6 @@ function editSousChap(idEncoded) {
             function set_QCM_Fig_Ass() {
 
                 var data_plat = new FormData($('#pageForm_Chap')[0]);
-                //console.log(data_plat);
                 Swal.fire({
                     title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
                     allowOutsideClick: false,
@@ -3433,9 +3351,7 @@ function editSousChap(idEncoded) {
                     timeout: 30000000,
                     success: function(html) {
 
-                        //console.log(html);
                         var resu = JSON.parse(html);
-                        //console.log(resu);
 
                         if (resu[0]["id"] == 1) {
                             Swal.fire({
@@ -3465,9 +3381,7 @@ function editSousChap(idEncoded) {
 
                     },
                     error: function() {
-                        // SHOW AN ERROR { if php failed to fetch }
 
-                        //$("#user_message_error_pretech").show();
                         $('.modal-message').html("Sorry, File not Uploaded");
                         $('#modal-confirm-all').modal('show');
                     }
@@ -3480,7 +3394,6 @@ function editSousChap(idEncoded) {
             function set_QCM() {
 
                 var data_plat = new FormData($('#pageForm_Chap')[0]);
-                //console.log(data_plat);
                 Swal.fire({
                     title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
                     allowOutsideClick: false,
@@ -3501,9 +3414,7 @@ function editSousChap(idEncoded) {
                     timeout: 30000000,
                     success: function(html) {
 
-                        //console.log(html);
                         var resu = JSON.parse(html);
-                        //console.log(resu);
 
                         if (resu[0]["id"] == 1) {
                             Swal.fire({
@@ -3533,9 +3444,7 @@ function editSousChap(idEncoded) {
 
                     },
                     error: function() {
-                        // SHOW AN ERROR { if php failed to fetch }
 
-                        //$("#user_message_error_pretech").show();
                         $('.modal-message').html("Sorry, File not Uploaded");
                         $('#modal-confirm-all').modal('show');
                     }
@@ -3548,7 +3457,6 @@ function editSousChap(idEncoded) {
             function set_QROC() {
 
                 var data_plat = new FormData($('#pageForm_Chap')[0]);
-                //console.log(data_plat);
                 Swal.fire({
                     title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
                     allowOutsideClick: false,
@@ -3569,9 +3477,7 @@ function editSousChap(idEncoded) {
                     timeout: 30000000,
                     success: function(html) {
 
-                        //console.log(html);
                         var resu = JSON.parse(html);
-                        //console.log(resu);
 
                         if (resu[0]["id"] == 1) {
                             Swal.fire({
@@ -3601,9 +3507,7 @@ function editSousChap(idEncoded) {
 
                     },
                     error: function() {
-                        // SHOW AN ERROR { if php failed to fetch }
 
-                        //$("#user_message_error_pretech").show();
                         $('.modal-message').html("Sorry, File not Uploaded");
                         $('#modal-confirm-all').modal('show');
                     }
@@ -3616,7 +3520,6 @@ function editSousChap(idEncoded) {
             function set_QROC_Fig_Ass() {
 
                 var data_plat = new FormData($('#pageForm_Chap')[0]);
-                //console.log(data_plat);
                 Swal.fire({
                     title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
                     allowOutsideClick: false,
@@ -3637,9 +3540,7 @@ function editSousChap(idEncoded) {
                     timeout: 30000000,
                     success: function(html) {
 
-                        //console.log(html);
                         var resu = JSON.parse(html);
-                        //console.log(resu);
 
                         if (resu[0]["id"] == 1) {
                             Swal.fire({
@@ -3669,9 +3570,7 @@ function editSousChap(idEncoded) {
 
                     },
                     error: function() {
-                        // SHOW AN ERROR { if php failed to fetch }
 
-                        //$("#user_message_error_pretech").show();
                         $('.modal-message').html("Sorry, File not Uploaded");
                         $('#modal-confirm-all').modal('show');
                     }
@@ -3682,10 +3581,9 @@ function editSousChap(idEncoded) {
             }
 
           function set_LivChap(bookID) {
-    var form = $('#pageForm_SetChap_' + bookID)[0]; // sélectionner le formulaire
+    var form = $('#pageForm_SetChap_' + bookID)[0]; 
     var data_plat = new FormData(form);
 
-    // ✅ Vérification du select obligatoire seulement s'il existe
     var chapitreAssocieField = form.chapitreAssocie;
     if (chapitreAssocieField && !chapitreAssocieField.value) {
         Swal.fire({
@@ -3693,7 +3591,7 @@ function editSousChap(idEncoded) {
             title: 'Sélection obligatoire',
             text: 'Veuillez choisir un chapitre associé avant de continuer.'
         });
-        return false; // Stop l'envoi
+        return false; 
     }
 
     Swal.fire({
@@ -3714,7 +3612,7 @@ function editSousChap(idEncoded) {
         processData: false,
         timeout: 30000000,
         success: function(html) {
-            console.log(html); // vérifier la réponse
+            console.log(html); 
             try {
                 var resu = JSON.parse(html);
             } catch(e) {
@@ -3755,7 +3653,7 @@ function editSousChap(idEncoded) {
 }
 
 function set_LivSousChap(bookID) {
-    var form = $('#pageForm_SetChap_' + bookID)[0]; // Sélection du formulaire correspondant
+    var form = $('#pageForm_SetChap_' + bookID)[0];
     var data_plat = new FormData(form);
 
     Swal.fire({
@@ -3767,7 +3665,7 @@ function set_LivSousChap(bookID) {
 
     $.ajax({
         type: "POST",
-        url: "<?= base_url('home/set_LivSousChap'); ?>", // 👉 Appel à ta nouvelle fonction PHP
+        url: "<?= base_url('home/set_LivSousChap'); ?>", 
         data: data_plat,
         cache: false,
         contentType: false,
@@ -3883,8 +3781,7 @@ function set_LivSousChap(bookID) {
 
             function delChap(iTH, xx) {
                 var elem = document.getElementsByClassName('row ' + xx);
-                $("#" + iTH + '_' + xx).remove(); //Remove field html
-                //x--; //Decrement field counter
+                $("#" + iTH + '_' + xx).remove(); 
             }
 
             function set_KeysIndex(idChp, typeKeys) {
@@ -3910,7 +3807,6 @@ function set_LivSousChap(bookID) {
                         break;
                 }
 
-                //console.log(data_plat);
                 Swal.fire({
                     title: 'Veuillez patienter ...<br> Envoi des index en cours .. ',
                     allowOutsideClick: false,
@@ -3932,9 +3828,7 @@ function set_LivSousChap(bookID) {
                     timeout: 300000,
                     success: function(html) {
 
-                        //console.log(html);
                         var resu = JSON.parse(html);
-                        //console.log(resu);
 
                         if (resu[0]["id"] == 1) {
                             Swal.fire({
@@ -3964,9 +3858,7 @@ function set_LivSousChap(bookID) {
 
                     },
                     error: function() {
-                        // SHOW AN ERROR { if php failed to fetch }
 
-                        //$("#user_message_error_pretech").show();
                         $('.modal-message').html("Sorry, File not Uploaded");
                         $('#modal-confirm-all').modal('show');
                     }
@@ -3979,19 +3871,15 @@ function set_LivSousChap(bookID) {
             $(document).ready(function()
 
             {
-                var x = 0; //Initial field counter
-                var list_maxField = 10; //Input fields increment limitation
+                var x = 0; 
+                var list_maxField = 10; 
 
-                //Once add button is clicked
                 $('.list_add_button').click(function() {
                     var idTh = $(this).val();
-                    //Check maximum number of input fields
-                    //if(x < list_maxField){
-                    x++; //Increment field counter
+                    x++; 
                     var cmp = x + 1;
                     var list_fieldHTML = '<div style="margin-top: 0.5em" class="row ' + x + '" id=' + idTh + '_' + x + '><div class="col-xs-7 col-sm-7 col-md-7"><div class="form-group"><input name="list[]" type="text" placeholder="Chapitre ' + cmp + '" class="form-control"/></div></div><div class="col-xs-1 col-sm-7 col-md-1"><button type="button" class="btn btn-danger list_remove_button" onclick="delChap(' + idTh + ',' + x + ')" value="' + idTh + '">-</button></div></div>'; //New input field html
-                    $(".list_wrapper_" + idTh).append(list_fieldHTML); //Add field html
-                    //}
+                    $(".list_wrapper_" + idTh).append(list_fieldHTML);
                 });
 
             });
@@ -4055,9 +3943,7 @@ function set_LivSousChap(bookID) {
                         }
                     },
                     error: function() {
-                        // SHOW AN ERROR { if php failed to fetch }
 
-                        //$("#user_message_error_pretech").show();
                         $('.modal-message').html("Sorry, File not Uploaded");
                         $('#modal-confirm-all').modal('show');
                     }
@@ -4123,9 +4009,7 @@ function set_LivSousChap(bookID) {
                         }
                     },
                     error: function() {
-                        // SHOW AN ERROR { if php failed to fetch }
 
-                        //$("#user_message_error_pretech").show();
                         $('.modal-message').html("Sorry, File not Uploaded");
                         $('#modal-confirm-all').modal('show');
                     }
@@ -4191,9 +4075,7 @@ function set_LivSousChap(bookID) {
                         }
                     },
                     error: function() {
-                        // SHOW AN ERROR { if php failed to fetch }
 
-                        //$("#user_message_error_pretech").show();
                         $('.modal-message').html("Sorry, File not Uploaded");
                         $('#modal-confirm-all').modal('show');
                     }
@@ -4260,9 +4142,7 @@ function set_LivSousChap(bookID) {
                         }
                     },
                     error: function() {
-                        // SHOW AN ERROR { if php failed to fetch }
 
-                        //$("#user_message_error_pretech").show();
                         $('.modal-message').html("Sorry, File not Uploaded");
                         $('#modal-confirm-all').modal('show');
                     }
@@ -4358,9 +4238,7 @@ function set_LivSousChap(bookID) {
 
                     },
                     error: function() {
-                        // SHOW AN ERROR { if php failed to fetch }
 
-                        //$("#user_message_error_pretech").show();
                         $('.modal-message').html("Sorry, File not Uploaded");
                         $('#modal-confirm-all').modal('show');
                     }
@@ -4397,7 +4275,6 @@ function set_LivSousChap(bookID) {
                         var resu = JSON.parse(html);
 
                         if (resu["id"] == "1") {
-                            // $('#modalChap').modal('hide');
 
                             var result = resu["search_results"]
 
@@ -4424,7 +4301,6 @@ function set_LivSousChap(bookID) {
 
 
 
-                            // contener.innerHTML = setRepertoirVideoToHTML(result)
 
                         } else {
                             Swal.fire({
@@ -4437,9 +4313,7 @@ function set_LivSousChap(bookID) {
                         }
                     },
                     error: function() {
-                        // SHOW AN ERROR { if php failed to fetch }
 
-                        //$("#user_message_error_pretech").show();
                         $('.modal-message').html("Sorry, File not Uploaded");
                         $('#modal-confirm-all').modal('show');
                     }
@@ -4535,7 +4409,6 @@ function set_LivSousChap(bookID) {
                         innerHTML += ``
                         return innerHTML
                     }
-                    // console.log("item[0].name = ", result)
                 }
 
                 return innerHTML
@@ -4560,7 +4433,6 @@ function set_LivSousChap(bookID) {
                             innerHTML += `<li class="span-inline-block"> <span class="lien-repartoir" onclick="selecteRepertoirVideoToHTML(this,'`+ directories[i].path +`')">`+ directories[i].name +`</span> </li>`
                         }
                     }
-                    // console.log("item[0].name = ", result)
                 }
                 innerHTML += `</ul>`
                 return innerHTML
