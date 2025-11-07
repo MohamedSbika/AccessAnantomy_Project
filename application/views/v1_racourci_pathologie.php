@@ -1,24 +1,27 @@
 <style>
-    .sidebar-racc {
-        position: fixed;
-        width: 35%;
-        padding: 15px;
-        border-radius: 10px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        overflow: hidden;
-        z-index: 1000;
-        top: 110px;
-        left: 5px;
-        font-size: 13px;
-        background: #eaebec94;
-    }
+.sidebar-racc {
+    position: fixed;
+    width: 15%;                /* réduit la largeur globale */
+    padding: 50px;
+    padding-right: 10px;              
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+    z-index: 700;
+    top: 60px;
+    left: 3px;
+    font-size: 10px;           /* réduit légèrement la taille du texte */
+    background: #eaebecb0;     /* un fond un peu plus discret */
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* ombre plus fine */
+}
 
     .sidebar-racc.collapsed {
-        width: 5%;
-        padding: 8px;
-        opacity: 0.9;
+        width: 3.5%;
+        padding: 1px;
+        opacity: 0.6;
     }
 
     .sidebar-racc.collapsed .chapter-item,

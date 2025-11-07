@@ -48,8 +48,9 @@ if (strlen($this->session->userdata('passTok')) == 200) {
         /* Bloc Cours */
         .bloc-cours { 
             overflow-y: auto; 
-            max-height: 80vh; 
+            max-height: 90vh; 
             padding: 10px; 
+            padding-left: 55px;
             background-color: white; 
             border-radius: 10px; 
             box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
