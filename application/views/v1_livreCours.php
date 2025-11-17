@@ -236,7 +236,7 @@ if (strlen($this->session->userdata('passTok')) == 200) {
     <div id="element">
         <?php include('v1_racourci.php'); ?>
 
-        <div class="col-12 col-lg-6 col-xl-6" style="float: left; width: 45%; margin-left: 30px;">
+        <div class="col-12 col-lg-6 col-xl-6" style="float: left; width: 45%; margin-left: 70px;">
             <div class="row">
                 <li class="breadcrumb-item">
                     &nbsp;&nbsp;
@@ -284,7 +284,7 @@ if (strlen($this->session->userdata('passTok')) == 200) {
             </div>
         </div>
 
-        <div class="col-12 col-lg-6 col-xl-6" style="float: right; width: 50%;">
+        <div class="col-12 col-lg-6 col-xl-6" style="float: right; width: 50%; margin-right: 51px">
             <?php include('v1_bloc_figures.php'); ?>
         </div>
     </div>
