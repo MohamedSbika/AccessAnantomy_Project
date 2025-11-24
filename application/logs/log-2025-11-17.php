@@ -109,3 +109,7 @@ ERROR - 2025-11-17 16:27:58 --> Severity: Notice --> Undefined offset: 0 C:\xamp
 ERROR - 2025-11-17 16:27:58 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 2831
 ERROR - 2025-11-17 16:28:10 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 2831
 ERROR - 2025-11-17 16:28:10 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 2831
+ERROR - 2025-11-17 16:29:03 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-11-17 16:31:29 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-11-17 16:52:07 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-11-17 16:52:37 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513

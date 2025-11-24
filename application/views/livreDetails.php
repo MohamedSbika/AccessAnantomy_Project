@@ -503,8 +503,33 @@
 
                                     </div>
                                 </div>
-                                <div class="card-body" style=" display: flex;  justify-content: center;">
+                                <!-- Zone supérieure au-dessus du tableau -->
+<div style="
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 8px;
+    margin-top: 1px;
+    margin-bottom: -20px;
+">
+    <div style="flex: 1;">
+    </div>
 
+    <div style="flex: 1; text-align: center;">
+        <button type="button"
+                class="btn btn-primary"
+                onclick="window.open('http://localhost:3000/admin', '_blank');">
+            <?= $this->lang->line('actionAjout'); ?> Chapitres
+        </button>
+    </div>
+
+    <div style="flex: 1; text-align: right;">
+    </div>
+
+</div>
+
+                                <div class="card-body" style=" display: flex;  justify-content: center;">
                                     <?php if ((strlen($this->session->userdata('passTok')) == 200) && ($this->session->userdata('EstAdmin') == 1)) { ?>
 <form name="pageForm_SetChap" id="pageForm_SetChap_<?= $OneBook[0]['IDLivre']; ?>" action="">
     <div class="row" style="flex: 1 0 0%;">
@@ -613,7 +638,7 @@ echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chap
 
                                     <?php } ?>
 
-                                    <table class="table table-striped" style="width: 70%; align-self: center;">
+                                    <table class="table table-striped" style="width: 90%; align-self: center;">
                                         <thead>
                                         <tr>
                                             <th style="text-align: left;"></th>
@@ -621,6 +646,14 @@ echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chap
                                             <?php if ($category['EstActifResume'] == 1) { ?>
                                                 <th width="15%"></th>
                                             <?php } ?>
+<!-- <th width="15%" style="text-align: center; vertical-align: middle;">
+    <button type="button"
+            class="btn btn-outline-primary btn-sm"
+            style="font-size: 0.75rem; padding: 0.375rem 0.75rem; white-space: nowrap;"
+            onclick="window.open('http://localhost:3000/', '_blank');">
+        <?= $this->lang->line('actionAjout'); ?> Chapitres
+    </button>
+</th> -->
 
                                             <?php if ($category['EstActifQSM'] == 1) { ?>
                                                 <th width="15%">
