@@ -979,6 +979,11 @@ echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chap
 </div>
 
 <div class="souschap-container" style="display: none; padding-left: 2em; margin-bottom: 1em;"></div>
+<?php 
+$estPathologie = in_array($value['IDLivre'], [20, 30, 31]) 
+              || in_array((int)$OneBook[0]["IDTheme"], [20, 30, 31]);
+?>
+<?php if (!$estPathologie): ?>
 
                                                     </td>
                                                     <td>
@@ -1421,6 +1426,46 @@ echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chap
 
                                                         </td>
                                                     <?php } ?>
+<?php else: ?>
+
+<!-- Une seule <td> qui contient 3 colonnes internes -->
+<td colspan="6">
+    <div style="display: flex; width:100%; align-items: flex-start;">
+
+        <!-- 🟥 COLONNE 1 : TITRE (40%) -->
+        <div style="width: 40%; font-size: 1rem; font-weight: bold;">
+            <?= $value['TitreChapitre']; ?>
+        </div>
+
+        <!-- 🟦 COLONNE 2 : RAPPEL (30%) -->
+        <div style="width: 30%;">
+            <a href="<?= base_url() . $this->lang->line('siteLang'); ?>livreCours/<?= $value['IdChapterRappel']; ?>"
+               class="btn btn-outline-primary btn-sm">
+                Rappel
+            </a>
+        </div>
+
+        <!-- 🟩 COLONNE 3 : PATHOLOGIES (30%) -->
+        <div style="width: 30%;">
+            <?php if (!empty($value['sousChapitres'])): ?>
+                <ul style="margin:0; padding-left: 1rem;">
+                    <?php foreach ($value['sousChapitres'] as $sous): ?>
+                        <li style="margin-bottom: 5px;">
+                            <a href="<?= base_url() . $this->lang->line('siteLang'); ?>livrePathologie/<?= $sous['IDChapitre']; ?>">
+                                <?= $sous['TitreSousChapitre']; ?>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php else: ?>
+                <span style="color:#777; font-size:0.9rem;">Aucune pathologie</span>
+            <?php endif; ?>
+        </div>
+
+    </div>
+</td>
+
+<?php endif; ?>
 
                                                 </tr>
                                             <?php } ?>
