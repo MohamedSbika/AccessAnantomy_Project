@@ -529,6 +529,22 @@
 
 </div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                 <div class="card-body" style=" display: flex;  justify-content: center;">
                                     <?php if ((strlen($this->session->userdata('passTok')) == 200) && ($this->session->userdata('EstAdmin') == 1)) { ?>
 <form name="pageForm_SetChap" id="pageForm_SetChap_<?= $OneBook[0]['IDLivre']; ?>" action="">
@@ -971,9 +987,9 @@ echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chap
     </div>
 
     <div class="col-md-8" style="font-size: 0.97rem; display: flex; align-items: center;">
-        <?php if (in_array($value['IDLivre'], [20, 30, 31]) || in_array((int)$OneBook[0]["IDTheme"], [20, 30, 31])): ?>
+        <!-- <?php if (in_array($value['IDLivre'], [20, 30, 31]) || in_array((int)$OneBook[0]["IDTheme"], [20, 30, 31])): ?>
             <span class="toggle-souschap" style="cursor: pointer; margin-right: 0.5em;">&#9654;</span>
-        <?php endif; ?>
+        <?php endif; ?> -->
         <span><?= $value['TitreChapitre']; ?></span>
     </div>
 </div>
@@ -1445,34 +1461,199 @@ $estPathologie = in_array($value['IDLivre'], [20, 30, 31])
             </a>
         </div>
 
-        <!-- 🟩 COLONNE 3 : PATHOLOGIES (30%) -->
-        <div style="width: 30%;">
-            <?php if (!empty($value['sousChapitres'])): ?>
-                <ul style="margin:0; padding-left: 1rem;">
-                    <?php foreach ($value['sousChapitres'] as $sous): ?>
-                        <li style="margin-bottom: 5px;">
-                            <a href="<?= base_url() . $this->lang->line('siteLang'); ?>livrePathologie/<?= $sous['IDChapitre']; ?>">
-                                <?= $sous['TitreSousChapitre']; ?>
-                            </a>
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
-            <?php else: ?>
-                <span style="color:#777; font-size:0.9rem;">Aucune pathologie</span>
-            <?php endif; ?>
-        </div>
+<!-- 🟩 COLONNE 3 : PATHOLOGIES AVEC MÊME LOGIQUE AJAX -->
+<div style="width: 30%;">
+
+    <span class="toggle-souschap toggle-patho" 
+          data-chap="<?= $value['IDChapitre']; ?>"
+          style="cursor: pointer; margin-right: 0.5em; font-size:14px;">&#9654;</span>
+
+    <span style="font-weight:bold;">Pathologies</span>
+
+    <!-- Container vide, rempli via AJAX -->
+    <div class="souschap-container" 
+         id="patho-container-<?= $value['IDChapitre']; ?>"
+         style="display:none; padding-left:1.5em; margin-top:0.5em;">
+    </div>
+
+</div>
+
 
     </div>
 </td>
 
 <?php endif; ?>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                                 </tr>
                                             <?php } ?>
                                         </form>
                                         </tbody>
+
+<script>
+$(document).ready(function() {
+
+    $(document).on("click", ".toggle-patho", function () {
+
+        const arrow = $(this);
+        const chapID = arrow.data("chap");
+        const container = $("#patho-container-" + chapID);
+
+if (container.is(":visible")) {
+    container.slideUp(() => {
+        arrow.html("&#9654;"); 
+    });
+    return;
+}
+
+
+        $.ajax({
+            url: "<?= base_url('home/get_SousChapitres'); ?>",
+            type: "POST",
+            data: JSON.stringify({ idChap: chapID }),
+            contentType: "application/json",
+            dataType: "json",
+
+            success: function(sousChaps) {
+
+                container.html("");
+
+                if (sousChaps.length === 0) {
+                    container.append(
+                        '<div style="font-style:italic;color:#888;">Aucune pathologie</div>'
+                    );
+                } else {
+
+                    sousChaps.forEach(sc => {
+
+                        const idEncoded = sc.IDSousChapitre;
+                        const titre = sc.TitreSousChapitre.replace(/'/g, "&#39;");
+
+                        let html = `
+                        <div class="souschap-item" 
+                             style="display:flex;align-items:center;padding:0.5em 0;border-bottom:1px solid #eee;">
+
+                            <div style="flex:1;display:flex;align-items:center;gap:0.5em;">
+
+                                <!-- 🔥 Dropdown d'édition EXACT identique à la version normale -->
+                                <div class="dropdown" style="position:relative;">
+                                    <a href="#" data-toggle="dropdown" data-display="static" aria-expanded="false" title="Modifier / gérer le fichier">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 align-middle">
+                                            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                                        </svg>
+                                    </a>
+
+                                    <div class="dropdown-menu p-2" style="min-width:18rem;">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <input type="file" name="mFile_${idEncoded}" class="form-control form-control-sm mb-2" accept=".docx">
+                                                <input type="hidden" name="attach_file_${idEncoded}" value="${idEncoded}">
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-12 text-center">
+                                                <span class="btn btn-info btn-sm mt-1" onclick="set_SubChapCurs('${idEncoded}')">
+                                                    <i class="fas fa-upload"></i> Upload (COURS.docx)
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <hr>
+
+                                        <div class="row">
+                                            <div class="col-12 text-center">
+                                                <span class="btn btn-danger btn-sm" onclick="suppCurs('${idEncoded}')"
+                                                      name="${titre}" id="${idEncoded}">
+                                                      <i class="fa fa-trash-alt"></i> Supprimer
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Titre -->
+                                <span>- ${sc.TitreSousChapitre}</span>
+                            </div>
+                        `;
+
+                        if (sc.FichierHTML) {
+                            html += `
+                                <div style="margin-left:1em;">
+                                    <a href="<?= base_url('PlatFormeConvert/'); ?>${sc.FichierHTML}"
+                                       target="_blank"
+                                       class="btn btn-outline-primary btn-sm">
+                                       Voir cours
+                                    </a>
+                                </div>
+                            `;
+                        }
+
+                        // 🔥 boutons admin : EDIT + DELETE
+                        html += `
+                            <div style="margin-left:auto;display:flex;gap:0.8em;">
+
+                                <!-- Modifier titre -->
+<div class="dropdown" style="position:relative;" onclick="event.stopPropagation()">
+    <a href="#" data-toggle="dropdown" data-display="static" aria-expanded="false" title="Modifier le titre">
+        <i class="fa fa-edit" style="color:#3085d6;font-size:1.1em;"></i>
+    </a>
+    <div class="dropdown-menu dropdown-menu-right" style="min-width:20rem;padding:1rem;">
+                                        <input type="text" id="editSousChap_${idEncoded}" class="form-control"
+                                               value="${sc.TitreSousChapitre}">
+                                        <div class="mt-2 text-center">
+                                            <span class="btn btn-info btn-sm" onclick="validerEditSousChap('${idEncoded}')">
+                                                Valider
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Supprimer -->
+                                <a href="#" onclick="return suppSousChap('${idEncoded}');"
+                                   name="${titre}" id="${idEncoded}" title="Supprimer"
+                                   style="text-decoration:none;">
+                                   <i class="fa fa-trash-alt" style="color:#d33;font-size:1.1em;"></i>
+                                </a>
+                            </div>
+                        </div>
+                        `;
+
+                        container.append(html);
+                    });
+                }
+
+                container.slideDown();
+                arrow.html("&#9660;");
+            }
+        });
+
+    });
+});
+</script>
+
+   
                                     </table>
                                 </div>
+
+
+
+
+                                
                                 <div class="row" style="padding-top: 5rem ; background-color: white"></div>
                             </div>
                         </div>
@@ -1600,7 +1781,9 @@ $(document).ready(function() {
                         html += `
                             <div style="margin-left: auto; display: flex; gap: 0.8em;">
                                 <!-- Édition simple du titre -->
-                                <div class="dropdown dropleft" style="position: relative;" onclick="event.stopPropagation()">
+<div class="dropdown" 
+     style="position: relative;" 
+     onclick="event.stopPropagation()">
                                     <a href="#" data-toggle="dropdown" aria-expanded="false" title="Modifier le titre">
                                         <i class="fa fa-edit" style="color: #3085d6; font-size: 1.1em;"></i>
                                     </a>
