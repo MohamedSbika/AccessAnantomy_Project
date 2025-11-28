@@ -1,191 +1,213 @@
 <style>
-.sidebar-racc {
-    position: fixed;
-    width: 15%;                /* réduit la largeur globale */
-    padding: 50px;
-    padding-right: 10px;              
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    overflow: hidden;
-    z-index: 700;
-    top: 60px;
-    left: 3px;
-    font-size: 10px;           /* réduit légèrement la taille du texte */
-    background: #eaebecb0;     /* un fond un peu plus discret */
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* ombre plus fine */
-}
-
-    .sidebar-racc.collapsed {
-        width: 3.5%;
-        padding: 1px;
-        opacity: 0.6;
+    .pathologies-accordion {
+        margin: 5px 0;
+        background-color: transparent;
+        border-radius: 5px;
+        overflow: hidden;
     }
 
-    .sidebar-racc.collapsed .chapter-item,
-    .sidebar-racc.collapsed .chapter-header {
-        display: none;
-    }
-
-    .sidebar-racc.collapsed .carreaux {
-        font-size: 12px;
-        text-align: center;
-    }
-
-    .carreaux {
-        border-radius: 10px;
-        width: 50px;
-        height: 50px;
-        background-color: #fff;
-        padding: 10px;
-        font-size: 0.9em;
-        text-align: center;
-        color: #1d3557;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .carreaux i {
-        font-size: 21px;
-    }
-
-    .carreaux.selected,
-    .carreaux:hover {
-        background-color: #7387b8;
-    }
-
-    .toggle-btn {
-        position: relative;
-        transform: translateX(-50%);
-        background: linear-gradient(135deg, #1d3557, #457b9d);
-        color: white;
-        border: none;
-        cursor: pointer;
-        font-weight: bold;
-        font-size: 14px;
-        align-items: center;
-        gap: 8px;
-        transition: all 0.3s ease;
-        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-        border-radius: 10px;
-        width: 60px;
-        height: 40px;
-        padding-bottom: 20px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-
-    .toggle-btn:hover {
-        background: linear-gradient(135deg, #457b9d, #1d3557);
-        transform: translateX(-50%) scale(1.05);
-    }
-
-    .toggle-btn:active {
-        transform: translateX(-50%) scale(0.95);
-    }
-
-    .toggle-btn .arrow {
-        font-size: 18px;
-        transition: transform 0.3s ease;
-    }
-
-    .sidebar-racc.collapsed .toggle-btn .arrow {
-        transform: rotate(0deg);
-    }
-
-    .sidebar-racc:not(.collapsed) .toggle-btn .arrow {
-        transform: rotate(180deg);
-    }
-
-    .title_carr {
-        font-weight: bolder;
-    }
-
-    .toggle_bloc {
-        display: flex;
-        width: 100%;
-        transition: justify-content 0.3s ease;
-    }
-
-    .toggle_bloc.left {
-        justify-content: flex-start;
-    }
-
-    .toggle_bloc.right {
-        justify-content: flex-end;
-    }
-
-    .toggle_bloc.left .toggle-btn {
-        transform: none;
-    }
-
-    .toggle_bloc.right .toggle-btn {
-        left: auto;
-        transform: none;
-    }
-
-    /******************************************/
-
-    .tooltip-chapitre {
-        position: fixed;
-        width: 30%;
-        background: rgb(255, 255, 255);
-        border: 1px solid #274668;
-        border-radius: 10px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-        padding: 12px;
-        z-index: 3000;
-        overflow-y: auto;
-        backdrop-filter: blur(6px);
-        transition: opacity 0.3s ease;
-        top: 110px;
-    }
-
-    .tooltip-chapitre .chapter-header {
-        font-weight: bold;
-        margin-bottom: 10px;
-        background: #1d3557;
-        color: white;
-        font-size: 15px;
-        border-radius: 10px 10px 10px 10px;
-        text-align: center;
-    }
-
-    .tooltip-chapitre .chapter-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        max-height: 100%;
-    }
-
-        .chapter-list {
-            max-height: 70vh;
-            overflow-y: auto;
-            scrollbar-width: thin;
-            scrollbar-color: #1d3557 #f0f0f0;
-        }
-
-    .tooltip-chapitre .chapter-item {
-        padding: 8px 10px;
+    .pathologies-header {
+        padding: 8px 15px;
         font-size: 13px;
-        border-bottom: 1px solid #cccccc4f;
-        cursor: pointer;
-        transition: background 0.2s;
+        font-weight: normal;
         color: #2c2c2c;
-        text-align: left;
-        position: relative;
+        background-color: transparent;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #cccccc4f;
+        transition: all 0.2s;
     }
 
-    .tooltip-chapitre .chapter-item:hover {
+    .pathologies-header:hover {
         background-color: #f2f4f8;
     }
+
+    .pathologies-header .accordion-arrow {
+        font-size: 14px;
+        transition: transform 0.3s ease;
+        color: #1d3557;
+    }
+
+    .pathologies-header .accordion-arrow.expanded {
+        transform: rotate(90deg);
+    }
+
+    .pathologies-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease, opacity 0.3s ease;
+        opacity: 0;
+    }
+
+    .pathologies-content.expanded {
+        max-height: 500px;
+        opacity: 1;
+    }
+		.sidebar-racc {
+			position: fixed;
+			width: 35%;
+			padding: 15px;
+			border-radius: 10px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			overflow: hidden;
+			z-index: 1000;
+			top:110px;
+			left: 5px;
+			font-size: 13px;
+			background: #eaebec94;
+		}
+		.sidebar-racc.collapsed {
+			width: 5%;
+			padding: 8px;
+			opacity: 0.9;
+		}
+		.sidebar-racc.collapsed .chapter-item,
+		.sidebar-racc.collapsed .chapter-header {
+			display: none;
+		}
+		.sidebar-racc.collapsed .carreaux {
+			font-size: 12px;
+			text-align: center;
+		}
+		.carreaux {
+			border-radius: 10px;
+			width: 50px;
+			height: 50px;
+			background-color: #fff;
+			padding: 10px;
+			font-size: 0.9em;
+			text-align: center;
+			color: #1d3557;
+			cursor: pointer;
+			transition: background-color 0.3s ease;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+		}
+		.carreaux i {
+			font-size: 21px; 
+		}
+		.carreaux.selected, .carreaux:hover {
+			background-color: #7387b8;
+		}
+
+		.toggle-btn {
+			position: relative;
+			transform: translateX(-50%);
+			background: linear-gradient(135deg, #1d3557, #457b9d);
+			color: white;
+			border: none;
+			cursor: pointer;
+			font-weight: bold;
+			font-size: 14px;
+			align-items: center;
+			gap: 8px;
+			transition: all 0.3s ease;
+			box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+			border-radius: 10px;
+			width: 60px;
+			height: 40px;
+			padding-bottom: 20px;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+		}
+		.toggle-btn:hover {
+			background: linear-gradient(135deg, #457b9d, #1d3557);
+			transform: translateX(-50%) scale(1.05);
+		}
+		.toggle-btn:active {
+			transform: translateX(-50%) scale(0.95);
+		}
+		.toggle-btn .arrow {
+			font-size: 18px;
+			transition: transform 0.3s ease;
+		}
+		.sidebar-racc.collapsed .toggle-btn .arrow {
+			transform: rotate(0deg);
+		}
+		.sidebar-racc:not(.collapsed) .toggle-btn .arrow {
+			transform: rotate(180deg);
+		}
+		.title_carr{
+			font-weight: bolder;
+		}
+
+		.toggle_bloc {
+			display: flex;
+			width: 100%;
+			transition: justify-content 0.3s ease;
+		}
+
+		.toggle_bloc.left {
+			justify-content: flex-start;
+		}
+
+		.toggle_bloc.right {
+			justify-content: flex-end;
+		}
+
+		.toggle_bloc.left .toggle-btn {
+			transform: none;
+		}
+
+		.toggle_bloc.right .toggle-btn {
+			left: auto;
+			transform: none;
+		}
+
+		/******************************************/
+
+		.tooltip-chapitre {
+			position: fixed;
+			width: 30%;
+			background: rgb(255, 255, 255);
+			border: 1px solid #274668;
+			border-radius: 10px;
+			box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+			padding: 12px;
+			z-index: 3000;
+			overflow-y: auto;
+			backdrop-filter: blur(6px);
+			transition: opacity 0.3s ease;
+			top: 110px;
+		}
+
+		.tooltip-chapitre .chapter-header {
+			font-weight: bold;
+			margin-bottom: 10px;
+			background: #1d3557;
+			color: white;
+			font-size: 15px;
+			border-radius: 10px 10px 10px 10px;
+			text-align: center;
+		}
+
+		.tooltip-chapitre .chapter-list {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+			max-height: 100%;
+		}
+
+		.tooltip-chapitre .chapter-item {
+			padding: 8px 10px;
+			font-size: 13px;
+			border-bottom: 1px solid #cccccc4f;
+			cursor: pointer;
+			transition: background 0.2s;
+			color: #2c2c2c;
+			text-align: left;
+		}
+
+		.tooltip-chapitre .chapter-item:hover {
+			background-color: #f2f4f8;
+		}
 
     .chapter-item-header {
         display: flex;
@@ -325,7 +347,7 @@
     <div style="display: flex;justify-content: space-between; align-items: flex-start; width: 100%;">
         <div id="listRacc">
             <div style="display: grid; flex-wrap: wrap; gap: 10px; justify-content: center;">
-                <span class="carreaux" style="background-color:#657379 ;color: white;" id="fullscreen_btn"
+                <span class="carreaux" style="background-color: #657379 ;color: white;" id="fullscreen_btn"
                     onclick="toggleFullscreen(this)">
                     <div><?php echo $this->lang->line('sidebar_agrandir'); ?></div>
                     <i class="fas fa-expand" id="fullscreen-icon"></i>
@@ -504,8 +526,9 @@
 
 function afficherSousChapitres(sousChapList, data) {
     const chapterEl = sousChapList.closest('.chapter-item');
-    let idChapterRappel = chapterEl.dataset.idRappel; 
+    let idChapterRappel = chapterEl.dataset.idRappel;
 
+    // Sauvegarde du rappel si existe
     if (idChapterRappel) {
         localStorage.setItem('idChapterRappel', idChapterRappel);
     } else {
@@ -513,41 +536,98 @@ function afficherSousChapitres(sousChapList, data) {
     }
 
     let html = '';
+        
+    html += `
+        <li class="sous-chapitre-item rappel-item" 
+            style="font-weight:bold; color:#1d3557; background-color:#dce6f1; cursor:pointer;">
+            Rappel Cours
+        </li>
+    `;
+    html += `
+        <li class="pathologies-accordion">
+            <div class="pathologies-header" onclick="togglePathologies(event)">
+                <span>Pathologies</span>
+                <span class="accordion-arrow">▶</span>
+            </div>
 
-    html += `<li class="sous-chapitre-item rappel-item" style="font-weight:bold; color:#1d3557; background-color:#dce6f1; cursor:pointer;">
-        Rappel Cours
-    </li>`;
+            <ul class="pathologies-content">
+    `;
+
+    if (!data || data.length === 0) {
+        html += `
+                <li class="loading-sous-chapitres">
+                    Aucun sous-chapitre
+                </li>
+        `;
+    } else {
+        data.forEach(sousChap => {
+            html += `
+                <li class="sous-chapitre-item"
+                    onclick="selectSousChapitre('${sousChap.IDSousChapitre}', '${sousChap.IDChapitre}', this, event)">
+                    ${sousChap.TitreSousChapitre || sousChap.desc || 'Sans titre'}
+                </li>
+            `;
+        });
+    }
+
+    html += `
+            </ul>
+        </li>
+    `;
+
+    sousChapList.innerHTML = html;
+
 
     setTimeout(() => {
         const rappelItem = sousChapList.querySelector('.rappel-item');
         if (rappelItem) {
             rappelItem.addEventListener('click', (e) => {
                 e.stopPropagation();
+
                 if (!idChapterRappel) {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Aucun rappel disponible',
-                        text: 'Ce chapitre n’a pas de cours de rappel.'
+                        text: 'Ce chapitre n\'a pas de cours de rappel.'
                     });
                     return;
                 }
-                const lang = '<?php echo $this->lang->line('siteLang'); ?>';
-                window.location.href = `<?php echo base_url(); ?>${lang}/livreCours/${idChapterRappel}`;
+
+                const lang = "<?php echo $this->lang->line('siteLang'); ?>";
+                const baseUrl = "<?php echo base_url(); ?>";
+
+                window.location.href = baseUrl + lang + "/livreCours/" + idChapterRappel;
             });
         }
     }, 0);
+}
 
-    if (!data || data.length === 0) {
-        html += '<li class="loading-sous-chapitres">Aucun sous-chapitre</li>';
+
+function togglePathologies(event) {
+    event.stopPropagation();
+
+    const header = event.currentTarget;
+    const content = header.nextElementSibling;
+    const arrow = header.querySelector('.accordion-arrow');
+    const isExpanded = content.classList.contains('expanded');
+
+    // Fermer les autres pathologies ouvertes
+    document.querySelectorAll('.pathologies-content.expanded').forEach(other => {
+        if (other !== content) {
+            other.classList.remove('expanded');
+            const otherArrow = other.previousElementSibling.querySelector('.accordion-arrow');
+            if (otherArrow) otherArrow.classList.remove('expanded');
+        }
+    });
+
+    // Toggle
+    if (isExpanded) {
+        content.classList.remove('expanded');
+        arrow.classList.remove('expanded');
     } else {
-        data.forEach(sousChap => {
-            html += `<li class="sous-chapitre-item" onclick="selectSousChapitre('${sousChap.IDSousChapitre}', '${sousChap.IDChapitre}', this, event)">
-                ${sousChap.TitreSousChapitre || sousChap.desc || 'Sans titre'}
-            </li>`;
-        });
+        content.classList.add('expanded');
+        arrow.classList.add('expanded');
     }
-
-    sousChapList.innerHTML = html;
 }
 
 

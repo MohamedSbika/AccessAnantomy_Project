@@ -1,5 +1,5 @@
 <?php if(strlen($this->session->userdata('passTok'))==200) { ?>
-<div style="display: flex;background-color: white">
+<div style="display: flex;background-color: white; margin-right: 80px;">
 	<style>
 		.zoom {
 			width: 320px;

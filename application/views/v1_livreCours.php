@@ -206,7 +206,7 @@ if (strlen($this->session->userdata('passTok')) == 200) {
             flex-wrap: wrap;
         }
         .col-12.col-lg-6.col-xl-6 {
-            padding: 10px;
+            padding: 5px;
         }
         @media (max-width: 768px) {
             .col-12.col-lg-6.col-xl-6 {
@@ -236,19 +236,19 @@ if (strlen($this->session->userdata('passTok')) == 200) {
     <div id="element">
         <?php include('v1_racourci.php'); ?>
 
-        <div class="col-12 col-lg-6 col-xl-6" style="float: left; width: 45%; margin-left: 70px;">
-            <div class="row">
+<div class="col-12 col-lg-6 col-xl-6" style="float: left; width: 48%; margin-left: 3%;">
+                <div class="row">
                 <li class="breadcrumb-item">
                     &nbsp;&nbsp;
                     <div style="display: flex; align-items: center; gap: 5px; margin-left: auto;">
                         <div style="display: flex; gap: 15px; padding-top: 5px;">
                             <div style="display: flex; align-items: center; gap: 5px;">
                                 <input name="keywordsIN" id="keywordsIN" type="text"
-                                    style="border: 1px solid #ced4da; transition: 0.3s; max-width: 170px; height: 28px; padding: 4px;"
+                                    style="border: 1px solid #ced4da; transition: 0.3s; max-width: 170px; height: 28px; padding: 2px;"
                                     value="<?php echo isset($indexSearch) ? urldecode($indexSearch) : ''; ?>"
                                     class="form-control" placeholder="<?php echo $this->lang->line('search'); ?>…" >
                                 <button class="btn" onclick="mySearchIndx();"
-                                    style="display: flex; align-items: center; justify-content: center; height: 28px; padding: 4px;">
+                                    style="display: flex; align-items: center; justify-content: center; height: 28px; padding: 2px;">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search align-middle">
                                         <circle cx="11" cy="11" r="8"></circle>
                                         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -284,7 +284,7 @@ if (strlen($this->session->userdata('passTok')) == 200) {
             </div>
         </div>
 
-        <div class="col-12 col-lg-6 col-xl-6" style="float: right; width: 50%; margin-right: 51px">
+<div class="col-12 col-lg-6 col-xl-6" style="float: right; width: 48%; margin-right: 2%;">
             <?php include('v1_bloc_figures.php'); ?>
         </div>
     </div>

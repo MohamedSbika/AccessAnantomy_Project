@@ -193,6 +193,8 @@ else { ?>
 				: $this->lang->line('sidebar_aucun_cours');
 			?>
 		</div>
+		<div id="difficultyBox" style="display:none; padding:10px 5px 15px;">
+</div>
 
 		<ul class="chapter-list" id="chapterListTooltip">
 			<?php foreach ($listChap as $value) {
@@ -391,6 +393,71 @@ else { ?>
             window.selectedCarreauElement = element;
 
             window.selectedType = type_sel;
+			const diffBox = document.getElementById("difficultyBox");
+
+
+if (type_sel === 'qcm') {
+    diffBox.style.display = "block";
+
+    diffBox.innerHTML = `
+        <h4 style="margin-bottom:10px; font-weight:bold; text-align:center; color:#1d3557;">
+            Sélectionner le niveau de difficulté
+        </h4>
+
+        <div style="display:flex; gap:10px;">
+
+            <label class="diff-label" data-diff="basique" style="
+                flex:1; padding:10px; text-align:center;
+                border:1px solid #cccccc66;
+                border-radius:8px; cursor:pointer;
+                background:#f8f9fb;
+                color:#1d3557;
+            ">
+                <input type="radio" name="difficulty" value="basique" style="margin-right:6px;">
+                Basique
+            </label>
+
+            <label class="diff-label" data-diff="intermediaire" style="
+                flex:1; padding:10px; text-align:center;
+                border:1px solid #cccccc66;
+                border-radius:8px; cursor:pointer;
+                background:#f8f9fb;
+                color:#1d3557;
+            ">
+                <input type="radio" name="difficulty" value="intermediaire" style="margin-right:6px;">
+                Intermédiaire
+            </label>
+
+            <label class="diff-label" data-diff="avance" style="
+                flex:1; padding:10px; text-align:center;
+                border:1px solid #cccccc66;
+                border-radius:8px; cursor:pointer;
+                background:#f8f9fb;
+                color:#1d3557;
+            ">
+                <input id="defaultDiff" type="radio" name="difficulty" value="avance" checked style="margin-right:6px;">
+                Avancé
+            </label>
+
+        </div>
+    `;
+
+    // Gestion des clics sur les labels — popup si autre niveau
+    diffBox.querySelectorAll(".diff-label").forEach(label => {
+        label.addEventListener("click", function (e) {
+            const selected = this.dataset.diff;
+
+            if (selected !== "avance") {
+                e.preventDefault();
+                showDifficultyPopup(`Le niveau <b>${selected}</b> sera bientôt disponible`);
+                document.getElementById("defaultDiff").checked = true;
+            }
+        });
+    });
+
+} else {
+    diffBox.style.display = "none";
+}
 
             const sidebar = document.getElementById("sidebar-racc");
             const tooltip = document.getElementById("listChapTooltip");
@@ -485,3 +552,34 @@ else { ?>
 }
 ?>
 
+<div id="difficultyPopup"
+     style="
+        display:none;
+        position:fixed;
+        top:30%;
+        left:50%;
+        transform:translate(-50%, -50%);
+        background:white;
+        padding:20px 25px;
+        border-radius:12px;
+        border:1px solid #1d3557;
+        box-shadow:0 6px 20px rgba(0,0,0,0.2);
+        z-index:5000;
+        font-size:16px;
+        font-weight:bold;
+        color:#1d3557;
+        text-align:center;
+     ">
+</div>
+
+<script>
+function showDifficultyPopup(text) {
+    const popup = document.getElementById("difficultyPopup");
+    popup.innerHTML = text;
+    popup.style.display = "block";
+
+    setTimeout(() => {
+        popup.style.display = "none";
+    }, 1500);
+}
+</script>
