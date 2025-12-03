@@ -1560,7 +1560,11 @@ if (container.is(":visible")) {
                                     <div class="dropdown-menu p-2" style="min-width:18rem;">
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <input type="file" name="mFile_${idEncoded}" class="form-control form-control-sm mb-2" accept=".docx">
+<input type="file" 
+       id="mFile_${idEncoded}"
+       name="mFile_${idEncoded}" 
+       class="form-control form-control-sm mb-2" 
+       accept=".docx">
                                                 <input type="hidden" name="attach_file_${idEncoded}" value="${idEncoded}">
                                             </div>
                                         </div>
@@ -1722,52 +1726,66 @@ $(document).ready(function() {
                         const idEncoded = sc.IDSousChapitre;
                         const titre = sc.TitreSousChapitre.replace(/'/g, '&#39;');
 
-                        let html = `
-                            <div class="souschap-item" style="display: flex; align-items: center; padding: 0.5em 0; border-bottom: 1px solid #eee; position: relative;">
-                                <div style="flex: 1; display: flex; align-items: center; gap: 0.5em;">
-                                    <!-- Icône dropdown devant le titre -->
-                                    <div class="dropdown" style="position: relative;">
-                                        <a href="#" data-toggle="dropdown" data-display="static" aria-expanded="false" title="Modifier / gérer le fichier">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 align-middle">
-                                                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
-                                            </svg>
-                                        </a>
+// Dans la génération HTML :
+let html = `
+<div class="souschap-item" 
+     style="display:flex;align-items:center;padding:0.5em 0;border-bottom:1px solid #eee;">
+    
+    <div style="flex:1;display:flex;align-items:center;gap:0.5em;">
+        
+        <div class="dropdown" style="position:relative;">
+            <a href="#" data-toggle="dropdown" data-display="static" 
+               aria-expanded="false" title="Modifier / gérer le fichier">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" 
+                     viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                </svg>
+            </a>
 
-                                        <div class="dropdown-menu p-2" style="min-width: 18rem;">
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <input type="file" name="mFile_${idEncoded}" id="mFile_${idEncoded}" class="form-control form-control-sm mb-2" accept=".docx">
-                                                    <input type="hidden" name="attach_file_${idEncoded}" value="${idEncoded}">
-                                                </div>
-                                            </div>
+            <div class="dropdown-menu p-2" style="min-width:18rem;">
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- 🔥 Ajout de l'attribut ID -->
+                        <input type="file" 
+                               id="mFile_${idEncoded}"
+                               name="mFile_${idEncoded}" 
+                               class="form-control form-control-sm mb-2" 
+                               accept=".docx">
+                        <input type="hidden" 
+                               name="attach_file_${idEncoded}" 
+                               value="${idEncoded}">
+                    </div>
+                </div>
 
-                                            <div class="row">
-                                                <div class="col-12 text-center">
-                                                    <span class="btn btn-info btn-sm mt-1" onclick="set_SubChapCurs('${idEncoded}')">
-                                                        <i class="fas fa-upload"></i> Upload (COURS.docx)
-                                                    </span>
-                                                </div>
-                                            </div>
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <span class="btn btn-info btn-sm mt-1" 
+                              onclick="set_SubChapCurs('${idEncoded}')">
+                            <i class="fas fa-upload"></i> Upload (COURS.docx)
+                        </span>
+                    </div>
+                </div>
 
-                                            <hr>
+                <hr>
 
-                                            <div class="row">
-                                                <div class="col-12 text-center">
-                                                    <span class="btn btn-danger btn-sm" 
-                                                        onclick="suppCurs('${idEncoded}')"
-                                                        name="${titre}"
-                                                        id="${idEncoded}">
-                                                        <i class="fa fa-trash-alt"></i> Supprimer
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <!-- 🔥 Correction : suppSousChap au lieu de suppCurs -->
+                        <span class="btn btn-danger btn-sm" 
+                              onclick="suppSousChap('${idEncoded}')"
+                              name="${titre}" 
+                              id="del_${idEncoded}">
+                            <i class="fa fa-trash-alt"></i> Supprimer
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                                    <!-- Titre du sous-chapitre -->
-                                    <span>- ${sc.TitreSousChapitre}</span>
-                                </div>
-                        `;
+        <span>- ${sc.TitreSousChapitre}</span>
+    </div>
+`;
                          if (sc.FichierHTML && sc.FichierHTML.length > 0) {
                                 html += `
                                     <div style="margin-left: 1em;">
@@ -3396,7 +3414,7 @@ function editSousChap(idEncoded) {
 
                 if (!fileInput || !fileInput.files.length) {
                     Swal.fire({
-                        icon: 'warning',
+                        type: 'warning',
                         title: 'Aucun fichier sélectionné',
                         text: 'Veuillez choisir un fichier .docx avant de continuer.'
                     });
@@ -3428,14 +3446,14 @@ function editSousChap(idEncoded) {
 
                             if (res[0]?.id == '1') {
                                 Swal.fire({
-                                    icon: 'success',
+                                    type: 'success',
                                     title: 'Fichier attaché avec succès',
                                     text: 'Le fichier du sous-chapitre a été converti et enregistré.',
                                     confirmButtonText: 'OK'
                                 });
                             } else {
                                 Swal.fire({
-                                    icon: 'error',
+                                    type: 'error',
                                     title: 'Erreur',
                                     text: res[0]?.desc || 'Une erreur est survenue.'
                                 });
@@ -3443,7 +3461,7 @@ function editSousChap(idEncoded) {
                         } catch (e) {
                             console.error('Erreur JSON:', e, response);
                             Swal.fire({
-                                icon: 'error',
+                                type: 'error',
                                 title: 'Erreur serveur',
                                 text: 'Réponse du serveur invalide.'
                             });
@@ -3452,7 +3470,7 @@ function editSousChap(idEncoded) {
                     error: function (xhr, status, error) {
                         console.error('Erreur AJAX:', error);
                         Swal.fire({
-                            icon: 'error',
+                            type: 'error',
                             title: 'Erreur lors de l’envoi du fichier',
                             text: 'Veuillez réessayer plus tard.'
                         });

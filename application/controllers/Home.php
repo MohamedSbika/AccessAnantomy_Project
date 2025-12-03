@@ -2719,6 +2719,87 @@ header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
 
     }
 
+    // À ajouter dans votre contrôleur (Home.php)
+// Copiez-collez cette méthode complète
+
+public function getRappelCoursContent() {
+    // Vérifier que c'est une requête POST
+    if ($this->input->method() !== 'post') {
+        echo json_encode(['success' => false, 'message' => 'Méthode non autorisée']);
+        return;
+    }
+
+    // Récupérer l'ID du chapitre de rappel
+    $postData = json_decode(file_get_contents('php://input'), true);
+    $idChapterRappel = isset($postData['idChapterRappel']) ? $postData['idChapterRappel'] : null;
+
+    if (empty($idChapterRappel)) {
+        echo json_encode(['success' => false, 'message' => 'ID de rappel manquant']);
+        return;
+    }
+
+    try {
+        // Récupérer les informations du chapitre (même logique que livreCours)
+        $this->db->select('*');
+        $this->db->from('_chapitre, _livre, _theme');
+        $this->db->where("IDChapitre = '$idChapterRappel' AND _chapitre.IDLivre = _livre.IDLivre AND _theme.IDTheme = _livre.IDTheme");
+        $resChap = $this->db->get()->result_array();
+
+        if (empty($resChap)) {
+            echo json_encode(['success' => false, 'message' => 'Chapitre de rappel non trouvé']);
+            return;
+        }
+
+        // Récupérer le cours associé au chapitre
+        $this->db->select('*');
+        $this->db->from('_cours');
+        $this->db->where("IDChapitre = '$idChapterRappel' LIMIT 1");
+        $resCurs = $this->db->get()->result_array();
+        
+        $idCours = 0;
+        if (sizeof($resCurs) > 0) {
+            $idCours = $resCurs[0]["IDCours"];
+        }
+
+        if ($idCours == 0) {
+            echo json_encode(['success' => false, 'message' => 'Aucun cours trouvé pour ce rappel']);
+            return;
+        }
+
+        // Récupérer les pages du cours
+        $this->db->select('*');
+        $this->db->from('_page');
+        $this->db->where("IDCours = '$idCours'");
+        $listPages = $this->db->get()->result_array();
+
+        if (empty($listPages)) {
+            echo json_encode(['success' => false, 'message' => 'Aucune page trouvée pour ce cours']);
+            return;
+        }
+
+        // Récupérer le contenu de la première page (comme dans livreCours)
+        $cursShow = $this->getCurs($listPages[0]['IDPage']);
+
+        if (empty($cursShow)) {
+            echo json_encode(['success' => false, 'message' => 'Contenu du cours vide']);
+            return;
+        }
+
+        // Retourner le contenu
+        echo json_encode([
+            'success' => true,
+            'content' => $cursShow,
+            'titre' => isset($resChap[0]['TitreChapitre']) ? $resChap[0]['TitreChapitre'] : 'Rappel Cours'
+        ]);
+
+    } catch (Exception $e) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Erreur lors de la récupération du contenu: ' . $e->getMessage()
+        ]);
+    }
+}
+
     public function  livreCours_simple($id,$indxSearch='')
     {
         $this->session->set_userdata('curs_id', 'curs_'.$id);

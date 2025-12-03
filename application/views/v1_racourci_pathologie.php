@@ -537,12 +537,13 @@ function afficherSousChapitres(sousChapList, data) {
 
     let html = '';
         
-    html += `
-        <li class="sous-chapitre-item rappel-item" 
-            style="font-weight:bold; color:#1d3557; background-color:#dce6f1; cursor:pointer;">
-            Rappel Cours
-        </li>
-    `;
+html += `
+    <li class="sous-chapitre-item rappel-item" 
+        style="font-weight:bold; color:#1d3557; background-color:#dce6f1; cursor:pointer;"
+        onclick="chargerRappelCours('${idChapterRappel || ''}', event)">
+        Rappel Cours
+    </li>
+`;
     html += `
         <li class="pathologies-accordion">
             <div class="pathologies-header" onclick="togglePathologies(event)">
@@ -578,28 +579,28 @@ function afficherSousChapitres(sousChapList, data) {
     sousChapList.innerHTML = html;
 
 
-    setTimeout(() => {
-        const rappelItem = sousChapList.querySelector('.rappel-item');
-        if (rappelItem) {
-            rappelItem.addEventListener('click', (e) => {
-                e.stopPropagation();
+    // setTimeout(() => {
+    //     const rappelItem = sousChapList.querySelector('.rappel-item');
+    //     if (rappelItem) {
+    //         rappelItem.addEventListener('click', (e) => {
+    //             e.stopPropagation();
 
-                if (!idChapterRappel) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Aucun rappel disponible',
-                        text: 'Ce chapitre n\'a pas de cours de rappel.'
-                    });
-                    return;
-                }
+    //             if (!idChapterRappel) {
+    //                 Swal.fire({
+    //                     icon: 'warning',
+    //                     title: 'Aucun rappel disponible',
+    //                     text: 'Ce chapitre n\'a pas de cours de rappel.'
+    //                 });
+    //                 return;
+    //             }
 
-                const lang = "<?php echo $this->lang->line('siteLang'); ?>";
-                const baseUrl = "<?php echo base_url(); ?>";
+    //             const lang = "<?php echo $this->lang->line('siteLang'); ?>";
+    //             const baseUrl = "<?php echo base_url(); ?>";
 
-                window.location.href = baseUrl + lang + "/livreCours/" + idChapterRappel;
-            });
-        }
-    }, 0);
+    //             window.location.href = baseUrl + lang + "/livreCours/" + idChapterRappel;
+    //         });
+    //     }
+    // }, 0);
 }
 
 
@@ -717,4 +718,84 @@ function selectSousChapitre(idSousChapitre, idChapitre, element, event) {
         document.documentElement.style.setProperty('--scroll-y', window.scrollY + 'px');
     }
     window.addEventListener('scroll', updateScroll);
+
+    // Fonction pour charger le contenu du rappel cours en AJAX
+// === CHARGEMENT RAPPEL COURS SANS REDIRECTION ===
+function chargerRappelCours(idChapterRappel, event) {
+    if (event) {
+        event.stopPropagation();
+    }
+
+    if (!idChapterRappel) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Aucun rappel disponible',
+            text: 'Ce chapitre n\'a pas de cours de rappel.'
+        });
+        return;
+    }
+
+    // Vérifier si nous sommes sur la bonne page (avec .bloc-cours)
+    const coursContainer = document.querySelector('.bloc-cours');
+    
+    // Si .bloc-cours n'existe pas, rediriger vers la page du cours
+    if (!coursContainer) {
+        const lang = "<?php echo $this->lang->line('siteLang'); ?>";
+        const baseUrl = "<?php echo base_url(); ?>";
+        window.location.href = baseUrl + lang + "livreCours/" + idChapterRappel;
+        return;
+    }
+
+    // Afficher un loader
+    const originalContent = coursContainer.innerHTML;
+    
+    coursContainer.innerHTML = `
+        <div style="text-align: center; padding: 50px;">
+            <i class="fas fa-spinner fa-spin" style="font-size: 40px; color: #1d3557;"></i>
+            <p style="margin-top: 20px; font-size: 16px; color: #666;">Chargement du rappel cours...</p>
+        </div>
+    `;
+
+    const baseUrl = "<?php echo base_url(); ?>";
+
+    // Appel AJAX
+    fetch(`${baseUrl}home/getRappelCoursContent`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idChapterRappel: idChapterRappel })
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Erreur réseau: ' + response.status);
+        return response.json();
+    })
+    .then(data => {
+        if (data.success && data.content) {
+            coursContainer.innerHTML = data.content;
+            
+            const tooltip = document.getElementById("listChapTooltip");
+            if (tooltip) tooltip.style.display = 'none';
+            
+            coursContainer.scrollTop = 0;
+            
+            // Swal.fire({
+            //     icon: 'success',
+            //     title: 'Rappel cours chargé',
+            //     timer: 2000,
+            //     showConfirmButton: false
+            // });
+        } else {
+            throw new Error(data.message || 'Contenu non disponible');
+        }
+    })
+    .catch(error => {
+        console.error('❌ Erreur:', error);
+        coursContainer.innerHTML = originalContent;
+        
+        Swal.fire({
+            icon: 'error',
+            title: 'Erreur de chargement',
+            text: 'Impossible de charger le rappel cours.'
+        });
+    });
+}
 </script>
