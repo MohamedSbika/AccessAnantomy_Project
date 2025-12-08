@@ -139,3 +139,132 @@ ERROR - 2025-12-08 16:29:16 --> Severity: Notice --> Undefined variable: jwt C:\
 ERROR - 2025-12-08 16:44:58 --> Severity: Notice --> Undefined variable: jwt C:\xampp\7.4\htdocs\public_html\application\views\livreDetails.php 522
 ERROR - 2025-12-08 17:06:28 --> 404 Page Not Found: Assets/js
 ERROR - 2025-12-08 17:06:31 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-12-08 17:09:05 --> Severity: Notice --> Undefined variable: sousChap C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8185
+ERROR - 2025-12-08 17:09:05 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8185
+ERROR - 2025-12-08 17:09:05 --> Severity: Notice --> Undefined variable: sousChap C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8186
+ERROR - 2025-12-08 17:09:05 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8186
+ERROR - 2025-12-08 17:09:05 --> Severity: Notice --> Undefined variable: idChapterRappel C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8187
+ERROR - 2025-12-08 17:09:05 --> Severity: Notice --> Undefined variable: sousChap C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8185
+ERROR - 2025-12-08 17:09:05 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8185
+ERROR - 2025-12-08 17:09:05 --> Severity: Notice --> Undefined variable: sousChap C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8186
+ERROR - 2025-12-08 17:09:05 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8186
+ERROR - 2025-12-08 17:09:05 --> Severity: Notice --> Undefined variable: idChapterRappel C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8187
+ERROR - 2025-12-08 17:09:06 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 3035
+ERROR - 2025-12-08 17:09:06 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 3035
+ERROR - 2025-12-08 17:09:06 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\header.php 51
+ERROR - 2025-12-08 17:09:06 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\header.php 51
+ERROR - 2025-12-08 17:09:06 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\header_nav.php 84
+ERROR - 2025-12-08 17:09:06 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\header_nav.php 84
+ERROR - 2025-12-08 17:09:06 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\header_nav.php 84
+ERROR - 2025-12-08 17:09:06 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\header_nav.php 84
+ERROR - 2025-12-08 17:09:06 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\header_nav.php 88
+ERROR - 2025-12-08 17:09:06 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\header_nav.php 88
+ERROR - 2025-12-08 17:09:06 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\header_nav.php 89
+ERROR - 2025-12-08 17:09:06 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\header_nav.php 89
+ERROR - 2025-12-08 17:09:06 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\livreQroc.php 229
+ERROR - 2025-12-08 17:09:06 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\livreQroc.php 229
+ERROR - 2025-12-08 17:09:07 --> Severity: Notice --> Undefined variable: sousChap C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8185
+ERROR - 2025-12-08 17:09:07 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8185
+ERROR - 2025-12-08 17:09:07 --> Severity: Notice --> Undefined variable: sousChap C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8186
+ERROR - 2025-12-08 17:09:07 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8186
+ERROR - 2025-12-08 17:09:07 --> Severity: Notice --> Undefined variable: idChapterRappel C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8187
+ERROR - 2025-12-08 17:09:07 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 3035
+ERROR - 2025-12-08 17:09:07 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 3035
+ERROR - 2025-12-08 17:09:07 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\header.php 51
+ERROR - 2025-12-08 17:09:07 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\header.php 51
+ERROR - 2025-12-08 17:09:07 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\header_nav.php 84
+ERROR - 2025-12-08 17:09:07 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\header_nav.php 84
+ERROR - 2025-12-08 17:09:07 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\header_nav.php 84
+ERROR - 2025-12-08 17:09:07 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\header_nav.php 84
+ERROR - 2025-12-08 17:09:07 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\header_nav.php 88
+ERROR - 2025-12-08 17:09:07 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\header_nav.php 88
+ERROR - 2025-12-08 17:09:07 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\header_nav.php 89
+ERROR - 2025-12-08 17:09:07 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\header_nav.php 89
+ERROR - 2025-12-08 17:09:07 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\livreQroc.php 229
+ERROR - 2025-12-08 17:09:07 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\livreQroc.php 229
+ERROR - 2025-12-08 17:09:09 --> Severity: Notice --> Undefined variable: sousChap C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8185
+ERROR - 2025-12-08 17:09:09 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8185
+ERROR - 2025-12-08 17:09:09 --> Severity: Notice --> Undefined variable: sousChap C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8186
+ERROR - 2025-12-08 17:09:09 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8186
+ERROR - 2025-12-08 17:09:09 --> Severity: Notice --> Undefined variable: idChapterRappel C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8187
+ERROR - 2025-12-08 17:09:09 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 2984
+ERROR - 2025-12-08 17:09:09 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 2984
+ERROR - 2025-12-08 17:09:09 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\header.php 46
+ERROR - 2025-12-08 17:09:09 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\header.php 46
+ERROR - 2025-12-08 17:09:09 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\header_nav.php 75
+ERROR - 2025-12-08 17:09:09 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\header_nav.php 75
+ERROR - 2025-12-08 17:09:09 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\header_nav.php 75
+ERROR - 2025-12-08 17:09:09 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\header_nav.php 75
+ERROR - 2025-12-08 17:09:09 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\header_nav.php 79
+ERROR - 2025-12-08 17:09:09 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\header_nav.php 79
+ERROR - 2025-12-08 17:09:09 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\header_nav.php 80
+ERROR - 2025-12-08 17:09:09 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\header_nav.php 80
+ERROR - 2025-12-08 17:09:09 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\livreQcm.php 222
+ERROR - 2025-12-08 17:09:09 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\livreQcm.php 222
+ERROR - 2025-12-08 17:09:10 --> Severity: Notice --> Undefined variable: sousChap C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8185
+ERROR - 2025-12-08 17:09:10 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8185
+ERROR - 2025-12-08 17:09:10 --> Severity: Notice --> Undefined variable: sousChap C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8186
+ERROR - 2025-12-08 17:09:10 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8186
+ERROR - 2025-12-08 17:09:10 --> Severity: Notice --> Undefined variable: idChapterRappel C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8187
+ERROR - 2025-12-08 17:09:10 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 2910
+ERROR - 2025-12-08 17:09:10 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 2910
+ERROR - 2025-12-08 17:09:10 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\header.php 41
+ERROR - 2025-12-08 17:09:10 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\header.php 41
+ERROR - 2025-12-08 17:09:10 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\livreResume.php 218
+ERROR - 2025-12-08 17:09:10 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\livreResume.php 218
+ERROR - 2025-12-08 17:09:11 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\livreResume.php 550
+ERROR - 2025-12-08 17:09:11 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\livreResume.php 550
+ERROR - 2025-12-08 17:09:12 --> Severity: Notice --> Undefined variable: sousChap C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8185
+ERROR - 2025-12-08 17:09:12 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8185
+ERROR - 2025-12-08 17:09:12 --> Severity: Notice --> Undefined variable: sousChap C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8186
+ERROR - 2025-12-08 17:09:12 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8186
+ERROR - 2025-12-08 17:09:12 --> Severity: Notice --> Undefined variable: idChapterRappel C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8187
+ERROR - 2025-12-08 17:09:12 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 2910
+ERROR - 2025-12-08 17:09:12 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 2910
+ERROR - 2025-12-08 17:09:12 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\header.php 41
+ERROR - 2025-12-08 17:09:12 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\header.php 41
+ERROR - 2025-12-08 17:09:12 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\livreResume.php 218
+ERROR - 2025-12-08 17:09:12 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\livreResume.php 218
+ERROR - 2025-12-08 17:09:12 --> Severity: Notice --> Undefined variable: sousChap C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8185
+ERROR - 2025-12-08 17:09:12 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8185
+ERROR - 2025-12-08 17:09:12 --> Severity: Notice --> Undefined variable: sousChap C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8186
+ERROR - 2025-12-08 17:09:12 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8186
+ERROR - 2025-12-08 17:09:12 --> Severity: Notice --> Undefined variable: idChapterRappel C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8187
+ERROR - 2025-12-08 17:09:13 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\livreResume.php 550
+ERROR - 2025-12-08 17:09:13 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\livreResume.php 550
+ERROR - 2025-12-08 17:09:21 --> Severity: Notice --> Undefined variable: sousChap C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8185
+ERROR - 2025-12-08 17:09:21 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8185
+ERROR - 2025-12-08 17:09:21 --> Severity: Notice --> Undefined variable: sousChap C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8186
+ERROR - 2025-12-08 17:09:21 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8186
+ERROR - 2025-12-08 17:09:21 --> Severity: Notice --> Undefined variable: idChapterRappel C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8187
+ERROR - 2025-12-08 17:09:24 --> Severity: Notice --> Undefined variable: sousChap C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8185
+ERROR - 2025-12-08 17:09:24 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8185
+ERROR - 2025-12-08 17:09:24 --> Severity: Notice --> Undefined variable: sousChap C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8186
+ERROR - 2025-12-08 17:09:24 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8186
+ERROR - 2025-12-08 17:09:24 --> Severity: Notice --> Undefined variable: idChapterRappel C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8187
+ERROR - 2025-12-08 17:09:24 --> Severity: Notice --> Undefined variable: listActualites C:\xampp\7.4\htdocs\public_html\application\views\page_home.php 1111
+ERROR - 2025-12-08 17:09:24 --> Severity: Warning --> sizeof(): Parameter must be an array or an object that implements Countable C:\xampp\7.4\htdocs\public_html\application\views\page_home.php 1111
+ERROR - 2025-12-08 17:09:24 --> Severity: Notice --> Undefined variable: listActualites C:\xampp\7.4\htdocs\public_html\application\views\actualitesmodals.php 56
+ERROR - 2025-12-08 17:09:24 --> Severity: Warning --> Invalid argument supplied for foreach() C:\xampp\7.4\htdocs\public_html\application\views\actualitesmodals.php 56
+ERROR - 2025-12-08 17:09:24 --> Severity: Notice --> Undefined variable: listActualites C:\xampp\7.4\htdocs\public_html\application\views\actualitesmodals.php 107
+ERROR - 2025-12-08 17:09:24 --> Severity: Warning --> Invalid argument supplied for foreach() C:\xampp\7.4\htdocs\public_html\application\views\actualitesmodals.php 107
+ERROR - 2025-12-08 17:09:24 --> 404 Page Not Found: Assets/js
+ERROR - 2025-12-08 17:09:24 --> Severity: Notice --> Undefined variable: sousChap C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8185
+ERROR - 2025-12-08 17:09:24 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8185
+ERROR - 2025-12-08 17:09:24 --> Severity: Notice --> Undefined variable: sousChap C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8186
+ERROR - 2025-12-08 17:09:24 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8186
+ERROR - 2025-12-08 17:09:24 --> Severity: Notice --> Undefined variable: idChapterRappel C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 8187
+ERROR - 2025-12-08 17:09:24 --> Severity: Notice --> Undefined variable: listActualites C:\xampp\7.4\htdocs\public_html\application\views\page_home.php 1111
+ERROR - 2025-12-08 17:09:24 --> Severity: Warning --> sizeof(): Parameter must be an array or an object that implements Countable C:\xampp\7.4\htdocs\public_html\application\views\page_home.php 1111
+ERROR - 2025-12-08 17:09:24 --> Severity: Notice --> Undefined variable: listActualites C:\xampp\7.4\htdocs\public_html\application\views\actualitesmodals.php 56
+ERROR - 2025-12-08 17:09:24 --> Severity: Warning --> Invalid argument supplied for foreach() C:\xampp\7.4\htdocs\public_html\application\views\actualitesmodals.php 56
+ERROR - 2025-12-08 17:09:24 --> Severity: Notice --> Undefined variable: listActualites C:\xampp\7.4\htdocs\public_html\application\views\actualitesmodals.php 107
+ERROR - 2025-12-08 17:09:24 --> Severity: Warning --> Invalid argument supplied for foreach() C:\xampp\7.4\htdocs\public_html\application\views\actualitesmodals.php 107
+ERROR - 2025-12-08 17:09:24 --> 404 Page Not Found: Assets/js
+ERROR - 2025-12-08 17:09:42 --> Severity: Notice --> Undefined variable: listActualites C:\xampp\7.4\htdocs\public_html\application\views\page_home.php 1111
+ERROR - 2025-12-08 17:09:42 --> Severity: Warning --> sizeof(): Parameter must be an array or an object that implements Countable C:\xampp\7.4\htdocs\public_html\application\views\page_home.php 1111
+ERROR - 2025-12-08 17:09:42 --> Severity: Notice --> Undefined variable: listActualites C:\xampp\7.4\htdocs\public_html\application\views\actualitesmodals.php 56
+ERROR - 2025-12-08 17:09:42 --> Severity: Warning --> Invalid argument supplied for foreach() C:\xampp\7.4\htdocs\public_html\application\views\actualitesmodals.php 56
+ERROR - 2025-12-08 17:09:42 --> Severity: Notice --> Undefined variable: listActualites C:\xampp\7.4\htdocs\public_html\application\views\actualitesmodals.php 107
+ERROR - 2025-12-08 17:09:42 --> Severity: Warning --> Invalid argument supplied for foreach() C:\xampp\7.4\htdocs\public_html\application\views\actualitesmodals.php 107
+ERROR - 2025-12-08 17:09:42 --> 404 Page Not Found: Assets/js
