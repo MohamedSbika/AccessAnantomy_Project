@@ -3,7 +3,11 @@
 if (!defined('BASEPATH'))
 	exit('No direct script access allowed');
 
-    
+// Charger Composer
+require_once FCPATH . "vendor/autoload.php";
+
+// Importer la classe JWT
+use Firebase\JWT\JWT;
 
 class Home extends CI_Controller {
 
@@ -2603,54 +2607,71 @@ header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
         $this->load->view($this->getTypePlatform() ? 'v1_livre' : 'livre', $arr);
     }
 
-    public function  livreDetails($id)
-    {
+    public function livreDetails($id)
+{
+    // 1️⃣ Clé secrète (même que dans Next.js)
+    $secret = "MA_CLE_TRES_SECRETE_2025";
 
-        $this->db->select('*');
-        $this->db->from('_livre , _theme');
-        $this->db->Where("IDLivre = '$id' AND _theme.IDTheme = _livre.IDTheme");
-        $resBook = $this->db->get()->result_array();
-        
-        $idCategory = $resBook[0]['IDCategory'];
-        $this->db->select('*');
-        $this->db->from('_category');
-        $this->db->Where("IDCategory = '$idCategory' ");
-        $category = $this->db->get()->result_array();
-       
-        if($id === "70" || $id === "71"){
-            $category[0]["EstActifQSM"] = 0;
-            $category[0]["EstActifQROC"] = 0;
-            $category[0]["EstActifResume"] = 0;
-            $category[0]["EstActifCalques"] = 1;
-            $category[0]["EstActifTest"] = 1;
-        }
+    // 2️⃣ Générer le token JWT
+    $payload = [
+        "exp"   => time() + 3600,
+        "role"  => "admin",
+        "page"  => "livreDetails",
+        "id"    => $id
+    ];
 
-        //log_message('error', json_encode($category) );
+    $jwt = JWT::encode($payload, $secret, "HS256");
 
-        $this->db->select('* , CAST(SUBSTRING_INDEX(titrechapitre, "-", 1) as SIGNED INTEGER ) AS ord');
-        $this->db->from('_chapitre');
-        $this->db->Where("IDLivre = '$id' ");
-        //$this->db->order_by("NumOrdre" ,"asc");
-        $this->db->order_by("ord" ,"asc");
-        $resChap = $this->db->get()->result_array();
+    // 3️⃣ Toutes tes requêtes EXACTES
+    $this->db->select('*');
+    $this->db->from('_livre , _theme');
+    $this->db->where("IDLivre = '$id' AND _theme.IDTheme = _livre.IDTheme");
+    $resBook = $this->db->get()->result_array();
 
-        $this->db->select('SUM(NbreQcm) AS QcmNBR , SUM(NbreQroc) AS QrocNBR , SUM(NbreTest) AS test');
-        $this->db->from('_chapitre');
-        $this->db->Where("IDLivre = '$id' ");
-        $resNBR = $this->db->get()->result_array();
+    $idCategory = $resBook[0]['IDCategory'];
 
-        $typesVideo = ["cours", "resume"];
+    $this->db->select('*');
+    $this->db->from('_category');
+    $this->db->where("IDCategory = '$idCategory'");
+    $category = $this->db->get()->result_array();
 
-        $arr['typesVideo'] = $typesVideo;
-        $arr['category'] = $category[0];
-        $arr['resNBR'] 		= $resNBR;
-        $arr['OneBook']     = $resBook;
-        $arr['listChap']    = $resChap;
-        $arr['page']        = 'livreDetails';
-        $arr['listCat']     = $this->getListCategory();
-//        $this->load->view('livreDetails',$arr);
-        $this->load->view($this->getTypePlatform() ? 'v1_livre' : 'livreDetails', $arr);
+    if ($id === "70" || $id === "71") {
+        $category[0]["EstActifQSM"] = 0;
+        $category[0]["EstActifQROC"] = 0;
+        $category[0]["EstActifResume"] = 0;
+        $category[0]["EstActifCalques"] = 1;
+        $category[0]["EstActifTest"]   = 1;
     }
+
+    $this->db->select('*, CAST(SUBSTRING_INDEX(titrechapitre, "-", 1) as SIGNED INTEGER) AS ord');
+    $this->db->from('_chapitre');
+    $this->db->where("IDLivre = '$id'");
+    $this->db->order_by("ord", "asc");
+    $resChap = $this->db->get()->result_array();
+
+    $this->db->select('SUM(NbreQcm) AS QcmNBR , SUM(NbreQroc) AS QrocNBR , SUM(NbreTest) AS test');
+    $this->db->from('_chapitre');
+    $this->db->where("IDLivre = '$id'");
+    $resNBR = $this->db->get()->result_array();
+
+    // 4️⃣ Ceci sera transmis à la vue
+    $arr = [
+        "jwt"        => $jwt,
+        "typesVideo" => ["cours", "resume"],
+        "category"   => $category[0],
+        "resNBR"     => $resNBR,
+        "OneBook"    => $resBook,
+        "listChap"   => $resChap,
+        "page"       => "livreDetails",
+        "listCat"    => $this->getListCategory()
+    ];
+
+    // 5️⃣ Charger la vue
+    $this->load->view(
+        $this->getTypePlatform() ? 'v1_livre' : 'livreDetails',
+        $arr
+    );
+}
 
     public function  livreCours($id,$indxSearch='')
     {
@@ -8093,6 +8114,68 @@ public function PlatFormeConvert($fichierHTML)
 
 }
 
+public function getRappelSousChapitreFile()
+{
+    $post = json_decode(file_get_contents("php://input"), true);
+
+    if (!isset($post['idChapActuel']) || empty($post['idChapActuel'])) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'IDChapitre actuel manquant'
+        ]);
+        return;
+    }
+
+    $idChapActuel = $post['idChapActuel'];
+
+    // 1️⃣ On récupère le chapitre actuel
+    $chapActuel = $this->db
+        ->where('IDChapitre', $idChapActuel)
+        ->get('_chapitre')
+        ->row_array();
+
+    if (!$chapActuel) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Chapitre actuel introuvable'
+        ]);
+        return;
+    }
+
+    // 2️⃣ On récupère l'id du chapitre Rappel
+    $idChapterRappel = $chapActuel['IdChapterRappel'];
+
+    if (!$idChapterRappel) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Aucun chapitre de rappel configuré'
+        ]);
+        return;
+    }
+
+    // 3️⃣ On cherche le premier sous-chapitre du chapitre rappel
+    $sousChap = $this->db
+        ->where('IDChapitre', $idChapterRappel)
+        ->where('FichierHTML IS NOT NULL', null, false)
+        ->order_by('IDSousChapitre', 'ASC')
+        ->get('_souschapitre')
+        ->row_array();
+
+    if (!$sousChap || empty($sousChap['FichierHTML'])) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Aucun fichier HTML trouvé pour ce chapitre rappel'
+        ]);
+        return;
+    }
+
+    echo json_encode([
+        'success' => true,
+        'file' => $sousChap['FichierHTML'],
+        'idRappelSousChapitre' => $sousChap['IDSousChapitre'],
+        'idChapterRappel' => $idChapterRappel
+    ]);
+}
 
 
 }

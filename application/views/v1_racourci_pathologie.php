@@ -739,12 +739,38 @@ function chargerRappelCours(idChapterRappel, event) {
     const coursContainer = document.querySelector('.bloc-cours');
     
     // Si .bloc-cours n'existe pas, rediriger vers la page du cours
-    if (!coursContainer) {
-        const lang = "<?php echo $this->lang->line('siteLang'); ?>";
-        const baseUrl = "<?php echo base_url(); ?>";
-        window.location.href = baseUrl + lang + "livreCours/" + idChapterRappel;
-        return;
-    }
+if (!coursContainer) {
+
+    const baseUrl = "<?php echo base_url(); ?>";
+    const lang = "<?php echo strtoupper($this->uri->segment(1)); ?>";
+
+    // 1️⃣ Appeler le backend pour obtenir FichierHTML du rappel
+    fetch(`${baseUrl}home/getRappelSousChapitreFile`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idChapActuel: idChapterRappel })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (!data.success) {
+            Swal.fire({ icon: "error", title: "Erreur", text: data.message });
+            return;
+        }
+
+        // 2️⃣ Redirection directe vers PlatFormeConvert avec le fichier du rappel
+        const redirectUrl =
+            `${baseUrl}${lang}/PlatFormeConvert/${data.file}?rappel=1`;
+
+        window.location.href = redirectUrl;
+    })
+    .catch(err => {
+        Swal.fire({ icon: "error", title: "Erreur", text: "Impossible de charger le rappel." });
+        console.error(err);
+    });
+
+    return;
+}
+
 
     // Afficher un loader
     const originalContent = coursContainer.innerHTML;

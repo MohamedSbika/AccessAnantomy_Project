@@ -519,7 +519,7 @@
     <div style="flex: 1; text-align: center;">
         <button type="button"
                 class="btn btn-primary"
-                onclick="window.open('http://localhost:3000/admin', '_blank');">
+        onclick="window.open('http://localhost:3000/admin/?token=<?= $jwt ?>', '_blank');">
             <?= $this->lang->line('actionAjout'); ?> Chapitres
         </button>
     </div>

@@ -444,6 +444,24 @@ if (strlen($this->session->userdata('passTok')) == 200) {
         }
     });
 </script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const url = new URL(window.location.href);
+
+    // Si rappel=1 => charger le rappel automatiquement
+    if (url.searchParams.get("rappel") === "1") {
+
+        const idRappel = localStorage.getItem('idChapterRappel');
+
+        if (typeof chargerRappelCours === "function" && idRappel) {
+            chargerRappelCours(idRappel);
+        }
+    }
+});
+
+</script>
+
 </html>
 
 <?php } else { ?>
