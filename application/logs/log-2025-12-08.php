@@ -268,3 +268,10 @@ ERROR - 2025-12-08 17:09:42 --> Severity: Warning --> Invalid argument supplied 
 ERROR - 2025-12-08 17:09:42 --> Severity: Notice --> Undefined variable: listActualites C:\xampp\7.4\htdocs\public_html\application\views\actualitesmodals.php 107
 ERROR - 2025-12-08 17:09:42 --> Severity: Warning --> Invalid argument supplied for foreach() C:\xampp\7.4\htdocs\public_html\application\views\actualitesmodals.php 107
 ERROR - 2025-12-08 17:09:42 --> 404 Page Not Found: Assets/js
+ERROR - 2025-12-08 19:09:05 --> Severity: Notice --> Undefined variable: listActualites C:\xampp\7.4\htdocs\public_html\application\views\page_home.php 1111
+ERROR - 2025-12-08 19:09:05 --> Severity: Warning --> sizeof(): Parameter must be an array or an object that implements Countable C:\xampp\7.4\htdocs\public_html\application\views\page_home.php 1111
+ERROR - 2025-12-08 19:09:05 --> Severity: Notice --> Undefined variable: listActualites C:\xampp\7.4\htdocs\public_html\application\views\actualitesmodals.php 56
+ERROR - 2025-12-08 19:09:05 --> Severity: Warning --> Invalid argument supplied for foreach() C:\xampp\7.4\htdocs\public_html\application\views\actualitesmodals.php 56
+ERROR - 2025-12-08 19:09:05 --> Severity: Notice --> Undefined variable: listActualites C:\xampp\7.4\htdocs\public_html\application\views\actualitesmodals.php 107
+ERROR - 2025-12-08 19:09:05 --> Severity: Warning --> Invalid argument supplied for foreach() C:\xampp\7.4\htdocs\public_html\application\views\actualitesmodals.php 107
+ERROR - 2025-12-08 19:09:06 --> 404 Page Not Found: Assets/js

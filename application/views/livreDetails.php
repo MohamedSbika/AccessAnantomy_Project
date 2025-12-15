@@ -1457,7 +1457,7 @@ $estPathologie = in_array($value['IDLivre'], [20, 30, 31])
         <div style="width: 30%;">
             <a href="<?= base_url() . $this->lang->line('siteLang'); ?>livreCours/<?= $value['IdChapterRappel']; ?>"
                class="btn btn-outline-primary btn-sm">
-                Rappel
+                Rappel Anatomique 
             </a>
         </div>
 

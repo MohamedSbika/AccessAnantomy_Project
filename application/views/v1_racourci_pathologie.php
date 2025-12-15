@@ -541,7 +541,7 @@ html += `
     <li class="sous-chapitre-item rappel-item" 
         style="font-weight:bold; color:#1d3557; background-color:#dce6f1; cursor:pointer;"
         onclick="chargerRappelCours('${idChapterRappel || ''}', event)">
-        Rappel Cours
+        Rappel Anatomique
     </li>
 `;
     html += `
