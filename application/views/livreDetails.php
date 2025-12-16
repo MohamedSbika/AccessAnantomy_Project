@@ -1463,9 +1463,6 @@ $estPathologie = in_array($value['IDLivre'], [20, 30, 31])
                 <i class="fa fa-plus" title="Ajouter un rappel"></i>
             </a>
             <a href="#" onclick="" name="">
-                <i class="fa fa-edit" title="Modifier"></i>
-            </a>
-            <a href="#" onclick="" name="">
                 <i class="fa fa-images" title="Ajouter des images "></i>
             </a>
             <a href="#" onclick="" name="">

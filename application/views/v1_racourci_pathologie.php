@@ -722,105 +722,60 @@ function selectSousChapitre(idSousChapitre, idChapitre, element, event) {
     // Fonction pour charger le contenu du rappel cours en AJAX
 // === CHARGEMENT RAPPEL COURS SANS REDIRECTION ===
 function chargerRappelCours(idChapterRappel, event) {
-    if (event) {
-        event.stopPropagation();
-    }
+    if (event) event.stopPropagation();
 
-    if (!idChapterRappel) {
+    if (!idChapterRappel || isNaN(idChapterRappel)) {
         Swal.fire({
             icon: 'warning',
             title: 'Aucun rappel disponible',
-            text: 'Ce chapitre n\'a pas de cours de rappel.'
+            text: 'Ce chapitre n’a pas de cours de rappel.'
         });
         return;
     }
 
-    // Vérifier si nous sommes sur la bonne page (avec .bloc-cours)
-    const coursContainer = document.querySelector('.bloc-cours');
-    
-    // Si .bloc-cours n'existe pas, rediriger vers la page du cours
-if (!coursContainer) {
-
     const baseUrl = "<?php echo base_url(); ?>";
     const lang = "<?php echo strtoupper($this->uri->segment(1)); ?>";
 
-    // 1️⃣ Appeler le backend pour obtenir FichierHTML du rappel
-    fetch(`${baseUrl}home/getRappelSousChapitreFile`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ idChapActuel: idChapterRappel })
-    })
-    .then(r => r.json())
-    .then(data => {
-        if (!data.success) {
-            Swal.fire({ icon: "error", title: "Erreur", text: data.message });
-            return;
-        }
+    const coursContainer = document.querySelector('.bloc-cours');
 
-        // 2️⃣ Redirection directe vers PlatFormeConvert avec le fichier du rappel
-        const redirectUrl =
-            `${baseUrl}${lang}/PlatFormeConvert/${data.file}?rappel=1`;
-
+    // 🔴 CAS 1 : on n'est PAS dans la page cours → REDIRECTION
+    if (!coursContainer) {
+        const redirectUrl = `${baseUrl}${lang}/livreCours/${idChapterRappel}`;
         window.location.href = redirectUrl;
-    })
-    .catch(err => {
-        Swal.fire({ icon: "error", title: "Erreur", text: "Impossible de charger le rappel." });
-        console.error(err);
-    });
+        return;
+    }
 
-    return;
-}
-
-
-    // Afficher un loader
+    // 🟢 CAS 2 : on est DANS la page cours → AJAX
     const originalContent = coursContainer.innerHTML;
-    
+
     coursContainer.innerHTML = `
-        <div style="text-align: center; padding: 50px;">
-            <i class="fas fa-spinner fa-spin" style="font-size: 40px; color: #1d3557;"></i>
-            <p style="margin-top: 20px; font-size: 16px; color: #666;">Chargement du rappel cours...</p>
+        <div style="text-align:center; padding:50px;">
+            <i class="fas fa-spinner fa-spin" style="font-size:40px; color:#1d3557;"></i>
+            <p style="margin-top:15px;">Chargement du rappel cours...</p>
         </div>
     `;
 
-    const baseUrl = "<?php echo base_url(); ?>";
-
-    // Appel AJAX
     fetch(`${baseUrl}home/getRappelCoursContent`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ idChapterRappel: idChapterRappel })
+        body: JSON.stringify({ idChapterRappel })
     })
-    .then(response => {
-        if (!response.ok) throw new Error('Erreur réseau: ' + response.status);
-        return response.json();
-    })
+    .then(r => r.json())
     .then(data => {
         if (data.success && data.content) {
             coursContainer.innerHTML = data.content;
-            
-            const tooltip = document.getElementById("listChapTooltip");
-            if (tooltip) tooltip.style.display = 'none';
-            
             coursContainer.scrollTop = 0;
-            
-            // Swal.fire({
-            //     icon: 'success',
-            //     title: 'Rappel cours chargé',
-            //     timer: 2000,
-            //     showConfirmButton: false
-            // });
         } else {
             throw new Error(data.message || 'Contenu non disponible');
         }
     })
-    .catch(error => {
-        console.error('❌ Erreur:', error);
+    .catch(err => {
+        console.error(err);
         coursContainer.innerHTML = originalContent;
-        
         Swal.fire({
             icon: 'error',
-            title: 'Erreur de chargement',
-            text: 'Impossible de charger le rappel cours.'
+            title: 'Erreur',
+            text: 'Impossible de charger le rappel.'
         });
     });
 }
