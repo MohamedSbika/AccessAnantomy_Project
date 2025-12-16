@@ -1438,6 +1438,151 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 				</style>
 			</section>
 
+<section class="section-paces">
+    <div class="paces-wrapper">
+        <div class="image-container">
+            <img src="<?php echo HTTP_IMAGES; ?>photos/paces.png" alt="Anatomie PACES">
+        </div>
+
+        <div class="text-container">
+            <h3>Application PACES – Anatomie (1ère année Médecine)</h3>
+
+            <p class="intro">
+                Accédez à une plateforme dédiée aux étudiants en première année de médecine (PACES),
+                conçue pour faciliter l’apprentissage de l’anatomie humaine de manière claire,
+                structurée et progressive.
+            </p>
+
+            <p class="highlight">
+                L’application PACES propose des cours d’anatomie illustrés, organisés par systèmes
+                et régions anatomiques, adaptés au programme officiel de la première année de médecine.
+            </p>
+
+            <ul class="features">
+                <li>Cours d’anatomie détaillés et structurés</li>
+                <li>Schémas explicatifs et visuels pédagogiques</li>
+                <li>Révisions ciblées pour examens et concours</li>
+                <li>Navigation simple par chapitres</li>
+                <li>Pensée spécialement pour les étudiants PACES</li>
+            </ul>
+
+            <a href="http://localhost/pacess/FR/login" class="btn-paces" target="_blank">
+                Accéder à PACES Anatomie
+            </a>
+        </div>
+    </div>
+
+    <style>
+        /* ===== SECTION ===== */
+        .section-paces {
+            background: rgba(3, 26, 75, 0.97);
+            padding: 60px 40px;
+            color: #ffffff;
+        }
+
+        /* ===== WRAPPER FLEX STABLE ===== */
+        .section-paces .paces-wrapper {
+            display: flex;
+            align-items: center;        /* alignement vertical */
+            justify-content: center;
+            gap: 50px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* ===== IMAGE ===== */
+        .section-paces .image-container {
+            flex: 0 0 280px;
+        }
+
+        .section-paces .image-container img {
+            width: auto;
+            height: 400px;
+            display: block;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ===== TEXTE ===== */
+        .section-paces .text-container {
+            flex: 1;
+            text-align: left;
+        }
+
+        .section-paces h3 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #38bdf8;
+            margin-bottom: 15px;
+        }
+
+        .section-paces .intro {
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+
+        .section-paces .highlight {
+            background-color: rgba(56, 189, 248, 0.12);
+            border-left: 4px solid #38bdf8;
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 15px;
+        }
+
+        .section-paces .features {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 25px;
+        }
+
+        .section-paces .features li {
+            padding: 6px 0;
+            font-size: 15px;
+			color: #fff;
+        }
+
+        .section-paces .features li::before,
+        .section-paces .features li::marker {
+            content: none !important;
+            display: none !important;
+        }
+
+        /* ===== BOUTON ===== */
+        .section-paces .btn-paces {
+            display: inline-block;
+            padding: 14px 36px;
+            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .section-paces .btn-paces:hover {
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            transform: translateY(-2px);
+            color: #fff;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .section-paces .paces-wrapper {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .section-paces .text-container {
+                text-align: center;
+            }
+        }
+    </style>
+</section>
+
+
 
 			<div class="section-price-plan">
 				<div class="price_plan">
@@ -1445,7 +1590,7 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 						<?php echo $this->lang->line('pricing_title'); ?>
 					</h1>
 					<div class="toggle-container">
-						<span><?php echo $this->lang->line('monthly'); ?></span>
+						<span><?php echo $this->lang->line('monthly'); ?></span> 
 						<label class="toggle-switch">
 							<input type="checkbox" checked>
 							<span class="slider-toggle"></span>
