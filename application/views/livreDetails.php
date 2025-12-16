@@ -1459,6 +1459,18 @@ $estPathologie = in_array($value['IDLivre'], [20, 30, 31])
                class="btn btn-outline-primary btn-sm">
                 Rappel Anatomique 
             </a>
+            <a href="#" onclick="" name="">
+                <i class="fa fa-plus" title="Ajouter un rappel"></i>
+            </a>
+            <a href="#" onclick="" name="">
+                <i class="fa fa-edit" title="Modifier"></i>
+            </a>
+            <a href="#" onclick="" name="">
+                <i class="fa fa-images" title="Ajouter des images "></i>
+            </a>
+            <a href="#" onclick="" name="">
+                <i class="fa fa-trash-alt" title="Supprimer"></i>
+            </a>
         </div>
 
 <!-- 🟩 COLONNE 3 : PATHOLOGIES AVEC MÊME LOGIQUE AJAX -->
