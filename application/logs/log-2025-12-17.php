@@ -286,3 +286,87 @@ ERROR - 2025-12-17 04:51:53 --> Severity: Notice --> Undefined offset: 0 C:\xamp
 ERROR - 2025-12-17 04:51:53 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
 ERROR - 2025-12-17 04:51:57 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
 ERROR - 2025-12-17 04:52:05 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-12-17 04:53:14 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 128
+ERROR - 2025-12-17 04:53:14 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 128
+ERROR - 2025-12-17 04:53:14 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\v1_bloc_figures.php 368
+ERROR - 2025-12-17 04:53:14 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\v1_bloc_figures.php 368
+ERROR - 2025-12-17 04:53:14 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\v1_bloc_figures.php 368
+ERROR - 2025-12-17 04:53:14 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\v1_bloc_figures.php 368
+ERROR - 2025-12-17 04:53:14 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-12-17 04:53:14 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-12-17 04:53:20 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-12-17 04:53:24 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-17 04:53:24 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-17 04:53:24 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-17 04:53:24 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-17 04:53:24 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-17 04:53:24 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-17 04:53:24 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-17 04:53:24 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-12-17 04:53:30 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-12-17 04:53:52 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 128
+ERROR - 2025-12-17 04:53:52 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 128
+ERROR - 2025-12-17 04:53:52 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\v1_bloc_figures.php 368
+ERROR - 2025-12-17 04:53:52 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\v1_bloc_figures.php 368
+ERROR - 2025-12-17 04:53:52 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\v1_bloc_figures.php 368
+ERROR - 2025-12-17 04:53:52 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\v1_bloc_figures.php 368
+ERROR - 2025-12-17 04:53:52 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-12-17 04:53:52 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-12-17 04:55:46 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-12-17 04:55:49 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 128
+ERROR - 2025-12-17 04:55:49 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 128
+ERROR - 2025-12-17 04:55:49 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\v1_bloc_figures.php 368
+ERROR - 2025-12-17 04:55:49 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\v1_bloc_figures.php 368
+ERROR - 2025-12-17 04:55:49 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\v1_bloc_figures.php 368
+ERROR - 2025-12-17 04:55:49 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\v1_bloc_figures.php 368
+ERROR - 2025-12-17 04:55:49 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-12-17 04:55:49 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-12-17 05:00:19 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-12-17 05:00:23 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 128
+ERROR - 2025-12-17 05:00:23 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 128
+ERROR - 2025-12-17 05:00:23 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\v1_bloc_figures.php 368
+ERROR - 2025-12-17 05:00:23 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\v1_bloc_figures.php 368
+ERROR - 2025-12-17 05:00:23 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\v1_bloc_figures.php 368
+ERROR - 2025-12-17 05:00:23 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\v1_bloc_figures.php 368
+ERROR - 2025-12-17 05:00:23 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-12-17 05:00:23 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-12-17 05:02:59 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 128
+ERROR - 2025-12-17 05:02:59 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 128
+ERROR - 2025-12-17 05:02:59 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\v1_bloc_figures.php 368
+ERROR - 2025-12-17 05:02:59 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\v1_bloc_figures.php 368
+ERROR - 2025-12-17 05:02:59 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\v1_bloc_figures.php 368
+ERROR - 2025-12-17 05:02:59 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\v1_bloc_figures.php 368
+ERROR - 2025-12-17 05:02:59 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-12-17 05:02:59 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-12-17 05:03:18 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 128
+ERROR - 2025-12-17 05:03:18 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 128
+ERROR - 2025-12-17 05:03:18 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\v1_bloc_figures.php 368
+ERROR - 2025-12-17 05:03:18 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\v1_bloc_figures.php 368
+ERROR - 2025-12-17 05:03:18 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\v1_bloc_figures.php 368
+ERROR - 2025-12-17 05:03:18 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\v1_bloc_figures.php 368
+ERROR - 2025-12-17 05:03:18 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-12-17 05:03:18 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-12-17 05:08:03 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-12-17 05:08:09 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-12-17 05:08:13 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-17 05:08:13 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-17 05:08:13 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-17 05:08:13 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-17 05:08:13 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-17 05:08:13 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-17 05:08:13 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-17 05:08:13 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-12-17 05:08:22 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-12-17 05:08:39 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-12-17 05:08:43 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-17 05:08:43 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-17 05:08:43 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-17 05:08:43 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-17 05:08:43 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-17 05:08:43 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-17 05:08:43 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-17 05:08:43 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-12-17 05:08:54 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-12-17 05:09:51 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-12-17 05:10:58 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-12-17 05:11:21 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513

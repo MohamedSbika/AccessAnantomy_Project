@@ -743,8 +743,8 @@ function chargerRappelCours(idChapter, idChapterRappel, event) {
         .then(r => r.json())
         .then(data => {
             if (data.success && data.fichier) {
-                // Rappel manuel trouve - rediriger vers fichier PlatFormeConvert
-                window.location.href = `${baseUrl}${lang}/PlatFormeConvert/${data.fichier}`;
+                // Rappel manuel trouve - charger le contenu en AJAX
+                chargerRappelEnModal(data.fichier, baseUrl);
             } else {
                 // Pas de rappel manuel - utiliser ancien comportement
                 window.location.href = `${baseUrl}${lang}/livreCours/${idChapterRappel}`;
@@ -825,4 +825,112 @@ function chargerRappelCoursAncien(idChapterRappel) {
         });
     });
 }
+
+// Fonction pour charger le rappel en modal/overlay avec le layout visible
+function chargerRappelEnModal(fichier, baseUrl) {
+    // Fermer le modal existant s'il y en a un
+    const existingModal = document.getElementById('rappel-modal');
+    if (existingModal) existingModal.remove();
+
+    // Créer une structure modal
+    const modal = document.createElement('div');
+    modal.id = 'rappel-modal';
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 2000;
+        background-color: rgba(0, 0, 0, 0.3);
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        overflow-y: auto;
+        padding-top: 140px;
+    `;
+    document.body.appendChild(modal);
+
+    // Fermer au clic en dehors
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
+
+    // Contenu du modal
+    const content = document.createElement('div');
+    content.style.cssText = `
+        background-color: white;
+        width: 65%;
+        max-width: 1000px;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        position: relative;
+        margin-left: 35%;
+        margin-bottom: 50px;
+    `;
+
+    // Bouton fermer
+    const closeBtn = document.createElement('button');
+    // // closeBtn.innerHTML = '✕ Fermer';
+    // closeBtn.style.cssText = `
+    //     position: fixed;
+    //     top: 120px;
+    //     right: 30px;
+    //     background-color: #1d3557;
+    //     color: white;
+    //     border: none;
+    //     padding: 10px 20px;
+    //     border-radius: 5px;
+    //     cursor: pointer;
+    //     font-size: 13px;
+    //     font-weight: bold;
+    //     z-index: 2001;
+    //     transition: background-color 0.3s;
+    // `;
+    // closeBtn.onmouseover = function() {
+    //     closeBtn.style.backgroundColor = '#457b9d';
+    // };
+    // closeBtn.onmouseout = function() {
+    //     closeBtn.style.backgroundColor = '#1d3557';
+    // };
+    // closeBtn.onclick = function(e) {
+    //     e.stopPropagation();
+    //     modal.remove();
+    // };
+    document.body.appendChild(closeBtn);
+
+    // Charger le fichier HTML
+    fetch(`${baseUrl}PlatFormeConvert/${fichier}`)
+        .then(r => r.text())
+        .then(html => {
+            // Extraire le body du fichier HTML
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const bodyContent = doc.body.innerHTML;
+
+            const innerContent = document.createElement('div');
+            innerContent.style.cssText = `
+                padding: 30px 20px;
+                overflow-y: auto;
+                max-height: 70vh;
+            `;
+            innerContent.innerHTML = bodyContent;
+
+            content.appendChild(innerContent);
+            modal.appendChild(content);
+        })
+        .catch(err => {
+            console.error('Erreur chargement rappel:', err);
+            closeBtn.remove();
+            modal.remove();
+            Swal.fire({
+                icon: 'error',
+                title: 'Erreur',
+                text: 'Impossible de charger le rappel.'
+            });
+        });
+}
+
 </script>
