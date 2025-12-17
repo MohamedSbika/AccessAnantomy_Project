@@ -526,21 +526,15 @@
 
 function afficherSousChapitres(sousChapList, data) {
     const chapterEl = sousChapList.closest('.chapter-item');
-    let idChapterRappel = chapterEl.dataset.idRappel;
-
-    // Sauvegarde du rappel si existe
-    if (idChapterRappel) {
-        localStorage.setItem('idChapterRappel', idChapterRappel);
-    } else {
-        idChapterRappel = localStorage.getItem('idChapterRappel');
-    }
+    const idChapter = chapterEl.getAttribute('data-id');
+    const idChapterRappel = chapterEl.getAttribute('data-id-rappel');
 
     let html = '';
         
 html += `
     <li class="sous-chapitre-item rappel-item" 
         style="font-weight:bold; color:#1d3557; background-color:#dce6f1; cursor:pointer;"
-        onclick="chargerRappelCours('${idChapterRappel || ''}', event)">
+        onclick="chargerRappelCours('${idChapter || ''}', '${idChapterRappel || ''}', event)">
         Rappel Anatomique
     </li>
 `;
@@ -720,11 +714,11 @@ function selectSousChapitre(idSousChapitre, idChapitre, element, event) {
     window.addEventListener('scroll', updateScroll);
 
     // Fonction pour charger le contenu du rappel cours en AJAX
-// === CHARGEMENT RAPPEL COURS SANS REDIRECTION ===
-function chargerRappelCours(idChapterRappel, event) {
+// === CHARGEMENT RAPPEL COURS AVEC LOGIQUE RAPPEL MANUEL ===
+function chargerRappelCours(idChapter, idChapterRappel, event) {
     if (event) event.stopPropagation();
 
-    if (!idChapterRappel || isNaN(idChapterRappel)) {
+    if (!idChapter || isNaN(idChapter)) {
         Swal.fire({
             icon: 'warning',
             title: 'Aucun rappel disponible',
@@ -738,14 +732,32 @@ function chargerRappelCours(idChapterRappel, event) {
 
     const coursContainer = document.querySelector('.bloc-cours');
 
-    // 🔴 CAS 1 : on n'est PAS dans la page cours → REDIRECTION
+    // CAS 1 : PAS dans la page cours
     if (!coursContainer) {
-        const redirectUrl = `${baseUrl}${lang}/livreCours/${idChapterRappel}`;
-        window.location.href = redirectUrl;
+        // Verifier s'il y a un rappel manuel
+        fetch(`${baseUrl}home/getRappelCoursFile`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idChapterRappel: idChapter })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success && data.fichier) {
+                // Rappel manuel trouve - rediriger vers fichier PlatFormeConvert
+                window.location.href = `${baseUrl}${lang}/PlatFormeConvert/${data.fichier}`;
+            } else {
+                // Pas de rappel manuel - utiliser ancien comportement
+                window.location.href = `${baseUrl}${lang}/livreCours/${idChapterRappel}`;
+            }
+        })
+        .catch(err => {
+            // Erreur - comportement ancien
+            window.location.href = `${baseUrl}${lang}/livreCours/${idChapterRappel}`;
+        });
         return;
     }
 
-    // 🟢 CAS 2 : on est DANS la page cours → AJAX
+    // CAS 2 : DANS le bloc cours
     const originalContent = coursContainer.innerHTML;
 
     coursContainer.innerHTML = `
@@ -754,6 +766,35 @@ function chargerRappelCours(idChapterRappel, event) {
             <p style="margin-top:15px;">Chargement du rappel cours...</p>
         </div>
     `;
+
+    // Verifier s'il y a un rappel manuel
+    fetch(`${baseUrl}home/getRappelAnatomiqueCours`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idChapterRappel: idChapter })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success && data.content) {
+            // Rappel manuel trouve
+            coursContainer.innerHTML = data.content;
+            coursContainer.scrollTop = 0;
+        } else {
+            // Pas de rappel manuel - charger ancien rappel
+            chargerRappelCoursAncien(idChapterRappel);
+        }
+    })
+    .catch(err => {
+        // Erreur - charger ancien rappel
+        chargerRappelCoursAncien(idChapterRappel);
+    });
+}
+
+// Fonction pour charger l'ancien comportement du rappel
+function chargerRappelCoursAncien(idChapterRappel) {
+    const baseUrl = "<?php echo base_url(); ?>";
+    const coursContainer = document.querySelector('.bloc-cours');
+    const originalContent = coursContainer.innerHTML;
 
     fetch(`${baseUrl}home/getRappelCoursContent`, {
         method: 'POST',
@@ -766,7 +807,12 @@ function chargerRappelCours(idChapterRappel, event) {
             coursContainer.innerHTML = data.content;
             coursContainer.scrollTop = 0;
         } else {
-            throw new Error(data.message || 'Contenu non disponible');
+            coursContainer.innerHTML = originalContent;
+            Swal.fire({
+                icon: 'error',
+                title: 'Erreur',
+                text: 'Impossible de charger le rappel.'
+            });
         }
     })
     .catch(err => {

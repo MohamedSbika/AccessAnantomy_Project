@@ -2821,6 +2821,134 @@ public function getRappelCoursContent() {
     }
 }
 
+    // === FONCTION POUR RÉCUPÉRER LE FICHIER DU RAPPEL ANATOMIQUE MANUEL ===
+    public function getRappelCoursFile() {
+        // Vérifier que c'est une requête POST
+        if ($this->input->method() !== 'post') {
+            echo json_encode(['success' => false, 'message' => 'Méthode non autorisée']);
+            return;
+        }
+
+        // Récupérer l'ID du chapitre de rappel
+        $postData = json_decode(file_get_contents('php://input'), true);
+        $idChapterRappel = isset($postData['idChapterRappel']) ? $postData['idChapterRappel'] : null;
+
+        if (empty($idChapterRappel)) {
+            echo json_encode(['success' => false, 'message' => 'ID de rappel manquant']);
+            return;
+        }
+
+        try {
+            // Récupérer l'enregistrement du rappel anatomique
+            $this->db->select('*');
+            $this->db->from('_rappel_anatomique');
+            $this->db->where('IDChapitre', $idChapterRappel);
+            $resRappel = $this->db->get()->result_array();
+
+            if (!empty($resRappel) && !empty($resRappel[0]['Fichier'])) {
+                $fichierStocke = $resRappel[0]['Fichier'];
+                
+                // Si le fichier en base est un .docx, convertir en .HTML
+                if (strtolower(pathinfo($fichierStocke, PATHINFO_EXTENSION)) === 'docx') {
+                    $fichierHTML = str_replace('.docx', '.HTML', $fichierStocke);
+                } else {
+                    $fichierHTML = $fichierStocke;
+                }
+
+                // Le fichier du rappel manuel existe
+                echo json_encode([
+                    'success' => true,
+                    'fichier' => $fichierHTML,
+                    'idChapitre' => $idChapterRappel
+                ]);
+                return;
+            }
+
+            // Pas de fichier de rappel manuel
+            echo json_encode([
+                'success' => false,
+                'message' => 'Pas de fichier de rappel'
+            ]);
+
+        } catch (Exception $e) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Erreur lors de la récupération du fichier: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    // === FONCTION POUR CHARGER LE CONTENU DU RAPPEL ANATOMIQUE (FICHIER HTML) ===
+    public function getRappelAnatomiqueCours() {
+        // Vérifier que c'est une requête POST
+        if ($this->input->method() !== 'post') {
+            echo json_encode(['success' => false, 'message' => 'Méthode non autorisée']);
+            return;
+        }
+
+        // Récupérer l'ID du chapitre
+        $postData = json_decode(file_get_contents('php://input'), true);
+        $idChapterRappel = isset($postData['idChapterRappel']) ? $postData['idChapterRappel'] : null;
+
+        if (empty($idChapterRappel)) {
+            echo json_encode(['success' => false, 'message' => 'ID de chapitre manquant']);
+            return;
+        }
+
+        try {
+            // Récupérer l'enregistrement du rappel anatomique
+            $this->db->select('*');
+            $this->db->from('_rappel_anatomique');
+            $this->db->where('IDChapitre', $idChapterRappel);
+            $resRappel = $this->db->get()->result_array();
+
+            if (empty($resRappel) || empty($resRappel[0]['Fichier'])) {
+                echo json_encode(['success' => false, 'message' => 'Pas de fichier de rappel anatomique']);
+                return;
+            }
+
+            $fichierStocke = $resRappel[0]['Fichier'];
+            
+            // Si le fichier en base est un .docx, chercher le fichier .HTML correspondant
+            if (strtolower(pathinfo($fichierStocke, PATHINFO_EXTENSION)) === 'docx') {
+                // Remplacer .docx par .HTML
+                $fichierHTML = str_replace('.docx', '.HTML', $fichierStocke);
+            } else {
+                $fichierHTML = $fichierStocke;
+            }
+
+            $fichierPath = FCPATH . 'PlatFormeConvert/' . $fichierHTML;
+
+            // Vérifier si le fichier existe
+            if (!file_exists($fichierPath)) {
+                log_message('error', 'Fichier de rappel non trouvé: ' . $fichierPath);
+                echo json_encode(['success' => false, 'message' => 'Fichier HTML non trouvé']);
+                return;
+            }
+
+            // Charger le contenu du fichier HTML
+            $content = file_get_contents($fichierPath);
+
+            if ($content === false) {
+                echo json_encode(['success' => false, 'message' => 'Impossible de lire le fichier']);
+                return;
+            }
+
+            // Retourner le contenu du fichier HTML
+            echo json_encode([
+                'success' => true,
+                'content' => $content,
+                'titre' => 'Rappel Anatomique'
+            ]);
+
+        } catch (Exception $e) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Erreur lors du chargement du rappel: ' . $e->getMessage()
+            ]);
+        }
+    }
+
     public function  livreCours_simple($id,$indxSearch='')
     {
         $this->session->set_userdata('curs_id', 'curs_'.$id);
