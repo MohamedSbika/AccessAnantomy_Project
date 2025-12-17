@@ -349,6 +349,34 @@
         </div>
     </div>
 
+    <!-- MODAL RAPPEL ANATOMIQUE -->
+    <div class="modal fade" id="addRappelModal" tabindex="-1" style="display: none;" aria-hidden="true" style="z-index:auto;">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width:1000px;">
+            <div class="modal-content" style="background-color: rgb(9,138,99);box-shadow: 0 0 0 50vmax rgba(0,0,0,.7);">
+                <div class="modal-header">
+                    <h2 class="modal-title h2-modal-login">Ajouter/Modifier Rappel Anatomique</h2>
+                    <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close"> × </button>
+                </div>
+                <div class="modal-body m-3">
+                    <form id="formRappelManuel" name="formRappelManuel" enctype="multipart/form-data">
+                        <input type="hidden" id="rappelChapitre" name="rappelChapitre" value="">
+                        
+                        <div class="form-group">
+                            <label>Fichier Rappel Anatomique (.docx)</label>
+                            <input type="file" class="form-control" id="rappelFichier" name="rappelFichier" accept=".docx" required>
+                            <small class="form-text text-muted">Sélectionnez un fichier Word (.docx)</small>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="button" class="btn btn-primary button-modal-login" onclick="saveRappelManuel()">Enregistrer</button>
+                            <button type="button" class="btn btn-secondary button-modal-login" data-dismiss="modal">Annuler</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="selectVideoModal" tabindex="-1" style="display: none;" aria-hidden="true" style="z-index:5000;">
         <div class="modal-dialog modal-dialog-centered" role="document" style="max-width:1000px;">
             <div class="modal-content" style="background-color: rgb(9,138,99);box-shadow: 0 0 0 50vmax rgba(0,0,0,.7);">
@@ -1454,21 +1482,18 @@ $estPathologie = in_array($value['IDLivre'], [20, 30, 31])
         </div>
 
         <!-- 🟦 COLONNE 2 : RAPPEL (30%) -->
-        <div style="width: 30%;">
-            <a href="<?= base_url() . $this->lang->line('siteLang'); ?>livreCours/<?= $value['IdChapterRappel']; ?>"
-               class="btn btn-outline-primary btn-sm">
-                Rappel Anatomique 
-            </a>
-            <a href="#" onclick="" name="">
-                <i class="fa fa-plus" title="Ajouter un rappel"></i>
-            </a>
-            <a href="#" onclick="" name="">
-                <i class="fa fa-images" title="Ajouter des images "></i>
-            </a>
-            <a href="#" onclick="" name="">
-                <i class="fa fa-trash-alt" title="Supprimer"></i>
-            </a>
-        </div>
+<!-- 🟦 COLONNE 2 : RAPPEL (30%) -->
+<div style="width: 30%;" id="rappel-zone-<?= $value['IDChapitre']; ?>">
+    <!-- Chargement initial... -->
+    <span style="color: #999; font-size: 0.85rem;">Chargement...</span>
+</div>
+
+<script>
+// Charger automatiquement au chargement de la page
+$(document).ready(function() {
+    checkAndDisplayRappel(<?= $value['IDChapitre']; ?>, '<?= $value['IdChapterRappel'] ?? ''; ?>');
+});
+</script>
 
 <!-- 🟩 COLONNE 3 : PATHOLOGIES AVEC MÊME LOGIQUE AJAX -->
 <div style="width: 30%;">
@@ -2465,7 +2490,263 @@ function submitSousChap() {
                 e.preventDefault();
                 return false;
             }
+
+            // ===== INITIALISER TOUS LES INDICES RAPPEL =====
+            checkAllRappels();
         }
+
+        // ===== RAPPEL ANATOMIQUE MANUEL =====
+
+        function checkAllRappels() {
+            // Vérifier tous les chapitres pour voir s'il y a un rappel manuel
+            const elements = document.querySelectorAll('[id^="type-rappel-"]');
+            elements.forEach(el => {
+                const match = el.id.match(/type-rappel-(\d+)/);
+                if (match) {
+                    const idChapitre = match[1];
+                    checkRappelManuel(idChapitre);
+                }
+            });
+        }
+
+// ===== RAPPEL ANATOMIQUE MANUEL =====
+
+function checkAndDisplayRappel(idChapitre, idChapterRappelDefaut) {
+    console.log('checkAndDisplayRappel - Chapitre:', idChapitre, 'Défaut:', idChapterRappelDefaut);
+    
+    $.ajax({
+        url: "<?= base_url('home/check_rappel_manuel'); ?>",
+        type: "POST",
+        data: JSON.stringify({idChapitre: idChapitre}),
+        contentType: "application/json",
+        dataType: "json",
+        success: function(response) {
+            console.log('Réponse check_rappel_manuel:', response);
+            
+            let html = '';
+            const zoneID = '#rappel-zone-' + idChapitre;
+            
+            if (response.exists && response.data && response.data.Fichier) {
+                // ✅ RAPPEL MANUEL EXISTE
+                console.log('Rappel manuel détecté:', response.data.Fichier);
+                
+                // Convertir le nom du fichier .docx en .HTML
+                const fichierDocx = response.data.Fichier;
+                const fichierHtml = fichierDocx.replace('.docx', '.HTML');
+                
+                html = `
+                    <div style="margin-bottom: 8px;">
+                        <span style="font-size: 0.85rem; font-weight: bold; padding: 2px 8px; border-radius: 3px; background-color: #4CAF50; color: #fff;">
+                            Manuel ✓
+                        </span>
+                    </div>
+                    <a href="<?= base_url('PlatFormeConvert/'); ?>${fichierHtml}" 
+                       target="_blank"
+                       class="btn btn-outline-success btn-sm">
+                        📄 Rappel Anatomique
+                    </a>
+                    
+                    <?php if ($this->session->userdata('EstAdmin') == 1): ?>
+                    <a href="#" onclick="openAddRappelModal(${idChapitre}); return false;" title="Modifier le rappel">
+                        <i class="fa fa-edit" style="color:#3085d6; margin-left:5px;"></i>
+                    </a>
+                    <a href="#" onclick="deleteRappelManuel(${idChapitre}); return false;" title="Supprimer le rappel manuel">
+                        <i class="fa fa-trash-alt" style="color:#d33; margin-left:5px;"></i>
+                    </a>
+                    <?php endif; ?>
+                `;
+            } else if (idChapterRappelDefaut && idChapterRappelDefaut !== '') {
+                // ✅ RAPPEL PAR DÉFAUT
+                console.log('Utilisation du rappel par défaut');
+                
+                html = `
+                    <div style="margin-bottom: 8px;">
+                        <span style="font-size: 0.85rem; font-weight: bold; padding: 2px 8px; border-radius: 3px; background-color: #e0e0e0; color: #333;">
+                            Par défaut
+                        </span>
+                    </div>
+                    <a href="<?= base_url() . $this->lang->line('siteLang'); ?>livreCours/${idChapterRappelDefaut}"
+                       class="btn btn-outline-primary btn-sm">
+                        Rappel Anatomique
+                    </a>
+                    
+                    <?php if ($this->session->userdata('EstAdmin') == 1): ?>
+                    <a href="#" onclick="openAddRappelModal(${idChapitre}); return false;" title="Ajouter un rappel manuel">
+                        <i class="fa fa-plus" style="color:#28a745; margin-left:5px;"></i>
+                    </a>
+                    <?php endif; ?>
+                `;
+            } else {
+                // ❌ AUCUN RAPPEL
+                console.log('Aucun rappel disponible');
+                
+                html = `
+                    <div style="margin-bottom: 8px;">
+                        <span style="font-size: 0.85rem; font-weight: bold; padding: 2px 8px; border-radius: 3px; background-color: #ffeb3b; color: #333;">
+                            Aucun rappel
+                        </span>
+                    </div>
+                    
+                    <?php if ($this->session->userdata('EstAdmin') == 1): ?>
+                    <a href="#" onclick="openAddRappelModal(${idChapitre}); return false;" title="Ajouter un rappel">
+                        <i class="fa fa-plus" style="color:#28a745;"></i> Ajouter un rappel
+                    </a>
+                    <?php endif; ?>
+                `;
+            }
+            
+            $(zoneID).html(html);
+        },
+        error: function(xhr, status, error) {
+            console.error('Erreur AJAX:', status, error, xhr.responseText);
+            $('#rappel-zone-' + idChapitre).html('<span style="color:red; font-size:0.85rem;">Erreur chargement</span>');
+        }
+    });
+}
+
+function openAddRappelModal(idChapitre) {
+    console.log('openAddRappelModal - Chapitre:', idChapitre);
+    document.getElementById('rappelChapitre').value = idChapitre;
+    document.getElementById('rappelFichier').value = '';
+    $('#addRappelModal').modal('show');
+}
+
+function saveRappelManuel() {
+    const idChapitre = document.getElementById('rappelChapitre').value;
+    const fichier = document.getElementById('rappelFichier').files[0];
+
+    console.log('saveRappelManuel - ID:', idChapitre, 'Fichier:', fichier ? fichier.name : 'aucun');
+
+    if (!fichier) {
+        Swal.fire({
+            title: 'Erreur',
+            text: 'Veuillez sélectionner un fichier .docx',
+            icon: 'error'
+        });
+        return;
+    }
+
+    if (!fichier.name.endsWith('.docx')) {
+        Swal.fire({
+            title: 'Erreur',
+            text: 'Seuls les fichiers .docx sont acceptés',
+            icon: 'error'
+        });
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('rappelChapitre', idChapitre);
+    formData.append('rappelFichier', fichier);
+
+    Swal.fire({
+        title: 'Enregistrement...',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+    });
+
+    $.ajax({
+        url: "<?= base_url('home/add_rappel_manuel'); ?>",
+        type: "POST",
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function(response) {
+            console.log('Réponse brute:', response);
+            
+            try {
+                const res = typeof response === 'string' ? JSON.parse(response) : response;
+                console.log('Réponse parsée:', res);
+                
+if (res[0].id == '1') {
+    $('#addRappelModal').modal('hide');
+    
+    Swal.fire({
+        title: 'Succès',
+        text: res[0].desc,
+        icon: 'success',
+        timer: 1500,
+        showConfirmButton: false
+    }).then(() => {
+        // ✅ Recharger toute la page pour mettre à jour l'affichage
+        location.reload();
+    });
+} else {
+                    Swal.fire({
+                        title: 'Erreur',
+                        text: res[0].desc,
+                        icon: 'error'
+                    });
+                }
+            } catch (e) {
+                console.error('Erreur parsing JSON:', e, response);
+                Swal.fire({
+                    title: 'Erreur serveur',
+                    text: 'Réponse invalide du serveur',
+                    icon: 'error'
+                });
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Erreur AJAX:', status, error, xhr.responseText);
+            Swal.fire({
+                title: 'Erreur',
+                text: 'Erreur lors de l\'enregistrement: ' + error,
+                icon: 'error'
+            });
+        }
+    });
+}
+
+function deleteRappelManuel(idChapitre) {
+    Swal.fire({
+        title: 'Confirmation',
+        text: 'Êtes-vous sûr de vouloir supprimer ce rappel anatomique manuel?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Oui, supprimer',
+        cancelButtonText: 'Annuler'
+    }).then((result) => {
+        if (result.value) {
+            $.ajax({
+                url: "<?= base_url('home/delete_rappel_manuel'); ?>",
+                type: "POST",
+                data: JSON.stringify({idChapitre: idChapitre}),
+                contentType: "application/json",
+                dataType: "json",
+                success: function(response) {
+                    if (response.id == '1') {
+                        Swal.fire({
+                            title: 'Succès',
+                            text: response.desc,
+                            icon: 'success',
+                            timer: 2000
+                        }).then(() => {
+                            // Recharger l'affichage (retour au défaut)
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Erreur',
+                            text: response.desc,
+                            icon: 'error'
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    Swal.fire({
+                        title: 'Erreur',
+                        text: 'Erreur lors de la suppression: ' + error,
+                        icon: 'error'
+                    });
+                }
+            });
+        }
+    });
+    return false;
+}
     </script>
     <?php if ((strlen($this->session->userdata('passTok')) == 200) && ($this->session->userdata('EstAdmin') == 1)) { ?>
 

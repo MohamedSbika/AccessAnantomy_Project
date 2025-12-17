@@ -10,8 +10,15 @@
 		"slack": "https://codeigniterchat.slack.com",
 		"source": "https://github.com/bcit-ci/CodeIgniter"
 	},
+	"config": {
+		"platform": {
+			"php": "7.4.33"
+		}
+	},
 	"require": {
-		"php": ">=5.3.7"
+		"php": ">=5.3.7",
+		"phpoffice/phpword": "0.16.*",
+		"firebase/php-jwt": "^5.0"
 	},
 	"suggest": {
 		"paragonie/random_compat": "Provides better randomness in PHP 5.x"

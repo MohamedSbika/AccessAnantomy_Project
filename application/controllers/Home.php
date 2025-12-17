@@ -8177,5 +8177,218 @@ public function getRappelSousChapitreFile()
     ]);
 }
 
+    // ========== RAPPEL ANATOMIQUE MANUEL ==========
+
+public function check_rappel_manuel() {
+    // Récupérer les données JSON envoyées
+    $postData = json_decode(file_get_contents('php://input'), true);
+    $idChapitre = isset($postData['idChapitre']) ? $postData['idChapitre'] : null;
+    
+    log_message('debug', 'check_rappel_manuel - ID Chapitre reçu: ' . $idChapitre);
+        
+        if (!$idChapitre) {
+            echo json_encode(['exists' => false, 'data' => null]);
+            exit;
+        }
+
+        $this->db->select('*');
+        $this->db->from('_rappel_anatomique');
+        $this->db->where('IDChapitre', $idChapitre);
+        $result = $this->db->get()->result_array();
+
+        if (count($result) > 0) {
+            echo json_encode(['exists' => true, 'data' => $result[0]]);
+        } else {
+            echo json_encode(['exists' => false, 'data' => null]);
+        }
+        exit;
+    }
+
+    public function add_rappel_manuel() {
+        // Ajouter/Mettre à jour un rappel manuel avec fichier .docx
+        // Convertit le .docx en .HTML et le sauvegarde
+        $idChapitre = isset($_POST['rappelChapitre']) ? $_POST['rappelChapitre'] : null;
+        $f = $_FILES;
+        
+        log_message('debug', 'add_rappel_manuel - ID Chapitre: ' . $idChapitre);
+        
+        if (!$idChapitre) {
+            log_message('error', 'Chapitre introuvable');
+            $arr_Res[] = array("id" => '-1', "desc" => 'Chapitre introuvable');
+            echo json_encode($arr_Res);
+            exit;
+        }
+
+        if (!isset($f["rappelFichier"]) || $f["rappelFichier"]["size"] == 0) {
+            log_message('error', 'Aucun fichier sélectionné');
+            $arr_Res[] = array("id" => '-1', "desc" => 'Aucun fichier sélectionné');
+            echo json_encode($arr_Res);
+            exit;
+        }
+
+        $file_size = $f["rappelFichier"]["size"];
+        $file_type = $f["rappelFichier"]["type"];
+        $file_name = $f["rappelFichier"]["name"];
+        $file_nameTmp = $f["rappelFichier"]["tmp_name"];
+
+        // Vérifier extension
+        $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+        if ($file_ext != 'docx') {
+            log_message('error', 'Extension non valide: ' . $file_ext);
+            $arr_Res[] = array("id" => '-1', "desc" => 'Seuls les fichiers .docx sont acceptés');
+            echo json_encode($arr_Res);
+            exit;
+        }
+
+        try {
+            // Générer noms de fichier uniques
+            $timestamp = time();
+            $fichierDocxName = 'Rappel_' . $idChapitre . '_' . $timestamp . '.docx';
+            $fichierHtmlName = 'Rappel_' . $idChapitre . '_' . $timestamp . '.HTML';
+            
+            $fichierDocxPath = FCPATH . 'PlatFormeConvert/' . $fichierDocxName;
+            $fichierHtmlPath = FCPATH . 'PlatFormeConvert/' . $fichierHtmlName;
+            
+            log_message('debug', 'Fichier DOCX: ' . $fichierDocxPath);
+            log_message('debug', 'Fichier HTML: ' . $fichierHtmlPath);
+            
+            // Déplacer le fichier .docx temporaire
+            if (!move_uploaded_file($file_nameTmp, $fichierDocxPath)) {
+                log_message('error', 'Erreur move_uploaded_file');
+                $arr_Res[] = array("id" => '-1', "desc" => 'Erreur lors du téléchargement du fichier');
+                echo json_encode($arr_Res);
+                exit;
+            }
+
+            log_message('debug', 'Fichier DOCX déplacé avec succès');
+
+            // Convertir le .docx en .HTML
+            $objPHPWord = \PhpOffice\PhpWord\IOFactory::load($fichierDocxPath);
+            $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($objPHPWord, 'HTML');
+            $objWriter->save($fichierHtmlPath);
+            
+            log_message('debug', 'Conversion DOCX->HTML réussie');
+
+            // Vérifier si un rappel existe déjà
+            $this->db->select('IDRappel, Fichier');
+            $this->db->from('_rappel_anatomique');
+            $this->db->where('IDChapitre', $idChapitre);
+            $existing = $this->db->get()->result_array();
+
+            log_message('debug', 'Rappels existants: ' . count($existing));
+
+            // Supprimer les anciens fichiers s'ils existent
+            if (count($existing) > 0) {
+                log_message('debug', '=== MISE À JOUR du rappel existant ===');
+                
+                // Supprimer les anciens fichiers
+                if (!empty($existing[0]['Fichier'])) {
+                    $oldDocxPath = FCPATH . 'PlatFormeConvert/' . $existing[0]['Fichier'];
+                    if (file_exists($oldDocxPath)) {
+                        unlink($oldDocxPath);
+                        log_message('debug', 'Ancien DOCX supprimé: ' . $oldDocxPath);
+                    }
+                    
+                    // Supprimer aussi le fichier HTML correspondant
+                    $oldHtmlName = str_replace('.docx', '.HTML', $existing[0]['Fichier']);
+                    $oldHtmlPath = FCPATH . 'PlatFormeConvert/' . $oldHtmlName;
+                    if (file_exists($oldHtmlPath)) {
+                        unlink($oldHtmlPath);
+                        log_message('debug', 'Ancien HTML supprimé: ' . $oldHtmlPath);
+                    }
+                }
+
+                // Mettre à jour
+                $data = [
+                    'Fichier' => $fichierDocxName,
+                    'Contenu' => ''
+                ];
+                
+                $this->db->where('IDChapitre', $idChapitre);
+                $this->db->update('_rappel_anatomique', $data);
+                
+                $affectedRows = $this->db->affected_rows();
+                log_message('debug', 'Affected rows après UPDATE: ' . $affectedRows);
+                
+                $arr_Res[] = array("id" => '1', "desc" => 'Rappel mis à jour avec succès');
+                
+            } else {
+                log_message('debug', '=== INSERTION d\'un nouveau rappel ===');
+                
+                // Insérer
+                $data = [
+                    'IDChapitre' => $idChapitre,
+                    'Contenu' => '',
+                    'Fichier' => $fichierDocxName
+                ];
+                
+                $insertResult = $this->db->insert('_rappel_anatomique', $data);
+                $insertId = $this->db->insert_id();
+                
+                log_message('debug', 'Insert result: ' . ($insertResult ? 'TRUE' : 'FALSE'));
+                log_message('debug', 'Insert ID: ' . $insertId);
+                
+                if ($insertId > 0) {
+                    log_message('debug', '✅ Rappel inséré avec succès - ID: ' . $insertId);
+                    $arr_Res[] = array("id" => '1', "desc" => 'Rappel ajouté avec succès');
+                } else {
+                    log_message('error', '❌ Échec de l\'insertion');
+                    $arr_Res[] = array("id" => '-1', "desc" => 'Erreur insertion BD');
+                }
+            }
+            
+        } catch (Exception $e) {
+            log_message('error', 'Exception: ' . $e->getMessage());
+            $arr_Res[] = array("id" => '-1', "desc" => 'Erreur: ' . $e->getMessage());
+        }
+
+        echo json_encode($arr_Res);
+        exit;
+    }
+
+    public function delete_rappel_manuel() {
+        // Supprimer le rappel manuel (pas le défaut)
+        $postData = json_decode(file_get_contents('php://input'), true);
+        $idChapitre = isset($postData['idChapitre']) ? $postData['idChapitre'] : null;
+        
+        if (!$idChapitre) {
+            echo json_encode(['id' => '-1', 'desc' => 'Chapitre introuvable']);
+            exit;
+        }
+
+        try {
+            // Récupérer les noms des fichiers avant suppression
+            $this->db->select('Fichier');
+            $this->db->from('_rappel_anatomique');
+            $this->db->where('IDChapitre', $idChapitre);
+            $result = $this->db->get()->result_array();
+            
+            if (count($result) > 0) {
+                // Supprimer les fichiers DOCX et HTML
+                if (!empty($result[0]['Fichier'])) {
+                    $docxPath = FCPATH . 'PlatFormeConvert/' . $result[0]['Fichier'];
+                    if (file_exists($docxPath)) {
+                        unlink($docxPath);
+                    }
+                    
+                    // Supprimer aussi le fichier HTML correspondant
+                    $htmlName = str_replace('.docx', '.HTML', $result[0]['Fichier']);
+                    $htmlPath = FCPATH . 'PlatFormeConvert/' . $htmlName;
+                    if (file_exists($htmlPath)) {
+                        unlink($htmlPath);
+                    }
+                }
+            }
+            
+            // Supprimer la ligne de la BD
+            $this->db->where('IDChapitre', $idChapitre);
+            $this->db->delete('_rappel_anatomique');
+            echo json_encode(['id' => '1', 'desc' => 'Rappel supprimé avec succès']);
+        } catch (Exception $e) {
+            echo json_encode(['id' => '-1', 'desc' => 'Erreur: ' . $e->getMessage()]);
+        }
+        exit;
+    }
+
 
 }
