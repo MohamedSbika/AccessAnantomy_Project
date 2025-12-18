@@ -377,6 +377,59 @@
         </div>
     </div>
 
+<div class="modal fade" id="addImageRappelModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width:1000px;">
+        <div class="modal-content" style="background-color: rgb(9,138,99); box-shadow: 0 0 0 50vmax rgba(0,0,0,.7);">
+            
+            <div class="modal-header">
+                <h2 class="modal-title h2-modal-login">Ajouter / Modifier une image de rappel</h2>
+                <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close">×</button>
+            </div>
+
+            <div class="modal-body m-3">
+                <form id="formRappelImage" name="formRappelImage" enctype="multipart/form-data">
+                    
+                    <!-- ID Chapitre -->
+                    <input type="hidden" id="rappelChapitre" name="rappelChapitre">
+
+                    <!-- Image -->
+                    <div class="form-group">
+                        <label>Image anatomique (JPG, PNG, WEBP)</label>
+                        <input
+                            type="file"
+                            class="form-control"
+                            id="rappelImage"
+                            name="rappelImage"
+                            accept="image/png, image/jpeg, image/webp"
+                            required
+                        >
+                        <small class="form-text text-muted">
+                            Formats autorisés : JPG, PNG, WEBP – max recommandé : 2MB
+                        </small>
+                    </div>
+
+                    <!-- Aperçu -->
+                    <div class="form-group text-center">
+                        <img id="previewRappelImage" src="" alt="" style="max-width:100%; display:none; border-radius:8px;">
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="text-center">
+                        <button type="button" class="btn btn-primary button-modal-login" onclick="saveRappelImage()">
+                            Enregistrer
+                        </button>
+                        <button type="button" class="btn btn-secondary button-modal-login" data-dismiss="modal">
+                            Annuler
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
     <div class="modal fade" id="selectVideoModal" tabindex="-1" style="display: none;" aria-hidden="true" style="z-index:5000;">
         <div class="modal-dialog modal-dialog-centered" role="document" style="max-width:1000px;">
             <div class="modal-content" style="background-color: rgb(9,138,99);box-shadow: 0 0 0 50vmax rgba(0,0,0,.7);">
@@ -2553,6 +2606,9 @@ function checkAndDisplayRappel(idChapitre, idChapterRappelDefaut) {
                     <a href="#" onclick="deleteRappelManuel(${idChapitre}); return false;" title="Supprimer le rappel manuel">
                         <i class="fa fa-trash-alt" style="color:#d33; margin-left:5px;"></i>
                     </a>
+                    <a href="#" onclick="openAddImageRappelModal(${idChapitre}); return false;" title="Ajouter une image de rappel">
+                        <i class="fa fa-image" style="color:#3085d6; margin-left:5px;"></i>
+                    </a>
                     <?php endif; ?>
                 `;
             } else if (idChapterRappelDefaut && idChapterRappelDefaut !== '') {
@@ -2610,6 +2666,36 @@ function openAddRappelModal(idChapitre) {
     document.getElementById('rappelFichier').value = '';
     $('#addRappelModal').modal('show');
 }
+
+function openAddImageRappelModal(idChapitre) {
+    console.log('openAddImageRappelModal - Chapitre:', idChapitre);
+
+    document.getElementById('rappelChapitre').value = idChapitre;
+    document.getElementById('rappelImage').value = '';
+
+    const preview = document.getElementById('previewRappelImage');
+    preview.src = '';
+    preview.style.display = 'none';
+
+    $('#addImageRappelModal').modal('show');
+}
+
+document.getElementById('rappelImage').addEventListener('change', function () {
+    const file = this.files[0];
+    const preview = document.getElementById('previewRappelImage');
+
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    } else {
+        preview.src = '';
+        preview.style.display = 'none';
+    }
+});
 
 function saveRappelManuel() {
     const idChapitre = document.getElementById('rappelChapitre').value;
