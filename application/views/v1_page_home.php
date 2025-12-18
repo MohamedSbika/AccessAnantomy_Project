@@ -1068,9 +1068,9 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 
 					</div>
 
-					<div class="step-card"
-						style="display: flex; background: #f5f5f5; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); overflow: hidden; margin-bottom: 15px;">
+					<div class="step-card">
 
+						<div class="left-box">
 							<h1 style="margin: 0; font-size: 25px;">4</h1>
 							<h2 style="font-size: 14px; text-transform: uppercase;">
 								<?php echo $this->lang->line('step_4_title'); ?>
