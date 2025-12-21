@@ -531,11 +531,21 @@ function afficherSousChapitres(sousChapList, data) {
 
     let html = '';
         
+// Rappel Anatomique (par défaut)
 html += `
     <li class="sous-chapitre-item rappel-item" 
         style="font-weight:bold; color:#1d3557; background-color:#dce6f1; cursor:pointer;"
-        onclick="chargerRappelCours('${idChapter || ''}', '${idChapterRappel || ''}', event)">
-        Rappel Anatomique
+        onclick="chargerRappelDefaut('${idChapterRappel || ''}', event)">
+        Anatomie cours complet
+    </li>
+`;
+
+// Rappel Manuel (si existe)
+html += `
+    <li class="sous-chapitre-item rappel-manuel-item" 
+        style="font-weight:bold; color:#457b9d; background-color:#e8f4f8; cursor:pointer;"
+        onclick="chargerRappelManuel('${idChapter || ''}', event)">
+        Anatomie cours résumé
     </li>
 `;
     html += `
@@ -713,88 +723,38 @@ function selectSousChapitre(idSousChapitre, idChapitre, element, event) {
     }
     window.addEventListener('scroll', updateScroll);
 
-    // Fonction pour charger le contenu du rappel cours en AJAX
-// === CHARGEMENT RAPPEL COURS AVEC LOGIQUE RAPPEL MANUEL ===
-function chargerRappelCours(idChapter, idChapterRappel, event) {
+// === FONCTION POUR CHARGER LE RAPPEL PAR DÉFAUT ===
+function chargerRappelDefaut(idChapterRappel, event) {
     if (event) event.stopPropagation();
 
-    if (!idChapter || isNaN(idChapter)) {
+    if (!idChapterRappel || isNaN(idChapterRappel)) {
         Swal.fire({
             icon: 'warning',
             title: 'Aucun rappel disponible',
-            text: 'Ce chapitre n’a pas de cours de rappel.'
+            text: 'Ce chapitre n\'a pas de cours de rappel par défaut.'
         });
         return;
     }
 
     const baseUrl = "<?php echo base_url(); ?>";
     const lang = "<?php echo strtoupper($this->uri->segment(1)); ?>";
-
     const coursContainer = document.querySelector('.bloc-cours');
 
-    // CAS 1 : PAS dans la page cours
+    // CAS 1 : PAS dans la page cours - redirection
     if (!coursContainer) {
-        // Verifier s'il y a un rappel manuel
-        fetch(`${baseUrl}home/getRappelCoursFile`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ idChapterRappel: idChapter })
-        })
-        .then(r => r.json())
-        .then(data => {
-            if (data.success && data.fichier) {
-                // Rappel manuel trouve - charger le contenu en AJAX
-                chargerRappelEnModal(data.fichier, baseUrl);
-            } else {
-                // Pas de rappel manuel - utiliser ancien comportement
-                window.location.href = `${baseUrl}${lang}/livreCours/${idChapterRappel}`;
-            }
-        })
-        .catch(err => {
-            // Erreur - comportement ancien
-            window.location.href = `${baseUrl}${lang}/livreCours/${idChapterRappel}`;
-        });
+        window.location.href = `${baseUrl}${lang}/livreCours/${idChapterRappel}`;
         return;
     }
 
-    // CAS 2 : DANS le bloc cours
+    // CAS 2 : DANS le bloc cours - chargement AJAX
     const originalContent = coursContainer.innerHTML;
 
     coursContainer.innerHTML = `
         <div style="text-align:center; padding:50px;">
             <i class="fas fa-spinner fa-spin" style="font-size:40px; color:#1d3557;"></i>
-            <p style="margin-top:15px;">Chargement du rappel cours...</p>
+            <p style="margin-top:15px;">Chargement du rappel anatomique...</p>
         </div>
     `;
-
-    // Verifier s'il y a un rappel manuel
-    fetch(`${baseUrl}home/getRappelAnatomiqueCours`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ idChapterRappel: idChapter })
-    })
-    .then(r => r.json())
-    .then(data => {
-        if (data.success && data.content) {
-            // Rappel manuel trouve
-            coursContainer.innerHTML = data.content;
-            coursContainer.scrollTop = 0;
-        } else {
-            // Pas de rappel manuel - charger ancien rappel
-            chargerRappelCoursAncien(idChapterRappel);
-        }
-    })
-    .catch(err => {
-        // Erreur - charger ancien rappel
-        chargerRappelCoursAncien(idChapterRappel);
-    });
-}
-
-// Fonction pour charger l'ancien comportement du rappel
-function chargerRappelCoursAncien(idChapterRappel) {
-    const baseUrl = "<?php echo base_url(); ?>";
-    const coursContainer = document.querySelector('.bloc-cours');
-    const originalContent = coursContainer.innerHTML;
 
     fetch(`${baseUrl}home/getRappelCoursContent`, {
         method: 'POST',
@@ -811,7 +771,7 @@ function chargerRappelCoursAncien(idChapterRappel) {
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
-                text: 'Impossible de charger le rappel.'
+                text: 'Impossible de charger le rappel anatomique.'
             });
         }
     })
@@ -821,7 +781,99 @@ function chargerRappelCoursAncien(idChapterRappel) {
         Swal.fire({
             icon: 'error',
             title: 'Erreur',
-            text: 'Impossible de charger le rappel.'
+            text: 'Impossible de charger le rappel anatomique.'
+        });
+    });
+}
+
+// === FONCTION POUR CHARGER LE RAPPEL MANUEL ===
+function chargerRappelManuel(idChapter, event) {
+    if (event) event.stopPropagation();
+
+    if (!idChapter || isNaN(idChapter)) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Aucun rappel manuel',
+            text: 'Ce chapitre n\'a pas de rappel manuel pour le moment.'
+        });
+        return;
+    }
+
+    const baseUrl = "<?php echo base_url(); ?>";
+    const coursContainer = document.querySelector('.bloc-cours');
+
+    // CAS 1 : PAS dans la page cours
+    if (!coursContainer) {
+        // Vérifier s'il y a un rappel manuel
+        fetch(`${baseUrl}home/getRappelCoursFile`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idChapterRappel: idChapter })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success && data.fichier) {
+                // Rappel manuel trouvé - charger le contenu en modal
+                chargerRappelEnModal(data.fichier, baseUrl);
+            } else {
+                // Pas de rappel manuel
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Rappel manuel non disponible',
+                    text: 'Il n\'y a pas de rappel manuel pour ce chapitre pour le moment.'
+                });
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            Swal.fire({
+                icon: 'error',
+                title: 'Erreur',
+                text: 'Impossible de vérifier le rappel manuel.'
+            });
+        });
+        return;
+    }
+
+    // CAS 2 : DANS le bloc cours
+    const originalContent = coursContainer.innerHTML;
+
+    coursContainer.innerHTML = `
+        <div style="text-align:center; padding:50px;">
+            <i class="fas fa-spinner fa-spin" style="font-size:40px; color:#457b9d;"></i>
+            <p style="margin-top:15px;">Chargement du rappel manuel...</p>
+        </div>
+    `;
+
+    // Vérifier s'il y a un rappel manuel
+    fetch(`${baseUrl}home/getRappelAnatomiqueCours`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idChapterRappel: idChapter })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success && data.content) {
+            // Rappel manuel trouvé
+            coursContainer.innerHTML = data.content;
+            coursContainer.scrollTop = 0;
+        } else {
+            // Pas de rappel manuel
+            coursContainer.innerHTML = originalContent;
+            Swal.fire({
+                icon: 'info',
+                title: 'Rappel manuel non disponible',
+                text: 'Il n\'y a pas de rappel manuel pour ce chapitre pour le moment.'
+            });
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        coursContainer.innerHTML = originalContent;
+        Swal.fire({
+            icon: 'error',
+            title: 'Erreur',
+            text: 'Impossible de charger le rappel manuel.'
         });
     });
 }

@@ -735,7 +735,7 @@ echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chap
 
                                     <?php } ?>
 
-                                    <table class="table table-striped" style="width: 90%; align-self: center;">
+                                    <table class="table table-striped" style="width: 95%; align-self: center;">
                                         <thead>
                                         <tr>
                                             <th style="text-align: left;"></th>
@@ -757,7 +757,145 @@ echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chap
                                                     <?php if ((strlen($this->session->userdata('passTok')) == 200) &&  ($resNBR[0]['QcmNBR'] > 0)) { ?>
                                                         <div class="row">
                                                             <div class="col-md-6" style="width: 100%;font-size: 0.97rem;">
-                                                                <a href="#" data-toggle="modal" data-target="#modalTestQCM" class="btn btn-outline-primary mr-1" style="border-color: red;color: red;"><?php echo $this->lang->line('testQCM'); ?></a>
+                                                                <a href="#" data-toggle="modal" data-target="#modalTestQCM" class="btn btn-outline-primary mr-1" style="border-color: red;color: red;">A -<?php echo $this->lang->line('testQCM'); ?></a>
+                                                            </div>
+                                                            <div class="modal fade" id="modalTestQCM" tabindex="<?= $OneBook[0]['IDLivre']; ?>" style="display: none;" aria-hidden="true">
+                                                                <div class="modal-dialog modal-sm" role="document">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h3 style="font-family: Georgia, serif;"><?php echo $this->lang->line('testChoicCurs'); ?></h3>
+                                                                        </div>
+                                                                        <div class="card-body">
+                                                                            <div>
+                                                                                <form name="pageForm_TestQCM" id="pageForm_TestQCM" action="">
+                                                                                    <input type="hidden" name="bookID" id="bookID" value="<?= base64_encode($OneBook[0]['IDLivre']); ?>">
+                                                                                    <div class="row">
+
+                                                                                        <div>
+                                                                                            <label class="form-check form-check-inline">
+                                                                                                <input class="form-check-input" type="radio" name="typeQCM" value="1" checked>
+                                                                                                <span class="form-check-label"><?php echo $this->lang->line('testQcmPair'); ?></span>
+                                                                                            </label>
+                                                                                            <label class="form-check form-check-inline">
+                                                                                                <input class="form-check-input" type="radio" name="typeQCM" value="2">
+                                                                                                <span class="form-check-label"><?php echo $this->lang->line('testQcmImpair'); ?></span>
+                                                                                            </label>
+                                                                                        </div>
+
+                                                                                    </div>
+                                                                                    <hr>
+                                                                                    <div class="row">
+                                                                                        <table class="table table-striped">
+                                                                                            <thead>
+                                                                                            <tr>
+
+                                                                                            </tr>
+                                                                                            </thead>
+                                                                                            <?php foreach ($listChap as $value) { ?>
+                                                                                                <?php if ($value['NbreQcm'] > 0) { ?>
+                                                                                                    <tbody id="serChapTest">
+                                                                                                    <tr>
+                                                                                                        <td style="text-align: left;">
+                                                                                                            <div class="col-md-8" style="font-size: 0.97rem;">
+                                                                                                                <label class="form-check">
+                                                                                                                    <input class="form-check-input" type="checkbox" name="listIDsTest[]" value="<?php print base64_encode($value['IDChapitre']); ?>">
+                                                                                                                    <span class="form-check-label"><?= $value['TitreChapitre']; ?></span>
+                                                                                                                </label>
+                                                                                                            </div>
+                                                                                                        </td>
+                                                                                                    </tr>
+                                                                                                    </tbody>
+                                                                                                <?php } ?>
+                                                                                            <?php } ?>
+                                                                                        </table>
+                                                                                    </div>
+                                                                                </form>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal"><?php echo $this->lang->line('testClose'); ?></button>
+                                                                            <button type="button" class="btn btn-primary" onclick="set_testQcmChap()"><?php echo $this->lang->line('testBegin'); ?></button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    <?php } ?>
+                                                </th>
+                                                                                                <th width="15%">
+                                                    <?php if ((strlen($this->session->userdata('passTok')) == 200) &&  ($resNBR[0]['QcmNBR'] > 0)) { ?>
+                                                        <div class="row">
+                                                            <div class="col-md-6" style="width: 100%;font-size: 0.97rem;">
+                                                                <a href="#" data-toggle="modal" data-target="#modalTestQCM" class="btn btn-outline-primary mr-1" style="border-color: red;color: red;">B -<?php echo $this->lang->line('testQCM'); ?></a>
+                                                            </div>
+                                                            <div class="modal fade" id="modalTestQCM" tabindex="<?= $OneBook[0]['IDLivre']; ?>" style="display: none;" aria-hidden="true">
+                                                                <div class="modal-dialog modal-sm" role="document">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h3 style="font-family: Georgia, serif;"><?php echo $this->lang->line('testChoicCurs'); ?></h3>
+                                                                        </div>
+                                                                        <div class="card-body">
+                                                                            <div>
+                                                                                <form name="pageForm_TestQCM" id="pageForm_TestQCM" action="">
+                                                                                    <input type="hidden" name="bookID" id="bookID" value="<?= base64_encode($OneBook[0]['IDLivre']); ?>">
+                                                                                    <div class="row">
+
+                                                                                        <div>
+                                                                                            <label class="form-check form-check-inline">
+                                                                                                <input class="form-check-input" type="radio" name="typeQCM" value="1" checked>
+                                                                                                <span class="form-check-label"><?php echo $this->lang->line('testQcmPair'); ?></span>
+                                                                                            </label>
+                                                                                            <label class="form-check form-check-inline">
+                                                                                                <input class="form-check-input" type="radio" name="typeQCM" value="2">
+                                                                                                <span class="form-check-label"><?php echo $this->lang->line('testQcmImpair'); ?></span>
+                                                                                            </label>
+                                                                                        </div>
+
+                                                                                    </div>
+                                                                                    <hr>
+                                                                                    <div class="row">
+                                                                                        <table class="table table-striped">
+                                                                                            <thead>
+                                                                                            <tr>
+
+                                                                                            </tr>
+                                                                                            </thead>
+                                                                                            <?php foreach ($listChap as $value) { ?>
+                                                                                                <?php if ($value['NbreQcm'] > 0) { ?>
+                                                                                                    <tbody id="serChapTest">
+                                                                                                    <tr>
+                                                                                                        <td style="text-align: left;">
+                                                                                                            <div class="col-md-8" style="font-size: 0.97rem;">
+                                                                                                                <label class="form-check">
+                                                                                                                    <input class="form-check-input" type="checkbox" name="listIDsTest[]" value="<?php print base64_encode($value['IDChapitre']); ?>">
+                                                                                                                    <span class="form-check-label"><?= $value['TitreChapitre']; ?></span>
+                                                                                                                </label>
+                                                                                                            </div>
+                                                                                                        </td>
+                                                                                                    </tr>
+                                                                                                    </tbody>
+                                                                                                <?php } ?>
+                                                                                            <?php } ?>
+                                                                                        </table>
+                                                                                    </div>
+                                                                                </form>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal"><?php echo $this->lang->line('testClose'); ?></button>
+                                                                            <button type="button" class="btn btn-primary" onclick="set_testQcmChap()"><?php echo $this->lang->line('testBegin'); ?></button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    <?php } ?>
+                                                </th>
+                                                                                                <th width="15%">
+                                                    <?php if ((strlen($this->session->userdata('passTok')) == 200) &&  ($resNBR[0]['QcmNBR'] > 0)) { ?>
+                                                        <div class="row">
+                                                            <div class="col-md-6" style="width: 100%;font-size: 0.97rem;">
+                                                                <a href="#" data-toggle="modal" data-target="#modalTestQCM" class="btn btn-outline-primary mr-1" style="border-color: red;color: red;">I -<?php echo $this->lang->line('testQCM'); ?></a>
                                                             </div>
                                                             <div class="modal fade" id="modalTestQCM" tabindex="<?= $OneBook[0]['IDLivre']; ?>" style="display: none;" aria-hidden="true">
                                                                 <div class="modal-dialog modal-sm" role="document">
@@ -831,7 +969,7 @@ echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chap
                                                     <?php if ((strlen($this->session->userdata('passTok')) == 200) &&  ($resNBR[0]['QrocNBR'] > 0)) { ?>
                                                         <div class="row">
                                                             <div class="col-md-6" style="width: 100%;font-size: 0.97rem;">
-                                                                <a href="#" data-toggle="modal" data-target="#modalTestQROC" class="btn btn-outline-primary mr-1" style="border-color: red;color: red;"><?php echo $this->lang->line('testQROC'); ?></a>
+                                                                <a href="#" data-toggle="modal" data-target="#modalTestQROC" class="btn btn-outline-primary mr-1" style="border-color: red;color: red;"> <?php echo $this->lang->line('testQROC'); ?></a>
                                                             </div>
                                                             <div class="modal fade" id="modalTestQROC" tabindex="<?= $OneBook[0]['IDLivre']; ?>" style="display: none;" aria-hidden="true">
                                                                 <div class="modal-dialog modal-sm" role="document">
@@ -1029,7 +1167,7 @@ echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chap
                                             <?php foreach ($listChap as $value) { ?>
                                                 <tr>
 
-                                                    <td style="text-align: left;">
+                                                    <td style="text-align: left; ">
                                                        <div class="row">
  <div class="col-md-4">
         <?php if ((strlen($this->session->userdata('passTok')) == 200) && ($this->session->userdata('EstAdmin') == 1)) { ?>
@@ -1278,7 +1416,195 @@ $estPathologie = in_array($value['IDLivre'], [20, 30, 31])
                                                                 <div class="col-md-6" style="font-size: 0.97rem;">
                                                                     <?php if ($value['NbreQcm'] > 0) { ?>
                                                                         <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>livreQcm/<?= $value['IDChapitre']; ?>"
-                                                                           class="btn btn-outline-primary mr-1" style="border-color: #f8f9fa;color: #000000;"><?php echo $this->lang->line('qcm'); ?>
+                                                                           class="btn btn-outline-primary mr-1" style="border-color: #f8f9fa;color: #000000;">A -<?php echo $this->lang->line('qcm'); ?>
+                                                                        </a>
+                                                                    <?php } ?>
+                                                                </div>
+
+                                                                <div class="col-2">
+                                                                    <?php if ((strlen($this->session->userdata('passTok')) == 200) && ($this->session->userdata('EstAdmin') == 1)) { ?>
+                                                                        <div class="dropleft" style="" onclick="event.stopPropagation()">
+                                                                            <a href="#" data-toggle="dropdown" data-display="static" aria-expanded="false" class="">
+                                                                                <i class="align-middle me-2 fas fa-fw fa-key" title="<?php echo $this->lang->line('actionCle'); ?>"></i>
+                                                                            </a>
+                                                                            <div class="dropdown-menu" style="min-width: 25rem;">
+                                                                                <input type="text" style="width: 100%" class="form-control" id="tokenfieldQcm_<?php print $value['IDChapitre']; ?>" name="tokenfield[]" value="<?php print $value['indexKeysQcm']; ?>" />
+                                                                                <div class="row">
+                                                                                    <div class="mt-2" style=" text-align: center;">
+                                                                                        <span class="btn btn-info" onclick="set_KeysIndex('<?php print $value['IDChapitre']; ?>','qcm')"> Valider</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="dropdown " style="">
+                                                                            <a href="#" data-toggle="dropdown" data-display="static" aria-expanded="false" class="" title="<?php echo $this->lang->line('actionEdit'); ?>">
+                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 align-middle">
+                                                                                    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                                                                                </svg>
+                                                                            </a>
+                                                                            <div class="dropdown-menu">
+                                                                                <div class="row">
+                                                                                    <div class="col-md-10">
+                                                                                        <input type="file" name="mFileQCM[]" id="mFileQCM" readonly class="btn btn-info btn-sm" accept=".docx">
+                                                                                        <input type="hidden" name="attach_fileQCM[]" id="attach_fileQCM" value="<?php print $value['IDChapitre']; ?>">
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row">
+                                                                                    <div class="mt-2" style=" text-align: center;">
+                                                                                        <span class="btn btn-info" onclick="set_QCM()"><i class="fas fa-upload"></i> Upload (QCM.docx)</span>
+                                                                                        <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>livreQcmEdit/<?= $value['IDChapitre']; ?>" class="btn btn-info">Editer</a>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <hr>
+                                                                                <div class="row">
+                                                                                    <div class="mt-2" style=" text-align: center;">
+                                                                                        <span class="btn btn-danger" onclick="suppQCM('<?php print base64_encode($value['IDChapitre']); ?> ')" name="<?php print str_replace("'", '&#39;', $value['TitreChapitre']); ?>" id="<?php print base64_encode($value['IDChapitre']); ?>"><i class="fa fa-trash-alt"></i> <?php echo $this->lang->line('supp_title'); ?></span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+                                                                    <?php } ?>
+
+                                                                </div>
+
+                                                                <div class="col-2">
+                                                                    <div class="dropdown " style="">
+                                                                        <a href="#" data-toggle="dropdown" data-display="static" aria-expanded="false" class="" title="<?php echo $this->lang->line('actionFigure'); ?>">
+                                                                            <i class="align-middle mr-2 far fa-fw fa-images"></i>
+                                                                        </a>
+
+                                                                        <div class="dropdown-menu">
+                                                                            <div class="row">
+                                                                                <div class="col-md-10">
+                                                                                    <input type="file" name="mFileQCM_Fig_Ass[]" id="mFileQCM_Fig_Ass" readonly class="btn btn-info btn-sm" accept=".docx">
+                                                                                    <input type="hidden" name="attach_fileQCM_Fig_Ass[]" id="attach_fileQCM_Fig_Ass" value="<?php print $value['IDChapitre']; ?>">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="mt-2" style=" text-align: center;">
+                                                                                    <span class="btn btn-info" onclick="set_QCM_Fig_Ass()"><i class="fas fa-upload"></i> Upload (QCM.docx)</span>
+                                                                                    <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>livreQcmEdit/<?= $value['IDChapitre']; ?>"
+                                                                                       class="btn btn-info">Editer</a>
+                                                                                </div>
+                                                                            </div>
+                                                                            <hr>
+                                                                            <div class="row">
+                                                                                <div class="mt-2" style=" text-align: center;">
+                                                                                    <span class="btn btn-danger" onclick="suppQCM_Fig_Ass('<?php print base64_encode($value['IDChapitre']); ?> ')" name="<?php print str_replace("'", '&#39;', $value['TitreChapitre']); ?>" id="<?php print base64_encode($value['IDChapitre']); ?>"><i class="fa fa-trash-alt"></i> <?php echo $this->lang->line('supp_title'); ?></span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+                                                                    <div class="dropdown ">
+                                                                        <a href="#" data-toggle="modal" onclick="chargeVideos(<?= $value['IDChapitre']; ?>, '<?= $value['TitreChapitre']; ?>', 'QCM')" data-target="#popupAdminListVideos" class="" title="<?php echo $this->lang->line('videos'); ?>">
+                                                                            <i style="font-size:17px; margin:3px 0px;" class="fa fa-play-circle" aria-hidden="true"></i>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                       <td>
+                                                            <div class="row">
+                                                                <div class="col-md-6" style="font-size: 0.97rem;">
+                                                                    <?php if ($value['NbreQcm'] > 0) { ?>
+                                                                        <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>livreQcm/<?= $value['IDChapitre']; ?>"
+                                                                           class="btn btn-outline-primary mr-1" style="border-color: #f8f9fa;color: #000000;">B -<?php echo $this->lang->line('qcm'); ?>
+                                                                        </a>
+                                                                    <?php } ?>
+                                                                </div>
+
+                                                                <div class="col-2">
+                                                                    <?php if ((strlen($this->session->userdata('passTok')) == 200) && ($this->session->userdata('EstAdmin') == 1)) { ?>
+                                                                        <div class="dropleft" style="" onclick="event.stopPropagation()">
+                                                                            <a href="#" data-toggle="dropdown" data-display="static" aria-expanded="false" class="">
+                                                                                <i class="align-middle me-2 fas fa-fw fa-key" title="<?php echo $this->lang->line('actionCle'); ?>"></i>
+                                                                            </a>
+                                                                            <div class="dropdown-menu" style="min-width: 25rem;">
+                                                                                <input type="text" style="width: 100%" class="form-control" id="tokenfieldQcm_<?php print $value['IDChapitre']; ?>" name="tokenfield[]" value="<?php print $value['indexKeysQcm']; ?>" />
+                                                                                <div class="row">
+                                                                                    <div class="mt-2" style=" text-align: center;">
+                                                                                        <span class="btn btn-info" onclick="set_KeysIndex('<?php print $value['IDChapitre']; ?>','qcm')"> Valider</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="dropdown " style="">
+                                                                            <a href="#" data-toggle="dropdown" data-display="static" aria-expanded="false" class="" title="<?php echo $this->lang->line('actionEdit'); ?>">
+                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 align-middle">
+                                                                                    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                                                                                </svg>
+                                                                            </a>
+                                                                            <div class="dropdown-menu">
+                                                                                <div class="row">
+                                                                                    <div class="col-md-10">
+                                                                                        <input type="file" name="mFileQCM[]" id="mFileQCM" readonly class="btn btn-info btn-sm" accept=".docx">
+                                                                                        <input type="hidden" name="attach_fileQCM[]" id="attach_fileQCM" value="<?php print $value['IDChapitre']; ?>">
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row">
+                                                                                    <div class="mt-2" style=" text-align: center;">
+                                                                                        <span class="btn btn-info" onclick="set_QCM()"><i class="fas fa-upload"></i> Upload (QCM.docx)</span>
+                                                                                        <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>livreQcmEdit/<?= $value['IDChapitre']; ?>" class="btn btn-info">Editer</a>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <hr>
+                                                                                <div class="row">
+                                                                                    <div class="mt-2" style=" text-align: center;">
+                                                                                        <span class="btn btn-danger" onclick="suppQCM('<?php print base64_encode($value['IDChapitre']); ?> ')" name="<?php print str_replace("'", '&#39;', $value['TitreChapitre']); ?>" id="<?php print base64_encode($value['IDChapitre']); ?>"><i class="fa fa-trash-alt"></i> <?php echo $this->lang->line('supp_title'); ?></span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+                                                                    <?php } ?>
+
+                                                                </div>
+
+                                                                <div class="col-2">
+                                                                    <div class="dropdown " style="">
+                                                                        <a href="#" data-toggle="dropdown" data-display="static" aria-expanded="false" class="" title="<?php echo $this->lang->line('actionFigure'); ?>">
+                                                                            <i class="align-middle mr-2 far fa-fw fa-images"></i>
+                                                                        </a>
+
+                                                                        <div class="dropdown-menu">
+                                                                            <div class="row">
+                                                                                <div class="col-md-10">
+                                                                                    <input type="file" name="mFileQCM_Fig_Ass[]" id="mFileQCM_Fig_Ass" readonly class="btn btn-info btn-sm" accept=".docx">
+                                                                                    <input type="hidden" name="attach_fileQCM_Fig_Ass[]" id="attach_fileQCM_Fig_Ass" value="<?php print $value['IDChapitre']; ?>">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="mt-2" style=" text-align: center;">
+                                                                                    <span class="btn btn-info" onclick="set_QCM_Fig_Ass()"><i class="fas fa-upload"></i> Upload (QCM.docx)</span>
+                                                                                    <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>livreQcmEdit/<?= $value['IDChapitre']; ?>"
+                                                                                       class="btn btn-info">Editer</a>
+                                                                                </div>
+                                                                            </div>
+                                                                            <hr>
+                                                                            <div class="row">
+                                                                                <div class="mt-2" style=" text-align: center;">
+                                                                                    <span class="btn btn-danger" onclick="suppQCM_Fig_Ass('<?php print base64_encode($value['IDChapitre']); ?> ')" name="<?php print str_replace("'", '&#39;', $value['TitreChapitre']); ?>" id="<?php print base64_encode($value['IDChapitre']); ?>"><i class="fa fa-trash-alt"></i> <?php echo $this->lang->line('supp_title'); ?></span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+                                                                    <div class="dropdown ">
+                                                                        <a href="#" data-toggle="modal" onclick="chargeVideos(<?= $value['IDChapitre']; ?>, '<?= $value['TitreChapitre']; ?>', 'QCM')" data-target="#popupAdminListVideos" class="" title="<?php echo $this->lang->line('videos'); ?>">
+                                                                            <i style="font-size:17px; margin:3px 0px;" class="fa fa-play-circle" aria-hidden="true"></i>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                                                                                <td>
+                                                            <div class="row">
+                                                                <div class="col-md-6" style="font-size: 0.97rem;">
+                                                                    <?php if ($value['NbreQcm'] > 0) { ?>
+                                                                        <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>livreQcm/<?= $value['IDChapitre']; ?>"
+                                                                           class="btn btn-outline-primary mr-1" style="border-color: #f8f9fa;color: #000000;">I -<?php echo $this->lang->line('qcm'); ?>
                                                                         </a>
                                                                     <?php } ?>
                                                                 </div>
@@ -1530,13 +1856,13 @@ $estPathologie = in_array($value['IDLivre'], [20, 30, 31])
     <div style="display: flex; width:100%; align-items: flex-start;">
 
         <!-- 🟥 COLONNE 1 : TITRE (40%) -->
-        <div style="width: 40%; font-size: 1rem; font-weight: bold;">
+        <div style="width: 50%; font-size: 1rem; font-weight: bold; text-align: center; justify-content: center;">
             <?= $value['TitreChapitre']; ?>
         </div>
 
         <!-- 🟦 COLONNE 2 : RAPPEL (30%) -->
 <!-- 🟦 COLONNE 2 : RAPPEL (30%) -->
-<div style="width: 30%;" id="rappel-zone-<?= $value['IDChapitre']; ?>">
+<div style="width: 25%;" id="rappel-zone-<?= $value['IDChapitre']; ?>">
     <!-- Chargement initial... -->
     <span style="color: #999; font-size: 0.85rem;">Chargement...</span>
 </div>
@@ -1549,7 +1875,7 @@ $(document).ready(function() {
 </script>
 
 <!-- 🟩 COLONNE 3 : PATHOLOGIES AVEC MÊME LOGIQUE AJAX -->
-<div style="width: 30%;">
+<div style="width: 25%;">
 
     <span class="toggle-souschap toggle-patho" 
           data-chap="<?= $value['IDChapitre']; ?>"
@@ -2579,77 +2905,81 @@ function checkAndDisplayRappel(idChapitre, idChapterRappelDefaut) {
             let html = '';
             const zoneID = '#rappel-zone-' + idChapitre;
             
+            // ========== SECTION 1 : RAPPEL MANUEL ==========
+            html += '<div style="margin-bottom: 12px; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">';
+            html += '<div style="font-weight: bold; margin-bottom: 6px; font-size: 0.9rem;">Anatomie cours resumé</div>';
+            
             if (response.exists && response.data && response.data.Fichier) {
                 // ✅ RAPPEL MANUEL EXISTE
-                console.log('Rappel manuel détecté:', response.data.Fichier);
-                
-                // Convertir le nom du fichier .docx en .HTML
                 const fichierDocx = response.data.Fichier;
                 const fichierHtml = fichierDocx.replace('.docx', '.HTML');
                 
-                html = `
-                    <div style="margin-bottom: 8px;">
-                        <span style="font-size: 0.85rem; font-weight: bold; padding: 2px 8px; border-radius: 3px; background-color: #4CAF50; color: #fff;">
-                            Manuel ✓
-                        </span>
-                    </div>
+                html += `
                     <a href="<?= base_url('PlatFormeConvert/'); ?>${fichierHtml}" 
                        target="_blank"
-                       class="btn btn-outline-success btn-sm">
-                        📄 Rappel Anatomique
+                       class="btn btn-outline-success btn-sm"
+                       style="margin-bottom: 6px;">
+                        Voir le cours resumé
                     </a>
                     
                     <?php if ($this->session->userdata('EstAdmin') == 1): ?>
-                    <a href="#" onclick="openAddRappelModal(${idChapitre}); return false;" title="Modifier le rappel">
-                        <i class="fa fa-edit" style="color:#3085d6; margin-left:5px;"></i>
-                    </a>
-                    <a href="#" onclick="deleteRappelManuel(${idChapitre}); return false;" title="Supprimer le rappel manuel">
-                        <i class="fa fa-trash-alt" style="color:#d33; margin-left:5px;"></i>
-                    </a>
-                    <a href="#" onclick="openAddImageRappelModal(${idChapitre}); return false;" title="Ajouter une image de rappel">
-                        <i class="fa fa-image" style="color:#3085d6; margin-left:5px;"></i>
-                    </a>
-                    <?php endif; ?>
-                `;
-            } else if (idChapterRappelDefaut && idChapterRappelDefaut !== '') {
-                // ✅ RAPPEL PAR DÉFAUT
-                console.log('Utilisation du rappel par défaut');
-                
-                html = `
-                    <div style="margin-bottom: 8px;">
-                        <span style="font-size: 0.85rem; font-weight: bold; padding: 2px 8px; border-radius: 3px; background-color: #e0e0e0; color: #333;">
-                            Par défaut
-                        </span>
+                    <div style="margin-top: 6px;">
+                        <a href="#" onclick="openAddRappelModal(${idChapitre}); return false;" 
+                           title="Modifier le rappel" style="margin-right: 8px;">
+                            <i class="fa fa-edit" style="color:#3085d6;"></i>
+                        </a>
+                        <a href="#" onclick="deleteRappelManuel(${idChapitre}); return false;" 
+                           title="Supprimer le rappel manuel" style="margin-right: 8px;">
+                            <i class="fa fa-trash-alt" style="color:#d33;"></i>
+                        </a>
+                        <a href="#" onclick="openAddImageRappelModal(${idChapitre}); return false;">
+                            <i class="fa fa-image" style="color:#3085d6;"></i>
+                        </a>
                     </div>
-                    <a href="<?= base_url() . $this->lang->line('siteLang'); ?>livreCours/${idChapterRappelDefaut}"
-                       class="btn btn-outline-primary btn-sm">
-                        Rappel Anatomique
-                    </a>
-                    
-                    <?php if ($this->session->userdata('EstAdmin') == 1): ?>
-                    <a href="#" onclick="openAddRappelModal(${idChapitre}); return false;" title="Ajouter un rappel manuel">
-                        <i class="fa fa-plus" style="color:#28a745; margin-left:5px;"></i>
-                    </a>
                     <?php endif; ?>
                 `;
             } else {
-                // ❌ AUCUN RAPPEL
-                console.log('Aucun rappel disponible');
-                
-                html = `
-                    <div style="margin-bottom: 8px;">
-                        <span style="font-size: 0.85rem; font-weight: bold; padding: 2px 8px; border-radius: 3px; background-color: #ffeb3b; color: #333;">
-                            Aucun rappel
-                        </span>
-                    </div>
-                    
+                // ❌ RAPPEL MANUEL N'EXISTE PAS
+                html += `
+                 
                     <?php if ($this->session->userdata('EstAdmin') == 1): ?>
-                    <a href="#" onclick="openAddRappelModal(${idChapitre}); return false;" title="Ajouter un rappel">
-                        <i class="fa fa-plus" style="color:#28a745;"></i> Ajouter un rappel
+                    <a href="#" onclick="openAddRappelModal(${idChapitre}); return false;" 
+                       class="btn btn-outline-warning btn-sm">
+                        <i class="fa fa-plus"></i> Ajouter un resumé pathologie
                     </a>
+                    <?php else: ?>
+                    <span style="font-size: 0.85rem; color: #6c757d; font-style: italic;">
+                        Aucun resumé pathologie
+                    </span>
                     <?php endif; ?>
                 `;
             }
+            html += '</div>';
+            
+            // ========== SECTION 2 : RAPPEL ANATOMIQUE (PAR DÉFAUT) ==========
+            html += '<div style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;">';
+            html += '<div style="font-weight: bold; margin-bottom: 6px; font-size: 0.9rem;">Anatomie cours complet</div>';
+            
+            if (idChapterRappelDefaut && idChapterRappelDefaut !== '') {
+                // ✅ RAPPEL PAR DÉFAUT EXISTE
+                html += `
+                    <a href="<?= base_url() . $this->lang->line('siteLang'); ?>livreCours/${idChapterRappelDefaut}"
+                       class="btn btn-outline-primary btn-sm">
+                        voir le cours complet
+                    </a>
+                `;
+            } else {
+                // ❌ RAPPEL PAR DÉFAUT N'EXISTE PAS
+                html += `
+                    <div style="background-color: #e2e3e5; padding: 6px; border-radius: 3px; margin-bottom: 6px;">
+                        <span style="font-size: 0.8rem; color: #383d41;">✗ Non disponible</span>
+                    </div>
+                    <span style="font-size: 0.85rem; color: #6c757d; font-style: italic;">
+                        Aucun rappel anatomique configuré
+                    </span>
+                `;
+            }
+            html += '</div>';
             
             $(zoneID).html(html);
         },
