@@ -766,6 +766,10 @@ function chargerRappelDefaut(idChapterRappel, event) {
         if (data.success && data.content) {
             coursContainer.innerHTML = data.content;
             coursContainer.scrollTop = 0;
+            // Restaurer les figures originales dans la barre latérale
+            if (typeof restaurerFiguresOriginales === 'function') {
+                restaurerFiguresOriginales();
+            }
         } else {
             coursContainer.innerHTML = originalContent;
             Swal.fire({
@@ -845,7 +849,9 @@ function chargerRappelManuel(idChapter, event) {
         </div>
     `;
 
-    // Vérifier s'il y a un rappel manuel
+    let hasContent = false;
+
+    // 1. Charger le texte (HTML converti)
     fetch(`${baseUrl}home/getRappelAnatomiqueCours`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -854,17 +860,26 @@ function chargerRappelManuel(idChapter, event) {
     .then(r => r.json())
     .then(data => {
         if (data.success && data.content) {
-            // Rappel manuel trouvé
             coursContainer.innerHTML = data.content;
-            coursContainer.scrollTop = 0;
+            hasContent = true;
         } else {
-            // Pas de rappel manuel
+            coursContainer.innerHTML = ''; // Nettoyer le spinner si pas de texte
+        }
+        
+        // 2. Toujours essayer de charger les images
+        return chargerImagesRappel(idChapter, coursContainer);
+    })
+    .then(imagesFound => {
+        if (!hasContent && !imagesFound) {
+            // Ni texte ni images trouvés
             coursContainer.innerHTML = originalContent;
             Swal.fire({
                 icon: 'info',
                 title: 'Rappel manuel non disponible',
-                text: 'Il n\'y a pas de rappel manuel pour ce chapitre pour le moment.'
+                text: 'Il n\'y a ni texte ni image pour ce chapitre.'
             });
+        } else {
+            coursContainer.scrollTop = 0;
         }
     })
     .catch(err => {
@@ -875,6 +890,68 @@ function chargerRappelManuel(idChapter, event) {
             title: 'Erreur',
             text: 'Impossible de charger le rappel manuel.'
         });
+    });
+}
+
+// Fonction pour charger et afficher les images du rappel
+function chargerImagesRappel(idChapter, container) {
+    const baseUrl = "<?php echo base_url(); ?>";
+    
+    return fetch(`${baseUrl}home/getRappelImages`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idChapter: idChapter })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success && data.data.length > 0) {
+            let imagesHtml = `
+                <div style="margin-top: 30px; padding: 20px; background-color: #f8f9fa; border-radius: 8px;">
+                    <h3 style="color: #1d3557; margin-bottom: 15px; font-size: 1.2rem;">Images anatomiques</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
+            `;
+            
+            data.data.forEach(img => {
+                imagesHtml += `
+                    <div style="text-align: center; background: white; padding: 10px; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                        <img src="data:image/jpeg;base64,${img.ImageData}" 
+                             alt="${img.NomImage}"
+                             style="width: 100%; height: auto; max-height: 400px; object-fit: contain; border-radius: 3px; cursor: pointer;"
+                             onclick="afficherImageEnGrand(this.src, '${img.NomImage}')">
+                        <p style="margin-top: 10px; font-size: 13px; color: #333; font-weight: 500;">${img.NomImage}</p>
+                    </div>
+                `;
+            });
+            
+            imagesHtml += `
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML += imagesHtml;
+
+            // --- Nouveauté : Mettre à jour aussi la barre latérale droite (figures) ---
+            updateFiguresSidebar(data.data);
+
+            return true; // Images trouvées
+        }
+        return false; // Pas d'images
+    })
+    .catch(err => {
+        console.error('Erreur chargement images rappel:', err);
+        return false;
+    });
+}
+
+// Fonction pour afficher une image en grand
+function afficherImageEnGrand(src, nom) {
+    Swal.fire({
+        imageUrl: src,
+        imageAlt: nom,
+        title: nom,
+        width: '80%',
+        showCloseButton: true,
+        showConfirmButton: false
     });
 }
 
@@ -983,6 +1060,72 @@ function chargerRappelEnModal(fichier, baseUrl) {
                 text: 'Impossible de charger le rappel.'
             });
         });
+}
+
+// ========== SYNCHRONISATION BARRE LATÉRALE FIGURES ==========
+
+var originalFiguresState = null;
+
+function updateFiguresSidebar(images) {
+    const container = document.getElementById('figures-scroll-container');
+    if (!container) return;
+
+    // Sauvegarder l'état original une seule fois
+    if (!originalFiguresState) {
+        originalFiguresState = {
+            html: container.innerHTML,
+            images: (typeof figImages !== 'undefined') ? [...figImages] : [],
+            titles: (typeof figTitles !== 'undefined') ? [...figTitles] : []
+        };
+    }
+
+    // Préparer les nouvelles données
+    let newHtml = '';
+    let newImages = [];
+    let newTitles = [];
+
+    images.forEach((img) => {
+        let base64Src = `data:image/jpeg;base64,${img.ImageData}`;
+        newImages.push(base64Src);
+        newTitles.push(img.NomImage);
+
+        newHtml += `
+            <div class="image-container" style="position: relative; display: inline-block; text-align: center; padding-bottom: 7px;">
+                <img src="${base64Src}" 
+                     data-name="${img.NomImage}"
+                     style="width: 60px; height: 60px; border: 0.1px solid #ccc; object-fit: contain;" 
+                     class="slider-image zoomable" 
+                     onclick="showFig(this);">
+                <div><a href="#" class="btn" style="font-size: .75rem;">${img.NomImage}</a></div>
+            </div>
+        `;
+    });
+
+    container.innerHTML = newHtml;
+    
+    // Mettre à jour les variables globales de v1_bloc_figures.php
+    if (typeof figImages !== 'undefined') figImages = newImages;
+    if (typeof figTitles !== 'undefined') figTitles = newTitles;
+
+    // Afficher la première image
+    if (typeof showFigByIndex === 'function' && newImages.length > 0) {
+        if (typeof currentIndex !== 'undefined') currentIndex = 0;
+        showFigByIndex(0);
+    }
+}
+
+function restaurerFiguresOriginales() {
+    const container = document.getElementById('figures-scroll-container');
+    if (container && originalFiguresState) {
+        container.innerHTML = originalFiguresState.html;
+        if (typeof figImages !== 'undefined') figImages = [...originalFiguresState.images];
+        if (typeof figTitles !== 'undefined') figTitles = [...originalFiguresState.titles];
+        
+        if (typeof showFigByIndex === 'function' && figImages.length > 0) {
+            if (typeof currentIndex !== 'undefined') currentIndex = 0;
+            showFigByIndex(0);
+        }
+    }
 }
 
 </script>

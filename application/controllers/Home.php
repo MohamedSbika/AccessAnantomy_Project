@@ -8518,5 +8518,142 @@ public function check_rappel_manuel() {
         exit;
     }
 
+    // ========== GESTION DES IMAGES DE RAPPEL ANATOMIQUE ==========
+    
+    public function saveRappelImage() {
+        $arr_Res = array();
+        
+        try {
+            $idChapitre = $this->input->post('rappelChapitre');
+            
+            if (!$idChapitre) {
+                $arr_Res[] = array("id" => '-1', "desc" => 'Chapitre introuvable');
+                echo json_encode($arr_Res);
+                exit;
+            }
+            
+            // Vérifier si un fichier a été uploadé
+            if (!isset($_FILES['rappelImage']) || $_FILES['rappelImage']['error'] != 0) {
+                $arr_Res[] = array("id" => '-1', "desc" => 'Aucun fichier sélectionné');
+                echo json_encode($arr_Res);
+                exit;
+            }
+            
+            $file = $_FILES['rappelImage'];
+            $fileName = $file['name'];
+            $fileTmpName = $file['tmp_name'];
+            $fileSize = $file['size'];
+            
+            // Vérifier le type de fichier
+            $allowedTypes = array('image/jpeg', 'image/png', 'image/webp');
+            $fileType = mime_content_type($fileTmpName);
+            
+            if (!in_array($fileType, $allowedTypes)) {
+                $arr_Res[] = array("id" => '-1', "desc" => 'Format non autorisé. Utilisez JPG, PNG ou WEBP');
+                echo json_encode($arr_Res);
+                exit;
+            }
+            
+            // Vérifier la taille (max 2MB)
+            if ($fileSize > 2097152) {
+                $arr_Res[] = array("id" => '-1', "desc" => 'Fichier trop volumineux (max 2MB)');
+                echo json_encode($arr_Res);
+                exit;
+            }
+            
+            // Lire et encoder l'image en base64
+            $imageData = file_get_contents($fileTmpName);
+            $imageBase64 = base64_encode($imageData);
+            
+            // Générer un nom unique pour l'image
+            $extension = pathinfo($fileName, PATHINFO_EXTENSION);
+            $uniqueName = 'rappel_' . $idChapitre . '_' . time() . '.' . $extension;
+            
+            // Obtenir l'ordre d'affichage (dernier + 1)
+            $this->db->select_max('OrdreAffichage');
+            $this->db->from('_rappel_anatomique_images');
+            $this->db->where('IDChapitre', $idChapitre);
+            $result = $this->db->get()->result_array();
+            $ordre = isset($result[0]['OrdreAffichage']) ? $result[0]['OrdreAffichage'] + 1 : 1;
+            
+            // Insérer dans la base de données
+            $data = array(
+                'IDChapitre' => $idChapitre,
+                'NomImage' => $fileName,
+                'CheminImage' => $uniqueName,
+                'ImageData' => $imageBase64,
+                'OrdreAffichage' => $ordre
+            );
+            
+            $this->db->insert('_rappel_anatomique_images', $data);
+            
+            if ($this->db->insert_id() > 0) {
+                $arr_Res[] = array("id" => '1', "desc" => 'Image ajoutée avec succès');
+            } else {
+                $arr_Res[] = array("id" => '-1', "desc" => 'Erreur lors de l\'ajout de l\'image');
+            }
+            
+        } catch (Exception $e) {
+            log_message('error', 'Erreur saveRappelImage: ' . $e->getMessage());
+            $arr_Res[] = array("id" => '-1', "desc" => 'Erreur: ' . $e->getMessage());
+        }
+        
+        echo json_encode($arr_Res);
+        exit;
+    }
+    
+    public function getRappelImages() {
+        $postData = json_decode(file_get_contents('php://input'), true);
+        $idChapitre = isset($postData['idChapter']) ? $postData['idChapter'] : null;
+        
+        if (!$idChapitre) {
+            echo json_encode(array('success' => false, 'message' => 'Chapitre introuvable'));
+            exit;
+        }
+        
+        try {
+            $this->db->select('IDImageRappel, NomImage, ImageData, OrdreAffichage');
+            $this->db->from('_rappel_anatomique_images');
+            $this->db->where('IDChapitre', $idChapitre);
+            $this->db->order_by('OrdreAffichage', 'ASC');
+            $images = $this->db->get()->result_array();
+            
+            echo json_encode(array('success' => true, 'data' => $images));
+            
+        } catch (Exception $e) {
+            log_message('error', 'Erreur getRappelImages: ' . $e->getMessage());
+            echo json_encode(array('success' => false, 'message' => 'Erreur: ' . $e->getMessage()));
+        }
+        
+        exit;
+    }
+    
+    public function deleteRappelImage() {
+        $postData = json_decode(file_get_contents('php://input'), true);
+        $idImage = isset($postData['idImage']) ? $postData['idImage'] : null;
+        
+        if (!$idImage) {
+            echo json_encode(array('success' => false, 'message' => 'Image introuvable'));
+            exit;
+        }
+        
+        try {
+            $this->db->where('IDImageRappel', $idImage);
+            $this->db->delete('_rappel_anatomique_images');
+            
+            if ($this->db->affected_rows() > 0) {
+                echo json_encode(array('success' => true, 'message' => 'Image supprimée avec succès'));
+            } else {
+                echo json_encode(array('success' => false, 'message' => 'Image non trouvée'));
+            }
+            
+        } catch (Exception $e) {
+            log_message('error', 'Erreur deleteRappelImage: ' . $e->getMessage());
+            echo json_encode(array('success' => false, 'message' => 'Erreur: ' . $e->getMessage()));
+        }
+        
+        exit;
+    }
+
 
 }

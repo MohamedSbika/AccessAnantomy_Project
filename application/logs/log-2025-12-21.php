@@ -58,3 +58,66 @@ ERROR - 2025-12-21 05:57:43 --> Severity: Notice --> Undefined index: IDChapitre
 ERROR - 2025-12-21 22:45:45 --> 404 Page Not Found: Assets/js
 ERROR - 2025-12-21 22:45:51 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
 ERROR - 2025-12-21 22:46:47 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-12-21 23:06:59 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-12-21 23:07:05 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-12-21 23:30:23 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-12-21 23:31:51 --> Query error: Table 'mezidxco_db_local._rappel_anatomique_images' doesn't exist - Invalid query: SELECT `IDImageRappel`, `NomImage`, `ImageData`, `OrdreAffichage`
+FROM `_rappel_anatomique_images`
+WHERE `IDChapitre` = 1100
+ORDER BY `OrdreAffichage` ASC
+ERROR - 2025-12-21 23:31:51 --> Could not find the language line "db_error_heading"
+ERROR - 2025-12-21 23:32:15 --> Query error: Table 'mezidxco_db_local._rappel_anatomique_images' doesn't exist - Invalid query: SELECT `IDImageRappel`, `NomImage`, `ImageData`, `OrdreAffichage`
+FROM `_rappel_anatomique_images`
+WHERE `IDChapitre` = 1100
+ORDER BY `OrdreAffichage` ASC
+ERROR - 2025-12-21 23:32:15 --> Could not find the language line "db_error_heading"
+ERROR - 2025-12-21 23:32:58 --> Query error: Table 'mezidxco_db_local._rappel_anatomique_images' doesn't exist - Invalid query: SELECT `IDImageRappel`, `NomImage`, `ImageData`, `OrdreAffichage`
+FROM `_rappel_anatomique_images`
+WHERE `IDChapitre` = 1100
+ORDER BY `OrdreAffichage` ASC
+ERROR - 2025-12-21 23:32:58 --> Could not find the language line "db_error_heading"
+ERROR - 2025-12-21 23:33:03 --> Severity: Notice --> Undefined index: IDChapitre C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_mode_lecture.php 513
+ERROR - 2025-12-21 23:33:24 --> Query error: Table 'mezidxco_db_local._rappel_anatomique_images' doesn't exist - Invalid query: SELECT `IDImageRappel`, `NomImage`, `ImageData`, `OrdreAffichage`
+FROM `_rappel_anatomique_images`
+WHERE `IDChapitre` = 1100
+ORDER BY `OrdreAffichage` ASC
+ERROR - 2025-12-21 23:33:24 --> Could not find the language line "db_error_heading"
+ERROR - 2025-12-21 23:33:34 --> Query error: Table 'mezidxco_db_local._rappel_anatomique_images' doesn't exist - Invalid query: SELECT MAX(`OrdreAffichage`) AS `OrdreAffichage`
+FROM `_rappel_anatomique_images`
+WHERE `IDChapitre` = '1100'
+ERROR - 2025-12-21 23:33:34 --> Could not find the language line "db_error_heading"
+ERROR - 2025-12-21 23:36:54 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-21 23:36:54 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-21 23:36:54 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-21 23:36:54 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-21 23:36:54 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-21 23:36:54 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-21 23:36:54 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-21 23:37:45 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-21 23:37:45 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-21 23:37:45 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-21 23:37:45 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-21 23:37:45 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-21 23:37:45 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-21 23:37:45 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-21 23:50:05 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-21 23:50:05 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-21 23:50:05 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-21 23:50:05 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-21 23:50:05 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-21 23:50:05 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-21 23:50:05 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-21 23:50:07 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-21 23:50:07 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-21 23:50:07 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-21 23:50:07 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-21 23:50:07 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-21 23:50:07 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-21 23:50:07 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-21 23:50:32 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-21 23:50:32 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-21 23:50:32 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-21 23:50:32 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-21 23:50:32 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-21 23:50:32 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-21 23:50:32 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139

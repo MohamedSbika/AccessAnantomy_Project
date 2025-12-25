@@ -510,7 +510,7 @@
 <script>
     function chargeVideos(){
        	let idType 		= '<?php echo $page; ?>';
-        let idChapitre 	= '<?= $OneBook[0]['IDChapitre']; ?>';
+        let idChapitre 	= '<?= isset($OneBook[0]['IDChapitre']) ? $OneBook[0]['IDChapitre'] : ""; ?>';
         let typeVideo 	= '';
 
         switch (idType) {

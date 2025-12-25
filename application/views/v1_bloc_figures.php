@@ -334,7 +334,7 @@
 	<input type="hidden" value="<?php print count($listFig) ?>" id="cmpFig" name="cmpFig">
 
 	<div class="">
-		<div class="scroll-container">
+		<div id="figures-scroll-container" class="scroll-container">
 
 			<?php
 			$counter = -1;
@@ -542,9 +542,9 @@ if (in_array((int)$OneBook[0]["IDLivre"], [70, 71]) || in_array((int)$OneBook[0]
 
 	<script>
 
-        let figImages = [];
-        let figTitles = [];
-        let currentIndex = 0;
+        var figImages = [];
+        var figTitles = [];
+        var currentIndex = 0;
 
         document.addEventListener("DOMContentLoaded", function () {
             const allImages = document.querySelectorAll('.slider-image');

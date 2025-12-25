@@ -241,6 +241,13 @@ if (strlen($this->session->userdata('passTok')) == 200) {
                 <li class="breadcrumb-item">
                     &nbsp;&nbsp;
                     <div style="display: flex; align-items: center; gap: 5px; margin-left: auto;">
+                        <?php if ($this->session->userdata('EstAdmin') == 1): ?>
+                            <button class="badge bg-info text-white border-0" 
+                                    onclick="openAddImageRappelModal('<?= $OneBook[0]['IDChapitre']; ?>')" 
+                                    style="cursor:pointer; background-color: #457b9d !important; font-size: 10px; height: 28px; padding: 0 10px; border-radius: 5px;">
+                                <i class="fa fa-image"></i> Gérer Images Rappel
+                            </button>
+                        <?php endif; ?>
                         <div style="display: flex; gap: 15px; padding-top: 5px;">
                             <div style="display: flex; align-items: center; gap: 5px;">
                                 <input name="keywordsIN" id="keywordsIN" type="text"
@@ -295,6 +302,120 @@ if (strlen($this->session->userdata('passTok')) == 200) {
 <script src="//mozilla.github.io/pdf.js/build/pdf.js"></script>
 <script src="<?php echo HTTP_JS; ?>app.js"></script>
 <script type="text/javascript" src="<?php echo HTTP_JS; ?>DataTables/datatables.js"></script>
+    <!-- Modal GÃ©rer les images de rappel -->
+    <div class="modal fade" id="addImageRappelModal" tabindex="-1" aria-hidden="true" style="z-index: 10000; position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; background: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
+        <div class="modal-dialog modal-dialog-centered" style="max-width:800px; width: 90%; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+            <div class="modal-content" style="border: none;">
+                <div class="modal-header" style="background: #1d3557; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;">
+                    <h2 class="modal-title" style="margin: 0; font-size: 1.25rem;">GÃ©rer les images de rappel</h2>
+                    <button type="button" onclick="$('#addImageRappelModal').hide()" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">&times;</button>
+                </div>
+                <div class="modal-body" style="padding: 20px; color: #333;">
+                    <div id="listeImagesRappel" style="margin-bottom: 20px;">
+                        <h4 style="margin-bottom: 10px; font-size: 1rem; color: #1d3557; border-bottom: 2px solid #f1f1f1; padding-bottom: 5px;">Images existantes</h4>
+                        <div id="imagesContainer" style="display: flex; flex-wrap: wrap; gap: 10px; min-height: 50px; padding: 10px; background: #f8f9fa; border-radius: 8px;">
+                            <!-- JS Content -->
+                        </div>
+                    </div>
+                    <form id="formRappelImage" enctype="multipart/form-data">
+                        <input type="hidden" id="rappelChapitreImage" name="rappelChapitre">
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: 500;">Ajouter une image (JPG, PNG, WEBP)</label>
+                            <input type="file" id="rappelImage" name="rappelImage" accept="image/*" onchange="previewImageRappel(event)" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                        </div>
+                        <div style="text-align: center; margin-bottom: 15px;">
+                            <img id="previewRappelImage" src="" alt="" style="max-width:100%; max-height:200px; display:none; border-radius:8px; border: 1px solid #ddd; padding: 5px;">
+                        </div>
+                        <div style="text-align: center;">
+                            <button type="button" onclick="saveRappelImage()" style="background: #1d3557; color: white; border: none; padding: 10px 25px; border-radius: 6px; font-weight: 600; cursor: pointer;">Enregistrer</button>
+                            <button type="button" onclick="$('#addImageRappelModal').hide()" style="background: #ccc; border: none; padding: 10px 25px; border-radius: 6px; margin-left: 10px; cursor: pointer;">Fermer</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function openAddImageRappelModal(idChapitre) {
+        document.getElementById('rappelChapitreImage').value = idChapitre;
+        document.getElementById('rappelImage').value = '';
+        document.getElementById('previewRappelImage').style.display = 'none';
+        loadRappelImages(idChapitre);
+        $('#addImageRappelModal').css('display', 'flex');
+    }
+
+    function loadRappelImages(idChapitre) {
+        const baseUrl = "<?php echo base_url(); ?>";
+        fetch(`${baseUrl}home/getRappelImages`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idChapter: idChapitre })
+        })
+        .then(r => r.json())
+        .then(data => {
+            const container = document.getElementById('imagesContainer');
+            if (data.success && data.data.length > 0) {
+                let html = '';
+                data.data.forEach(img => {
+                    html += `
+                        <div style="position: relative; width: 100px;">
+                            <img src="data:image/jpeg;base64,${img.ImageData}" style="width: 100%; height: 80px; object-fit: cover; border-radius: 4px;">
+                            <button type="button" onclick="deleteRappelImageItem(${img.IDImageRappel}, ${idChapitre})" style="position: absolute; top: -5px; right: -5px; background: #e63946; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
+                        </div>`;
+                });
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = '<p style="font-size: 12px; color: #999; font-style: italic;">Aucune image</p>';
+            }
+        });
+    }
+
+    function previewImageRappel(event) {
+        const file = event.target.files[0];
+        const preview = document.getElementById('previewRappelImage');
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = e => { preview.src = e.target.result; preview.style.display = 'block'; };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function saveRappelImage() {
+        const formData = new FormData(document.getElementById('formRappelImage'));
+        const idChapitre = document.getElementById('rappelChapitreImage').value;
+        if (!document.getElementById('rappelImage').files[0]) return;
+
+        $.ajax({
+            type: 'POST',
+            url: '<?php echo base_url(); ?>home/saveRappelImage',
+            data: formData,
+            cache: false, contentType: false, processData: false,
+            success: function(response) {
+                const result = JSON.parse(response);
+                if (result[0].id == '1') {
+                    Swal.fire({ icon: 'success', title: 'Image ajoutÃ©e', timer: 1000, showConfirmButton: false });
+                    loadRappelImages(idChapitre);
+                    document.getElementById('formRappelImage').reset();
+                    document.getElementById('previewRappelImage').style.display = 'none';
+                }
+            }
+        });
+    }
+
+    function deleteRappelImageItem(idImage, idChapitre) {
+        if (!confirm('Supprimer cette image ?')) return;
+        fetch('<?php echo base_url(); ?>home/deleteRappelImage', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idImage: idImage })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) loadRappelImages(idChapitre);
+        });
+    }
+    </script>
 </html>
 
 <?php } else { ?>

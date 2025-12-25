@@ -1,4 +1,4 @@
-<?php if (strlen($this->session->userdata('passTok')) == 200) {  ?>
+﻿<?php if (strlen($this->session->userdata('passTok')) == 200) {  ?>
 
 
     <?php
@@ -173,7 +173,7 @@
             <div class="modal-content" style="background-color: rgb(9,138,99);box-shadow: 0 0 0 50vmax rgba(0,0,0,.7);">
                 <div class="modal-header">
                     <h2 class="modal-title h2-modal-login"> <span id="idTitreListVideo"></span></h2>
-                    <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close"> × </button>
+                    <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close"> Ã— </button>
                 </div>
                 <div class="modal-body m-3" style="padding:0px;">
 
@@ -208,7 +208,7 @@
                             < </button>
                         <button type="button" class="style-button-modal" id="titreDisplayVideoModal27Previous" onclick="openVideoPlainEcranNext()"> > </button>
 
-                        <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close"> × </button>
+                        <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close"> Ã— </button>
 
                     </div>
                 </div>
@@ -235,7 +235,7 @@
             <div class="modal-content" style="background-color: rgb(9,138,99);box-shadow: 0 0 0 50vmax rgba(0,0,0,.7);">
                 <div class="modal-header">
                     <h2 class="modal-title h2-modal-login"><?php echo $this->lang->line('titleSupprission'); ?></h2>
-                    <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close"> × </button>
+                    <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close"> Ã— </button>
                 </div>
                 <div class="modal-body m-3">
                     <form id="deleteVideoModal" name="addFigure" method="POST">
@@ -263,7 +263,7 @@
             <div class="modal-content" style="background-color: rgb(9,138,99);box-shadow: 0 0 0 50vmax rgba(0,0,0,.7);">
                 <div class="modal-header">
                     <h2 id="titreAddVideoModal25" class="modal-title h2-modal-login"><?php echo $this->lang->line('titleSupprission'); ?></h2>
-                    <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close"> × </button>
+                    <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close"> Ã— </button>
                 </div>
                 <div class="modal-body m-3" style="padding:0px;">
                     <form id="deleteVideoModal" name="video_upload" method="POST">
@@ -301,7 +301,7 @@
             <div class="modal-content" style="background-color: rgb(9,138,99);box-shadow: 0 0 0 50vmax rgba(0,0,0,.7);">
                 <div class="modal-header">
                     <h2 id="titreAddVideoModal" class="modal-title h2-modal-login"><?php echo $this->lang->line('add_video'); ?></h2>
-                    <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close"> × </button>
+                    <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close"> Ã— </button>
                 </div>
                 <div class="modal-body m-3" style="padding:0px;">
                     <form id="video_upload" name="video_upload" method="POST">
@@ -355,7 +355,7 @@
             <div class="modal-content" style="background-color: rgb(9,138,99);box-shadow: 0 0 0 50vmax rgba(0,0,0,.7);">
                 <div class="modal-header">
                     <h2 class="modal-title h2-modal-login">Ajouter/Modifier Rappel Anatomique</h2>
-                    <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close"> × </button>
+                    <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close"> x </button>
                 </div>
                 <div class="modal-body m-3">
                     <form id="formRappelManuel" name="formRappelManuel" enctype="multipart/form-data">
@@ -364,7 +364,7 @@
                         <div class="form-group">
                             <label>Fichier Rappel Anatomique (.docx)</label>
                             <input type="file" class="form-control" id="rappelFichier" name="rappelFichier" accept=".docx" required>
-                            <small class="form-text text-muted">Sélectionnez un fichier Word (.docx)</small>
+                            <small class="form-text text-muted">SÃ©lectionnez un fichier Word (.docx)</small>
                         </div>
 
                         <div class="text-center">
@@ -382,35 +382,48 @@
         <div class="modal-content" style="background-color: rgb(9,138,99); box-shadow: 0 0 0 50vmax rgba(0,0,0,.7);">
             
             <div class="modal-header">
-                <h2 class="modal-title h2-modal-login">Ajouter / Modifier une image de rappel</h2>
-                <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close">×</button>
+                <h2 class="modal-title h2-modal-login">Gérer les images de rappel</h2>
+                <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close">x</button>
             </div>
 
             <div class="modal-body m-3">
+                
+                <!-- Liste des images existantes -->
+                <div id="listeImagesRappel" style="margin-bottom: 20px;">
+                    <h4 style="color: white;">Images existantes</h4>
+                    <div id="imagesContainer" style="display: flex; flex-wrap: wrap; gap: 10px;">
+                        <!-- Les images seront chargÃ©es ici via JavaScript -->
+                    </div>
+                </div>
+                
+                <hr style="border-color: white;">
+                
+                <!-- Formulaire d'ajout -->
+                <h4 style="color: white;">Ajouter une nouvelle image</h4>
                 <form id="formRappelImage" name="formRappelImage" enctype="multipart/form-data">
                     
                     <!-- ID Chapitre -->
-                    <input type="hidden" id="rappelChapitre" name="rappelChapitre">
+                    <input type="hidden" id="rappelChapitreImage" name="rappelChapitre">
 
                     <!-- Image -->
                     <div class="form-group">
-                        <label>Image anatomique (JPG, PNG, WEBP)</label>
+                        <label style="color: white;">Image anatomique (JPG, PNG, WEBP)</label>
                         <input
                             type="file"
                             class="form-control"
                             id="rappelImage"
                             name="rappelImage"
                             accept="image/png, image/jpeg, image/webp"
-                            required
+                            onchange="previewImageRappel(event)"
                         >
-                        <small class="form-text text-muted">
-                            Formats autorisés : JPG, PNG, WEBP – max recommandé : 2MB
+                        <small class="form-text" style="color: #ddd;">
+                            Formats autorisÃ©s : JPG, PNG, WEBP â€“ max recommandÃ© : 2MB
                         </small>
                     </div>
 
-                    <!-- Aperçu -->
+                    <!-- AperÃ§u -->
                     <div class="form-group text-center">
-                        <img id="previewRappelImage" src="" alt="" style="max-width:100%; display:none; border-radius:8px;">
+                        <img id="previewRappelImage" src="" alt="" style="max-width:100%; max-height:300px; display:none; border-radius:8px;">
                     </div>
 
                     <!-- Actions -->
@@ -419,7 +432,7 @@
                             Enregistrer
                         </button>
                         <button type="button" class="btn btn-secondary button-modal-login" data-dismiss="modal">
-                            Annuler
+                            Fermer
                         </button>
                     </div>
 
@@ -435,7 +448,7 @@
             <div class="modal-content" style="background-color: rgb(9,138,99);box-shadow: 0 0 0 50vmax rgba(0,0,0,.7);">
                 <div class="modal-header">
                     <h2 id="titreAddVideoModal" class="modal-title h2-modal-login"><?php echo $this->lang->line('select_video'); ?></h2>
-                    <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close"> × </button>
+                    <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close"> Ã— </button>
                 </div>
                 <div class="modal-body m-3" style="padding:0px;">
 
@@ -500,7 +513,7 @@
                 <div class="modal-content" style="background-color: rgb(9,138,99);box-shadow: 0 0 0 50vmax rgba(0,0,0,.7);">
                     <div class="modal-header">
                         <h2 class="modal-title h2-modal-login"><?php echo $this->lang->line('actionAjout'); ?> Test</h2>
-                        <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close"> × </button>
+                        <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close"> Ã— </button>
                     </div>
                     <div class="modal-body m-3" style="padding:0px;">
                         <form id="addFigure<?= $value['IDChapitre']; ?>" name="addFigure" method="POST">
@@ -584,7 +597,7 @@
 
                                     </div>
                                 </div>
-                                <!-- Zone supérieure au-dessus du tableau -->
+                                <!-- Zone supÃ©rieure au-dessus du tableau -->
 <div style="
     width: 100%;
     display: flex;
@@ -659,7 +672,7 @@
                         ?>
                             <div class="form-group mb-3">
                                 <label for="chapitreAssocie_<?= $OneBook[0]['IDLivre']; ?>" style="font-weight:bold;">
-                                    Sélectionner un chapitre associé <span style="color:red;">*</span>
+                                    SÃ©lectionner un chapitre associÃ© <span style="color:red;">*</span>
                                 </label>
 
                                 <select name="chapitreAssocie" 
@@ -1855,13 +1868,13 @@ $estPathologie = in_array($value['IDLivre'], [20, 30, 31])
 <td colspan="6">
     <div style="display: flex; width:100%; align-items: flex-start;">
 
-        <!-- 🟥 COLONNE 1 : TITRE (40%) -->
+        <!-- ðŸŸ¥ COLONNE 1 : TITRE (40%) -->
         <div style="width: 50%; font-size: 1rem; font-weight: bold; text-align: center; justify-content: center;">
             <?= $value['TitreChapitre']; ?>
         </div>
 
-        <!-- 🟦 COLONNE 2 : RAPPEL (30%) -->
-<!-- 🟦 COLONNE 2 : RAPPEL (30%) -->
+        <!-- ðŸŸ¦ COLONNE 2 : RAPPEL (30%) -->
+<!-- ðŸŸ¦ COLONNE 2 : RAPPEL (30%) -->
 <div style="width: 25%;" id="rappel-zone-<?= $value['IDChapitre']; ?>">
     <!-- Chargement initial... -->
     <span style="color: #999; font-size: 0.85rem;">Chargement...</span>
@@ -1874,7 +1887,7 @@ $(document).ready(function() {
 });
 </script>
 
-<!-- 🟩 COLONNE 3 : PATHOLOGIES AVEC MÊME LOGIQUE AJAX -->
+<!-- ðŸŸ© COLONNE 3 : PATHOLOGIES AVEC MÃŠME LOGIQUE AJAX -->
 <div style="width: 25%;">
 
     <span class="toggle-souschap toggle-patho" 
@@ -1962,9 +1975,9 @@ if (container.is(":visible")) {
 
                             <div style="flex:1;display:flex;align-items:center;gap:0.5em;">
 
-                                <!-- 🔥 Dropdown d'édition EXACT identique à la version normale -->
+                                <!-- ðŸ”¥ Dropdown d'Ã©dition EXACT identique Ã  la version normale -->
                                 <div class="dropdown" style="position:relative;">
-                                    <a href="#" data-toggle="dropdown" data-display="static" aria-expanded="false" title="Modifier / gérer le fichier">
+                                    <a href="#" data-toggle="dropdown" data-display="static" aria-expanded="false" title="Modifier / gÃ©rer le fichier">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 align-middle">
                                             <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                         </svg>
@@ -2020,7 +2033,7 @@ if (container.is(":visible")) {
                             `;
                         }
 
-                        // 🔥 boutons admin : EDIT + DELETE
+                        // ðŸ”¥ boutons admin : EDIT + DELETE
                         html += `
                             <div style="margin-left:auto;display:flex;gap:0.8em;">
 
@@ -2097,8 +2110,8 @@ if (container.is(":visible")) {
         <input type="hidden" name="chapters[0][idChap]" id="sousChap_chapID">
 
         <div class="form-group mt-3">
-          <label for="sousChaps">Sous-chapitres (séparés par une virgule)</label>
-          <input type="text" class="form-control" id="sousChaps" placeholder="Ex: Introduction, Développement, Conclusion">
+          <label for="sousChaps">Sous-chapitres (sÃ©parÃ©s par une virgule)</label>
+          <input type="text" class="form-control" id="sousChaps" placeholder="Ex: Introduction, DÃ©veloppement, Conclusion">
         </div>
 
         <div class="text-end mt-4">
@@ -2139,7 +2152,7 @@ $(document).ready(function() {
                         const idEncoded = sc.IDSousChapitre;
                         const titre = sc.TitreSousChapitre.replace(/'/g, '&#39;');
 
-// Dans la génération HTML :
+// Dans la gÃ©nÃ©ration HTML :
 let html = `
 <div class="souschap-item" 
      style="display:flex;align-items:center;padding:0.5em 0;border-bottom:1px solid #eee;">
@@ -2148,7 +2161,7 @@ let html = `
         
         <div class="dropdown" style="position:relative;">
             <a href="#" data-toggle="dropdown" data-display="static" 
-               aria-expanded="false" title="Modifier / gérer le fichier">
+               aria-expanded="false" title="Modifier / gÃ©rer le fichier">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" 
                      viewBox="0 0 24 24" fill="none" stroke="currentColor" 
                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -2159,7 +2172,7 @@ let html = `
             <div class="dropdown-menu p-2" style="min-width:18rem;">
                 <div class="row">
                     <div class="col-md-12">
-                        <!-- 🔥 Ajout de l'attribut ID -->
+                        <!-- ðŸ”¥ Ajout de l'attribut ID -->
                         <input type="file" 
                                id="mFile_${idEncoded}"
                                name="mFile_${idEncoded}" 
@@ -2184,7 +2197,7 @@ let html = `
 
                 <div class="row">
                     <div class="col-12 text-center">
-                        <!-- 🔥 Correction : suppSousChap au lieu de suppCurs -->
+                        <!-- ðŸ”¥ Correction : suppSousChap au lieu de suppCurs -->
                         <span class="btn btn-danger btn-sm" 
                               onclick="suppSousChap('${idEncoded}')"
                               name="${titre}" 
@@ -2211,7 +2224,7 @@ let html = `
                         <?php if ((strlen($this->session->userdata('passTok')) == 200) && ($this->session->userdata('EstAdmin') == 1)) { ?>
                         html += `
                             <div style="margin-left: auto; display: flex; gap: 0.8em;">
-                                <!-- Édition simple du titre -->
+                                <!-- Ã‰dition simple du titre -->
 <div class="dropdown" 
      style="position: relative;" 
      onclick="event.stopPropagation()">
@@ -2341,7 +2354,7 @@ function submitSousChap() {
 
                     Swal.fire({
                         icon: 'success',
-                        title: 'Succès',
+                        title: 'SuccÃ¨s',
                         text: res[0].desc,
                         timer: 1500,
                         showConfirmButton: false
@@ -2365,7 +2378,7 @@ function submitSousChap() {
                 Swal.fire({
                     icon: 'error',
                     title: 'Erreur serveur',
-                    text: 'La réponse est invalide'
+                    text: 'La rÃ©ponse est invalide'
                 });
             }
         },
@@ -2373,7 +2386,7 @@ function submitSousChap() {
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur AJAX',
-                text: 'Impossible d’envoyer la requête.'
+                text: 'Impossible dâ€™envoyer la requÃªte.'
             });
         }
     });
@@ -2383,7 +2396,7 @@ function submitSousChap() {
             var data_plat = new FormData($('#' + id)[0]);
 
             Swal.fire({
-                title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
+                title: 'Veuillez patienter ...<br> Envoi des donnÃ©es en cours .. ',
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 onBeforeOpen: () => {
@@ -2469,7 +2482,7 @@ function submitSousChap() {
             if (res.success) {
                 Swal.fire({
                     icon: 'success',
-                    title: 'Sous-chapitre mis à jour',
+                    title: 'Sous-chapitre mis Ã  jour',
                     timer: 1500,
                     showConfirmButton: false
                 });
@@ -2479,7 +2492,7 @@ function submitSousChap() {
                 Swal.fire({
                     icon: 'error',
                     title: 'Erreur',
-                    text: res.message || 'Impossible de mettre à jour le sous-chapitre.'
+                    text: res.message || 'Impossible de mettre Ã  jour le sous-chapitre.'
                 });
             }
         },
@@ -2487,7 +2500,7 @@ function submitSousChap() {
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur AJAX',
-                text: 'Une erreur est survenue lors de la mise à jour.'
+                text: 'Une erreur est survenue lors de la mise Ã  jour.'
             });
         }
     });
@@ -2503,7 +2516,7 @@ function submitSousChap() {
             formData.append('idType', idType);
 
             Swal.fire({
-                title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
+                title: 'Veuillez patienter ...<br> Envoi des donnÃ©es en cours .. ',
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 onBeforeOpen: () => {
@@ -2571,7 +2584,7 @@ function submitSousChap() {
                     }
 
                     if (res["desc"].length === 0) {
-                        somme += `<h2 style="text-align:center"> Aucune vidéo </h2>`
+                        somme += `<h2 style="text-align:center"> Aucune vidÃ©o </h2>`
                     }
 
                     somme += `</div>`
@@ -2696,7 +2709,7 @@ function submitSousChap() {
             console.log(data_plat)
 
             Swal.fire({
-                title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
+                title: 'Veuillez patienter ...<br> Envoi des donnÃ©es en cours .. ',
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 onBeforeOpen: () => {
@@ -2767,7 +2780,7 @@ function submitSousChap() {
             var data_plat = new FormData($("#deleteVideoModal")[0]);
 
             Swal.fire({
-                title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
+                title: 'Veuillez patienter ...<br> Envoi des donnÃ©es en cours .. ',
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 onBeforeOpen: () => {
@@ -2877,7 +2890,7 @@ function submitSousChap() {
         // ===== RAPPEL ANATOMIQUE MANUEL =====
 
         function checkAllRappels() {
-            // Vérifier tous les chapitres pour voir s'il y a un rappel manuel
+            // VÃ©rifier tous les chapitres pour voir s'il y a un rappel manuel
             const elements = document.querySelectorAll('[id^="type-rappel-"]');
             elements.forEach(el => {
                 const match = el.id.match(/type-rappel-(\d+)/);
@@ -2891,7 +2904,7 @@ function submitSousChap() {
 // ===== RAPPEL ANATOMIQUE MANUEL =====
 
 function checkAndDisplayRappel(idChapitre, idChapterRappelDefaut) {
-    console.log('checkAndDisplayRappel - Chapitre:', idChapitre, 'Défaut:', idChapterRappelDefaut);
+    console.log('checkAndDisplayRappel - Chapitre:', idChapitre, 'DÃ©faut:', idChapterRappelDefaut);
     
     $.ajax({
         url: "<?= base_url('home/check_rappel_manuel'); ?>",
@@ -2900,7 +2913,7 @@ function checkAndDisplayRappel(idChapitre, idChapterRappelDefaut) {
         contentType: "application/json",
         dataType: "json",
         success: function(response) {
-            console.log('Réponse check_rappel_manuel:', response);
+            console.log('RÃ©ponse check_rappel_manuel:', response);
             
             let html = '';
             const zoneID = '#rappel-zone-' + idChapitre;
@@ -2910,7 +2923,7 @@ function checkAndDisplayRappel(idChapitre, idChapterRappelDefaut) {
             html += '<div style="font-weight: bold; margin-bottom: 6px; font-size: 0.9rem;">Anatomie cours resumé</div>';
             
             if (response.exists && response.data && response.data.Fichier) {
-                // ✅ RAPPEL MANUEL EXISTE
+                // âœ… RAPPEL MANUEL EXISTE
                 const fichierDocx = response.data.Fichier;
                 const fichierHtml = fichierDocx.replace('.docx', '.HTML');
                 
@@ -2939,29 +2952,29 @@ function checkAndDisplayRappel(idChapitre, idChapterRappelDefaut) {
                     <?php endif; ?>
                 `;
             } else {
-                // ❌ RAPPEL MANUEL N'EXISTE PAS
+                // âŒ RAPPEL MANUEL N'EXISTE PAS
                 html += `
                  
                     <?php if ($this->session->userdata('EstAdmin') == 1): ?>
                     <a href="#" onclick="openAddRappelModal(${idChapitre}); return false;" 
                        class="btn btn-outline-warning btn-sm">
-                        <i class="fa fa-plus"></i> Ajouter un resumé pathologie
+                        <i class="fa fa-plus"></i> Ajouter un resumÃ© pathologie
                     </a>
                     <?php else: ?>
                     <span style="font-size: 0.85rem; color: #6c757d; font-style: italic;">
-                        Aucun resumé pathologie
+                        Aucun resumÃ© pathologie
                     </span>
                     <?php endif; ?>
                 `;
             }
             html += '</div>';
             
-            // ========== SECTION 2 : RAPPEL ANATOMIQUE (PAR DÉFAUT) ==========
+            // ========== SECTION 2 : RAPPEL ANATOMIQUE (PAR DÃ‰FAUT) ==========
             html += '<div style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;">';
             html += '<div style="font-weight: bold; margin-bottom: 6px; font-size: 0.9rem;">Anatomie cours complet</div>';
             
             if (idChapterRappelDefaut && idChapterRappelDefaut !== '') {
-                // ✅ RAPPEL PAR DÉFAUT EXISTE
+                // âœ… RAPPEL PAR DÃ‰FAUT EXISTE
                 html += `
                     <a href="<?= base_url() . $this->lang->line('siteLang'); ?>livreCours/${idChapterRappelDefaut}"
                        class="btn btn-outline-primary btn-sm">
@@ -2969,13 +2982,13 @@ function checkAndDisplayRappel(idChapitre, idChapterRappelDefaut) {
                     </a>
                 `;
             } else {
-                // ❌ RAPPEL PAR DÉFAUT N'EXISTE PAS
+                // âŒ RAPPEL PAR DÃ‰FAUT N'EXISTE PAS
                 html += `
                     <div style="background-color: #e2e3e5; padding: 6px; border-radius: 3px; margin-bottom: 6px;">
-                        <span style="font-size: 0.8rem; color: #383d41;">✗ Non disponible</span>
+                        <span style="font-size: 0.8rem; color: #383d41;">âœ— Non disponible</span>
                     </div>
                     <span style="font-size: 0.85rem; color: #6c757d; font-style: italic;">
-                        Aucun rappel anatomique configuré
+                        Aucun rappel anatomique configurÃ©
                     </span>
                 `;
             }
@@ -2997,35 +3010,7 @@ function openAddRappelModal(idChapitre) {
     $('#addRappelModal').modal('show');
 }
 
-function openAddImageRappelModal(idChapitre) {
-    console.log('openAddImageRappelModal - Chapitre:', idChapitre);
-
-    document.getElementById('rappelChapitre').value = idChapitre;
-    document.getElementById('rappelImage').value = '';
-
-    const preview = document.getElementById('previewRappelImage');
-    preview.src = '';
-    preview.style.display = 'none';
-
-    $('#addImageRappelModal').modal('show');
-}
-
-document.getElementById('rappelImage').addEventListener('change', function () {
-    const file = this.files[0];
-    const preview = document.getElementById('previewRappelImage');
-
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            preview.src = e.target.result;
-            preview.style.display = 'block';
-        };
-        reader.readAsDataURL(file);
-    } else {
-        preview.src = '';
-        preview.style.display = 'none';
-    }
-});
+// Les fonctions de gestion d'images ont été déplacées à la fin du fichier pour plus de clarté.
 
 function saveRappelManuel() {
     const idChapitre = document.getElementById('rappelChapitre').value;
@@ -3036,7 +3021,7 @@ function saveRappelManuel() {
     if (!fichier) {
         Swal.fire({
             title: 'Erreur',
-            text: 'Veuillez sélectionner un fichier .docx',
+            text: 'Veuillez sÃ©lectionner un fichier .docx',
             icon: 'error'
         });
         return;
@@ -3045,7 +3030,7 @@ function saveRappelManuel() {
     if (!fichier.name.endsWith('.docx')) {
         Swal.fire({
             title: 'Erreur',
-            text: 'Seuls les fichiers .docx sont acceptés',
+            text: 'Seuls les fichiers .docx sont acceptÃ©s',
             icon: 'error'
         });
         return;
@@ -3068,23 +3053,23 @@ function saveRappelManuel() {
         contentType: false,
         processData: false,
         success: function(response) {
-            console.log('Réponse brute:', response);
+            console.log('RÃ©ponse brute:', response);
             
             try {
                 const res = typeof response === 'string' ? JSON.parse(response) : response;
-                console.log('Réponse parsée:', res);
+                console.log('RÃ©ponse parsÃ©e:', res);
                 
 if (res[0].id == '1') {
     $('#addRappelModal').modal('hide');
     
     Swal.fire({
-        title: 'Succès',
+        title: 'SuccÃ¨s',
         text: res[0].desc,
         icon: 'success',
         timer: 1500,
         showConfirmButton: false
     }).then(() => {
-        // ✅ Recharger toute la page pour mettre à jour l'affichage
+        // âœ… Recharger toute la page pour mettre Ã  jour l'affichage
         location.reload();
     });
 } else {
@@ -3098,7 +3083,7 @@ if (res[0].id == '1') {
                 console.error('Erreur parsing JSON:', e, response);
                 Swal.fire({
                     title: 'Erreur serveur',
-                    text: 'Réponse invalide du serveur',
+                    text: 'RÃ©ponse invalide du serveur',
                     icon: 'error'
                 });
             }
@@ -3117,7 +3102,7 @@ if (res[0].id == '1') {
 function deleteRappelManuel(idChapitre) {
     Swal.fire({
         title: 'Confirmation',
-        text: 'Êtes-vous sûr de vouloir supprimer ce rappel anatomique manuel?',
+        text: 'ÃŠtes-vous sÃ»r de vouloir supprimer ce rappel anatomique manuel?',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -3135,12 +3120,12 @@ function deleteRappelManuel(idChapitre) {
                 success: function(response) {
                     if (response.id == '1') {
                         Swal.fire({
-                            title: 'Succès',
+                            title: 'SuccÃ¨s',
                             text: response.desc,
                             icon: 'success',
                             timer: 2000
                         }).then(() => {
-                            // Recharger l'affichage (retour au défaut)
+                            // Recharger l'affichage (retour au dÃ©faut)
                             location.reload();
                         });
                     } else {
@@ -3940,8 +3925,8 @@ function deleteRappelManuel(idChapitre) {
 }
 
 function editSousChap(idEncoded) {
-    console.log('Édition:', idEncoded);
-    // À implémenter
+    console.log('Ã‰dition:', idEncoded);
+    // Ã€ implÃ©menter
 }
 
 
@@ -3950,7 +3935,7 @@ function editSousChap(idEncoded) {
 
                 var data_plat = new FormData($('#pageForm_Chap')[0]);
                 Swal.fire({
-                    title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
+                    title: 'Veuillez patienter ...<br> Envoi des donnÃ©es en cours .. ',
                     allowOutsideClick: false,
                     allowEscapeKey: false,
                     onBeforeOpen: () => {
@@ -4013,7 +3998,7 @@ function editSousChap(idEncoded) {
 
                 var data_plat = new FormData($('#pageForm_Chap')[0]);
                 Swal.fire({
-                    title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
+                    title: 'Veuillez patienter ...<br> Envoi des donnÃ©es en cours .. ',
                     allowOutsideClick: false,
                     allowEscapeKey: false,
                     onBeforeOpen: () => {
@@ -4066,7 +4051,7 @@ function editSousChap(idEncoded) {
 
                 var data_plat = new FormData($('#pageForm_Chap')[0]);
                 Swal.fire({
-                    title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
+                    title: 'Veuillez patienter ...<br> Envoi des donnÃ©es en cours .. ',
                     allowOutsideClick: false,
                     allowEscapeKey: false,
                     onBeforeOpen: () => {
@@ -4121,7 +4106,7 @@ function editSousChap(idEncoded) {
                 if (!fileInput || !fileInput.files.length) {
                     Swal.fire({
                         type: 'warning',
-                        title: 'Aucun fichier sélectionné',
+                        title: 'Aucun fichier sÃ©lectionnÃ©',
                         text: 'Veuillez choisir un fichier .docx avant de continuer.'
                     });
                     return;
@@ -4153,8 +4138,8 @@ function editSousChap(idEncoded) {
                             if (res[0]?.id == '1') {
                                 Swal.fire({
                                     type: 'success',
-                                    title: 'Fichier attaché avec succès',
-                                    text: 'Le fichier du sous-chapitre a été converti et enregistré.',
+                                    title: 'Fichier attachÃ© avec succÃ¨s',
+                                    text: 'Le fichier du sous-chapitre a Ã©tÃ© converti et enregistrÃ©.',
                                     confirmButtonText: 'OK'
                                 });
                             } else {
@@ -4169,7 +4154,7 @@ function editSousChap(idEncoded) {
                             Swal.fire({
                                 type: 'error',
                                 title: 'Erreur serveur',
-                                text: 'Réponse du serveur invalide.'
+                                text: 'RÃ©ponse du serveur invalide.'
                             });
                         }
                     },
@@ -4177,8 +4162,8 @@ function editSousChap(idEncoded) {
                         console.error('Erreur AJAX:', error);
                         Swal.fire({
                             type: 'error',
-                            title: 'Erreur lors de l’envoi du fichier',
-                            text: 'Veuillez réessayer plus tard.'
+                            title: 'Erreur lors de lâ€™envoi du fichier',
+                            text: 'Veuillez rÃ©essayer plus tard.'
                         });
                     }
                 });
@@ -4189,7 +4174,7 @@ function editSousChap(idEncoded) {
 
                 var data_plat = new FormData($('#pageForm_Chap')[0]);
                 Swal.fire({
-                    title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
+                    title: 'Veuillez patienter ...<br> Envoi des donnÃ©es en cours .. ',
                     allowOutsideClick: false,
                     allowEscapeKey: false,
                     onBeforeOpen: () => {
@@ -4253,7 +4238,7 @@ function editSousChap(idEncoded) {
 
                 var data_plat = new FormData($('#pageForm_Chap')[0]);
                 Swal.fire({
-                    title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
+                    title: 'Veuillez patienter ...<br> Envoi des donnÃ©es en cours .. ',
                     allowOutsideClick: false,
                     allowEscapeKey: false,
                     onBeforeOpen: () => {
@@ -4317,7 +4302,7 @@ function editSousChap(idEncoded) {
 
                 var data_plat = new FormData($('#pageForm_Chap')[0]);
                 Swal.fire({
-                    title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
+                    title: 'Veuillez patienter ...<br> Envoi des donnÃ©es en cours .. ',
                     allowOutsideClick: false,
                     allowEscapeKey: false,
                     onBeforeOpen: () => {
@@ -4380,7 +4365,7 @@ function editSousChap(idEncoded) {
 
                 var data_plat = new FormData($('#pageForm_Chap')[0]);
                 Swal.fire({
-                    title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
+                    title: 'Veuillez patienter ...<br> Envoi des donnÃ©es en cours .. ',
                     allowOutsideClick: false,
                     allowEscapeKey: false,
                     onBeforeOpen: () => {
@@ -4443,7 +4428,7 @@ function editSousChap(idEncoded) {
 
                 var data_plat = new FormData($('#pageForm_Chap')[0]);
                 Swal.fire({
-                    title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
+                    title: 'Veuillez patienter ...<br> Envoi des donnÃ©es en cours .. ',
                     allowOutsideClick: false,
                     allowEscapeKey: false,
                     onBeforeOpen: () => {
@@ -4506,7 +4491,7 @@ function editSousChap(idEncoded) {
 
                 var data_plat = new FormData($('#pageForm_Chap')[0]);
                 Swal.fire({
-                    title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
+                    title: 'Veuillez patienter ...<br> Envoi des donnÃ©es en cours .. ',
                     allowOutsideClick: false,
                     allowEscapeKey: false,
                     onBeforeOpen: () => {
@@ -4573,14 +4558,14 @@ function editSousChap(idEncoded) {
     if (chapitreAssocieField && !chapitreAssocieField.value) {
         Swal.fire({
             icon: 'warning',
-            title: 'Sélection obligatoire',
-            text: 'Veuillez choisir un chapitre associé avant de continuer.'
+            title: 'SÃ©lection obligatoire',
+            text: 'Veuillez choisir un chapitre associÃ© avant de continuer.'
         });
         return false; 
     }
 
     Swal.fire({
-        title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
+        title: 'Veuillez patienter ...<br> Envoi des donnÃ©es en cours .. ',
         allowOutsideClick: false,
         allowEscapeKey: false,
         didOpen: () => {
@@ -4604,7 +4589,7 @@ function editSousChap(idEncoded) {
                 console.error("Erreur JSON :", e, html);
                 Swal.fire({
                     title: 'Erreur serveur',
-                    text: 'Impossible de traiter la réponse',
+                    text: 'Impossible de traiter la rÃ©ponse',
                     icon: 'error'
                 });
                 return;
@@ -4615,7 +4600,7 @@ function editSousChap(idEncoded) {
                 Swal.fire({
                     title: resu[0]["desc"],
                     icon: 'success',
-                    text: 'Chapitre(s) ajoutés avec succès',
+                    text: 'Chapitre(s) ajoutÃ©s avec succÃ¨s',
                     confirmButtonText: 'OK'
                 }).then(() => location.reload());
             } else {
@@ -4629,7 +4614,7 @@ function editSousChap(idEncoded) {
         error: function() {
             Swal.fire({
                 icon: 'error',
-                title: 'Erreur lors de l’envoi du formulaire',
+                title: 'Erreur lors de lâ€™envoi du formulaire',
             });
         }
     });
@@ -4642,7 +4627,7 @@ function set_LivSousChap(bookID) {
     var data_plat = new FormData(form);
 
     Swal.fire({
-        title: 'Veuillez patienter ...<br>Envoi des données en cours...',
+        title: 'Veuillez patienter ...<br>Envoi des donnÃ©es en cours...',
         allowOutsideClick: false,
         allowEscapeKey: false,
         didOpen: () => Swal.showLoading()
@@ -4657,7 +4642,7 @@ function set_LivSousChap(bookID) {
         processData: false,
         timeout: 30000000,
         success: function (html) {
-            console.log("Réponse serveur :", html);
+            console.log("RÃ©ponse serveur :", html);
 
             let resu;
             try {
@@ -4666,7 +4651,7 @@ function set_LivSousChap(bookID) {
                 console.error("Erreur de parsing JSON :", e, html);
                 Swal.fire({
                     title: 'Erreur serveur',
-                    text: 'Impossible de traiter la réponse',
+                    text: 'Impossible de traiter la rÃ©ponse',
                     icon: 'error'
                 });
                 return;
@@ -4677,7 +4662,7 @@ function set_LivSousChap(bookID) {
                 Swal.fire({
                     title: resu[0]["desc"],
                     icon: 'success',
-                    text: 'Sous-chapitres ajoutés avec succès',
+                    text: 'Sous-chapitres ajoutÃ©s avec succÃ¨s',
                     confirmButtonText: 'OK'
                 }).then(() => location.reload());
             } else {
@@ -4692,7 +4677,7 @@ function set_LivSousChap(bookID) {
             console.error("Erreur AJAX :", status, error);
             Swal.fire({
                 icon: 'error',
-                title: 'Erreur lors de l’envoi du formulaire',
+                title: 'Erreur lors de lâ€™envoi du formulaire',
             });
         }
     });
@@ -4717,7 +4702,7 @@ function set_LivSousChap(bookID) {
         contentType: "application/json; charset=UTF-8",
         timeout: 10000,
         success: function(html) {
-            console.log("Réponse serveur :", html);
+            console.log("RÃ©ponse serveur :", html);
             let resu;
             try {
                 resu = JSON.parse(html);
@@ -4725,7 +4710,7 @@ function set_LivSousChap(bookID) {
                 console.error("Erreur de parsing JSON :", e, html);
                 Swal.fire({
                     title: 'Erreur serveur',
-                    text: 'Impossible de traiter la réponse',
+                    text: 'Impossible de traiter la rÃ©ponse',
                     icon: 'error'
                 });
                 return;
@@ -4739,14 +4724,14 @@ function set_LivSousChap(bookID) {
                 sousChapHTML += '</ul>';
                 $('.souschap-container').html(sousChapHTML);
                 Swal.fire({
-                    title: 'Sous-chapitres chargés avec succès',
+                    title: 'Sous-chapitres chargÃ©s avec succÃ¨s',
                     icon: 'success',
                     confirmButtonText: 'OK'
                 });
             } else {
                 Swal.fire({
                     icon: 'info',
-                    title: resu[0]?.desc || 'Aucun sous-chapitre trouvé',
+                    title: resu[0]?.desc || 'Aucun sous-chapitre trouvÃ©',
                     timer: 4000
                 });
             }
@@ -4755,7 +4740,7 @@ function set_LivSousChap(bookID) {
             console.error("Erreur AJAX :", status, error);
             Swal.fire({
                 icon: 'error',
-                title: 'Erreur lors de la récupération des sous-chapitres',
+                title: 'Erreur lors de la rÃ©cupÃ©ration des sous-chapitres',
                 showConfirmButton: true
             });
         }
@@ -5143,7 +5128,7 @@ function set_LivSousChap(bookID) {
                 var data_plat = new FormData($(id)[0]);
                 console.log(data_plat)
                 // Swal.fire({
-                //     title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
+                //     title: 'Veuillez patienter ...<br> Envoi des donnÃ©es en cours .. ',
                 //     allowOutsideClick: false,
                 //     allowEscapeKey: false,
                 //     onBeforeOpen: () => {
@@ -5487,3 +5472,168 @@ function set_LivSousChap(bookID) {
     ?>
 
 <?php } ?>
+
+<script>
+// ========== FONCTIONS GESTION IMAGES RAPPEL ANATOMIQUE ==========
+
+function openAddImageRappelModal(idChapitre) {
+    document.getElementById('rappelChapitreImage').value = idChapitre;
+    const rappelImageInput = document.getElementById('rappelImage');
+    if (rappelImageInput) {
+        rappelImageInput.value = '';
+    }
+    document.getElementById('previewRappelImage').style.display = 'none';
+    loadRappelImages(idChapitre);
+    $('#addImageRappelModal').modal('show');
+}
+
+function loadRappelImages(idChapitre) {
+    const baseUrl = "<?php echo base_url(); ?>";
+    
+    fetch(`${baseUrl}home/getRappelImages`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idChapter: idChapitre })
+    })
+    .then(r => r.json())
+    .then(data => {
+        const container = document.getElementById('imagesContainer');
+        
+        if (data.success && data.data.length > 0) {
+            let html = '';
+            data.data.forEach(img => {
+                html += `
+                    <div style="position: relative; width: 120px; background: rgba(0,0,0,0.1); padding: 5px; border-radius: 5px;">
+                        <img src="data:image/jpeg;base64,${img.ImageData}" 
+                             style="width: 100%; height: 100px; object-fit: cover; border-radius: 5px;">
+                        <button type="button" 
+                                onclick="deleteRappelImageItem(${img.IDImageRappel}, ${idChapitre})"
+                                style="position: absolute; top: 0px; right: 0px; background: #dc3545; color: white; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; font-size: 16px; line-height: 1; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                            &times;
+                        </button>
+                        <p style="color: white; font-size: 10px; margin-top: 5px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 0;" title="${img.NomImage}">${img.NomImage}</p>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        } else {
+            container.innerHTML = '<p style="color: white; font-style: italic; font-size: 13px;">Aucune image pour ce chapitre</p>';
+        }
+    })
+    .catch(err => {
+        console.error('Erreur chargement images:', err);
+    });
+}
+
+function previewImageRappel(event) {
+    const file = event.target.files[0];
+    const preview = document.getElementById('previewRappelImage');
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    } else {
+        preview.src = '';
+        preview.style.display = 'none';
+    }
+}
+
+function saveRappelImage() {
+    const form = document.getElementById('formRappelImage');
+    if(!form) return;
+    const formData = new FormData(form);
+    const idChapitreInput = document.getElementById('rappelChapitreImage');
+    if(!idChapitreInput) return;
+    const idChapitre = idChapitreInput.value;
+    
+    const fileInput = document.getElementById('rappelImage');
+    if (!fileInput.files[0]) {
+        Swal.fire({ icon: 'warning', title: 'Attention', text: 'Veuillez sélectionner une image' });
+        return;
+    }
+    
+    Swal.fire({
+        title: 'Envoi en cours...',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+    });
+    
+    $.ajax({
+        type: 'POST',
+        url: '<?php echo base_url(); ?>home/saveRappelImage',
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function(response) {
+            try {
+                const result = JSON.parse(response);
+                if (result[0].id == '1') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Succès',
+                        text: result[0].desc,
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        loadRappelImages(idChapitre);
+                        form.reset();
+                        document.getElementById('previewRappelImage').style.display = 'none';
+                    });
+                } else {
+                    Swal.fire({ icon: 'error', title: 'Erreur', text: result[0].desc });
+                }
+            } catch(e) {
+                Swal.fire({ icon: 'error', title: 'Erreur system', text: 'Réponse invalide' });
+            }
+        },
+        error: function() {
+            Swal.fire({ icon: 'error', title: 'Erreur', text: 'Erreur lors de lenvoi' });
+        }
+    });
+}
+
+function deleteRappelImageItem(idImage, idChapitre) {
+    Swal.fire({
+        title: 'Supprimer cette image ?',
+        text: 'Cette action est irréversible',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Supprimer',
+        cancelButtonText: 'Annuler'
+    }).then((result) => {
+        if (result.value) {
+            fetch('<?php echo base_url(); ?>home/deleteRappelImage', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ idImage: idImage })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Supprimé',
+                        text: data.message,
+                        timer: 1000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        loadRappelImages(idChapitre);
+                    });
+                } else {
+                    Swal.fire({ icon: 'error', title: 'Erreur', text: data.message });
+                }
+            })
+            .catch(err => {
+                console.error('Erreur:', err);
+                Swal.fire({ icon: 'error', title: 'Erreur', text: 'Erreur lors de la suppression' });
+            });
+        }
+    });
+}
+</script>

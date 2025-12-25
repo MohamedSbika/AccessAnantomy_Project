@@ -342,6 +342,15 @@
                     <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>login"><?php echo $this->lang->line('accueil'); ?></a>
                     &nbsp;&nbsp;
                     <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>livreDetails/<?php print $OneBook[0]["IDLivre"]; ?>"><?php echo $this->lang->line('chapitres'); ?></a>
+                    
+                    <?php if ($this->session->userdata('EstAdmin') == 1): ?>
+                        <button class="badge bg-info text-white ml-2 border-0" 
+                                onclick="openAddImageRappelModal('<?= $OneBook[0]['IDChapitre']; ?>')" 
+                                style="cursor:pointer; background-color: #457b9d !important; font-size: 0.75rem; vertical-align: middle;">
+                            <i class="fa fa-image"></i> Gérer Images Rappel
+                        </button>
+                    <?php endif; ?>
+
                     <a class="badge bg-success text-white ml-2" id="go-button" href="#" style="float:right; background-color: #8f84d9 !important;"><i class="fa fa-window-maximize" aria-hidden="true"></i></a>
 
                     <div class="input-group input-group-navbar" style="padding-right: 1em;padding-left: 1em;">
@@ -388,7 +397,7 @@
 
             <div class="row">
 
-                <div class="scroll-container">
+                <div id="figures-scroll-container" class="scroll-container">
 
                     <?php
                     $counter = -1;
@@ -399,9 +408,9 @@
 
                         echo '<div class="image-container" style="position: relative; display: inline-block; padding-top: 0.2rem;">';
 
-                        echo '<img src="data:image/jpeg;base64,' . $value['encryptFigure'] . '" 
+                        echo '<img src="data:image/jpeg;base64,' . $value['encryptFigure'] . '" data-name="'.$value['TitreFigure'].'"
           style="width: ' . $imageWidth . '; height: '.$imageHeight.';'.$objectFit.'; margin-left: 0.5rem; border: 0.1px solid #ccc;" 
-          class="slider-image zoomable" onclick="myFunction(this);" >' .
+          class="slider-image zoomable" onclick="showFig(this);" >' .
                             '<div><a href="#" class="btn" style="font-size: .75rem;">' . $value['TitreFigure'] . '</a></div>';
 
                         if ($this->session->userdata('EstAdmin') == 1) {
@@ -428,27 +437,41 @@
             </div>
 
             <script>
-                let currentSlide = 0;
-                let zoomedIn = false; 
-                let lastTouchX = 0, lastTouchY = 0;
+                var figImages = [];
+                var figTitles = [];
+                var currentIndex = 0;
+                var zoomedIn = false; 
+                var lastTouchX = 0, lastTouchY = 0;
 
-                function moveSlide(direction) {
-                    const images = document.querySelectorAll('.slider-image');
-                    const totalImages = images.length;
+                document.addEventListener("DOMContentLoaded", function () {
+                    const allImages = document.querySelectorAll('.slider-image');
+                    allImages.forEach((img, index) => {
+                        figImages.push(img.src);
+                        figTitles.push(img.getAttribute('data-name') || "");
+                    });
+                    if (figImages.length > 0) showFigByIndex(0);
+                });
 
-                    currentSlide = (currentSlide + direction + totalImages) % totalImages;
-                    const slider = document.getElementById('imageSlider');
-                    const slideWidth = images[0].clientWidth;
-                    slider.style.transform = 'translateX(' + (-currentSlide * slideWidth) + 'px)';
+                function showFigByIndex(index) {
+                    const expandImg = document.getElementById("expandedImg");
+                    const imgText = document.getElementById("imgtext");
+                    if (figImages.length > 0 && figImages[index]) {
+                        expandImg.src = figImages[index];
+                        imgText.innerHTML = figTitles[index];
+                        currentIndex = index;
+                    }
                 }
 
-                function myFunction(imgs) {
+                function showFig(imgs) {
                     var expandImg = document.getElementById("expandedImg");
                     var imgText = document.getElementById("imgtext");
 
                     expandImg.src = imgs.src;
-                    imgText.innerHTML = imgs.alt;
+                    imgText.innerHTML = imgs.getAttribute('data-name');
                     expandImg.parentElement.style.display = "block";
+                    
+                    const index = figImages.indexOf(imgs.src);
+                    if (index !== -1) currentIndex = index;
                 }
 
                 function toggleZoom() {
@@ -828,6 +851,160 @@
         </script>
     <?php }?>
 
+    <!-- Modal GÃ©rer les images de rappel (Copie conforme de livreDetails.php) -->
+    <div class="modal fade" id="addImageRappelModal" tabindex="-1" aria-hidden="true" style="z-index: 10000;">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width:1000px;">
+            <div class="modal-content" style="background-color: rgb(9,138,99); box-shadow: 0 0 0 50vmax rgba(0,0,0,.7); color: white;">
+                <div class="modal-header">
+                    <h2 class="modal-title h2-modal-login" style="color: white;">GÃ©rer les images de rappel</h2>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" style="background: none; border: none; color: white; font-size: 24px;">x</button>
+                </div>
+                <div class="modal-body m-3">
+                    <div id="listeImagesRappel" style="margin-bottom: 20px;">
+                        <h4 style="color: white; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 10px;">Images existantes (Cliques sur la croix pour supprimer)</h4>
+                        <div id="imagesContainer" style="display: flex; flex-wrap: wrap; gap: 10px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px; min-height: 50px;">
+                            <!-- ChargÃ© via JS -->
+                        </div>
+                    </div>
+                    <hr style="border-color: rgba(255,255,255,0.2);">
+                    <h4 style="color: white;">Ajouter une nouvelle image</h4>
+                    <form id="formRappelImage" name="formRappelImage" enctype="multipart/form-data">
+                        <input type="hidden" id="rappelChapitreImage" name="rappelChapitre">
+                        <div class="form-group mb-3">
+                            <label style="color: white;">Image anatomique (JPG, PNG, WEBP)</label>
+                            <input type="file" class="form-control" id="rappelImage" name="rappelImage" accept="image/png, image/jpeg, image/webp" onchange="previewImageRappel(event)">
+                        </div>
+                        <div class="form-group text-center mb-3">
+                            <img id="previewRappelImage" src="" alt="" style="max-width:100%; max-height:250px; display:none; border-radius:8px; border: 2px solid white;">
+                        </div>
+                        <div class="text-center">
+                            <button type="button" class="btn btn-primary" onclick="saveRappelImage()" style="background-color: white; color: rgb(9,138,99); border: none; font-weight: bold; padding: 8px 25px;">Enregistrer</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" style="margin-left: 10px;">Fermer</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // ========== FONCTIONS GESTION IMAGES RAPPEL (POUR LIVRE COURS) ==========
+
+    function openAddImageRappelModal(idChapitre) {
+        document.getElementById('rappelChapitreImage').value = idChapitre;
+        const fileInput = document.getElementById('rappelImage');
+        if (fileInput) fileInput.value = '';
+        document.getElementById('previewRappelImage').style.display = 'none';
+        loadRappelImages(idChapitre);
+        $('#addImageRappelModal').modal('show');
+    }
+
+    function loadRappelImages(idChapitre) {
+        const baseUrl = "<?php echo base_url(); ?>";
+        fetch(`${baseUrl}home/getRappelImages`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idChapter: idChapitre })
+        })
+        .then(r => r.json())
+        .then(data => {
+            const container = document.getElementById('imagesContainer');
+            if (data.success && data.data.length > 0) {
+                let html = '';
+                data.data.forEach(img => {
+                    html += `
+                        <div style="position: relative; width: 120px; background: rgba(0,0,0,0.2); padding: 5px; border-radius: 5px;">
+                            <img src="data:image/jpeg;base64,${img.ImageData}" 
+                                 style="width: 100%; height: 100px; object-fit: cover; border-radius: 5px;">
+                            <button type="button" 
+                                    onclick="deleteRappelImageItem(${img.IDImageRappel}, ${idChapitre})"
+                                    style="position: absolute; top: 0px; right: 0px; background: #dc3545; color: white; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; font-size: 16px; line-height: 1; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.3);">
+                                &times;
+                            </button>
+                            <p style="color: white; font-size: 10px; margin-top: 5px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 0;" title="${img.NomImage}">${img.NomImage}</p>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = '<p style="color: white; font-style: italic; font-size: 13px;">Aucune image pour ce chapitre</p>';
+            }
+        });
+    }
+
+    function previewImageRappel(event) {
+        const file = event.target.files[0];
+        const preview = document.getElementById('previewRappelImage');
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = e => {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function saveRappelImage() {
+        const form = document.getElementById('formRappelImage');
+        const formData = new FormData(form);
+        const idChapitre = document.getElementById('rappelChapitreImage').value;
+        const fileInput = document.getElementById('rappelImage');
+        
+        if (!fileInput.files[0]) {
+            Swal.fire({ icon: 'warning', title: 'Attention', text: 'Veuillez sÃ©lectionner une image' });
+            return;
+        }
+
+        Swal.fire({ title: 'Envoi...', allowOutsideClick: false, onBeforeOpen: () => Swal.showLoading() });
+
+        $.ajax({
+            type: 'POST',
+            url: '<?php echo base_url(); ?>home/saveRappelImage',
+            data: formData,
+            cache: false, contentType: false, processData: false,
+            success: function(response) {
+                const result = JSON.parse(response);
+                if (result[0].id == '1') {
+                    Swal.fire({ icon: 'success', title: 'SuccÃ¨s', timer: 1000, showConfirmButton: false }).then(() => {
+                        loadRappelImages(idChapitre);
+                        form.reset();
+                        document.getElementById('previewRappelImage').style.display = 'none';
+                    });
+                } else {
+                    Swal.fire({ icon: 'error', title: 'Erreur', text: result[0].desc });
+                }
+            },
+            error: () => Swal.fire({ icon: 'error', title: 'Erreur', text: 'Erreur lors de lenvoi' })
+        });
+    }
+
+    function deleteRappelImageItem(idImage, idChapitre) {
+        Swal.fire({
+            title: 'Supprimer cette image ?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            confirmButtonText: 'Supprimer'
+        }).then(result => {
+            if (result.value) {
+                fetch('<?php echo base_url(); ?>home/deleteRappelImage', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ idImage: idImage })
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        loadRappelImages(idChapitre);
+                    } else {
+                        Swal.fire({ icon: 'error', title: 'Erreur', text: data.message });
+                    }
+                });
+            }
+        });
+    }
+    </script>
     </html>
 
 <?php }else{ ?>
