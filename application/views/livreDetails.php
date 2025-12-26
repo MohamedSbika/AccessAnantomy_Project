@@ -173,7 +173,7 @@
             <div class="modal-content" style="background-color: rgb(9,138,99);box-shadow: 0 0 0 50vmax rgba(0,0,0,.7);">
                 <div class="modal-header">
                     <h2 class="modal-title h2-modal-login"> <span id="idTitreListVideo"></span></h2>
-                    <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close"> Ã— </button>
+                    <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close"> x </button>
                 </div>
                 <div class="modal-body m-3" style="padding:0px;">
 
@@ -208,7 +208,7 @@
                             < </button>
                         <button type="button" class="style-button-modal" id="titreDisplayVideoModal27Previous" onclick="openVideoPlainEcranNext()"> > </button>
 
-                        <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close"> Ã— </button>
+                        <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close"> x </button>
 
                     </div>
                 </div>
@@ -235,7 +235,7 @@
             <div class="modal-content" style="background-color: rgb(9,138,99);box-shadow: 0 0 0 50vmax rgba(0,0,0,.7);">
                 <div class="modal-header">
                     <h2 class="modal-title h2-modal-login"><?php echo $this->lang->line('titleSupprission'); ?></h2>
-                    <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close"> Ã— </button>
+                    <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close"> x </button>
                 </div>
                 <div class="modal-body m-3">
                     <form id="deleteVideoModal" name="addFigure" method="POST">
@@ -263,7 +263,7 @@
             <div class="modal-content" style="background-color: rgb(9,138,99);box-shadow: 0 0 0 50vmax rgba(0,0,0,.7);">
                 <div class="modal-header">
                     <h2 id="titreAddVideoModal25" class="modal-title h2-modal-login"><?php echo $this->lang->line('titleSupprission'); ?></h2>
-                    <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close"> Ã— </button>
+                    <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close"> x </button>
                 </div>
                 <div class="modal-body m-3" style="padding:0px;">
                     <form id="deleteVideoModal" name="video_upload" method="POST">
@@ -301,7 +301,7 @@
             <div class="modal-content" style="background-color: rgb(9,138,99);box-shadow: 0 0 0 50vmax rgba(0,0,0,.7);">
                 <div class="modal-header">
                     <h2 id="titreAddVideoModal" class="modal-title h2-modal-login"><?php echo $this->lang->line('add_video'); ?></h2>
-                    <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close"> Ã— </button>
+                    <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close"> x </button>
                 </div>
                 <div class="modal-body m-3" style="padding:0px;">
                     <form id="video_upload" name="video_upload" method="POST">
@@ -448,7 +448,7 @@
             <div class="modal-content" style="background-color: rgb(9,138,99);box-shadow: 0 0 0 50vmax rgba(0,0,0,.7);">
                 <div class="modal-header">
                     <h2 id="titreAddVideoModal" class="modal-title h2-modal-login"><?php echo $this->lang->line('select_video'); ?></h2>
-                    <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close"> Ã— </button>
+                    <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close"> x </button>
                 </div>
                 <div class="modal-body m-3" style="padding:0px;">
 
@@ -513,7 +513,7 @@
                 <div class="modal-content" style="background-color: rgb(9,138,99);box-shadow: 0 0 0 50vmax rgba(0,0,0,.7);">
                     <div class="modal-header">
                         <h2 class="modal-title h2-modal-login"><?php echo $this->lang->line('actionAjout'); ?> Test</h2>
-                        <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close"> Ã— </button>
+                        <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close">  x </button>
                     </div>
                     <div class="modal-body m-3" style="padding:0px;">
                         <form id="addFigure<?= $value['IDChapitre']; ?>" name="addFigure" method="POST">
