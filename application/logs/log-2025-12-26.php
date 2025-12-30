@@ -19,3 +19,62 @@ ERROR - 2025-12-26 11:39:29 --> Severity: Notice --> Undefined index: pathAudio 
 ERROR - 2025-12-26 11:39:29 --> Severity: Notice --> Undefined index: pathAudio C:\xampp\7.4\htdocs\public_html\application\views\v1_listCalqueFigure.php 279
 ERROR - 2025-12-26 11:39:29 --> Severity: Notice --> Undefined index: pathAudio C:\xampp\7.4\htdocs\public_html\application\views\v1_listCalqueFigure.php 279
 ERROR - 2025-12-26 11:39:29 --> Severity: Notice --> Undefined index: pathAudio C:\xampp\7.4\htdocs\public_html\application\views\v1_listCalqueFigure.php 279
+ERROR - 2025-12-26 11:43:05 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 2716
+ERROR - 2025-12-26 11:43:05 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 2716
+ERROR - 2025-12-26 12:32:50 --> list videos
+ERROR - 2025-12-26 12:33:53 --> Severity: Notice --> Undefined offset: 0 C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 2716
+ERROR - 2025-12-26 12:33:53 --> Severity: Notice --> Trying to access array offset on value of type null C:\xampp\7.4\htdocs\public_html\application\controllers\Home.php 2716
+ERROR - 2025-12-26 12:34:37 --> list videos
+ERROR - 2025-12-26 12:34:59 --> list videos
+ERROR - 2025-12-26 12:35:18 --> list videos
+ERROR - 2025-12-26 12:36:21 --> list videos
+ERROR - 2025-12-26 12:38:13 --> list videos
+ERROR - 2025-12-26 12:41:07 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 12:41:07 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 12:41:07 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 12:41:07 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 12:41:07 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 12:41:07 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 12:41:07 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 12:41:44 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 12:41:44 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 12:41:44 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 12:41:44 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 12:41:44 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 12:41:44 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 12:41:44 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 12:41:48 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 12:41:48 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 12:41:48 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 12:41:48 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 12:41:48 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 12:41:48 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 12:41:48 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 12:51:20 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 12:51:20 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 12:51:20 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 12:51:20 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 12:51:20 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 12:51:20 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 12:51:20 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 12:51:52 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 12:51:52 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 12:51:52 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 12:51:52 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 12:51:52 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 12:51:52 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 12:51:52 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 13:06:17 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 13:06:17 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 13:06:17 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 13:06:17 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 13:06:17 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 13:06:17 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 13:06:17 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 13:07:05 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 13:07:05 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 13:07:05 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 13:07:05 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 13:07:05 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 13:07:05 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2025-12-26 13:07:05 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139

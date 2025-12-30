@@ -221,7 +221,7 @@
                             </div>
 
                             <div class="col-sm-4" style="margin-top:20px; display:flex; justify-content:center; align-items:center;">
-                                <?php if($figure['pathAudio']) { ?>
+                                <?php if(isset($figure['pathAudio']) && $figure['pathAudio']) { ?>
                                     <audio style="padding-right: 1rem;width: 100%;" width="100%" height="auto" controls id="<?php echo 'audio'. $compteurFigure; ?>" allow="autoplay"
                                            onplay="handleAudioPlay(<?php echo $compteurFigure; ?>)"  oncontextmenu="return false;"  controlsList="nodownload">
                                         <source src="<?php echo base_url() .'uploads/'. $figure['pathAudio']; ?>" type="audio/mp3">

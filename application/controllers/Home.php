@@ -1553,6 +1553,7 @@ header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
                 $arrayFigures[$compteur]['textDroite'] = $arrayTextDroite;
                 $arrayFigures[$compteur]['titre'] = $res[$j]->titre;
                 $arrayFigures[$compteur]['image'] = $res[$j]->image;
+                $arrayFigures[$compteur]['pathAudio'] = $res[$j]->pathAudio;
                 $arrayFigures[$compteur]['idFigure'] = $res[$j]->id;
                 $compteur++;
             }
@@ -1609,6 +1610,7 @@ header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
                 $arrayFigures[$compteur]['textDroite'] = $arrayTextDroite;
                 $arrayFigures[$compteur]['titre'] = $res[$j]->titre;
                 $arrayFigures[$compteur]['image'] = $res[$j]->image;
+                $arrayFigures[$compteur]['pathAudio'] = $res[$j]->pathAudio;
                 $arrayFigures[$compteur]['idFigure'] = $res[$j]->id;
                 $compteur++;
             }
@@ -1659,6 +1661,7 @@ header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
                 $arrayFigures[$compteur]['textDroite'] = $arrayTextDroite;
                 $arrayFigures[$compteur]['titre'] = $res[$j]->titre;
                 $arrayFigures[$compteur]['image'] = $res[$j]->image;
+                $arrayFigures[$compteur]['pathAudio'] = $res[$j]->pathAudio;
                 $arrayFigures[$compteur]['idFigure'] = $res[$j]->id;
                 $compteur++;
             }
