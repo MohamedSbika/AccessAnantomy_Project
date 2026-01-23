@@ -361,3 +361,8 @@ $lang['lecture_auto_text'] 	= "Lecture automatique du texte";
 $lang['lecture_synchro'] 	= "Lecture synchronisée";
 $lang['lecture_vitesse'] 	= "Vitesse lecture";
 $lang['lecture_valider'] 	= "Valider";
+
+
+$lang['sidebar_anatomie'] = "Anat";
+$lang['sidebar_pathologie'] = "Path";
+$lang['sidebar_pathologie_anatomie'] = "Path";

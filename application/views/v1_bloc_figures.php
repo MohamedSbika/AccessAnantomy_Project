@@ -331,7 +331,7 @@
 
 	</style>
 
-	<input type="hidden" value="<?php print count($listFig) ?>" id="cmpFig" name="cmpFig">
+	<input type="hidden" value="<?php print isset($listFig) && is_array($listFig) ? count($listFig) : 0 ?>" id="cmpFig" name="cmpFig">
 
 	<div class="">
 		<div id="figures-scroll-container" class="scroll-container">
@@ -365,10 +365,21 @@
 	</div>
 
 	<?php
-if (in_array((int)$OneBook[0]["IDLivre"], [70, 71]) || in_array((int)$OneBook[0]["IDTheme"], [16, 27, 34])) {
-	 $showScroll = true;
-} else { ?>
-	<?php $showScroll = false; } ?>
+// Vérification robuste de $OneBook pour éviter les erreurs "Undefined offset"
+if (isset($OneBook) && !empty($OneBook) && is_array($OneBook) && isset($OneBook[0])) {
+    $idLivre = isset($OneBook[0]["IDLivre"]) ? (int)$OneBook[0]["IDLivre"] : 0;
+    $idTheme = isset($OneBook[0]["IDTheme"]) ? (int)$OneBook[0]["IDTheme"] : 0;
+    
+    if (in_array($idLivre, [70, 71]) || in_array($idTheme, [16, 27, 34])) {
+        $showScroll = true;
+    } else {
+        $showScroll = false;
+    }
+} else {
+    // Fallback si $OneBook n'est pas disponible (accès direct au fichier HTML)
+    $showScroll = false;
+}
+?>
 	<div class="" style="width: 100%;">
 		<div class="container-fig" style="max-height: 50vw; overflow: hidden;height: 100vh;background: rgb(255, 255, 255);position: relative;
   											width: 100%;  max-width: 900px; margin: auto; display: flex;

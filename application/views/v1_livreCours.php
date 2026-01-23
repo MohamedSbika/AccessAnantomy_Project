@@ -287,7 +287,12 @@ if (strlen($this->session->userdata('passTok')) == 200) {
                 </li>
             </div>
             <div class="row">
-                <?php echo isset($CursShow) ? $CursShow : '<p>Aucun contenu à afficher.</p>'; ?>
+                <?php if (isset($showBannerFigures) && $showBannerFigures === true): ?>
+                    <!-- ✅ Forcer l'affichage du banner informatif -->
+                    <?php echo $CursShow; ?>
+                <?php else: ?>
+                    <?php echo isset($CursShow) ? $CursShow : '<p>Aucun contenu à afficher.</p>'; ?>
+                <?php endif; ?>
             </div>
         </div>
 

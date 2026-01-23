@@ -292,6 +292,61 @@
         color: #666;
         font-style: italic;
     }
+
+    /* Styles pour les versions de pathologies */
+    .patho-version-container {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        margin-top: 5px;
+        padding-left: 10px;
+        border-left: 1px dashed #cbd5e1;
+    }
+
+    .patho-version-link {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 5px 10px;
+        font-size: 11px;
+        border-radius: 4px;
+        transition: all 0.2s;
+        text-decoration: none !important;
+    }
+
+    .patho-version-link.essential {
+        color: #1d4ed8;
+        background-color: #eff6ff;
+        border: 1px solid #dbeafe;
+    }
+
+    .patho-version-link.essential:hover {
+        background-color: #dbeafe;
+        transform: translateX(2px);
+    }
+
+    .patho-version-link.integral {
+        color: #9a3412;
+        background-color: #fff7ed;
+        border: 1px solid #ffedd5;
+    }
+
+    .patho-version-link.integral:hover {
+        background-color: #ffedd5;
+        transform: translateX(2px);
+    }
+
+    .patho-version-link i {
+        font-size: 10px;
+    }
+
+    .patho-item-title {
+        font-weight: 600;
+        color: #334155;
+        font-size: 12px;
+        margin-bottom: 5px;
+        display: block;
+    }
 </style>
 
 <div id="listChapTooltip" class="tooltip-chapitre" style="display: none;">
@@ -313,7 +368,8 @@
             data-id="<?= $value['IDChapitre']; ?>" 
             data-id-rappel="<?= $value['IdChapterRappel'] ?? '' ?>" 
             data-curs="<?= $value['NbreCours']; ?>" 
-            data-resum="<?= $value['NbreResume']; ?>">
+            data-resum="<?= $value['NbreResume']; ?>"
+            data-resum-rappel="<?= $value['NbreResumeRappel'] ?? 0; ?>">
             
             <div class="chapter-item-header"
                 onclick="toggleSousChapitres(<?= $value['IDChapitre']; ?>, this.querySelector('.accordion-arrow'), event)">
@@ -369,11 +425,20 @@
                     }
                 </script>
 
-                <span class="carreaux" style="background-color: #1E88E5;color: white"
+<?php /*
+<span class="carreaux" style="background-color: #1E88E5;color: white"
+    onclick="selectUniqueCarreau(this,'e_a')"
+    title="<?php echo $this->lang->line('sidebar_ad_tooltip'); ?>">
+    <div class="title_carr"><?php echo $this->lang->line('sidebar_anatomie'); ?></div>
+    <!--<i class="fa fa-notes-medical"></i>-->
+</span>
+*/ ?>
+
+                <span class="carreaux" style="background-color: #207c51ff;color: white"
                     onclick="selectUniqueCarreau(this,'e_a')"
                     title="<?php echo $this->lang->line('sidebar_ad_tooltip'); ?>">
-                    <div class="title_carr"><?php echo $this->lang->line('sidebar_cours'); ?></div>
-                    <i class="fa fa-play-circle"></i>
+                    <div class="title_carr"><?php echo $this->lang->line('sidebar_pathologie'); ?></div>
+                    <!--<i class="fa fa-virus"></i>-->
                 </span>
             </div>
         </div>
@@ -523,29 +588,32 @@
                 sousChapList.innerHTML = '<li class="loading-sous-chapitres" style="color: red;">Erreur de chargement</li>';
             });
     }
-
 function afficherSousChapitres(sousChapList, data) {
     const chapterEl = sousChapList.closest('.chapter-item');
     const idChapter = chapterEl.getAttribute('data-id');
     const idChapterRappel = chapterEl.getAttribute('data-id-rappel');
+    const nbreResumeRappel = chapterEl.getAttribute('data-resum-rappel') || 0;
 
     let html = '';
         
-// Rappel Anatomique (par défaut)
+// Rappel Anatomique (par défaut) -> Version Essentielle?
 html += `
     <li class="sous-chapitre-item rappel-item" 
         style="font-weight:bold; color:#1d3557; background-color:#dce6f1; cursor:pointer;"
         onclick="chargerRappelDefaut('${idChapterRappel || ''}', event)">
-        Anatomie cours complet
+        Anatomie - Cours fondamental complet
     </li>
 `;
 
-// Rappel Manuel (si existe)
+// Rappel Manuel -> Version Intégrale?
+const lang = '<?php echo strtoupper($this->uri->segment(1)); ?>';
+const baseUrl = '<?php echo base_url(); ?>';
+
 html += `
     <li class="sous-chapitre-item rappel-manuel-item" 
         style="font-weight:bold; color:#457b9d; background-color:#e8f4f8; cursor:pointer;"
-        onclick="chargerRappelManuel('${idChapter || ''}', event)">
-        Anatomie cours résumé
+        onclick="redirectToAnatomyResume('${idChapterRappel}', '${nbreResumeRappel}', event)">
+        Anatomie - synthèse structurée
     </li>
 `;
     html += `
@@ -561,15 +629,31 @@ html += `
     if (!data || data.length === 0) {
         html += `
                 <li class="loading-sous-chapitres">
-                    Aucun sous-chapitre
+                    Aucune pathologie trouvée
                 </li>
         `;
     } else {
         data.forEach(sousChap => {
             html += `
-                <li class="sous-chapitre-item"
-                    onclick="selectSousChapitre('${sousChap.IDSousChapitre}', '${sousChap.IDChapitre}', this, event)">
-                    ${sousChap.TitreSousChapitre || sousChap.desc || 'Sans titre'}
+                <li style="padding: 10px; border-bottom: 1px solid #f1f5f9; list-style:none;">
+                    <span class="patho-item-title">${sousChap.TitreSousChapitre || 'Sans titre'}</span>
+                    <div class="patho-version-container">
+                        ${sousChap.FichierHTML ? `
+                            <a href="#" class="patho-version-link essential" 
+                               onclick="selectSousChapitre('${sousChap.IDSousChapitre}', '${sousChap.IDChapitre}', this, event, 'essential')">
+                                <span>Version essentielle</span>
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        ` : ''}
+                        ${sousChap.FichierHTML_Resume ? `
+                            <a href="#" class="patho-version-link integral" 
+                               onclick="selectSousChapitre('${sousChap.IDSousChapitre}', '${sousChap.IDChapitre}', this, event, 'integral')">
+                                <span>Version intégrale</span>
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        ` : ''}
+                        ${(!sousChap.FichierHTML && !sousChap.FichierHTML_Resume) ? '<span style="font-size: 10px; font-style: italic; color: #94a3b8;">Aucun contenu disponible</span>' : ''}
+                    </div>
                 </li>
             `;
         });
@@ -637,23 +721,14 @@ function togglePathologies(event) {
 
 
 // Sélection sous-chapitre
-function selectSousChapitre(idSousChapitre, idChapitre, element, event) {
+function selectSousChapitre(idSousChapitre, idChapitre, element, event, version = 'essential') {
     if (event && typeof event.stopPropagation === 'function') {
         event.stopPropagation();
     }
+    if (event && event.preventDefault) event.preventDefault();
 
-    document.querySelectorAll('.sous-chapitre-item').forEach(el => el.classList.remove('selected'));
+    document.querySelectorAll('.patho-version-link').forEach(el => el.classList.remove('selected'));
     if (element) element.classList.add('selected');
-
-    const type_sel = window.selectedType;
-    if (!type_sel) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Aucune action sélectionnée',
-            text: 'Veuillez d\'abord sélectionner une action (par exemple, cours).'
-        });
-        return;
-    }
 
     const baseUrl = "<?php echo base_url(); ?>";
 
@@ -672,17 +747,18 @@ function selectSousChapitre(idSousChapitre, idChapitre, element, event) {
 
         console.log("🔹 Données du sous-chapitre :", data);
 
-        const fichierHTML = data.FichierHTML || null;
-        if (fichierHTML) {
+        const targetFile = (version === 'essential') ? data.FichierHTML : data.FichierHTML_Resume;
+        
+        if (targetFile) {
             const lang = "<?php echo strtoupper($this->uri->segment(1)); ?>";
-            const redirectUrl = `${baseUrl}${lang}/PlatFormeConvert/${fichierHTML}`;
+            const redirectUrl = `${baseUrl}${lang}/PlatFormeConvert/${targetFile}`;
             console.log("🔸 Redirection vers :", redirectUrl);
             window.location.href = redirectUrl;
         } else {
             Swal.fire({
                 icon: 'warning',
-                title: 'Aucun contenu disponible',
-                text: 'Ce sous-chapitre n’a pas encore de fichier attaché.'
+                title: 'Contenu indisponible',
+                text: `La ${version === 'essential' ? 'version essentielle' : 'version intégrale'} de cette pathologie n'est pas disponible.`
             });
         }
     })
@@ -693,6 +769,37 @@ function selectSousChapitre(idSousChapitre, idChapitre, element, event) {
             title: 'Erreur de chargement',
             text: 'Impossible de charger le contenu du sous-chapitre.'
         });
+    });
+}
+
+function selectSousChapitrePatho(idSousChap, idChap, event) {
+    if (event && event.stopPropagation) event.stopPropagation();
+    const baseUrl = "<?php echo base_url(); ?>";
+    
+    fetch(`${baseUrl}home/getContentSousChapitre`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idChap: idChap, idSousChap: idSousChap })
+    })
+    .then(response => response.json())
+    .then(data => {
+        const tooltip = document.getElementById("listChapTooltip");
+        if (tooltip) tooltip.style.display = 'none';
+
+        if (data.FichierHTML) {
+            const lang = "<?php echo strtoupper($this->uri->segment(1)); ?>";
+            window.location.href = `${baseUrl}${lang}/PlatFormeConvert/${data.FichierHTML}`;
+        } else {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Aucun contenu disponible',
+                text: 'Ce sous-chapitre n’a pas encore de fichier attaché.'
+            });
+        }
+    })
+    .catch(err => {
+        console.error('Erreur:', err);
+        Swal.fire({ icon: 'error', title: 'Erreur', text: 'Impossible de charger le contenu.' });
     });
 }
 
@@ -722,6 +829,85 @@ function selectSousChapitre(idSousChapitre, idChapitre, element, event) {
         document.documentElement.style.setProperty('--scroll-y', window.scrollY + 'px');
     }
     window.addEventListener('scroll', updateScroll);
+
+// Chargement du résumé d'anatomie avec vérification
+function redirectToAnatomyResume(idChapitre, nbreResume, event) {
+    if (event) event.stopPropagation();
+    
+    if (!idChapitre || idChapitre === '0' || idChapitre === '') {
+        Swal.fire({
+            icon: 'info',
+            title: 'Information',
+            text: 'Aucun cours d\'anatomie n\'est lié à ce chapitre.'
+        });
+        return;
+    }
+
+    const baseUrl = "<?php echo base_url(); ?>";
+    const lang = "<?php echo strtoupper($this->uri->segment(1)); ?>";
+    const coursContainer = document.querySelector('.bloc-cours');
+
+    // CAS 1 : On est dans la page PlatFormeConvert (avec bloc-cours) - Chargement AJAX
+    if (coursContainer) {
+        const originalContent = coursContainer.innerHTML;
+        
+        coursContainer.innerHTML = `
+            <div style="text-align:center; padding:50px;">
+                <i class="fas fa-spinner fa-spin" style="font-size:40px; color:#1d3557;"></i>
+                <p style="margin-top:15px;">Chargement de la synthèse structurée...</p>
+            </div>
+        `;
+
+        fetch(`${baseUrl}home/getRappelResumeContent`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idChapterRappel: idChapitre })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success && data.content) {
+                coursContainer.innerHTML = data.content;
+                coursContainer.scrollTop = 0;
+                
+                // Message de confirmation
+                if (data.hasResume) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Synthèse chargée',
+                        text: 'La synthèse structurée a été chargée avec succès.',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                }
+            } else {
+                coursContainer.innerHTML = originalContent;
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erreur',
+                    text: data.message || 'Impossible de charger le résumé.'
+                });
+            }
+        })
+        .catch(err => {
+            console.error('Erreur:', err);
+            coursContainer.innerHTML = originalContent;
+            Swal.fire({
+                icon: 'error',
+                title: 'Erreur',
+                text: 'Impossible de charger le résumé.'
+            });
+        });
+        
+        return;
+    }
+
+    // CAS 2 : Page normale (sans bloc-cours) - Redirection classique
+    if (parseInt(nbreResume) > 0) {
+        window.location.href = `${baseUrl}${lang}/livreResume/${idChapitre}`;
+    } else {
+        window.location.href = `${baseUrl}${lang}/livreFigures/${idChapitre}`;
+    }
+}
 
 // === FONCTION POUR CHARGER LE RAPPEL PAR DÉFAUT ===
 function chargerRappelDefaut(idChapterRappel, event) {
@@ -844,8 +1030,8 @@ function chargerRappelManuel(idChapter, event) {
 
     coursContainer.innerHTML = `
         <div style="text-align:center; padding:50px;">
-            <i class="fas fa-spinner fa-spin" style="font-size:40px; color:#457b9d;"></i>
-            <p style="margin-top:15px;">Chargement du rappel manuel...</p>
+            <i class="fas fa-spinner fa-spin" style="font-size:40px; color:#1d3557;"></i>
+            <p style="margin-top:15px;">Chargement du rappel anatomique...</p>
         </div>
     `;
 
@@ -931,7 +1117,8 @@ function chargerImagesRappel(idChapter, container) {
             container.innerHTML += imagesHtml;
 
             // --- Nouveauté : Mettre à jour aussi la barre latérale droite (figures) ---
-            updateFiguresSidebar(data.data);
+            // DÉSACTIVÉ : On garde les mêmes figures pour chapitre, sous-chapitre et résumé
+            // updateFiguresSidebar(data.data);
 
             return true; // Images trouvées
         }

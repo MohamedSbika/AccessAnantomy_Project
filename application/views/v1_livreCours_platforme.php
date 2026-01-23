@@ -35,8 +35,8 @@ if (strlen($this->session->userdata('passTok')) == 200) {
             .col-12.col-lg-6.col-xl-6 { width: 95% !important; margin-left: 2.5% !important; float: none !important; }
         }
         @media (min-width: 769px) {
-            .col-12.col-lg-6.col-xl-6:first-of-type { width: 45% !important; margin-left: 30px !important; }
-            .col-12.col-lg-6.col-xl-6:last-of-type { width: 45% !important; margin-left: 2% !important; }
+            .col-12.col-lg-6.col-xl-6:first-of-type { width: 45% !important; margin-left: 42% !important; }
+            .col-12.col-lg-6.col-xl-6:last-of-type { width: 48% !important; margin-left: 0.2% !important; }
         }
 
         /* Bloc Figures */
@@ -49,8 +49,9 @@ if (strlen($this->session->userdata('passTok')) == 200) {
         .bloc-cours { 
             overflow-y: auto; 
             max-height: 90vh; 
-            padding: 10px; 
-            padding-left: 55px;
+            padding: 20px; 
+            padding-left: 80px;
+            padding-right: 20px;
             background-color: white; 
             border-radius: 10px; 
             box-shadow: 0 4px 8px rgba(0,0,0,0.1); 

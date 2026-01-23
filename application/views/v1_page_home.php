@@ -575,7 +575,7 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 				</div>
 			</div>
 			<div class="hero-image">
-				<img src="<?php echo HTTP_IMAGES; ?>photos/brain.png" alt="Image anatomique">
+				<img src="<?php echo HTTP_IMAGES; ?>photos/brain1.webp" alt="Image anatomique">
 			</div>
 		</section>
 
@@ -612,7 +612,7 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 				<h2><?php echo $this->lang->line('types_cours'); ?></h2>
 			</div>
 		</section>
-
+3
 		<style>
 			.section-info {
 				display: flex;
@@ -758,7 +758,7 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 		</style>
 		<section class="section-info">
 			<div class="image-container">
-				<img src="<?php echo HTTP_IMAGES; ?>photos/brain.png" alt="Cerveau énergétique">
+				<img src="<?php echo HTTP_IMAGES; ?>photos/brain1.webp" alt="Cerveau énergétique">
 			</div>
 			<div class="text-container">
 				<h3><?php echo $this->lang->line('access_desc_title'); ?></h3>
@@ -1438,7 +1438,7 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 				</style>
 			</section>
 
-<section class="section-paces">
+<!-- <section class="section-paces">
     <div class="paces-wrapper">
         <div class="image-container">
             <img src="<?php echo HTTP_IMAGES; ?>photos/paces.png" alt="Anatomie PACES">
@@ -1580,7 +1580,7 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
             }
         }
     </style>
-</section>
+</section> -->
 
 
 

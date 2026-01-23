@@ -442,6 +442,43 @@
     </div>
 </div>
 
+<!-- MODAL SOUS-CHAPITRE (PATHOLOGIE) -->
+<div class="modal fade" id="modalSousChap" tabindex="-1" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width:800px;">
+        <div class="modal-content" style="background-color: rgb(9,138,99);box-shadow: 0 0 0 50vmax rgba(0,0,0,.7);">
+            <div class="modal-header">
+                <h2 class="modal-title h2-modal-login">Ajouter Sous-Chapitre(s) / Pathologie(s)</h2>
+                <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close"> x </button>
+            </div>
+            <div class="modal-body m-3">
+                <form id="formSousChap" name="formSousChap">
+                    <input type="hidden" id="sousChap_bookID" name="bookID" value="">
+                    <input type="hidden" id="sousChap_chapID" name="chapID" value="">
+                    
+                    <div class="form-group">
+                        <label class="form-label label-modal-login">Titres des sous-chapitres / pathologies</label>
+                        <textarea 
+                            id="sousChaps" 
+                            name="sousChaps" 
+                            rows="4" 
+                            class="form-control form-control-lg input-modal-login" 
+                            placeholder="Entrez les titres séparés par des virgules. Exemple: Pathologie 1, Pathologie 2, Pathologie 3"
+                            style="font-size: 0.9rem; padding: 0.5rem;"
+                        ></textarea>
+                        <small class="form-text text-muted" style="color: #ddd;">
+                            Séparez chaque titre par une virgule (,)
+                        </small>
+                    </div>
+
+                    <div class="text-center mt-3">
+                        <button type="button" class="btn btn-primary button-modal-login" onclick="submitSousChap()">Enregistrer</button>
+                        <button type="button" class="btn btn-secondary button-modal-login" data-dismiss="modal">Annuler</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
     <div class="modal fade" id="selectVideoModal" tabindex="-1" style="display: none;" aria-hidden="true" style="z-index:5000;">
         <div class="modal-dialog modal-dialog-centered" role="document" style="max-width:1000px;">
@@ -751,436 +788,55 @@ echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chap
                                     <table class="table table-striped" style="width: 95%; align-self: center;">
                                         <thead>
                                         <tr>
-                                            <th style="text-align: left;"></th>
-                                            <th width="15%"></th>
-                                            <?php if ($category['EstActifResume'] == 1) { ?>
-                                                <th width="15%"></th>
-                                            <?php } ?>
-<!-- <th width="15%" style="text-align: center; vertical-align: middle;">
-    <button type="button"
-            class="btn btn-outline-primary btn-sm"
-            style="font-size: 0.75rem; padding: 0.375rem 0.75rem; white-space: nowrap;"
-            onclick="window.open('http://localhost:3000/', '_blank');">
-        <?= $this->lang->line('actionAjout'); ?> Chapitres
-    </button>
-</th> -->
+                                            <?php 
+                                            $estPathologieBook = in_array((int)$OneBook[0]["IDTheme"], [20, 30, 31]);
+                                            if ($estPathologieBook): ?>
+                                                <th width="5%" style="text-align: left;"></th>
+                                                <th width="30%" style="text-align: center;">Titre Chapitre</th>
+                                                <th width="20%" style="text-align: center;">Anatomie - Cours fondamental complet</th>
+                                                <th width="20%" style="text-align: center;">Anatomie - synthèse structurée</th>
+                                                <th width="25%" style="text-align: center;">Pathologies</th>
+                                            <?php else: ?>
+                                                <!-- ✅ PATCH : Ajouter une colonne vide pour la colonne des icônes d'administration -->
+                                                <th width="5%" style="text-align: left;"></th>
+                                                <th width="15%">Cours</th>
+                                                <?php if ($category['EstActifResume'] == 1) { ?>
+                                                    <th width="15%">Résumé</th>
+                                                <?php } ?>
 
-                                            <?php if ($category['EstActifQSM'] == 1) { ?>
-                                                <th width="15%">
-                                                    <?php if ((strlen($this->session->userdata('passTok')) == 200) &&  ($resNBR[0]['QcmNBR'] > 0)) { ?>
-                                                        <div class="row">
-                                                            <div class="col-md-6" style="width: 100%;font-size: 0.97rem;">
-                                                                <a href="#" data-toggle="modal" data-target="#modalTestQCM" class="btn btn-outline-primary mr-1" style="border-color: red;color: red;">A -<?php echo $this->lang->line('testQCM'); ?></a>
-                                                            </div>
-                                                            <div class="modal fade" id="modalTestQCM" tabindex="<?= $OneBook[0]['IDLivre']; ?>" style="display: none;" aria-hidden="true">
-                                                                <div class="modal-dialog modal-sm" role="document">
-                                                                    <div class="modal-content">
-                                                                        <div class="modal-header">
-                                                                            <h3 style="font-family: Georgia, serif;"><?php echo $this->lang->line('testChoicCurs'); ?></h3>
-                                                                        </div>
-                                                                        <div class="card-body">
-                                                                            <div>
-                                                                                <form name="pageForm_TestQCM" id="pageForm_TestQCM" action="">
-                                                                                    <input type="hidden" name="bookID" id="bookID" value="<?= base64_encode($OneBook[0]['IDLivre']); ?>">
-                                                                                    <div class="row">
+                                                <?php if ($category['EstActifQSM'] == 1) { ?>
+                                                    <th width="15%">QCM A</th>
+                                                    <th width="15%">QCM B</th>
+                                                    <th width="15%">QCM I</th>
+                                                <?php } ?>
 
-                                                                                        <div>
-                                                                                            <label class="form-check form-check-inline">
-                                                                                                <input class="form-check-input" type="radio" name="typeQCM" value="1" checked>
-                                                                                                <span class="form-check-label"><?php echo $this->lang->line('testQcmPair'); ?></span>
-                                                                                            </label>
-                                                                                            <label class="form-check form-check-inline">
-                                                                                                <input class="form-check-input" type="radio" name="typeQCM" value="2">
-                                                                                                <span class="form-check-label"><?php echo $this->lang->line('testQcmImpair'); ?></span>
-                                                                                            </label>
-                                                                                        </div>
+                                                <?php if ($category['EstActifQROC'] == 1) { ?>
+                                                    <th width="15%">QROC</th>
+                                                <?php } ?>
 
-                                                                                    </div>
-                                                                                    <hr>
-                                                                                    <div class="row">
-                                                                                        <table class="table table-striped">
-                                                                                            <thead>
-                                                                                            <tr>
+                                                <?php if ($category['EstActifCalques'] == 1) { ?>
+                                                    <th width="15%">Calques</th>
+                                                <?php } ?>
 
-                                                                                            </tr>
-                                                                                            </thead>
-                                                                                            <?php foreach ($listChap as $value) { ?>
-                                                                                                <?php if ($value['NbreQcm'] > 0) { ?>
-                                                                                                    <tbody id="serChapTest">
-                                                                                                    <tr>
-                                                                                                        <td style="text-align: left;">
-                                                                                                            <div class="col-md-8" style="font-size: 0.97rem;">
-                                                                                                                <label class="form-check">
-                                                                                                                    <input class="form-check-input" type="checkbox" name="listIDsTest[]" value="<?php print base64_encode($value['IDChapitre']); ?>">
-                                                                                                                    <span class="form-check-label"><?= $value['TitreChapitre']; ?></span>
-                                                                                                                </label>
-                                                                                                            </div>
-                                                                                                        </td>
-                                                                                                    </tr>
-                                                                                                    </tbody>
-                                                                                                <?php } ?>
-                                                                                            <?php } ?>
-                                                                                        </table>
-                                                                                    </div>
-                                                                                </form>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal"><?php echo $this->lang->line('testClose'); ?></button>
-                                                                            <button type="button" class="btn btn-primary" onclick="set_testQcmChap()"><?php echo $this->lang->line('testBegin'); ?></button>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    <?php } ?>
-                                                </th>
-                                                                                                <th width="15%">
-                                                    <?php if ((strlen($this->session->userdata('passTok')) == 200) &&  ($resNBR[0]['QcmNBR'] > 0)) { ?>
-                                                        <div class="row">
-                                                            <div class="col-md-6" style="width: 100%;font-size: 0.97rem;">
-                                                                <a href="#" data-toggle="modal" data-target="#modalTestQCM" class="btn btn-outline-primary mr-1" style="border-color: red;color: red;">B -<?php echo $this->lang->line('testQCM'); ?></a>
-                                                            </div>
-                                                            <div class="modal fade" id="modalTestQCM" tabindex="<?= $OneBook[0]['IDLivre']; ?>" style="display: none;" aria-hidden="true">
-                                                                <div class="modal-dialog modal-sm" role="document">
-                                                                    <div class="modal-content">
-                                                                        <div class="modal-header">
-                                                                            <h3 style="font-family: Georgia, serif;"><?php echo $this->lang->line('testChoicCurs'); ?></h3>
-                                                                        </div>
-                                                                        <div class="card-body">
-                                                                            <div>
-                                                                                <form name="pageForm_TestQCM" id="pageForm_TestQCM" action="">
-                                                                                    <input type="hidden" name="bookID" id="bookID" value="<?= base64_encode($OneBook[0]['IDLivre']); ?>">
-                                                                                    <div class="row">
-
-                                                                                        <div>
-                                                                                            <label class="form-check form-check-inline">
-                                                                                                <input class="form-check-input" type="radio" name="typeQCM" value="1" checked>
-                                                                                                <span class="form-check-label"><?php echo $this->lang->line('testQcmPair'); ?></span>
-                                                                                            </label>
-                                                                                            <label class="form-check form-check-inline">
-                                                                                                <input class="form-check-input" type="radio" name="typeQCM" value="2">
-                                                                                                <span class="form-check-label"><?php echo $this->lang->line('testQcmImpair'); ?></span>
-                                                                                            </label>
-                                                                                        </div>
-
-                                                                                    </div>
-                                                                                    <hr>
-                                                                                    <div class="row">
-                                                                                        <table class="table table-striped">
-                                                                                            <thead>
-                                                                                            <tr>
-
-                                                                                            </tr>
-                                                                                            </thead>
-                                                                                            <?php foreach ($listChap as $value) { ?>
-                                                                                                <?php if ($value['NbreQcm'] > 0) { ?>
-                                                                                                    <tbody id="serChapTest">
-                                                                                                    <tr>
-                                                                                                        <td style="text-align: left;">
-                                                                                                            <div class="col-md-8" style="font-size: 0.97rem;">
-                                                                                                                <label class="form-check">
-                                                                                                                    <input class="form-check-input" type="checkbox" name="listIDsTest[]" value="<?php print base64_encode($value['IDChapitre']); ?>">
-                                                                                                                    <span class="form-check-label"><?= $value['TitreChapitre']; ?></span>
-                                                                                                                </label>
-                                                                                                            </div>
-                                                                                                        </td>
-                                                                                                    </tr>
-                                                                                                    </tbody>
-                                                                                                <?php } ?>
-                                                                                            <?php } ?>
-                                                                                        </table>
-                                                                                    </div>
-                                                                                </form>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal"><?php echo $this->lang->line('testClose'); ?></button>
-                                                                            <button type="button" class="btn btn-primary" onclick="set_testQcmChap()"><?php echo $this->lang->line('testBegin'); ?></button>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    <?php } ?>
-                                                </th>
-                                                                                                <th width="15%">
-                                                    <?php if ((strlen($this->session->userdata('passTok')) == 200) &&  ($resNBR[0]['QcmNBR'] > 0)) { ?>
-                                                        <div class="row">
-                                                            <div class="col-md-6" style="width: 100%;font-size: 0.97rem;">
-                                                                <a href="#" data-toggle="modal" data-target="#modalTestQCM" class="btn btn-outline-primary mr-1" style="border-color: red;color: red;">I -<?php echo $this->lang->line('testQCM'); ?></a>
-                                                            </div>
-                                                            <div class="modal fade" id="modalTestQCM" tabindex="<?= $OneBook[0]['IDLivre']; ?>" style="display: none;" aria-hidden="true">
-                                                                <div class="modal-dialog modal-sm" role="document">
-                                                                    <div class="modal-content">
-                                                                        <div class="modal-header">
-                                                                            <h3 style="font-family: Georgia, serif;"><?php echo $this->lang->line('testChoicCurs'); ?></h3>
-                                                                        </div>
-                                                                        <div class="card-body">
-                                                                            <div>
-                                                                                <form name="pageForm_TestQCM" id="pageForm_TestQCM" action="">
-                                                                                    <input type="hidden" name="bookID" id="bookID" value="<?= base64_encode($OneBook[0]['IDLivre']); ?>">
-                                                                                    <div class="row">
-
-                                                                                        <div>
-                                                                                            <label class="form-check form-check-inline">
-                                                                                                <input class="form-check-input" type="radio" name="typeQCM" value="1" checked>
-                                                                                                <span class="form-check-label"><?php echo $this->lang->line('testQcmPair'); ?></span>
-                                                                                            </label>
-                                                                                            <label class="form-check form-check-inline">
-                                                                                                <input class="form-check-input" type="radio" name="typeQCM" value="2">
-                                                                                                <span class="form-check-label"><?php echo $this->lang->line('testQcmImpair'); ?></span>
-                                                                                            </label>
-                                                                                        </div>
-
-                                                                                    </div>
-                                                                                    <hr>
-                                                                                    <div class="row">
-                                                                                        <table class="table table-striped">
-                                                                                            <thead>
-                                                                                            <tr>
-
-                                                                                            </tr>
-                                                                                            </thead>
-                                                                                            <?php foreach ($listChap as $value) { ?>
-                                                                                                <?php if ($value['NbreQcm'] > 0) { ?>
-                                                                                                    <tbody id="serChapTest">
-                                                                                                    <tr>
-                                                                                                        <td style="text-align: left;">
-                                                                                                            <div class="col-md-8" style="font-size: 0.97rem;">
-                                                                                                                <label class="form-check">
-                                                                                                                    <input class="form-check-input" type="checkbox" name="listIDsTest[]" value="<?php print base64_encode($value['IDChapitre']); ?>">
-                                                                                                                    <span class="form-check-label"><?= $value['TitreChapitre']; ?></span>
-                                                                                                                </label>
-                                                                                                            </div>
-                                                                                                        </td>
-                                                                                                    </tr>
-                                                                                                    </tbody>
-                                                                                                <?php } ?>
-                                                                                            <?php } ?>
-                                                                                        </table>
-                                                                                    </div>
-                                                                                </form>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal"><?php echo $this->lang->line('testClose'); ?></button>
-                                                                            <button type="button" class="btn btn-primary" onclick="set_testQcmChap()"><?php echo $this->lang->line('testBegin'); ?></button>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    <?php } ?>
-                                                </th>
-
-                                            <?php } ?>
-
-                                            <?php if ($category['EstActifQROC'] == 1) { ?>
-
-                                                <th width="15%">
-                                                    <?php if ((strlen($this->session->userdata('passTok')) == 200) &&  ($resNBR[0]['QrocNBR'] > 0)) { ?>
-                                                        <div class="row">
-                                                            <div class="col-md-6" style="width: 100%;font-size: 0.97rem;">
-                                                                <a href="#" data-toggle="modal" data-target="#modalTestQROC" class="btn btn-outline-primary mr-1" style="border-color: red;color: red;"> <?php echo $this->lang->line('testQROC'); ?></a>
-                                                            </div>
-                                                            <div class="modal fade" id="modalTestQROC" tabindex="<?= $OneBook[0]['IDLivre']; ?>" style="display: none;" aria-hidden="true">
-                                                                <div class="modal-dialog modal-sm" role="document">
-                                                                    <div class="modal-content">
-                                                                        <div class="modal-header">
-                                                                            <h3 style="font-family: Georgia, serif;"><?php echo $this->lang->line('testChoicCurs'); ?></h3>
-                                                                        </div>
-                                                                        <div class="card-body">
-                                                                            <div>
-                                                                                <form name="pageForm_TestQROC" id="pageForm_TestQROC" action="">
-                                                                                    <input type="hidden" name="bookID" id="bookID" value="<?= base64_encode($OneBook[0]['IDLivre']); ?>">
-                                                                                    <div class="row">
-
-                                                                                        <div>
-                                                                                            <label class="form-check form-check-inline">
-                                                                                                <input class="form-check-input" type="radio" name="typeQCM" value="1" checked>
-                                                                                                <span class="form-check-label"><?php echo $this->lang->line('testQrqPair'); ?></span>
-                                                                                            </label>
-                                                                                            <label class="form-check form-check-inline">
-                                                                                                <input class="form-check-input" type="radio" name="typeQCM" value="2">
-                                                                                                <span class="form-check-label"><?php echo $this->lang->line('testQrqImpair'); ?></span>
-                                                                                            </label>
-                                                                                        </div>
-
-                                                                                    </div>
-                                                                                    <hr>
-                                                                                    <div class="row">
-                                                                                        <table class="table table-striped">
-                                                                                            <thead>
-                                                                                            <tr>
-
-                                                                                            </tr>
-                                                                                            </thead>
-                                                                                            <?php foreach ($listChap as $value) { ?>
-                                                                                                <?php if ($value['NbreQroc'] > 0) { ?>
-                                                                                                    <tbody id="serChapTest">
-                                                                                                    <tr>
-                                                                                                        <td style="text-align: left;">
-                                                                                                            <div class="col-md-8" style="font-size: 0.97rem;">
-                                                                                                                <label class="form-check">
-                                                                                                                    <input class="form-check-input" type="checkbox" name="listIDsTest[]" value="<?php print base64_encode($value['IDChapitre']); ?>">
-                                                                                                                    <span class="form-check-label"><?= $value['TitreChapitre']; ?></span>
-                                                                                                                </label>
-                                                                                                            </div>
-                                                                                                        </td>
-                                                                                                    </tr>
-                                                                                                    </tbody>
-                                                                                                <?php } ?>
-                                                                                            <?php } ?>
-                                                                                        </table>
-                                                                                    </div>
-                                                                                </form>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal"><?php echo $this->lang->line('testClose'); ?></button>
-                                                                            <button type="button" class="btn btn-primary" onclick="set_testQrocChap()"><?php echo $this->lang->line('testBegin'); ?></button>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    <?php } ?>
-                                                </th>
-
-                                            <?php } ?>
-
-                                            <?php if ($category['EstActifCalques'] == 1) { ?>
-
-                                                <th>
-
-                                                    <?php if ((strlen($this->session->userdata('passTok')) == 200) &&  ($resNBR[0]['test'] > 0)) { ?>
-                                                        <div class="row">
-                                                            <div class="col-md-6" style="width: 100%;font-size: 0.97rem;">
-                                                                <a href="#" data-toggle="modal" data-target="#modalCalqueFigure" class="btn btn-outline-primary mr-1" style="border-color: red;color: red;"><?php echo $this->lang->line('Calques'); ?></a>
-                                                            </div>
-                                                            <div class="modal fade" id="modalCalqueFigure" tabindex="<?= $OneBook[0]['IDLivre']; ?>" style="display: none;" aria-hidden="true">
-                                                                <div class="modal-dialog modal-sm" role="document">
-                                                                    <div class="modal-content">
-                                                                        <div class="modal-header">
-                                                                            <h3 style="font-family: Georgia, serif;"><?php echo $this->lang->line('testChoicCurs'); ?></h3>
-                                                                        </div>
-                                                                        <div class="card-body">
-                                                                            <div>
-                                                                                <form name="pageForm_CalqueFigure" id="pageForm_CalqueFigure" action="">
-                                                                                    <input type="hidden" name="bookID" id="bookID" value="<?= base64_encode($OneBook[0]['IDLivre']); ?>">
-
-                                                                                    <div class="row">
-                                                                                        <table class="table table-striped">
-                                                                                            <thead>
-                                                                                            <tr>
-
-                                                                                            </tr>
-                                                                                            </thead>
-
-                                                                                            <?php foreach ($listChap as $value) { ?>
-                                                                                                <?php if ($value['NbreTest'] > 0) { ?>
-                                                                                                    <tbody id="serChapTest">
-                                                                                                    <tr>
-                                                                                                        <td style="text-align: left;">
-                                                                                                            <div class="col-md-8" style="font-size: 0.97rem;">
-                                                                                                                <label class="form-check">
-                                                                                                                    <input class="form-check-input" type="checkbox" name="listIDsTest[]" value="<?php print $value['IDChapitre']; ?>">
-                                                                                                                    <span class="form-check-label"><?= $value['TitreChapitre']; ?></span>
-                                                                                                                </label>
-                                                                                                            </div>
-                                                                                                        </td>
-                                                                                                    </tr>
-                                                                                                    </tbody>
-                                                                                                <?php } ?>
-                                                                                            <?php } ?>
-
-                                                                                        </table>
-                                                                                    </div>
-                                                                                </form>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal"><?php echo $this->lang->line('testClose'); ?></button>
-                                                                            <button type="button" class="btn btn-primary" onclick="set_CalqueFigure()"><?php echo $this->lang->line('testBegin'); ?></button>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    <?php } ?>
-                                                </th>
-
-                                            <?php } ?>
-
-                                            <?php if ($category['EstActifTest'] == 2) { ?>
-
-                                                <th>
-
-                                                    <?php if ((strlen($this->session->userdata('passTok')) == 200) &&  ($resNBR[0]['test'] > 0)) { ?>
-                                                        <div class="row">
-                                                            <div class="col-md-6" style="width: 100%;font-size: 0.97rem;">
-                                                                <a href="#" data-toggle="modal" data-target="#modalTestFigure" class="btn btn-outline-primary mr-1" style="border-color: red;color: red;">Test</a>
-                                                            </div>
-                                                            <div class="modal fade" id="modalTestFigure" tabindex="<?= $OneBook[0]['IDLivre']; ?>" style="display: none;" aria-hidden="true">
-                                                                <div class="modal-dialog modal-sm" role="document">
-                                                                    <div class="modal-content">
-                                                                        <div class="modal-header">
-                                                                            <h3 style="font-family: Georgia, serif;"><?php echo $this->lang->line('testChoicCurs'); ?></h3>
-                                                                        </div>
-                                                                        <div class="card-body">
-                                                                            <div>
-                                                                                <form name="pageForm_TestFigure" id="pageForm_TestFigure" action="">
-                                                                                    <input type="hidden" name="bookID" id="bookID" value="<?= base64_encode($OneBook[0]['IDLivre']); ?>">
-
-                                                                                    <div class="row">
-                                                                                        <table class="table table-striped">
-                                                                                            <thead>
-                                                                                            <tr>
-
-                                                                                            </tr>
-                                                                                            </thead>
-                                                                                            <?php foreach ($listChap as $value) { ?>
-                                                                                                <?php if ($value['NbreTest'] > 0) { ?>
-                                                                                                    <tbody id="serChapTest">
-                                                                                                    <tr>
-                                                                                                        <td style="text-align: left;">
-                                                                                                            <div class="col-md-8" style="font-size: 0.97rem;">
-                                                                                                                <label class="form-check">
-                                                                                                                    <input class="form-check-input" type="checkbox" name="listIDsTest[]" value="<?php print $value['IDChapitre']; ?>">
-                                                                                                                    <span class="form-check-label"><?= $value['TitreChapitre']; ?></span>
-                                                                                                                </label>
-                                                                                                            </div>
-                                                                                                        </td>
-                                                                                                    </tr>
-                                                                                                    </tbody>
-                                                                                                <?php } ?>
-                                                                                            <?php } ?>
-                                                                                        </table>
-                                                                                    </div>
-                                                                                </form>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal"><?php echo $this->lang->line('testClose'); ?></button>
-                                                                            <button type="button" class="btn btn-primary" onclick="set_testFigure()"><?php echo $this->lang->line('testBegin'); ?></button>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    <?php } ?>
-                                                </th>
-                                            <?php } ?>
-
+                                                <?php if ($category['EstActifTest'] == 1) { ?>
+                                                    <th width="15%">Test</th>
+                                                <?php } elseif ($category['EstActifTest'] == 2) { ?>
+                                                    <th width="15%">
+                                                        <input type="button" class="btn btn-outline-primary" style="border-color: #f8f9fa;color: #000000;" value="Test" data-toggle="modal" data-target="#centeredModalPrimaryTestFigure">
+                                                    </th>
+                                                <?php } ?>
+                                            <?php endif; ?>
                                         </tr>
                                         </thead>
                                         <tbody id="serChap">
                                         <form name="pageForm_Chap" id="pageForm_Chap" action="">
-                                            <?php foreach ($listChap as $value) { ?>
-                                                <tr>
+                                            <?php foreach ($listChap as $value) { 
+                $estPathologie = in_array($value['IDLivre'], [20, 30, 31]) || in_array((int)$OneBook[0]["IDTheme"], [20, 30, 31]);
+            ?>
+                <tr>
+                    <?php if (!$estPathologie): ?>
 
-                                                    <td style="text-align: left; ">
+                    <td style="text-align: left; ">
                                                        <div class="row">
  <div class="col-md-4">
         <?php if ((strlen($this->session->userdata('passTok')) == 200) && ($this->session->userdata('EstAdmin') == 1)) { ?>
@@ -1227,19 +883,12 @@ echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chap
 </div>
 
 <div class="souschap-container" style="display: none; padding-left: 2em; margin-bottom: 1em;"></div>
-<?php 
-$estPathologie = in_array($value['IDLivre'], [20, 30, 31]) 
-              || in_array((int)$OneBook[0]["IDTheme"], [20, 30, 31]);
-?>
-<?php if (!$estPathologie): ?>
-
                                                     </td>
                                                     <td>
                                                         <div class="row">
                                                             <div class="col-md-6" style="font-size: 0.97rem;">
                                                                 <?php if ($value['NbreCours'] > 0) { ?>
-                                                                    <a href="<?php echo base_url(); ?>
-																		<?php echo $this->lang->line('siteLang'); ?>livreCours/<?= $value['IDChapitre']; ?>"
+                                                                    <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>livreCours/<?= $value['IDChapitre']; ?>"
                                                                        class="btn btn-outline-primary mr-1" style="border-color: #f8f9fa;color: #000000;">
                                                                         <?php echo $this->lang->line('cour'); ?>
                                                                     </a>
@@ -1335,7 +984,20 @@ $estPathologie = in_array($value['IDLivre'], [20, 30, 31])
                                                         <td>
                                                             <div class="row">
                                                                 <div class="col-md-6" style="font-size: 0.97rem;">
-                                                                    <?php if ($value['NbreResume'] > 0) { ?> <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>livreResume/<?= $value['IDChapitre']; ?>" class="btn btn-outline-primary mr-1" style="border-color: #f8f9fa;color: #000000;"><?php echo $this->lang->line('resume'); ?></a> <?php } ?>
+                                                                    <?php if ($value['NbreResume'] > 0) { ?>
+                                                                        <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>livreResume/<?= $value['IDChapitre']; ?>" 
+                                                                           class="btn btn-outline-primary mr-1" 
+                                                                           style="border-color: #f8f9fa;color: #000000;">
+                                                                            <?php echo $this->lang->line('resume'); ?>
+                                                                        </a>
+                                                                    <?php } else { ?>
+                                                                        <!-- ✅ Redirection vers les figures si pas de résumé -->
+                                                                        <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>livreFigures/<?= $value['IDChapitre']; ?>" 
+                                                                           class="btn btn-outline-primary mr-1" 
+                                                                           style="border-color: #f8f9fa;color: #000000;">
+                                                                            <?php echo $this->lang->line('resume'); ?>
+                                                                        </a>
+                                                                    <?php } ?>
                                                                 </div>
                                                                 <div class="col-2">
                                                                     <?php if ((strlen($this->session->userdata('passTok')) == 200) && ($this->session->userdata('EstAdmin') == 1)) { ?>
@@ -1864,66 +1526,84 @@ $estPathologie = in_array($value['IDLivre'], [20, 30, 31])
                                                     <?php } ?>
 <?php else: ?>
 
-<!-- Une seule <td> qui contient 3 colonnes internes -->
-<td colspan="6">
-    <div style="display: flex; width:100%; align-items: flex-start;">
+<!-- Six colonnes pour les thèmes pathologiques, alignées avec le header -->
+    <!-- 1. ADMIN OUTILS (Aligné gauche) -->
+    <td style="text-align: left;">
+        <?php if ((strlen($this->session->userdata('passTok')) == 200) && ($this->session->userdata('EstAdmin') == 1)) { ?>
+            <div class="dropdown">
+                <a href="#" data-toggle="dropdown" data-display="static" aria-expanded="false" title="<?php echo $this->lang->line('actionEdit'); ?>">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 align-middle">
+                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                    </svg>
+                </a>
+                <a href="#" onclick="suppCh('<?php print base64_encode($value['IDChapitre']); ?>')" title="<?php echo $this->lang->line('actionSupp'); ?>">
+                    <i class="fa fa-trash-alt"></i>
+                </a>
+                <a href="#" onclick="openSousChapForm('<?php print $value['IDChapitre']; ?>', '<?php print $value['IDLivre']; ?>')" title="Ajouter Sous-Chapitre">
+                    <i class="fa fa-plus"></i>
+                </a>
+                <div class="dropdown-menu">
+                    <div class="row">
+                        <div class="col-md-12" style="padding-left: 1.4em; padding-right: 1.4em;">
+                            <input type="text" class="form-control my-3" name="setTitreChap[]" id="setTitreChap" placeholder="Titre">
+                            <input type="hidden" name="set_IdCh[]" id="set_IdCh" value="<?php print $value['IDChapitre']; ?>">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="mt-2" style="text-align: center;">
+                            <span class="btn btn-info" onclick="set_ChapBack()"><i class="fas fa-check"></i> Valider</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php } ?>
+    </td>
+    <!-- 2. TITRE (Centré, Gras) -->
+    <td style="text-align: center; font-weight: bold; color: #333;">
+        <?= $value['TitreChapitre']; ?>
+    </td>
 
-        <!-- ðŸŸ¥ COLONNE 1 : TITRE (40%) -->
-        <div style="width: 50%; font-size: 1rem; font-weight: bold; text-align: center; justify-content: center;">
-            <?= $value['TitreChapitre']; ?>
+    <!-- 3. VERSION DÉTAILLÉE (Centré) -->
+    <td style="text-align: center;">
+        <div id="rappel-detail-zone-<?= $value['IDChapitre']; ?>">
+            <span style="color: #999; font-size: 0.75rem;"><i class="fas fa-spinner fa-spin"></i></span>
         </div>
+    </td>
 
-        <!-- ðŸŸ¦ COLONNE 2 : RAPPEL (30%) -->
-<!-- ðŸŸ¦ COLONNE 2 : RAPPEL (30%) -->
-<div style="width: 25%;" id="rappel-zone-<?= $value['IDChapitre']; ?>">
-    <!-- Chargement initial... -->
-    <span style="color: #999; font-size: 0.85rem;">Chargement...</span>
-</div>
+    <!-- 4. RÉSUMÉ (Centré) -->
+    <td style="text-align: center;">
+        <div id="rappel-resume-zone-<?= $value['IDChapitre']; ?>">
+            <span style="color: #999; font-size: 0.75rem;"><i class="fas fa-spinner fa-spin"></i></span>
+        </div>
+    </td>
 
-<script>
-// Charger automatiquement au chargement de la page
-$(document).ready(function() {
-    checkAndDisplayRappel(<?= $value['IDChapitre']; ?>, '<?= $value['IdChapterRappel'] ?? ''; ?>');
-});
-</script>
+    <!-- 5. PATHOLOGIES (fusionné) -->
+    <td style="text-align: center;">
+         <div style="display: flex; align-items: center; justify-content: center; gap: 5px; cursor: pointer; padding: 6px 10px; border-radius: 6px; display: inline-flex; color: #4b5563;" onclick="togglePathoContainer(<?= $value['IDChapitre']; ?>)">
+            <span style="font-weight: 600; font-size: 0.85rem;">Pathologies</span>
+            <i class="fas fa-chevron-right" id="patho-arrow-<?= $value['IDChapitre']; ?>" style="font-size: 0.75rem; transition: transform 0.2s;"></i>
+         </div>
+    </td>
 
-<!-- ðŸŸ© COLONNE 3 : PATHOLOGIES AVEC MÃŠME LOGIQUE AJAX -->
-<div style="width: 25%;">
-
-    <span class="toggle-souschap toggle-patho" 
-          data-chap="<?= $value['IDChapitre']; ?>"
-          style="cursor: pointer; margin-right: 0.5em; font-size:14px;">&#9654;</span>
-
-    <span style="font-weight:bold;">Pathologies</span>
-
-    <!-- Container vide, rempli via AJAX -->
-    <div class="souschap-container" 
-         id="patho-container-<?= $value['IDChapitre']; ?>"
-         style="display:none; padding-left:1.5em; margin-top:0.5em;">
-    </div>
-
-</div>
-
-
-    </div>
-</td>
-
+</tr>
+<!-- Ligne suivante pour le contenu accordéon (masqué par défaut) -->
+<tr>
+    <td colspan="5" style="padding: 0; border-top: none;">
+        
+        <script>
+        $(document).ready(function() {
+            const estAdmin = <?= ((strlen($this->session->userdata('passTok')) == 200) && ($this->session->userdata('EstAdmin') == 1)) ? 'true' : 'false'; ?>;
+            checkAndDisplayRappel(<?= $value['IDChapitre']; ?>, '<?= $value['IdChapterRappel'] ?? ''; ?>', <?= $value['IDLivre']; ?>, <?= (int)$OneBook[0]["IDTheme"]; ?>, estAdmin, <?= (int)($value['NbreCoursRappel'] ?? 0); ?>, <?= (int)($value['NbreResumeRappel'] ?? 0); ?>);
+        });
+        </script>
+        
+        <!-- Container unique pour Pathologies (fusionné) -->
+        <div class="souschap-container" 
+             id="patho-container-<?= $value['IDChapitre']; ?>"
+             style="display:none; padding: 15px; background: #fafafa; border-bottom: 2px solid #efefef;">
+        </div>
+    </td>
 <?php endif; ?>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                                                 </tr>
                                             <?php } ?>
@@ -1932,148 +1612,176 @@ $(document).ready(function() {
 
 <script>
 $(document).ready(function() {
+    // L'ancien code .toggle-patho a été supprimé car nous utilisons maintenant togglePathoContainer() directement
+});
 
-    $(document).on("click", ".toggle-patho", function () {
+// Function to toggle pathology container (simplifié - un seul accordéon)
+function togglePathoContainer(idChapitre) {
+    const container = $('#patho-container-' + idChapitre);
+    const arrow = $('#patho-arrow-' + idChapitre);
 
-        const arrow = $(this);
-        const chapID = arrow.data("chap");
-        const container = $("#patho-container-" + chapID);
+    // Si le container est déjà visible, on le ferme
+    if (container.is(':visible')) {
+        arrow.css('transform', 'rotate(0deg)');
+        container.slideUp();
+        return;
+    }
 
-if (container.is(":visible")) {
-    container.slideUp(() => {
-        arrow.html("&#9654;"); 
+    // Fermer tous les autres chapitres
+    $('[id^="patho-container-"]').each(function() {
+        const containerId = $(this).attr('id');
+        if ($(this).is(':visible') && containerId !== container.attr('id')) {
+            $(this).slideUp();
+            const idPart = containerId.split('-').pop();
+            $('#patho-arrow-' + idPart).css('transform', 'rotate(0deg)');
+        }
     });
-    return;
-}
 
+    // Si déjà chargé, juste afficher
+    if (container.html().trim() !== '') {
+        container.slideDown();
+        arrow.css('transform', 'rotate(90deg)');
+        return;
+    }
 
-        $.ajax({
-            url: "<?= base_url('home/get_SousChapitres'); ?>",
-            type: "POST",
-            data: JSON.stringify({ idChap: chapID }),
-            contentType: "application/json",
-            dataType: "json",
-
-            success: function(sousChaps) {
-
-                container.html("");
-
-                if (sousChaps.length === 0) {
-                    container.append(
-                        '<div style="font-style:italic;color:#888;">Aucune pathologie</div>'
-                    );
-                } else {
-
-                    sousChaps.forEach(sc => {
-
-                        const idEncoded = sc.IDSousChapitre;
-                        const titre = sc.TitreSousChapitre.replace(/'/g, "&#39;");
-
-                        let html = `
-                        <div class="souschap-item" 
-                             style="display:flex;align-items:center;padding:0.5em 0;border-bottom:1px solid #eee;">
-
-                            <div style="flex:1;display:flex;align-items:center;gap:0.5em;">
-
-                                <!-- ðŸ”¥ Dropdown d'Ã©dition EXACT identique Ã  la version normale -->
-                                <div class="dropdown" style="position:relative;">
-                                    <a href="#" data-toggle="dropdown" data-display="static" aria-expanded="false" title="Modifier / gÃ©rer le fichier">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 align-middle">
-                                            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
-                                        </svg>
-                                    </a>
-
-                                    <div class="dropdown-menu p-2" style="min-width:18rem;">
-                                        <div class="row">
-                                            <div class="col-md-12">
-<input type="file" 
-       id="mFile_${idEncoded}"
-       name="mFile_${idEncoded}" 
-       class="form-control form-control-sm mb-2" 
-       accept=".docx">
-                                                <input type="hidden" name="attach_file_${idEncoded}" value="${idEncoded}">
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-12 text-center">
-                                                <span class="btn btn-info btn-sm mt-1" onclick="set_SubChapCurs('${idEncoded}')">
-                                                    <i class="fas fa-upload"></i> Upload (COURS.docx)
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        <hr>
-
-                                        <div class="row">
-                                            <div class="col-12 text-center">
-                                                <span class="btn btn-danger btn-sm" onclick="suppCurs('${idEncoded}')"
-                                                      name="${titre}" id="${idEncoded}">
-                                                      <i class="fa fa-trash-alt"></i> Supprimer
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Titre -->
-                                <span>- ${sc.TitreSousChapitre}</span>
-                            </div>
-                        `;
-
-                        if (sc.FichierHTML) {
-                            html += `
-                                <div style="margin-left:1em;">
-                                    <a href="<?= base_url('PlatFormeConvert/'); ?>${sc.FichierHTML}"
-                                       target="_blank"
-                                       class="btn btn-outline-primary btn-sm">
-                                       Voir cours
-                                    </a>
-                                </div>
-                            `;
-                        }
-
-                        // ðŸ”¥ boutons admin : EDIT + DELETE
-                        html += `
-                            <div style="margin-left:auto;display:flex;gap:0.8em;">
-
-                                <!-- Modifier titre -->
-<div class="dropdown" style="position:relative;" onclick="event.stopPropagation()">
-    <a href="#" data-toggle="dropdown" data-display="static" aria-expanded="false" title="Modifier le titre">
-        <i class="fa fa-edit" style="color:#3085d6;font-size:1.1em;"></i>
-    </a>
-    <div class="dropdown-menu dropdown-menu-right" style="min-width:20rem;padding:1rem;">
-                                        <input type="text" id="editSousChap_${idEncoded}" class="form-control"
-                                               value="${sc.TitreSousChapitre}">
-                                        <div class="mt-2 text-center">
-                                            <span class="btn btn-info btn-sm" onclick="validerEditSousChap('${idEncoded}')">
-                                                Valider
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Supprimer -->
-                                <a href="#" onclick="return suppSousChap('${idEncoded}');"
-                                   name="${titre}" id="${idEncoded}" title="Supprimer"
-                                   style="text-decoration:none;">
-                                   <i class="fa fa-trash-alt" style="color:#d33;font-size:1.1em;"></i>
-                                </a>
-                            </div>
+    // Charger le contenu via AJAX
+    const endpoint = "home/get_SousChapitres";
+    
+    $.ajax({
+        url: "<?= base_url(); ?>" + endpoint,
+        type: "POST",
+        data: JSON.stringify({ idChap: idChapitre }),
+        contentType: "application/json",
+        dataType: "json",
+        success: function(sousChaps) {
+            container.html("");
+            
+            if (sousChaps.length === 0) {
+                container.append(
+                    `<div style="font-style:italic; color:#888; padding: 15px; text-align: center;">Aucune pathologie trouvée</div>`
+                );
+                container.slideDown();
+                arrow.css('transform', 'rotate(90deg)');
+                return;
+            }
+//
+            // Ajout d'un en-tête pour la clarté si c'est le début
+            if (sousChaps.length > 0) {
+                    container.append(`
+                        <div style="display: flex; width: 100%; padding: 5px 0; border-bottom: 2px solid #e2e8f0; margin-bottom: 5px; font-weight: bold; color: #64748b; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.025em;">
+                            <div style="width: 5%;"></div>
+                            <div style="width: 25%; padding-left: 10px;">Titre Pathologie</div>
+                            <div style="width: 35%; text-align: center;">Version Essentielle</div>
+                            <div style="width: 35%; text-align: center;">Version Intégrale</div>
                         </div>
-                        `;
-
-                        container.append(html);
-                    });
+                    `);
                 }
 
-                container.slideDown();
-                arrow.html("&#9660;");
-            }
-        });
+                sousChaps.forEach(sc => {
+                    const idEncoded = sc.IDSousChapitre;
+                    const titre = (sc.TitreSousChapitre || '').replace(/'/g, "&#39;");
+                    const estAdmin = <?= ($this->session->userdata('EstAdmin') == 1) ? 'true' : 'false'; ?>;
+                    const siteLang = "<?= $this->lang->line('siteLang'); ?>";
+                    
+                    let html = `
+                    <div class="pathologie-item" style="margin-bottom: 4px; background: #fff; border: 1px solid #f1f5f9; border-radius: 6px; padding: 10px 0; transition: all 0.2s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
+                        <div style="display: flex; align-items: center; width: 100%;">
+                            
+                            <!-- 1. ADMIN OUTILS (5%) -->
+                            <div style="width: 5%; display: flex; justify-content: center; align-items: center;">
+                                ${estAdmin ? `
+                                    <div class="dropdown">
+                                        <a href="#" data-toggle="dropdown" aria-expanded="false" title="Gérer">
+                                            <i class="fa fa-ellipsis-v" style="color: #94a3b8; font-size: 0.85rem;"></i>
+                                        </a>
+                                        <div class="dropdown-menu p-3" style="min-width:18rem; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: none;">
+                                            <div class="mb-3">
+                                                <label style="font-size: 0.75rem; font-weight: bold; color: #475569; margin-bottom: 8px; display: block; text-transform: uppercase;">Contenu (.docx)</label>
+                                                <div class="d-flex gap-1">
+                                                    <input type="file" id="mFile_${idEncoded}" class="form-control form-control-sm" style="font-size: 0.7rem;">
+                                                    <button class="btn btn-primary btn-xs" onclick="set_SubChapCurs('${idEncoded}')" style="white-space:nowrap;">Valider</button>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label style="font-size: 0.75rem; font-weight: bold; color: #475569; margin-bottom: 8px; display: block; text-transform: uppercase;">Résumé (.docx)</label>
+                                                <div class="d-flex gap-1">
+                                                    <input type="file" id="mFileResume_${idEncoded}" class="form-control form-control-sm" style="font-size: 0.7rem;">
+                                                    <button class="btn btn-warning btn-xs" onclick="set_SubChapResume('${idEncoded}')" style="white-space:nowrap;">Valider</button>
+                                                </div>
+                                            </div>
+                                            <div style="border-top: 1px solid #f1f5f9; padding-top: 12px; margin-top: 12px; display: flex; justify-content: space-between;">
+                                                <button class="btn btn-outline-danger btn-xs" onclick="return suppSousChap('${idEncoded}');"><i class="fa fa-trash-alt"></i> Supprimer</button>
+                                                <button class="btn btn-outline-primary btn-xs" onclick="openRenomeModal('${idEncoded}', '${titre}');"><i class="fa fa-edit"></i> Renommer</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ` : '<i class="fas fa-circle" style="color: #e2e8f0; font-size: 0.4rem;"></i>'}
+                            </div>
 
+                            <!-- 2. TITRE (25%) -->
+                            <div style="width: 25%; display: flex; align-items: center; padding-left: 10px; overflow: hidden;">
+                                <span id="${idEncoded}" name="${titre}" style="font-weight: 600; color: #334155; font-size: 0.85rem; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;" title="${titre}">${titre}</span>
+                            </div>
+
+                            <!-- 3. ZONE CONTENU (35%) -->
+                            <div style="width: 35%; display: flex; align-items: center; padding: 0 10px; border-left: 1px solid #f1f5f9;">
+                                <div class="row align-items-center" style="width: 100%; margin: 0;">
+                                    <div class="col-8" style="padding: 0; text-align: center;">
+                                        ${sc.FichierHTML ? `
+                                            <a href="<?= base_url('PlatFormeConvert/'); ?>${sc.FichierHTML}" 
+                                               target="_blank"
+                                               class="btn btn-sm btn-outline-primary" 
+                                               style="font-size: 0.75rem; padding: 4px 10px; width: 90%; border-radius: 4px; font-weight: 600;">
+                                               Contenu
+                                            </a>
+                                        ` : '<span style="color: #cbd5e1; font-size: 0.75rem; font-style: italic;">Indisponible</span>'}
+                                    </div>
+                                    <div class="col-4" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 0; justify-items: center;">
+                                        <a href="#" onclick="return false;"><i class="fas fa-key" style="color: #3085d6; font-size: 0.8rem;"></i></a>
+                                        <a href="#" onclick="return false;"><i class="far fa-images" style="color: #3085d6; font-size: 0.8rem;"></i></a>
+                                        <a href="#" onclick="openRenomeModal('${idEncoded}', '${titre}'); return false;"><i class="fas fa-edit" style="color: #3085d6; font-size: 0.8rem;"></i></a>
+                                        <a href="#" onclick="return false;"><i class="fa fa-play-circle" style="color: #3085d6; font-size: 0.8rem;"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 4. ZONE RÉSUMÉ (35%) -->
+                            <div style="width: 35%; display: flex; align-items: center; padding: 0 10px; border-left: 1px solid #f1f5f9;">
+                                <div class="row align-items-center" style="width: 100%; margin: 0;">
+                                    <div class="col-8" style="padding: 0; text-align: center;">
+                                        ${sc.FichierHTML_Resume ? `
+                                            <a href="<?= base_url('PlatFormeConvert/'); ?>${sc.FichierHTML_Resume}" 
+                                               target="_blank"
+                                               class="btn btn-sm btn-outline-warning" 
+                                               style="font-size: 0.75rem; padding: 4px 10px; width: 90%; border-radius: 4px; font-weight: 600; color: #92400e;">
+                                               Résumé
+                                            </a>
+                                        ` : '<span style="color: #cbd5e1; font-size: 0.75rem; font-style: italic;">Indisponible</span>'}
+                                    </div>
+                                    <div class="col-4" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 0; justify-items: center;">
+                                        <a href="#" onclick="return false;"><i class="fas fa-key" style="color: #3085d6; font-size: 0.8rem;"></i></a>
+                                        <a href="#" onclick="return false;"><i class="far fa-images" style="color: #3085d6; font-size: 0.8rem;"></i></a>
+                                        <a href="#" onclick="return false;"><i class="fas fa-edit" style="color: #3085d6; font-size: 0.8rem;"></i></a>
+                                        <a href="#" onclick="return false;"><i class="fa fa-play-circle" style="color: #3085d6; font-size: 0.8rem;"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+                    container.append(html);
+                });
+
+                container.slideDown();
+                arrow.css('transform', 'rotate(90deg)');
+            },
+        error: function(xhr, status, error) {
+            console.error('Erreur chargement pathologies:', error);
+            container.html('<div style="color:red; font-style:italic; padding: 15px; text-align: center;">Erreur de chargement</div>');
+            container.slideDown();
+            arrow.css('transform', 'rotate(90deg)');
+        }
     });
-});
+}
 </script>
 
    
@@ -2278,11 +1986,161 @@ let html = `
         });
     });
 });
+
+// ===== FONCTIONS POUR GÉRER LES SOUS-CHAPITRES/PATHOLOGIES =====
+function openSousChapForm(chapID, bookID) {
+    document.getElementById('sousChap_bookID').value = bookID;
+    document.getElementById('sousChap_chapID').value = chapID;
+    document.getElementById('sousChaps').value = '';
+    $('#modalSousChap').modal('show');
+}
+
+function closeSousChapModal() {
+    $('#modalSousChap').modal('hide');
+}
+
+function submitSousChap() {
+    const bookID = $('#sousChap_bookID').val();
+    const chapID = $('#sousChap_chapID').val();
+    const sousChapsText = $('#sousChaps').val();
+
+    if (!sousChapsText.trim()) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Veuillez saisir au moins un sous-chapitre.'
+        });
+        return;
+    }
+
+    const sousChapsArray = sousChapsText.split(',').map(s => s.trim()).filter(Boolean);
+
+    const dataToSend = {
+        bookID: bookID,
+        chapters: [{
+            idChap: chapID,
+            sousChaps: sousChapsArray
+        }]
+    };
+
+    Swal.fire({
+        title: 'Veuillez patienter...',
+        text: 'Ajout des sous-chapitres en cours',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+    });
+
+    $.ajax({
+        type: "POST",
+        url: "<?= base_url('home/set_LivSousChap'); ?>",
+        data: JSON.stringify(dataToSend),
+        contentType: "application/json",
+        success: function (response) {
+            try {
+                const res = JSON.parse(response);
+                if (res[0].id === '1') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Succès',
+                        text: res[0].desc,
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        location.reload();
+                    });
+                    $('#modalSousChap').modal('hide');
+                    $('#formSousChap')[0].reset();
+                    $('#sousChap_bookID').val('');
+                    $('#sousChap_chapID').val('');
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: res[0].desc
+                    });
+                }
+            } catch (err) {
+                console.error(err);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erreur serveur',
+                    text: 'La réponse est invalide'
+                });
+            }
+        },
+        error: function () {
+            Swal.fire({
+                icon: 'error',
+                title: 'Erreur AJAX',
+                text: "Impossible d'envoyer la requête."
+            });
+        }
+    });
+}
+
+// ===== FONCTIONS POUR RENOMMER LES PATHOLOGIES =====
+function openRenomeModal(idSousChap, oldTitle) {
+    Swal.fire({
+        title: 'Modifier le titre',
+        input: 'text',
+        inputValue: oldTitle,
+        showCancelButton: true,
+        confirmButtonText: 'Valider',
+        cancelButtonText: 'Annuler',
+        preConfirm: (newTitle) => {
+            if (!newTitle) {
+                Swal.showValidationMessage('Veuillez entrer un titre');
+            }
+            return newTitle;
+        }
+    }).then((result) => {
+        if (result.value) {
+            $.ajax({
+                url: "<?= base_url('home/update_SousChapitre'); ?>",
+                type: "POST",
+                data: JSON.stringify({ idSousChap: idSousChap, titre: result.value }),
+                contentType: "application/json",
+                dataType: "json",
+                success: function(res) {
+                    if (res.success) {
+                        Swal.fire({ icon: 'success', title: 'Titre mis à jour', timer: 1000, showConfirmButton: false })
+                        .then(() => location.reload());
+                    } else {
+                        Swal.fire('Erreur', res.message || 'Impossible de renommer', 'error');
+                    }
+                }
+            });
+        }
+    });
+}
+
+function validerEditSousChap(idSousChap) {
+    const newTitle = $('#editSousChap_' + idSousChap).val();
+    if (!newTitle) {
+        Swal.fire('Erreur', 'Le titre ne peut pas être vide', 'error');
+        return;
+    }
+
+    $.ajax({
+        url: "<?= base_url('home/update_SousChapitre'); ?>",
+        type: "POST",
+        data: JSON.stringify({ idSousChap: idSousChap, titre: newTitle }),
+        contentType: "application/json",
+        dataType: "json",
+        success: function(res) {
+            if (res.success) {
+                Swal.fire({ icon: 'success', title: 'Titre mis à jour', timer: 1000, showConfirmButton: false })
+                .then(() => location.reload());
+            } else {
+                Swal.fire('Erreur', res.message || 'Impossible de renommer', 'error');
+            }
+        },
+        error: function() {
+            Swal.fire('Erreur', 'Erreur lors de la requête', 'error');
+        }
+    });
+}
 </script>
 
-    </body>
 
-    </html>
 
     <script language="JavaScript">
 
@@ -2298,19 +2156,6 @@ let html = `
             var image = document.getElementById(id);
             image.src = URL.createObjectURL(event.target.files[0]);
         };
-
-function openSousChapForm(chapID, bookID) {
-    document.getElementById('sousChap_bookID').value = bookID;
-    document.getElementById('sousChap_chapID').value = chapID;
-
-    document.getElementById('sousChaps').value = '';
-
-    $('#modalSousChap').modal('show');
-}
-
-function closeSousChapModal() {
-    $('#modalSousChap').modal('hide');
-}
 
 function submitSousChap() {
     const bookID = $('#sousChap_bookID').val();
@@ -2386,7 +2231,7 @@ function submitSousChap() {
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur AJAX',
-                text: 'Impossible dâ€™envoyer la requÃªte.'
+                text: "Impossible d'envoyer la requête."
             });
         }
     });
@@ -2460,15 +2305,45 @@ function submitSousChap() {
             return false;
         }
 
-       function validerEditSousChap(idSousChap) {
-    const newTitle = $(`#editSousChap_${idSousChap}`).val();
+       function openRenomeModal(idSousChap, oldTitle) {
+    Swal.fire({
+        title: 'Modifier le titre',
+        input: 'text',
+        inputValue: oldTitle,
+        showCancelButton: true,
+        confirmButtonText: 'Valider',
+        cancelButtonText: 'Annuler',
+        preConfirm: (newTitle) => {
+            if (!newTitle) {
+                Swal.showValidationMessage('Veuillez entrer un titre');
+            }
+            return newTitle;
+        }
+    }).then((result) => {
+        if (result.value) {
+            $.ajax({
+                url: "<?= base_url('home/update_SousChapitre'); ?>",
+                type: "POST",
+                data: JSON.stringify({ idSousChap: idSousChap, titre: result.value }),
+                contentType: "application/json",
+                dataType: "json",
+                success: function(res) {
+                    if (res.success) {
+                        Swal.fire({ icon: 'success', title: 'Titre mis à jour', timer: 1000, showConfirmButton: false })
+                        .then(() => location.reload());
+                    } else {
+                        Swal.fire('Erreur', res.message || 'Impossible de renommer', 'error');
+                    }
+                }
+            });
+        }
+    });
+}
 
-    if (!newTitle.trim()) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Titre vide',
-            text: 'Veuillez entrer un nouveau titre.'
-        });
+function validerEditSousChap(idSousChap) {
+    const newTitle = $('#editSousChap_' + idSousChap).val();
+    if (!newTitle) {
+        Swal.fire('Erreur', 'Le titre ne peut pas être vide', 'error');
         return;
     }
 
@@ -2480,28 +2355,14 @@ function submitSousChap() {
         dataType: "json",
         success: function(res) {
             if (res.success) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Sous-chapitre mis Ã  jour',
-                    timer: 1500,
-                    showConfirmButton: false
-                });
-                $('.toggle-souschap').trigger('click');
-                $('.toggle-souschap').trigger('click');
+                Swal.fire({ icon: 'success', title: 'Titre mis à jour', timer: 1000, showConfirmButton: false })
+                .then(() => location.reload());
             } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Erreur',
-                    text: res.message || 'Impossible de mettre Ã  jour le sous-chapitre.'
-                });
+                Swal.fire('Erreur', res.message || 'Impossible de renommer', 'error');
             }
         },
         error: function() {
-            Swal.fire({
-                icon: 'error',
-                title: 'Erreur AJAX',
-                text: 'Une erreur est survenue lors de la mise Ã  jour.'
-            });
+            Swal.fire('Erreur', 'Erreur lors de la requête', 'error');
         }
     });
 }
@@ -2903,8 +2764,12 @@ function submitSousChap() {
 
 // ===== RAPPEL ANATOMIQUE MANUEL =====
 
-function checkAndDisplayRappel(idChapitre, idChapterRappelDefaut) {
-    console.log('checkAndDisplayRappel - Chapitre:', idChapitre, 'DÃ©faut:', idChapterRappelDefaut);
+function checkAndDisplayRappel(idChapitre, idChapterRappelDefaut, idLivre, idTheme, estAdmin, nbreCoursRappel = 0, nbreResumeRappel = 0) {
+    console.log('checkAndDisplayRappel - Chapitre:', idChapitre, 'Défaut:', idChapterRappelDefaut, 'Livre:', idLivre, 'Theme:', idTheme, 'Admin:', estAdmin, 'CoursRappel:', nbreCoursRappel, 'ResumeRappel:', nbreResumeRappel);
+    
+    // Vérifier si c'est un thème pathologique
+    const estPathologie = (idLivre && [20, 30, 31].includes(parseInt(idLivre))) || 
+                          (idTheme && [20, 30, 31].includes(parseInt(idTheme)));
     
     $.ajax({
         url: "<?= base_url('home/check_rappel_manuel'); ?>",
@@ -2913,92 +2778,159 @@ function checkAndDisplayRappel(idChapitre, idChapterRappelDefaut) {
         contentType: "application/json",
         dataType: "json",
         success: function(response) {
-            console.log('RÃ©ponse check_rappel_manuel:', response);
+            console.log('Réponse check_rappel_manuel:', response);
             
-            let html = '';
-            const zoneID = '#rappel-zone-' + idChapitre;
-            
-            // ========== SECTION 1 : RAPPEL MANUEL ==========
-            html += '<div style="margin-bottom: 12px; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">';
-            html += '<div style="font-weight: bold; margin-bottom: 6px; font-size: 0.9rem;">Anatomie cours resumé</div>';
-            
-            if (response.exists && response.data && response.data.Fichier) {
-                // âœ… RAPPEL MANUEL EXISTE
-                const fichierDocx = response.data.Fichier;
-                const fichierHtml = fichierDocx.replace('.docx', '.HTML');
+            if (estPathologie) {
+                const detailZone = $('#rappel-detail-zone-' + idChapitre);
+                const resumeZone = $('#rappel-resume-zone-' + idChapitre);
+                const baseUrl = "<?= base_url(); ?>";
+                const siteLang = "<?= $this->lang->line('siteLang'); ?>";
                 
+                // --- 1. VERSION DÉTAILLÉE (ZONE GAUCHE) ---
+                let detailHtml = '<div class="row align-items-center" style="width: 100%; margin: 0;">';
+                detailHtml += '<div class="col-md-7" style="text-align: center; padding: 0;">';
+                
+                if (idChapterRappelDefaut && idChapterRappelDefaut !== '') {
+                    // Priorité au chapitre d'anatomie lié (Lien demandé par l'utilisateur)
+                    detailHtml += `
+                        <a href="${baseUrl}${siteLang}livreCours/${idChapterRappelDefaut}" 
+                           class="btn btn-outline-primary" 
+                           style="border-color: #f8f9fa; color: #000000; font-size: 0.8rem; padding: 4px 8px; width: 90%;">
+                           Vers. Détaillée
+                        </a>`;
+                } else if (response.exists && response.data.Fichier) {
+                    // Fallback sur le rappel manuel si aucun chapitre lié n'existe
+                    const htmlFile = response.data.Fichier.replace('.docx', '.HTML');
+                    detailHtml += `
+                        <a href="${baseUrl}PlatFormeConvert/${htmlFile}" 
+                           target="_blank"
+                           class="btn btn-outline-primary" 
+                           style="border-color: #f8f9fa; color: #000000; font-size: 0.8rem; padding: 4px 8px; width: 90%;">
+                           Vers. Détaillée
+                        </a>`;
+                } else {
+                    // ✅ Rien à afficher si aucun rappel (lié ou manuel)
+                    detailHtml += ''; 
+                }
+                detailHtml += '</div>';
+
+                if (estAdmin) {
+                    detailHtml += '<div class="col-md-5" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 0; justify-items: center;">';
+                    detailHtml += `<a href="#" onclick="return false;"><i class="fas fa-key" style="color: #3085d6; font-size: 0.8rem;"></i></a>`;
+                    detailHtml += `<a href="#" onclick="return false;"><i class="far fa-images" style="color: #3085d6; font-size: 0.8rem;"></i></a>`;
+                    detailHtml += `<a href="#" onclick="return false;"><i class="fas fa-edit" style="color: #3085d6; font-size: 0.8rem;"></i></a>`;
+                    detailHtml += `<a href="#" onclick="event.preventDefault(); return false;"><i class="fa fa-play-circle" style="color: #3085d6; font-size: 0.8rem; cursor: pointer;"></i></a>`;
+                    detailHtml += '</div>';
+                }
+                detailHtml += '</div>';
+                detailZone.html(detailHtml);
+
+                // --- 2. RÉSUMÉ RAPPEL (ZONE DROITE) ---
+                let resumeHtml = '<div class="row align-items-center" style="width: 100%; margin: 0;">';
+                resumeHtml += '<div class="col-md-7" style="text-align: center; padding: 0;">';
+                
+                if (idChapterRappelDefaut && idChapterRappelDefaut !== '') {
+                    // ✅ PATCH : Redirige vers livreResume si nbreResume > 0, sinon livreFigures
+                    const targetUrl = (parseInt(nbreResumeRappel) > 0) 
+                                      ? `${baseUrl}${siteLang}livreResume/${idChapterRappelDefaut}`
+                                      : `${baseUrl}${siteLang}livreFigures/${idChapterRappelDefaut}`;
+                    resumeHtml += `
+                        <a href="${targetUrl}" 
+                           class="btn btn-outline-warning" 
+                           style="border-color: #f8f9fa; color: #000000; font-size: 0.8rem; padding: 4px 8px; width: 90%;">
+                           Résumé
+                        </a>`;
+                } else {
+                    resumeHtml += `
+                        <button class="btn btn-outline-secondary" disabled
+                           style="border-color: #e5e7eb; color: #9ca3af; font-size: 0.8rem; padding: 4px 8px; width: 90%; cursor: not-allowed;">
+                           Résumé
+                        </button>`;
+                }
+                resumeHtml += '</div>';
+
+                if (estAdmin) {
+                    resumeHtml += '<div class="col-md-5" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 0; justify-items: center;">';
+                    resumeHtml += `<a href="#" onclick="return false;"><i class="fas fa-key" style="color: #3085d6; font-size: 0.8rem;"></i></a>`;
+                    resumeHtml += `<a href="#" onclick="openAddImageRappelModal(${idChapitre}); return false;" title="Images"><i class="far fa-images" style="color: #3085d6; font-size: 0.8rem;"></i></a>`;
+                    resumeHtml += `<a href="#" onclick="openAddRappelModal(${idChapitre}); return false;" title="Modifier"><i class="fas fa-edit" style="color: #3085d6; font-size: 0.8rem;"></i></a>`;
+                    resumeHtml += `<a href="#" onclick="event.preventDefault(); return false;" title="Vidéos"><i class="fa fa-play-circle" style="color: #3085d6; font-size: 0.8rem; cursor: pointer;"></i></a>`;
+                    resumeHtml += '</div>';
+                }
+                
+                resumeHtml += '</div>';
+                resumeZone.html(resumeHtml);
+
+            } else {
+                // ========== AFFICHAGE HORIZONTAL SIMPLE POUR AUTRES THÈMES ==========
+                let html = '';
+                const zoneID = '#rappel-zone-' + idChapitre;
+                html += '<div style="display: flex; gap: 10px; height: 100%;">';
+                
+                // ========== SECTION 1 : RAPPEL MANUEL (Anatomie cours résumé) ==========
+                // ✅ PATCH : Afficher "Version détaillée" dans tous les cas
+                html += '<div style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">';
+                html += '<div style="font-weight: bold; margin-bottom: 6px; font-size: 0.9rem;">Anatomie cours résumé</div>';
+                
+                // ✅ Toujours afficher "Version détaillée" (redirige vers le résumé du chapitre actuel)
+                // La page affichera les figures même si le texte résumé est vide
                 html += `
-                    <a href="<?= base_url('PlatFormeConvert/'); ?>${fichierHtml}" 
-                       target="_blank"
+                    <a href="<?= base_url() . $this->lang->line('siteLang'); ?>livreResume/${idChapitre}" 
                        class="btn btn-outline-success btn-sm"
                        style="margin-bottom: 6px;">
-                        Voir le cours resumé
+                        <i class="fas fa-eye"></i> Version détaillée
                     </a>
-                    
+                `;
+                
+                // ✅ Icônes d'administration (si admin)
+                html += `
                     <?php if ($this->session->userdata('EstAdmin') == 1): ?>
                     <div style="margin-top: 6px;">
-                        <a href="#" onclick="openAddRappelModal(${idChapitre}); return false;" 
-                           title="Modifier le rappel" style="margin-right: 8px;">
+                        <a href="#" data-toggle="dropdown" title="Clés" style="margin-right: 8px;">
+                            <i class="fas fa-key" style="color:#3085d6;"></i>
+                        </a>
+                        <a href="#" data-toggle="dropdown" title="Modifier résumé" style="margin-right: 8px;">
                             <i class="fa fa-edit" style="color:#3085d6;"></i>
                         </a>
-                        <a href="#" onclick="deleteRappelManuel(${idChapitre}); return false;" 
-                           title="Supprimer le rappel manuel" style="margin-right: 8px;">
-                            <i class="fa fa-trash-alt" style="color:#d33;"></i>
+                        <a href="#" data-toggle="dropdown" title="Figures" style="margin-right: 8px;">
+                            <i class="fa fa-images" style="color:#3085d6;"></i>
                         </a>
-                        <a href="#" onclick="openAddImageRappelModal(${idChapitre}); return false;">
-                            <i class="fa fa-image" style="color:#3085d6;"></i>
+                        <a href="#" data-toggle="modal" title="Vidéos">
+                            <i class="fa fa-play-circle" style="color:#3085d6;"></i>
                         </a>
                     </div>
                     <?php endif; ?>
                 `;
-            } else {
-                // âŒ RAPPEL MANUEL N'EXISTE PAS
-                html += `
-                 
-                    <?php if ($this->session->userdata('EstAdmin') == 1): ?>
-                    <a href="#" onclick="openAddRappelModal(${idChapitre}); return false;" 
-                       class="btn btn-outline-warning btn-sm">
-                        <i class="fa fa-plus"></i> Ajouter un resumÃ© pathologie
-                    </a>
-                    <?php else: ?>
-                    <span style="font-size: 0.85rem; color: #6c757d; font-style: italic;">
-                        Aucun resumÃ© pathologie
-                    </span>
-                    <?php endif; ?>
-                `;
+                
+                html += '</div>';
+                
+                // ========== SECTION 2 : RAPPEL ANATOMIQUE (Anatomie cours complet) ==========
+                html += '<div style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">';
+                html += '<div style="font-weight: bold; margin-bottom: 6px; font-size: 0.9rem;">Anatomie cours complet</div>';
+                
+                if (idChapterRappelDefaut && idChapterRappelDefaut !== '') {
+                    html += `
+                        <a href="<?= base_url() . $this->lang->line('siteLang'); ?>livreCours/${idChapterRappelDefaut}"
+                           class="btn btn-outline-primary btn-sm">
+                            Voir le cours complet
+                        </a>
+                    `;
+                } else {
+                    html += `
+                        <span style="font-size: 0.85rem; color: #6c757d; font-style: italic;">
+                            Non disponible
+                        </span>
+                    `;
+                }
+                html += '</div>';
+                html += '</div>'; 
+                $(zoneID).html(html);
             }
-            html += '</div>';
-            
-            // ========== SECTION 2 : RAPPEL ANATOMIQUE (PAR DÃ‰FAUT) ==========
-            html += '<div style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;">';
-            html += '<div style="font-weight: bold; margin-bottom: 6px; font-size: 0.9rem;">Anatomie cours complet</div>';
-            
-            if (idChapterRappelDefaut && idChapterRappelDefaut !== '') {
-                // âœ… RAPPEL PAR DÃ‰FAUT EXISTE
-                html += `
-                    <a href="<?= base_url() . $this->lang->line('siteLang'); ?>livreCours/${idChapterRappelDefaut}"
-                       class="btn btn-outline-primary btn-sm">
-                        voir le cours complet
-                    </a>
-                `;
-            } else {
-                // âŒ RAPPEL PAR DÃ‰FAUT N'EXISTE PAS
-                html += `
-                    <div style="background-color: #e2e3e5; padding: 6px; border-radius: 3px; margin-bottom: 6px;">
-                        <span style="font-size: 0.8rem; color: #383d41;">âœ— Non disponible</span>
-                    </div>
-                    <span style="font-size: 0.85rem; color: #6c757d; font-style: italic;">
-                        Aucun rappel anatomique configurÃ©
-                    </span>
-                `;
-            }
-            html += '</div>';
-            
-            $(zoneID).html(html);
         },
         error: function(xhr, status, error) {
             console.error('Erreur AJAX:', status, error, xhr.responseText);
-            $('#rappel-zone-' + idChapitre).html('<span style="color:red; font-size:0.85rem;">Erreur chargement</span>');
+            $('#rappel-detail-zone-' + idChapitre).html('<span style="color:red; font-size:0.6rem;">Erreur</span>');
+            $('#rappel-resume-zone-' + idChapitre).html('<span style="color:red; font-size:0.6rem;">Erreur</span>');
         }
     });
 }
@@ -3848,7 +3780,8 @@ function deleteRappelManuel(idChapitre) {
                 return false;
             }
        function suppSousChap(idS) {
-    var tit = document.getElementById(idS).getAttribute('name');
+    var elem = document.getElementById(idS);
+    var tit = elem ? elem.getAttribute('name') : 'cet élément';
     
     Swal.fire({
         title: '<?php echo $this->lang->line('supp_title'); ?>' + ' <br> ' + tit,
@@ -4169,6 +4102,76 @@ function editSousChap(idEncoded) {
                 });
             }
 
+
+            function set_SubChapResume(idSousChap) {
+                const fileInput = document.getElementById(`mFileResume_${idSousChap}`);
+
+                if (!fileInput || !fileInput.files.length) {
+                    Swal.fire({
+                        type: 'warning',
+                        title: 'Aucun fichier sélectionné',
+                        text: 'Veuillez choisir un fichier .docx avant de continuer.'
+                    });
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('mFile[]', fileInput.files[0]);
+                formData.append('attach_file[]', idSousChap);
+                formData.append('file_type', 'resume'); // Marquer comme résumé
+
+                Swal.fire({
+                    title: 'Veuillez patienter...',
+                    html: 'Upload et conversion du fichier résumé en cours...',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    didOpen: () => Swal.showLoading()
+                });
+
+                $.ajax({
+                    url: "<?= base_url('home/upload_Attach_Save_SubChap'); ?>", 
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        console.log(response);
+                        try {
+                            const res = JSON.parse(response);
+
+                            if (res[0]?.id == '1') {
+                                Swal.fire({
+                                    type: 'success',
+                                    title: 'Résumé attaché avec succès',
+                                    text: 'Le fichier résumé a été converti et enregistré.',
+                                    confirmButtonText: 'OK'
+                                }).then(() => location.reload());
+                            } else {
+                                Swal.fire({
+                                    type: 'error',
+                                    title: 'Erreur',
+                                    text: res[0]?.desc || 'Une erreur est survenue.'
+                                });
+                            }
+                        } catch (e) {
+                            console.error('Erreur JSON:', e, response);
+                            Swal.fire({
+                                type: 'error',
+                                title: 'Erreur serveur',
+                                text: 'Réponse du serveur invalide.'
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Erreur AJAX:', error);
+                        Swal.fire({
+                            type: 'error',
+                            title: "Erreur lors de l'envoi du fichier",
+                            text: 'Veuillez réessayer plus tard.'
+                        });
+                    }
+                });
+            }
 
             function set_FigResum() {
 
@@ -5462,9 +5465,7 @@ function set_LivSousChap(bookID) {
 
 
         </script>
-    <?php } ?>
-
-<?php } else { ?>
+    <?php } else { ?>
 
     <?php
     header('Location: ' . base_url() . $this->lang->line('siteLang') . 'login');
@@ -5472,6 +5473,47 @@ function set_LivSousChap(bookID) {
     ?>
 
 <?php } ?>
+
+
+<!-- Modal de sélection des chapitres pour le Test -->
+<div class="modal fade" id="centeredModalPrimaryTestFigure" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="font-family: Georgia, serif;"><?php echo $this->lang->line('testChoicCurs'); ?></h3>
+            </div>
+            <div class="card-body">
+                <form name="pageForm_TestFigure" id="pageForm_TestFigure" action="">
+                    <input type="hidden" name="bookID" id="bookID" value="<?= base64_encode($OneBook[0]['IDLivre']); ?>">
+                    <div class="row">
+                        <table class="table table-striped">
+                            <tbody id="serChapTest">
+                                <?php foreach ($listChap as $val_test): ?>
+                                    <?php if ($val_test['NbreTest'] > 0): ?>
+                                        <tr>
+                                            <td style="text-align: left;">
+                                                <div class="col-md-12" style="font-size: 0.97rem;">
+                                                    <label class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="listIDsTest[]" value="<?php print $val_test['IDChapitre']; ?>">
+                                                        <span class="form-check-label"><?= $val_test['TitreChapitre']; ?></span>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><?php echo $this->lang->line('testClose'); ?></button>
+                <button type="button" class="btn btn-primary" onclick="set_testFigure()"><?php echo $this->lang->line('testBegin'); ?></button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
 // ========== FONCTIONS GESTION IMAGES RAPPEL ANATOMIQUE ==========
@@ -5522,6 +5564,48 @@ function loadRappelImages(idChapitre) {
     })
     .catch(err => {
         console.error('Erreur chargement images:', err);
+    });
+}
+
+// Fonction pour charger et afficher les images inline dans la section résumé
+function loadRappelImagesInline(idChapitre, containerElementId) {
+    const baseUrl = "<?php echo base_url(); ?>";
+    
+    fetch(`${baseUrl}home/getRappelImages`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idChapter: idChapitre })
+    })
+    .then(r => r.json())
+    .then(data => {
+        const container = document.getElementById(containerElementId);
+        if (!container) return;
+        
+        if (data.success && data.data.length > 0) {
+            let html = '<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;">';
+            data.data.forEach(img => {
+                html += `
+                    <div style="position: relative; width: 120px; background: rgba(0,0,0,0.05); padding: 5px; border-radius: 5px; border: 1px solid #e0e0e0;">
+                        <img src="data:image/jpeg;base64,${img.ImageData}" 
+                             style="width: 100%; height: 100px; object-fit: cover; border-radius: 4px; cursor: pointer;"
+                             onclick="window.open(this.src, '_blank')"
+                             title="Cliquez pour agrandir">
+                        <p style="color: #666; font-size: 10px; margin-top: 4px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 0;" title="${img.NomImage}">${img.NomImage}</p>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        } else {
+            container.innerHTML = '<div style="font-size: 0.85rem; color: #999; font-style: italic; margin-top: 8px;">Aucune image disponible</div>';
+        }
+    })
+    .catch(err => {
+        console.error('Erreur chargement images:', err);
+        const container = document.getElementById(containerElementId);
+        if (container) {
+            container.innerHTML = '<div style="font-size: 0.85rem; color: #d33; font-style: italic; margin-top: 8px;">Erreur lors du chargement des images</div>';
+        }
     });
 }
 
@@ -5637,3 +5721,4 @@ function deleteRappelImageItem(idImage, idChapitre) {
     });
 }
 </script>
+<?php } 

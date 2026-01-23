@@ -547,7 +547,7 @@
                     "url": "<?php echo base_url(); ?>home/ajax_PagesResume_list",
                     "type": "POST",
                     "data": function(d) {
-                        d.ic = "<?= $OneCurs[0]['IDResume']; ?>";
+                        d.ic = "<?= isset($OneCurs[0]['IDResume']) ? $OneCurs[0]['IDResume'] : ''; ?>";
                         d.indexSearch = "<?php print $indexSearch; ?>";
                     }
                 },

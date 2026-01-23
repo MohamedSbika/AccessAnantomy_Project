@@ -169,32 +169,161 @@
 		background-color: #f2f4f8;
 	}
 
+    .sous-chapitre-item {
+        padding: 8px 15px;
+        font-size: 12px;
+        color: #555;
+        cursor: pointer;
+        border-left: 3px solid #457b9d;
+        margin: 3px 10px;
+        background-color: white;
+        border-radius: 3px;
+        transition: all 0.2s;
+        text-align: left;
+    }
 
+    .sous-chapitre-item:hover {
+        background-color: #e3f2fd;
+        border-left-color: #1d3557;
+        color: #1d3557;
+        transform: translateX(3px);
+    }
+
+    .pathologies-accordion {
+        margin: 5px 0;
+        background-color: transparent;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+
+    .pathologies-header {
+        padding: 10px 15px;
+        font-size: 13px;
+        font-weight: bold;
+        color: #1d3557;
+        background-color: #f8f9fa;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #cccccc4f;
+        transition: all 0.2s;
+    }
+
+    .pathologies-header:hover {
+        background-color: #f2f4f8;
+    }
+
+    .pathologies-header .accordion-arrow {
+        font-size: 14px;
+        transition: transform 0.3s ease;
+        color: #1d3557;
+    }
+
+    .pathologies-header .accordion-arrow.expanded {
+        transform: rotate(90deg);
+    }
+
+    .pathologies-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease, opacity 0.3s ease;
+        opacity: 0;
+    }
+
+    .pathologies-content.expanded {
+        max-height: 800px;
+        opacity: 1;
+    }
+
+    /* Styles pour les versions de pathologies */
+    .patho-version-container {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        margin-top: 5px;
+        padding-left: 10px;
+        border-left: 1px dashed #cbd5e1;
+    }
+
+    .patho-version-link {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 5px 10px;
+        font-size: 11px;
+        border-radius: 4px;
+        transition: all 0.2s;
+        text-decoration: none !important;
+    }
+
+    .patho-version-link.essential {
+        color: #1d4ed8;
+        background-color: #eff6ff;
+        border: 1px solid #dbeafe;
+    }
+
+    .patho-version-link.essential:hover {
+        background-color: #dbeafe;
+        transform: translateX(2px);
+    }
+
+    .patho-version-link.integral {
+        color: #9a3412;
+        background-color: #fff7ed;
+        border: 1px solid #ffedd5;
+    }
+
+    .patho-version-link.integral:hover {
+        background-color: #ffedd5;
+        transform: translateX(2px);
+    }
+
+    .patho-version-link i {
+        font-size: 10px;
+    }
+
+    .patho-item-title {
+        font-weight: 600;
+        color: #334155;
+        font-size: 12px;
+        margin-bottom: 5px;
+        display: block;
+    }
 </style>
 
 <div id="listChapTooltip" class="tooltip-chapitre" style="display: none;">
 	<div class="chapter-header">
 		<?php
 		$curs_id = $this->session->userdata('curs_id');
-		echo !empty($curs_id)
-			? $this->lang->line('sidebar_choisir_cours')
-			: $this->lang->line('sidebar_aucun_cours');
-		?>
-	</div>
+			echo !empty($curs_id)
+				? $this->lang->line('sidebar_choisir_cours')
+				: $this->lang->line('sidebar_aucun_cours');
+			?>
+		</div>
+		<div id="difficultyBox" style="display:none; padding:10px 5px 15px;">
+        </div>
 
 	<ul class="chapter-list" id="chapterListTooltip">
 		<?php foreach ($listChap as $value) {
 			$selected = ($curs_id === "curs_" . $value['IDChapitre']) ? 'selected' : '';
 			?>
-			<li class="chapter-item <?= $selected; ?>"
-				id="curs_<?= $value['IDChapitre']; ?>"
-				data-id="<?= $value['IDChapitre']; ?>"
-				data-curs="<?= $value['NbreCours']; ?>"
-				data-resum="<?= $value['NbreResume']; ?>"
-				onclick="selectUniqueChapter(this)">
-				<div class="chapter-number"></div>
-				<div><?= htmlspecialchars($value['TitreChapitre']); ?></div>
-			</li>
+				<li class="chapter-item <?= $selected; ?>"
+					id="curs_<?= $value['IDChapitre']; ?>"
+					data-id="<?= $value['IDChapitre']; ?>"
+					data-id-rappel="<?= $value['IdChapterRappel'] ?? '' ?>"
+					data-curs="<?= $value['NbreCours']; ?>"
+					data-resum="<?= $value['NbreResume']; ?>"
+					data-resum-rappel="<?= $value['NbreResumeRappel'] ?? 0; ?>"
+					onclick="selectUniqueChapter(this)">
+					<div class="chapter-number"></div>
+					<div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+						<div><?= htmlspecialchars($value['TitreChapitre']); ?></div>
+						<span class="patho-arrow" style="display: none;">▶</span>
+					</div>
+					<ul class="sous-chapitres-list" id="sous-chap-<?= $value['IDChapitre']; ?>" style="display: none; list-style: none; padding-left: 20px; margin-top: 5px;">
+					</ul>
+				</li>
 		<?php } ?>
 	</ul>
 </div>
@@ -245,6 +374,10 @@
 				<span class="carreaux" style="background-color: #FB8C00;color: white;" onclick="document.getElementById('modalTestCALQUE').style.display = 'flex';" title="<?php echo $this->lang->line('sidebar_test_tooltip'); ?>">
 					<div class="title_carr"><?php echo $this->lang->line('sidebar_test'); ?></div>
 				</span>
+                <span class="carreaux" style="background-color: #43A047;color: white" onclick="selectUniqueCarreau(this,'pathologie')">
+                    <div class="title_carr"><?php echo $this->lang->line('sidebar_pathologie_anatomie'); ?></div>
+                    <!--<i class="fa fa-virus"></i>-->
+                </span>
 
 			</div>
 		</div>
@@ -397,13 +530,168 @@
         document.querySelectorAll('.carreaux').forEach(carreau => carreau.classList.remove('selected'));
         element.classList.add('selected');
 
+        const diffBox = document.getElementById("difficultyBox");
+        
         // Trouver le chapitre actuellement sélectionné
         let selectedChapter = document.querySelector('.chapter-item.selected');
+        let idChapitreSession = "<?php echo $this->session->userdata('curs_id'); ?>".replace(/^curs_/, "");
+        let idChapSelectAttr = selectedChapter ? selectedChapter.getAttribute('data-id') : null;
+        let currentIdChap = (idChapSelectAttr != null) ? idChapSelectAttr : idChapitreSession;
 
-        let idChapitre = "<?php echo $this->session->userdata('curs_id'); ?>".replace(/^curs_/, "");
-        let idChap_select = selectedChapter.getAttribute('data-id') ;
+        if (type_sel === 'pathologie') {
+            if (currentIdChap) {
+                loadFeaturedPatho(currentIdChap, diffBox);
+            } else {
+                loadFeaturedPatho(0, diffBox);
+            }
+        } else {
+            diffBox.style.display = "none";
+        }
 
-        idChapitre = (idChapitre != idChap_select) && idChap_select!= null ? idChap_select : idChapitre;
+        // Afficher ou masquer les flèches de pathologie
+        document.querySelectorAll('.patho-arrow').forEach(arrow => {
+            arrow.style.display = (type_sel === 'pathologie') ? 'block' : 'none';
+        });
+
+        // Masquer la liste complète des chapitres si on est en mode pathologie
+        const fullChapterList = document.getElementById('chapterListTooltip');
+        if (fullChapterList) {
+            fullChapterList.style.display = (type_sel === 'pathologie') ? 'none' : 'block';
+        }
+
+        // Fermer tous les sous-chapitres ouverts
+        document.querySelectorAll('.sous-chapitres-list').forEach(list => {
+            list.style.display = 'none';
+            list.innerHTML = '';
+        });
+        document.querySelectorAll('.patho-arrow').forEach(arrow => arrow.style.transform = 'rotate(0deg)');
+    }
+
+    function loadFeaturedPatho(idChapitre, container) {
+        container.innerHTML = '<div style="text-align:center; padding:10px; font-style:italic; color:#1d3557;">Chargement du menu pathologie...</div>';
+        container.style.display = 'block';
+
+        let payload = { idChap: idChapitre };
+        <?php if (isset($OneBook[0]['IDLivre'])) { ?>
+            if (!idChapitre || idChapitre == 0) {
+                payload.idLivre = "<?php echo $OneBook[0]['IDLivre']; ?>";
+            }
+        <?php } ?>
+
+        fetch("<?php echo base_url(); ?>home/getPathologieByRappel", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                const lang = "<?php echo strtoupper($this->uri->segment(1)); ?>";
+                const baseUrl = "<?php echo base_url(); ?>";
+
+                let html = `<div style="background-color: #1d3557; color: white; padding: 8px; text-align: center; font-weight: bold; border-radius: 5px 5px 0 0; margin-bottom: 5px; font-size: 14px;">
+                                <?php echo $this->lang->line('sidebar_pathologie_anatomie'); ?>
+                            </div>`;
+                
+                html += `<ul class="patho-menu-list" style="list-style:none; padding:0; margin:0; border: 1px solid #ddd; border-top: none; border-radius: 0 0 5px 5px; overflow: hidden; background: white;">`;
+                
+                if (data.type === 'books') {
+                    data.pathoBooks.forEach((book, index) => {
+                        html += `
+                            <li class="patho-chapter-item" style="border-bottom: 1px solid #eee;">
+                                <div class="patho-chapter-header" 
+                                     onclick="window.location.href='${baseUrl}${lang}/livre/${book.IDLivre}'"
+                                     style="display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; cursor: pointer; font-size: 13px; color: #333; transition: background 0.2s;">
+                                    <span style="font-weight: 500;">${book.Titre}</span>
+                                    <span style="font-size: 11px; color: #ccc;">➜</span>
+                                </div>
+                            </li>`;
+                    });
+                } else {
+                    data.pathoChapters.forEach((chap, index) => {
+                        const isExpanded = (idChapitre != 0 && index === 0);
+                        const displayStyle = isExpanded ? 'display: block;' : 'display: none;';
+                        const arrowStyle = isExpanded ? 'transform: rotate(90deg);' : '';
+                        const headerStyle = isExpanded ? 'background: #f1f4f9;' : '';
+
+                        html += `
+                            <li class="patho-chapter-item" style="border-bottom: 1px solid #eee;">
+                                <div class="patho-chapter-header" onclick="toggleFeaturedPathoAccordion(this)" 
+                                     style="display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; cursor: pointer; font-size: 13px; color: #333; transition: background 0.2s; ${headerStyle}">
+                                    <span style="font-weight: 500;">${chap.TitreChapitre}</span>
+                                    <span class="patho-arrow-feat" style="font-size: 12px; color: #1d3557; transition: transform 0.3s; ${arrowStyle}">▶</span>
+                                </div>
+                                <ul class="patho-sous-chap-list" style="${displayStyle} list-style: none; padding: 0; background: #fafafa; border-bottom: 1px solid #eee;">
+                                    <li class="sous-chapitre-item" style="font-weight:bold; color:#1d3557; background-color:#dce6f1; border-left: 3px solid #1d3557;"
+                                        onclick="window.location.href='${baseUrl}${lang}/livreCours/${idChapitre}'">
+                                        Anatomie - Cours fondamental complet
+                                    </li>`;
+                        
+                        // Anatomie version intégrale - Vérifie si le résumé existe
+                        html += `
+                            <li class="sous-chapitre-item" style="font-weight:bold; color:#457b9d; background-color:#e8f4f8; border-left: 3px solid #457b9d;"
+                                onclick="redirectToAnatomyResume('${idChapitre}', '${chap.NbreResumeRappel}', event)">
+                                Anatomie - synthèse structurée
+                            </li>`;
+
+                        if (chap.sousChaps && chap.sousChaps.length > 0) {
+                            chap.sousChaps.forEach(sc => {
+                                html += `
+                                    <li style="padding: 10px 15px; border-bottom: 1px solid #f1f5f9; list-style:none;">
+                                        <span class="patho-item-title">${sc.TitreSousChapitre || 'Sans titre'}</span>
+                                        <div class="patho-version-container">
+                                            ${sc.FichierHTML ? `
+                                                <a href="#" class="patho-version-link essential" 
+                                                   onclick="selectSousChapitrePatho('${sc.IDSousChapitre}', '${chap.IDChapitre}', event, 'essential')">
+                                                    <span>Version essentielle</span>
+                                                    <i class="fas fa-chevron-right"></i>
+                                                </a>
+                                            ` : ''}
+                                            ${sc.FichierHTML_Resume ? `
+                                                <a href="#" class="patho-version-link integral" 
+                                                   onclick="selectSousChapitrePatho('${sc.IDSousChapitre}', '${chap.IDChapitre}', event, 'integral')">
+                                                    <span>Version intégrale</span>
+                                                    <i class="fas fa-chevron-right"></i>
+                                                </a>
+                                            ` : ''}
+                                        </div>
+                                    </li>`;
+                            });
+                        } else {
+                            html += `<li style="padding: 10px 20px; font-style: italic; font-size: 12px; color: #888;">Aucune pathologie</li>`;
+                        }
+                        html += `</ul></li>`;
+                    });
+                }
+                
+                html += `</ul>`;
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = `<div style="padding:15px; color:#d62828; text-align:center; font-weight:bold;">${data.message || 'Aucune pathologie liée'}</div>`;
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            container.innerHTML = `<div style="padding:15px; color:#d62828; text-align:center;">Erreur de chargement.</div>`;
+        });
+    }
+
+    function toggleFeaturedPathoAccordion(header) {
+        const content = header.nextElementSibling;
+        const arrow = header.querySelector('.patho-arrow-feat');
+        const isOpen = content.style.display === 'block';
+        
+        header.parentElement.parentElement.querySelectorAll('.patho-sous-chap-list').forEach(list => {
+            list.style.display = 'none';
+            list.previousElementSibling.querySelector('.patho-arrow-feat').style.transform = 'rotate(0deg)';
+            list.previousElementSibling.style.background = 'white';
+        });
+        
+        if (!isOpen) {
+            content.style.display = 'block';
+            arrow.style.transform = 'rotate(90deg)';
+            header.style.background = '#f1f4f9';
+        }
     }
 
 
@@ -448,11 +736,187 @@
                 redirectUrl = `${baseUrl}${lang}livreCours/${idChapitre}`;
         }
 
+        if (type_sel === 'pathologie') {
+            toggleSousChapitresPatho(idChapitre, chapterElement);
+            const diffBox = document.getElementById("difficultyBox");
+            loadFeaturedPatho(idChapitre, diffBox);
+            return;
+        }
+
         // Ferme le tooltip (facultatif)
         document.getElementById("listChapTooltip").style.display = 'none';
 
         // Rediriger
         window.location.href = redirectUrl;
+    }
+
+    function toggleSousChapitresPatho(idChapitre, chapterElement) {
+        const sousChapList = document.getElementById(`sous-chap-${idChapitre}`);
+        const arrow = chapterElement.querySelector('.patho-arrow');
+        const isVisible = sousChapList.style.display === 'block';
+
+        // Fermer les autres
+        document.querySelectorAll('.sous-chapitres-list').forEach(list => {
+            if (list !== sousChapList) {
+                list.style.display = 'none';
+                const parentItem = list.closest('.chapter-item');
+                if (parentItem) {
+                    const otherArrow = parentItem.querySelector('.patho-arrow');
+                    if (otherArrow) otherArrow.style.transform = 'rotate(0deg)';
+                }
+            }
+        });
+
+        if (isVisible) {
+            sousChapList.style.display = 'none';
+            arrow.style.transform = 'rotate(0deg)';
+        } else {
+            sousChapList.style.display = 'block';
+            arrow.style.transform = 'rotate(90deg)';
+            
+            if (sousChapList.innerHTML.trim() === "") {
+                sousChapList.innerHTML = '<li class="loading-sous-chapitres" style="padding: 10px; font-style: italic;">Chargement...</li>';
+                
+                fetch("<?php echo base_url(); ?>home/getPathologieByRappel", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ idChap: idChapitre })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.type === 'chapters' && data.pathoChapters.length > 0) {
+                        const firstPathoChap = data.pathoChapters[0];
+                        afficherSousChapitresPatho(sousChapList, firstPathoChap.sousChaps, firstPathoChap.IDChapitre, idChapitre, firstPathoChap.NbreResumeRappel);
+                    } else if (data.success && data.type === 'books') {
+                         sousChapList.innerHTML = `<li class="sous-chapitre-item" onclick="window.location.href='<?php echo base_url(); ?><?php echo strtoupper($this->uri->segment(1)); ?>/livre/${data.pathoBooks[0].IDLivre}'">Voir pathologies</li>`;
+                    } else {
+                        sousChapList.innerHTML = `<li class="sous-chapitre-item" style="color: #d62828;">${data.message || 'Aucune pathologie liée'}</li>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur:', error);
+                    sousChapList.innerHTML = '<li class="sous-chapitre-item">Erreur de chargement</li>';
+                });
+            }
+        }
+    }
+
+    function afficherSousChapitresPatho(container, sousChaps, idChapitre, idAnatomy = null, nbreResumeRappel = 0) {
+        let html = '';
+        let finalIdAnatomy = idAnatomy || idChapitre;
+        
+        html += `
+            <li class="sous-chapitre-item rappel-item" 
+                style="font-weight:bold; color:#1d3557; background-color:#dce6f1; cursor:pointer;"
+                onclick="window.location.href='<?php echo base_url(); ?><?php echo strtoupper($this->uri->segment(1)); ?>/livreCours/${finalIdAnatomy}'">
+                Anatomie - Cours fondamental complet
+            </li>
+        `;
+
+        // Anatomie version intégrale - Vérifie si le résumé existe
+        html += `
+            <li class="sous-chapitre-item rappel-manuel-item" 
+                style="font-weight:bold; color:#457b9d; background-color:#e8f4f8; cursor:pointer;"
+                onclick="redirectToAnatomyResume('${finalIdAnatomy}', '${nbreResumeRappel}', event)">
+                Anatomie - synthèse structurée
+            </li>
+        `;
+
+        html += `
+            <li class="pathologies-accordion">
+                <div class="pathologies-header" onclick="togglePathologiesInternal(event, this)">
+                    <span>Pathologies</span>
+                    <span class="accordion-arrow expanded">▶</span>
+                </div>
+
+                <ul class="pathologies-content expanded">
+        `;
+
+        if (!sousChaps || sousChaps.length === 0) {
+            html += `
+                    <li class="loading-sous-chapitres" style="padding: 10px;">
+                        Aucun sous-chapitre
+                    </li>
+            `;
+        } else {
+            sousChaps.forEach(sc => {
+                html += `
+                    <li style="padding: 10px 15px; border-bottom: 1px solid #f1f5f9; list-style:none;">
+                        <span class="patho-item-title">${sc.TitreSousChapitre || 'Sans titre'}</span>
+                        <div class="patho-version-container">
+                            ${sc.FichierHTML ? `
+                                <a href="#" class="patho-version-link essential" 
+                                   onclick="selectSousChapitrePatho('${sc.IDSousChapitre}', '${idChapitre}', event, 'essential')">
+                                    <span>Version essentielle</span>
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            ` : ''}
+                            ${sc.FichierHTML_Resume ? `
+                                <a href="#" class="patho-version-link integral" 
+                                   onclick="selectSousChapitrePatho('${sc.IDSousChapitre}', '${idChapitre}', event, 'integral')">
+                                    <span>Version intégrale</span>
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            ` : ''}
+                            ${(!sc.FichierHTML && !sc.FichierHTML_Resume) ? '<span style="font-size: 10px; font-style: italic; color: #94a3b8;">Aucun contenu disponible</span>' : ''}
+                        </div>
+                    </li>
+                `;
+            });
+        }
+
+        html += `
+                </ul>
+            </li>
+        `;
+
+        container.innerHTML = html;
+    }
+
+    function togglePathologiesInternal(event, headerElement) {
+        event.stopPropagation();
+        const content = headerElement.nextElementSibling;
+        const arrow = headerElement.querySelector('.accordion-arrow');
+        
+        content.classList.toggle('expanded');
+        arrow.classList.toggle('expanded');
+    }
+
+    function selectSousChapitrePatho(idSousChap, idChap, event, version = 'essential') {
+        event.stopPropagation();
+        if (event && event.preventDefault) event.preventDefault();
+        const baseUrl = "<?php echo base_url(); ?>";
+        
+        fetch(`${baseUrl}home/getContentSousChapitre`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idChap: idChap, idSousChap: idSousChap })
+        })
+        .then(response => response.json())
+        .then(data => {
+            const targetFile = (version === 'essential') ? data.FichierHTML : data.FichierHTML_Resume;
+
+            if (targetFile) {
+                const lang = "<?php echo strtoupper($this->uri->segment(1)); ?>";
+                window.location.href = `${baseUrl}${lang}/PlatFormeConvert/${targetFile}`;
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Contenu indisponible',
+                    text: `La ${version === 'essential' ? 'version essentielle' : 'version intégrale'} de cette pathologie n'est pas disponible.`
+                });
+            }
+        });
+    }
+
+    function showDifficultyPopup(text) {
+        const popup = document.getElementById("difficultyPopup");
+        popup.innerHTML = text;
+        popup.style.display = "block";
+
+        setTimeout(() => {
+            popup.style.display = "none";
+        }, 1500);
     }
 
 
@@ -466,8 +930,56 @@
         }
     });
 
+    // Redirection vers le résumé d'anatomie avec vérification
+    function redirectToAnatomyResume(idChapitre, nbreResume, event) {
+        if (event) event.stopPropagation();
+        
+        if (!idChapitre || idChapitre === '0' || idChapitre === '') {
+            Swal.fire({
+                icon: 'info',
+                title: 'Information',
+                text: 'Aucun cours d\'anatomie n\'est lié à ce chapitre.'
+            });
+            return;
+        }
+
+        if (parseInt(nbreResume) > 0) {
+            const baseUrl = "<?php echo base_url(); ?>";
+            const lang = "<?php echo strtoupper($this->uri->segment(1)); ?>";
+            window.location.href = `${baseUrl}${lang}/livreCours/${idChapitre}?view=resume`;
+        } else {
+            Swal.fire({
+                icon: 'info',
+                title: 'Bientôt disponible',
+                text: 'Le résumé de ce cours d\'anatomie sera bientôt disponible.',
+                confirmButtonColor: '#1d3557'
+            });
+        }
+    }
+
 
 </script>
+
+<div id="difficultyPopup"
+     style="
+        display:none;
+        position:fixed;
+        top:30%;
+        left:50%;
+        transform:translate(-50%, -50%);
+        background:white;
+        padding:20px 25px;
+        border-radius:12px;
+        border:1px solid #1d3557;
+        box-shadow:0 6px 20px rgba(0,0,0,0.2);
+        z-index:5000;
+        font-size:16px;
+        font-weight:bold;
+        color:#1d3557;
+        text-align:center;
+     ">
+</div>
+
 <script>
     function updateScroll() {
         document.documentElement.style.setProperty('--scroll-y', window.scrollY + 'px');
