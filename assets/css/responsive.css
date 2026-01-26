@@ -1,0 +1,5 @@
+@media (max-width: 600px) {
+    .hero-image img {
+        width: 100% !important;
+    }
+}
