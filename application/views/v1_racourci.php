@@ -709,26 +709,21 @@ if (type_sel === 'qcm') {
 
                             // 3. Liste des pathologies réelles
                             if (chap.sousChaps && chap.sousChaps.length > 0) {
-                                console.log("🔍 Sous-chapitres pour", chap.TitreChapitre, ":", chap.sousChaps);
                                 chap.sousChaps.forEach(sc => {
                                     html += `
                                         <li style="padding: 10px 15px; border-bottom: 1px solid #f1f5f9; list-style:none;">
                                             <span class="patho-item-title">${sc.TitreSousChapitre || 'Sans titre'}</span>
                                             <div class="patho-version-container">
-                                                ${sc.FichierHTML ? `
-                                                    <a href="#" class="patho-version-link essential" 
-                                                       onclick="selectSousChapitrePatho('${sc.IDSousChapitre}', '${chap.IDChapitre}', event, 'essential')">
-                                                        <span>Version essentielle</span>
-                                                        <i class="fas fa-chevron-right"></i>
-                                                    </a>
-                                                ` : ''}
-                                                ${sc.FichierHTML_Resume ? `
-                                                    <a href="#" class="patho-version-link integral" 
-                                                       onclick="selectSousChapitrePatho('${sc.IDSousChapitre}', '${chap.IDChapitre}', event, 'integral')">
-                                                        <span>Version intégrale</span>
-                                                        <i class="fas fa-chevron-right"></i>
-                                                    </a>
-                                                ` : ''}
+                                                <a href="#" class="patho-version-link essential" 
+                                                   onclick="selectSousChapitrePatho('${sc.IDSousChapitre}', '${chap.IDChapitre}', '${chap.IdChapterRappel}', event, 'essential', ${sc.FichierHTML ? 'true' : 'false'})">
+                                                    <span>Version essentielle</span>
+                                                    <i class="fas fa-chevron-right"></i>
+                                                </a>
+                                                <a href="#" class="patho-version-link integral" 
+                                                   onclick="selectSousChapitrePatho('${sc.IDSousChapitre}', '${chap.IDChapitre}', '${chap.IdChapterRappel}', event, 'integral', ${sc.FichierHTML_Resume ? 'true' : 'false'})">
+                                                    <span>Version intégrale</span>
+                                                    <i class="fas fa-chevron-right"></i>
+                                                </a>
                                             </div>
                                         </li>`;
                                 });
@@ -928,21 +923,16 @@ if (type_sel === 'qcm') {
                         <li style="padding: 10px 15px; border-bottom: 1px solid #f1f5f9; list-style:none;">
                             <span class="patho-item-title">${sc.TitreSousChapitre || 'Sans titre'}</span>
                             <div class="patho-version-container">
-                                ${sc.FichierHTML ? `
-                                    <a href="#" class="patho-version-link essential" 
-                                       onclick="selectSousChapitrePatho('${sc.IDSousChapitre}', '${idChapitre}', event, 'essential')">
-                                        <span>Version essentielle</span>
-                                        <i class="fas fa-chevron-right"></i>
-                                    </a>
-                                ` : ''}
-                                ${sc.FichierHTML_Resume ? `
-                                    <a href="#" class="patho-version-link integral" 
-                                       onclick="selectSousChapitrePatho('${sc.IDSousChapitre}', '${idChapitre}', event, 'integral')">
-                                        <span>Version intégrale</span>
-                                        <i class="fas fa-chevron-right"></i>
-                                    </a>
-                                ` : ''}
-                                ${(!sc.FichierHTML && !sc.FichierHTML_Resume) ? '<span style="font-size: 10px; font-style: italic; color: #94a3b8;">Aucun contenu disponible</span>' : ''}
+                                <a href="#" class="patho-version-link essential" 
+                                   onclick="selectSousChapitrePatho('${sc.IDSousChapitre}', '${idChapitre}', '${finalIdAnatomy}', event, 'essential', ${sc.FichierHTML ? 'true' : 'false'})">
+                                    <span>Version essentielle</span>
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                                <a href="#" class="patho-version-link integral" 
+                                   onclick="selectSousChapitrePatho('${sc.IDSousChapitre}', '${idChapitre}', '${finalIdAnatomy}', event, 'integral', ${sc.FichierHTML_Resume ? 'true' : 'false'})">
+                                    <span>Version intégrale</span>
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
                             </div>
                         </li>
                     `;
@@ -966,7 +956,7 @@ if (type_sel === 'qcm') {
             arrow.classList.toggle('expanded');
         }
 
-        function selectSousChapitrePatho(idSousChap, idChap, event, version = 'essential') {
+        function selectSousChapitrePatho(idSousChap, idChap, idChapRappel, event, version = 'essential', hasContent = true) {
             if (event && typeof event.stopPropagation === 'function') {
                 event.stopPropagation();
             }
@@ -975,6 +965,17 @@ if (type_sel === 'qcm') {
             document.querySelectorAll('.patho-version-link').forEach(el => el.classList.remove('selected'));
 
             const baseUrl = "<?php echo base_url(); ?>";
+            const lang = "<?php echo strtoupper($this->uri->segment(1)); ?>";
+
+            // Si le contenu n'existe pas, rediriger vers livreFigures du chapitre rappel
+            if (!hasContent) {
+                const tooltip = document.getElementById("listChapTooltip");
+                if (tooltip) tooltip.style.display = 'none';
+                
+                window.location.href = `${baseUrl}${lang}/livreFigures/${idChapRappel}`;
+                return;
+            }
+            
             
             fetch(`${baseUrl}home/getContentSousChapitre`, {
                 method: 'POST',

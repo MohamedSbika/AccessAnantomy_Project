@@ -128,3 +128,26 @@ ERROR - 2026-01-23 10:51:36 --> Severity: Notice --> Undefined variable: listAct
 ERROR - 2026-01-23 10:51:36 --> Severity: Warning --> Invalid argument supplied for foreach() C:\xampp\7.4\htdocs\public_html\application\views\actualitesmodals.php 56
 ERROR - 2026-01-23 10:51:36 --> Severity: Notice --> Undefined variable: listActualites C:\xampp\7.4\htdocs\public_html\application\views\actualitesmodals.php 107
 ERROR - 2026-01-23 10:51:36 --> Severity: Warning --> Invalid argument supplied for foreach() C:\xampp\7.4\htdocs\public_html\application\views\actualitesmodals.php 107
+ERROR - 2026-01-23 14:26:56 --> Severity: Notice --> Undefined variable: listActualites C:\xampp\7.4\htdocs\public_html\application\views\page_home.php 1111
+ERROR - 2026-01-23 14:26:56 --> Severity: Warning --> sizeof(): Parameter must be an array or an object that implements Countable C:\xampp\7.4\htdocs\public_html\application\views\page_home.php 1111
+ERROR - 2026-01-23 14:26:57 --> 404 Page Not Found: Assets/js
+ERROR - 2026-01-23 14:27:07 --> Severity: Notice --> Undefined variable: listActualites C:\xampp\7.4\htdocs\public_html\application\views\page_home.php 1111
+ERROR - 2026-01-23 14:27:07 --> Severity: Warning --> sizeof(): Parameter must be an array or an object that implements Countable C:\xampp\7.4\htdocs\public_html\application\views\page_home.php 1111
+ERROR - 2026-01-23 14:27:07 --> Severity: Notice --> Undefined variable: listActualites C:\xampp\7.4\htdocs\public_html\application\views\actualitesmodals.php 56
+ERROR - 2026-01-23 14:27:07 --> Severity: Warning --> Invalid argument supplied for foreach() C:\xampp\7.4\htdocs\public_html\application\views\actualitesmodals.php 56
+ERROR - 2026-01-23 14:27:07 --> Severity: Notice --> Undefined variable: listActualites C:\xampp\7.4\htdocs\public_html\application\views\actualitesmodals.php 107
+ERROR - 2026-01-23 14:27:07 --> Severity: Warning --> Invalid argument supplied for foreach() C:\xampp\7.4\htdocs\public_html\application\views\actualitesmodals.php 107
+ERROR - 2026-01-23 14:38:13 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2026-01-23 14:38:13 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2026-01-23 14:38:13 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2026-01-23 14:38:13 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2026-01-23 14:38:13 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2026-01-23 14:38:13 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2026-01-23 14:38:13 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2026-01-23 14:45:06 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2026-01-23 14:45:06 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2026-01-23 14:45:06 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2026-01-23 14:45:06 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2026-01-23 14:45:06 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2026-01-23 14:45:06 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139
+ERROR - 2026-01-23 14:45:06 --> Severity: Notice --> Undefined index: NbreTest C:\xampp\7.4\htdocs\public_html\application\views\v1_modal_test_calque.php 139

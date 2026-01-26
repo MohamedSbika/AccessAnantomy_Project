@@ -638,21 +638,16 @@ html += `
                 <li style="padding: 10px; border-bottom: 1px solid #f1f5f9; list-style:none;">
                     <span class="patho-item-title">${sousChap.TitreSousChapitre || 'Sans titre'}</span>
                     <div class="patho-version-container">
-                        ${sousChap.FichierHTML ? `
-                            <a href="#" class="patho-version-link essential" 
-                               onclick="selectSousChapitre('${sousChap.IDSousChapitre}', '${sousChap.IDChapitre}', this, event, 'essential')">
-                                <span>Version essentielle</span>
-                                <i class="fas fa-chevron-right"></i>
-                            </a>
-                        ` : ''}
-                        ${sousChap.FichierHTML_Resume ? `
-                            <a href="#" class="patho-version-link integral" 
-                               onclick="selectSousChapitre('${sousChap.IDSousChapitre}', '${sousChap.IDChapitre}', this, event, 'integral')">
-                                <span>Version intégrale</span>
-                                <i class="fas fa-chevron-right"></i>
-                            </a>
-                        ` : ''}
-                        ${(!sousChap.FichierHTML && !sousChap.FichierHTML_Resume) ? '<span style="font-size: 10px; font-style: italic; color: #94a3b8;">Aucun contenu disponible</span>' : ''}
+                        <a href="#" class="patho-version-link essential" 
+                           onclick="selectSousChapitre('${sousChap.IDSousChapitre}', '${sousChap.IDChapitre}', '${idChapterRappel}', this, event, 'essential', ${sousChap.FichierHTML ? 'true' : 'false'})">
+                            <span>Version essentielle</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                        <a href="#" class="patho-version-link integral" 
+                           onclick="selectSousChapitre('${sousChap.IDSousChapitre}', '${sousChap.IDChapitre}', '${idChapterRappel}', this, event, 'integral', ${sousChap.FichierHTML_Resume ? 'true' : 'false'})">
+                            <span>Version intégrale</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
                     </div>
                 </li>
             `;
@@ -721,7 +716,7 @@ function togglePathologies(event) {
 
 
 // Sélection sous-chapitre
-function selectSousChapitre(idSousChapitre, idChapitre, element, event, version = 'essential') {
+function selectSousChapitre(idSousChapitre, idChapitre, idChapRappel, element, event, version = 'essential', hasContent = true) {
     if (event && typeof event.stopPropagation === 'function') {
         event.stopPropagation();
     }
@@ -731,6 +726,16 @@ function selectSousChapitre(idSousChapitre, idChapitre, element, event, version 
     if (element) element.classList.add('selected');
 
     const baseUrl = "<?php echo base_url(); ?>";
+    const lang = "<?php echo strtoupper($this->uri->segment(1)); ?>";
+
+    // Si le contenu n'existe pas, rediriger vers livreFigures du chapitre rappel
+    if (!hasContent) {
+        const tooltip = document.getElementById("listChapTooltip");
+        if (tooltip) tooltip.style.display = 'none';
+        
+        window.location.href = `${baseUrl}${lang}/livreFigures/${idChapRappel}`;
+        return;
+    }
 
     fetch(`${baseUrl}home/getContentSousChapitre`, {
         method: 'POST',

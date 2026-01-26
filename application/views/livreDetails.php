@@ -805,9 +805,9 @@ echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chap
                                                 <?php } ?>
 
                                                 <?php if ($category['EstActifQSM'] == 1) { ?>
-                                                    <th width="15%">QCM A</th>
                                                     <th width="15%">QCM B</th>
                                                     <th width="15%">QCM I</th>
+                                                    <th width="15%">QCM A</th>
                                                 <?php } ?>
 
                                                 <?php if ($category['EstActifQROC'] == 1) { ?>
@@ -1091,7 +1091,7 @@ echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chap
                                                                 <div class="col-md-6" style="font-size: 0.97rem;">
                                                                     <?php if ($value['NbreQcm'] > 0) { ?>
                                                                         <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>livreQcm/<?= $value['IDChapitre']; ?>"
-                                                                           class="btn btn-outline-primary mr-1" style="border-color: #f8f9fa;color: #000000;">A -<?php echo $this->lang->line('qcm'); ?>
+                                                                           class="btn btn-outline-primary mr-1" style="border-color: #f8f9fa;color: #000000;">B -<?php echo $this->lang->line('qcm'); ?>
                                                                         </a>
                                                                     <?php } ?>
                                                                 </div>
@@ -1185,7 +1185,7 @@ echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chap
                                                                 <div class="col-md-6" style="font-size: 0.97rem;">
                                                                     <?php if ($value['NbreQcm'] > 0) { ?>
                                                                         <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>livreQcm/<?= $value['IDChapitre']; ?>"
-                                                                           class="btn btn-outline-primary mr-1" style="border-color: #f8f9fa;color: #000000;">B -<?php echo $this->lang->line('qcm'); ?>
+                                                                           class="btn btn-outline-primary mr-1" style="border-color: #f8f9fa;color: #000000;">I -<?php echo $this->lang->line('qcm'); ?>
                                                                         </a>
                                                                     <?php } ?>
                                                                 </div>
@@ -1279,7 +1279,7 @@ echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chap
                                                                 <div class="col-md-6" style="font-size: 0.97rem;">
                                                                     <?php if ($value['NbreQcm'] > 0) { ?>
                                                                         <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>livreQcm/<?= $value['IDChapitre']; ?>"
-                                                                           class="btn btn-outline-primary mr-1" style="border-color: #f8f9fa;color: #000000;">I -<?php echo $this->lang->line('qcm'); ?>
+                                                                           class="btn btn-outline-primary mr-1" style="border-color: #f8f9fa;color: #000000;">A -<?php echo $this->lang->line('qcm'); ?>
                                                                         </a>
                                                                     <?php } ?>
                                                                 </div>
