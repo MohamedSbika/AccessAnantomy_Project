@@ -34,6 +34,8 @@ composer.phar
 !/uploads/.gitkeep
 
 # Cache and temporary files
+/application/logs/*
+!/application/logs/index.html
 /system/cache/*
 !/system/cache/.gitkeep
 /system/logs/*

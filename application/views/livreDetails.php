@@ -364,7 +364,7 @@
                         <div class="form-group">
                             <label>Fichier Rappel Anatomique (.docx)</label>
                             <input type="file" class="form-control" id="rappelFichier" name="rappelFichier" accept=".docx" required>
-                            <small class="form-text text-muted">SÃ©lectionnez un fichier Word (.docx)</small>
+                            <small class="form-text text-muted">Sélectionnez un fichier Word (.docx)</small>
                         </div>
 
                         <div class="text-center">
@@ -392,7 +392,7 @@
                 <div id="listeImagesRappel" style="margin-bottom: 20px;">
                     <h4 style="color: white;">Images existantes</h4>
                     <div id="imagesContainer" style="display: flex; flex-wrap: wrap; gap: 10px;">
-                        <!-- Les images seront chargÃ©es ici via JavaScript -->
+                        <!-- Les images seront chargées ici via JavaScript -->
                     </div>
                 </div>
                 
@@ -417,11 +417,11 @@
                             onchange="previewImageRappel(event)"
                         >
                         <small class="form-text" style="color: #ddd;">
-                            Formats autorisÃ©s : JPG, PNG, WEBP â€“ max recommandÃ© : 2MB
+                            Formats autorisés : JPG, PNG, WEBP â€“ max recommandé : 2MB
                         </small>
                     </div>
 
-                    <!-- AperÃ§u -->
+                    <!-- Aperçu -->
                     <div class="form-group text-center">
                         <img id="previewRappelImage" src="" alt="" style="max-width:100%; max-height:300px; display:none; border-radius:8px;">
                     </div>
@@ -634,7 +634,7 @@
 
                                     </div>
                                 </div>
-                                <!-- Zone supÃ©rieure au-dessus du tableau -->
+                                <!-- Zone supérieure au-dessus du tableau -->
 <div style="
     width: 100%;
     display: flex;
@@ -709,7 +709,7 @@
                         ?>
                             <div class="form-group mb-3">
                                 <label for="chapitreAssocie_<?= $OneBook[0]['IDLivre']; ?>" style="font-weight:bold;">
-                                    SÃ©lectionner un chapitre associÃ© <span style="color:red;">*</span>
+                                    Sélectionner un chapitre associé <span style="color:red;">*</span>
                                 </label>
 
                                 <select name="chapitreAssocie" 
@@ -991,11 +991,10 @@ echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chap
                                                                             <?php echo $this->lang->line('resume'); ?>
                                                                         </a>
                                                                     <?php } else { ?>
-                                                                        <!-- ✅ Redirection vers les figures si pas de résumé -->
                                                                         <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>livreFigures/<?= $value['IDChapitre']; ?>" 
                                                                            class="btn btn-outline-primary mr-1" 
-                                                                           style="border-color: #f8f9fa;color: #000000;">
-                                                                            <?php echo $this->lang->line('resume'); ?>
+                                                                           style="border-color: #eb7648ff;color: #eb7648ff;">
+                                                                            vide
                                                                         </a>
                                                                     <?php } ?>
                                                                 </div>
@@ -1047,9 +1046,9 @@ echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chap
                                                                 <div class="col-2">
                                                                     <?php if ((strlen($this->session->userdata('passTok')) == 200) && ($this->session->userdata('EstAdmin') == 1)) { ?>
                                                                         <div class="dropdown " style="">
-                                                                            <a href="#" data-toggle="dropdown" data-display="static" aria-expanded="false" class="" title="<?php echo $this->lang->line('actionFigure'); ?>">
+                                                                            <!-- <a href="#" data-toggle="dropdown" data-display="static" aria-expanded="false" class="" title="<?php echo $this->lang->line('actionFigure'); ?>">
                                                                                 <i class="align-middle mr-2 far fa-fw fa-images"></i>
-                                                                            </a>
+                                                                            </a> -->
                                                                             <div class="dropdown-menu">
                                                                                 <div class="row">
                                                                                     <div class="col-md-10">
@@ -1145,9 +1144,9 @@ echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chap
 
                                                                 <div class="col-2">
                                                                     <div class="dropdown " style="">
-                                                                        <a href="#" data-toggle="dropdown" data-display="static" aria-expanded="false" class="" title="<?php echo $this->lang->line('actionFigure'); ?>">
+                                                                        <!-- <a href="#" data-toggle="dropdown" data-display="static" aria-expanded="false" class="" title="<?php echo $this->lang->line('actionFigure'); ?>">
                                                                             <i class="align-middle mr-2 far fa-fw fa-images"></i>
-                                                                        </a>
+                                                                        </a> -->
 
                                                                         <div class="dropdown-menu">
                                                                             <div class="row">
@@ -1239,9 +1238,9 @@ echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chap
 
                                                                 <div class="col-2">
                                                                     <div class="dropdown " style="">
-                                                                        <a href="#" data-toggle="dropdown" data-display="static" aria-expanded="false" class="" title="<?php echo $this->lang->line('actionFigure'); ?>">
+                                                                        <!-- <a href="#" data-toggle="dropdown" data-display="static" aria-expanded="false" class="" title="<?php echo $this->lang->line('actionFigure'); ?>">
                                                                             <i class="align-middle mr-2 far fa-fw fa-images"></i>
-                                                                        </a>
+                                                                        </a> -->
 
                                                                         <div class="dropdown-menu">
                                                                             <div class="row">
@@ -1333,9 +1332,9 @@ echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chap
 
                                                                 <div class="col-2">
                                                                     <div class="dropdown " style="">
-                                                                        <a href="#" data-toggle="dropdown" data-display="static" aria-expanded="false" class="" title="<?php echo $this->lang->line('actionFigure'); ?>">
+                                                                        <!-- <a href="#" data-toggle="dropdown" data-display="static" aria-expanded="false" class="" title="<?php echo $this->lang->line('actionFigure'); ?>">
                                                                             <i class="align-middle mr-2 far fa-fw fa-images"></i>
-                                                                        </a>
+                                                                        </a> -->
 
                                                                         <div class="dropdown-menu">
                                                                             <div class="row">
@@ -1427,9 +1426,9 @@ echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chap
                                                                 <div class="col-2">
 
                                                                     <div class="dropdown " style="">
-                                                                        <a href="#" data-toggle="dropdown" data-display="static" aria-expanded="false" class="" title="<?php echo $this->lang->line('actionFigure'); ?>">
+                                                                        <!-- <a href="#" data-toggle="dropdown" data-display="static" aria-expanded="false" class="" title="<?php echo $this->lang->line('actionFigure'); ?>">
                                                                             <i class="align-middle mr-2 far fa-fw fa-images"></i>
-                                                                        </a>
+                                                                        </a> -->
 
                                                                         <div class="dropdown-menu">
                                                                             <div class="row">
@@ -1671,8 +1670,8 @@ function togglePathoContainer(idChapitre) {
                         <div style="display: flex; width: 100%; padding: 5px 0; border-bottom: 2px solid #e2e8f0; margin-bottom: 5px; font-weight: bold; color: #64748b; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.025em;">
                             <div style="width: 5%;"></div>
                             <div style="width: 25%; padding-left: 10px;">Titre Pathologie</div>
-                            <div style="width: 35%; text-align: center;">Version Essentielle</div>
                             <div style="width: 35%; text-align: center;">Version Intégrale</div>
+                            <div style="width: 35%; text-align: center;">Version Essentielle</div>
                         </div>
                     `);
                 }
@@ -1738,7 +1737,6 @@ function togglePathoContainer(idChapitre) {
                                     </div>
                                     <div class="col-4" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 0; justify-items: center;">
                                         <a href="#" onclick="return false;"><i class="fas fa-key" style="color: #3085d6; font-size: 0.8rem;"></i></a>
-                                        <a href="#" onclick="return false;"><i class="far fa-images" style="color: #3085d6; font-size: 0.8rem;"></i></a>
                                         <a href="#" onclick="openRenomeModal('${idEncoded}', '${titre}'); return false;"><i class="fas fa-edit" style="color: #3085d6; font-size: 0.8rem;"></i></a>
                                         <a href="#" onclick="return false;"><i class="fa fa-play-circle" style="color: #3085d6; font-size: 0.8rem;"></i></a>
                                     </div>
@@ -1760,7 +1758,6 @@ function togglePathoContainer(idChapitre) {
                                     </div>
                                     <div class="col-4" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 0; justify-items: center;">
                                         <a href="#" onclick="return false;"><i class="fas fa-key" style="color: #3085d6; font-size: 0.8rem;"></i></a>
-                                        <a href="#" onclick="return false;"><i class="far fa-images" style="color: #3085d6; font-size: 0.8rem;"></i></a>
                                         <a href="#" onclick="return false;"><i class="fas fa-edit" style="color: #3085d6; font-size: 0.8rem;"></i></a>
                                         <a href="#" onclick="return false;"><i class="fa fa-play-circle" style="color: #3085d6; font-size: 0.8rem;"></i></a>
                                     </div>
@@ -1818,8 +1815,8 @@ function togglePathoContainer(idChapitre) {
         <input type="hidden" name="chapters[0][idChap]" id="sousChap_chapID">
 
         <div class="form-group mt-3">
-          <label for="sousChaps">Sous-chapitres (sÃ©parÃ©s par une virgule)</label>
-          <input type="text" class="form-control" id="sousChaps" placeholder="Ex: Introduction, DÃ©veloppement, Conclusion">
+          <label for="sousChaps">Sous-chapitres (séparés par une virgule)</label>
+          <input type="text" class="form-control" id="sousChaps" placeholder="Ex: Introduction, Développement, Conclusion">
         </div>
 
         <div class="text-end mt-4">
@@ -1860,7 +1857,7 @@ $(document).ready(function() {
                         const idEncoded = sc.IDSousChapitre;
                         const titre = sc.TitreSousChapitre.replace(/'/g, '&#39;');
 
-// Dans la gÃ©nÃ©ration HTML :
+// Dans la génération HTML :
 let html = `
 <div class="souschap-item" 
      style="display:flex;align-items:center;padding:0.5em 0;border-bottom:1px solid #eee;">
@@ -1869,7 +1866,7 @@ let html = `
         
         <div class="dropdown" style="position:relative;">
             <a href="#" data-toggle="dropdown" data-display="static" 
-               aria-expanded="false" title="Modifier / gÃ©rer le fichier">
+               aria-expanded="false" title="Modifier / gérer le fichier">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" 
                      viewBox="0 0 24 24" fill="none" stroke="currentColor" 
                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1932,7 +1929,7 @@ let html = `
                         <?php if ((strlen($this->session->userdata('passTok')) == 200) && ($this->session->userdata('EstAdmin') == 1)) { ?>
                         html += `
                             <div style="margin-left: auto; display: flex; gap: 0.8em;">
-                                <!-- Ã‰dition simple du titre -->
+                                <!-- Édition simple du titre -->
 <div class="dropdown" 
      style="position: relative;" 
      onclick="event.stopPropagation()">
@@ -2000,6 +1997,7 @@ function closeSousChapModal() {
 }
 
 function submitSousChap() {
+    console.log("Submit sous-chapitre initié");
     const bookID = $('#sousChap_bookID').val();
     const chapID = $('#sousChap_chapID').val();
     const sousChapsText = $('#sousChaps').val();
@@ -2035,9 +2033,11 @@ function submitSousChap() {
         data: JSON.stringify(dataToSend),
         contentType: "application/json",
         success: function (response) {
+            console.log("Réponse serveur submitSousChap:", response);
             try {
                 const res = JSON.parse(response);
-                if (res[0].id === '1') {
+                if (res[0].id == 1) {
+                    $('#modalSousChap').modal('hide');
                     Swal.fire({
                         icon: 'success',
                         title: 'Succès',
@@ -2045,32 +2045,30 @@ function submitSousChap() {
                         timer: 1500,
                         showConfirmButton: false
                     }).then(() => {
-                        location.reload();
+                        window.location.reload();
                     });
-                    $('#modalSousChap').modal('hide');
-                    $('#formSousChap')[0].reset();
-                    $('#sousChap_bookID').val('');
-                    $('#sousChap_chapID').val('');
                 } else {
                     Swal.fire({
                         icon: 'error',
-                        title: res[0].desc
+                        title: 'Erreur',
+                        text: res[0].desc
                     });
                 }
             } catch (err) {
-                console.error(err);
+                console.error("Erreur parsing JSON:", err, response);
                 Swal.fire({
                     icon: 'error',
                     title: 'Erreur serveur',
-                    text: 'La réponse est invalide'
+                    text: 'La réponse du serveur est invalide.'
                 });
             }
         },
-        error: function () {
+        error: function (xhr, status, error) {
+            console.error("Erreur AJAX submitSousChap:", status, error);
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur AJAX',
-                text: "Impossible d'envoyer la requête."
+                text: "Impossible d'envoyer la requête au serveur."
             });
         }
     });
@@ -2157,91 +2155,12 @@ function validerEditSousChap(idSousChap) {
             image.src = URL.createObjectURL(event.target.files[0]);
         };
 
-function submitSousChap() {
-    const bookID = $('#sousChap_bookID').val();
-    const chapID = $('#sousChap_chapID').val();
-    const sousChapsText = $('#sousChaps').val();
-
-    if (!sousChapsText.trim()) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Veuillez saisir au moins un sous-chapitre.'
-        });
-        return;
-    }
-
-    const sousChapsArray = sousChapsText.split(',').map(s => s.trim()).filter(Boolean);
-
-    const dataToSend = {
-        bookID: bookID,
-        chapters: [{
-            idChap: chapID,
-            sousChaps: sousChapsArray
-        }]
-    };
-
-    Swal.fire({
-        title: 'Veuillez patienter...',
-        text: 'Ajout des sous-chapitres en cours',
-        allowOutsideClick: false,
-        didOpen: () => Swal.showLoading()
-    });
-
-    $.ajax({
-        type: "POST",
-        url: "<?= base_url('home/set_LivSousChap'); ?>",
-        data: JSON.stringify(dataToSend),
-        contentType: "application/json",
-        success: function (response) {
-            try {
-                const res = JSON.parse(response);
-                if (res[0].id === '1') {
-
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'SuccÃ¨s',
-                        text: res[0].desc,
-                        timer: 1500,
-                        showConfirmButton: false
-                    }).then(() => {
-                        location.reload();
-                    });
-                    $('#modalSousChap').modal('hide');
-
-                    $('#formSousChap')[0].reset();
-                    $('#sousChap_bookID').val('');
-                    $('#sousChap_chapID').val('');
-
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: res[0].desc
-                    });
-                }
-            } catch (err) {
-                console.error(err);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Erreur serveur',
-                    text: 'La rÃ©ponse est invalide'
-                });
-            }
-        },
-        error: function () {
-            Swal.fire({
-                icon: 'error',
-                title: 'Erreur AJAX',
-                text: "Impossible d'envoyer la requête."
-            });
-        }
-    });
-}
         function add_Figure(id) {
 
             var data_plat = new FormData($('#' + id)[0]);
 
             Swal.fire({
-                title: 'Veuillez patienter ...<br> Envoi des donnÃ©es en cours .. ',
+                title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 onBeforeOpen: () => {
@@ -2305,68 +2224,6 @@ function submitSousChap() {
             return false;
         }
 
-       function openRenomeModal(idSousChap, oldTitle) {
-    Swal.fire({
-        title: 'Modifier le titre',
-        input: 'text',
-        inputValue: oldTitle,
-        showCancelButton: true,
-        confirmButtonText: 'Valider',
-        cancelButtonText: 'Annuler',
-        preConfirm: (newTitle) => {
-            if (!newTitle) {
-                Swal.showValidationMessage('Veuillez entrer un titre');
-            }
-            return newTitle;
-        }
-    }).then((result) => {
-        if (result.value) {
-            $.ajax({
-                url: "<?= base_url('home/update_SousChapitre'); ?>",
-                type: "POST",
-                data: JSON.stringify({ idSousChap: idSousChap, titre: result.value }),
-                contentType: "application/json",
-                dataType: "json",
-                success: function(res) {
-                    if (res.success) {
-                        Swal.fire({ icon: 'success', title: 'Titre mis à jour', timer: 1000, showConfirmButton: false })
-                        .then(() => location.reload());
-                    } else {
-                        Swal.fire('Erreur', res.message || 'Impossible de renommer', 'error');
-                    }
-                }
-            });
-        }
-    });
-}
-
-function validerEditSousChap(idSousChap) {
-    const newTitle = $('#editSousChap_' + idSousChap).val();
-    if (!newTitle) {
-        Swal.fire('Erreur', 'Le titre ne peut pas être vide', 'error');
-        return;
-    }
-
-    $.ajax({
-        url: "<?= base_url('home/update_SousChapitre'); ?>",
-        type: "POST",
-        data: JSON.stringify({ idSousChap: idSousChap, titre: newTitle }),
-        contentType: "application/json",
-        dataType: "json",
-        success: function(res) {
-            if (res.success) {
-                Swal.fire({ icon: 'success', title: 'Titre mis à jour', timer: 1000, showConfirmButton: false })
-                .then(() => location.reload());
-            } else {
-                Swal.fire('Erreur', res.message || 'Impossible de renommer', 'error');
-            }
-        },
-        error: function() {
-            Swal.fire('Erreur', 'Erreur lors de la requête', 'error');
-        }
-    });
-}
-
         function chargeVideos(idChapitre, titreChapitre, idType) {
 
             document.getElementById("IDChapitreVideo").value = idChapitre
@@ -2377,7 +2234,7 @@ function validerEditSousChap(idSousChap) {
             formData.append('idType', idType);
 
             Swal.fire({
-                title: 'Veuillez patienter ...<br> Envoi des donnÃ©es en cours .. ',
+                title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 onBeforeOpen: () => {
@@ -2445,7 +2302,7 @@ function validerEditSousChap(idSousChap) {
                     }
 
                     if (res["desc"].length === 0) {
-                        somme += `<h2 style="text-align:center"> Aucune vidÃ©o </h2>`
+                        somme += `<h2 style="text-align:center"> Aucune vidéo </h2>`
                     }
 
                     somme += `</div>`
@@ -2570,7 +2427,7 @@ function validerEditSousChap(idSousChap) {
             console.log(data_plat)
 
             Swal.fire({
-                title: 'Veuillez patienter ...<br> Envoi des donnÃ©es en cours .. ',
+                title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 onBeforeOpen: () => {
@@ -2641,7 +2498,7 @@ function validerEditSousChap(idSousChap) {
             var data_plat = new FormData($("#deleteVideoModal")[0]);
 
             Swal.fire({
-                title: 'Veuillez patienter ...<br> Envoi des donnÃ©es en cours .. ',
+                title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 onBeforeOpen: () => {
@@ -2751,7 +2608,7 @@ function validerEditSousChap(idSousChap) {
         // ===== RAPPEL ANATOMIQUE MANUEL =====
 
         function checkAllRappels() {
-            // VÃ©rifier tous les chapitres pour voir s'il y a un rappel manuel
+            // Vérifier tous les chapitres pour voir s'il y a un rappel manuel
             const elements = document.querySelectorAll('[id^="type-rappel-"]');
             elements.forEach(el => {
                 const match = el.id.match(/type-rappel-(\d+)/);
@@ -2817,7 +2674,7 @@ function checkAndDisplayRappel(idChapitre, idChapterRappelDefaut, idLivre, idThe
                 if (estAdmin) {
                     detailHtml += '<div class="col-md-5" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 0; justify-items: center;">';
                     detailHtml += `<a href="#" onclick="return false;"><i class="fas fa-key" style="color: #3085d6; font-size: 0.8rem;"></i></a>`;
-                    detailHtml += `<a href="#" onclick="return false;"><i class="far fa-images" style="color: #3085d6; font-size: 0.8rem;"></i></a>`;
+                    // detailHtml += `<a href="#" onclick="return false;"><i class="far fa-images" style="color: #3085d6; font-size: 0.8rem;"></i></a>`;
                     detailHtml += `<a href="#" onclick="return false;"><i class="fas fa-edit" style="color: #3085d6; font-size: 0.8rem;"></i></a>`;
                     detailHtml += `<a href="#" onclick="event.preventDefault(); return false;"><i class="fa fa-play-circle" style="color: #3085d6; font-size: 0.8rem; cursor: pointer;"></i></a>`;
                     detailHtml += '</div>';
@@ -2852,7 +2709,7 @@ function checkAndDisplayRappel(idChapitre, idChapterRappelDefaut, idLivre, idThe
                 if (estAdmin) {
                     resumeHtml += '<div class="col-md-5" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 0; justify-items: center;">';
                     resumeHtml += `<a href="#" onclick="return false;"><i class="fas fa-key" style="color: #3085d6; font-size: 0.8rem;"></i></a>`;
-                    resumeHtml += `<a href="#" onclick="openAddImageRappelModal(${idChapitre}); return false;" title="Images"><i class="far fa-images" style="color: #3085d6; font-size: 0.8rem;"></i></a>`;
+                    // resumeHtml += `<a href="#" onclick="openAddImageRappelModal(${idChapitre}); return false;" title="Images"><i class="far fa-images" style="color: #3085d6; font-size: 0.8rem;"></i></a>`;
                     resumeHtml += `<a href="#" onclick="openAddRappelModal(${idChapitre}); return false;" title="Modifier"><i class="fas fa-edit" style="color: #3085d6; font-size: 0.8rem;"></i></a>`;
                     resumeHtml += `<a href="#" onclick="event.preventDefault(); return false;" title="Vidéos"><i class="fa fa-play-circle" style="color: #3085d6; font-size: 0.8rem; cursor: pointer;"></i></a>`;
                     resumeHtml += '</div>';
@@ -2953,7 +2810,7 @@ function saveRappelManuel() {
     if (!fichier) {
         Swal.fire({
             title: 'Erreur',
-            text: 'Veuillez sÃ©lectionner un fichier .docx',
+            text: 'Veuillez sélectionner un fichier .docx',
             icon: 'error'
         });
         return;
@@ -2962,7 +2819,7 @@ function saveRappelManuel() {
     if (!fichier.name.endsWith('.docx')) {
         Swal.fire({
             title: 'Erreur',
-            text: 'Seuls les fichiers .docx sont acceptÃ©s',
+            text: 'Seuls les fichiers .docx sont acceptés',
             icon: 'error'
         });
         return;
@@ -2985,17 +2842,17 @@ function saveRappelManuel() {
         contentType: false,
         processData: false,
         success: function(response) {
-            console.log('RÃ©ponse brute:', response);
+            console.log('Réponse brute:', response);
             
             try {
                 const res = typeof response === 'string' ? JSON.parse(response) : response;
-                console.log('RÃ©ponse parsÃ©e:', res);
+                console.log('Réponse parsée:', res);
                 
 if (res[0].id == '1') {
     $('#addRappelModal').modal('hide');
     
     Swal.fire({
-        title: 'SuccÃ¨s',
+        title: 'Succès',
         text: res[0].desc,
         icon: 'success',
         timer: 1500,
@@ -3015,7 +2872,7 @@ if (res[0].id == '1') {
                 console.error('Erreur parsing JSON:', e, response);
                 Swal.fire({
                     title: 'Erreur serveur',
-                    text: 'RÃ©ponse invalide du serveur',
+                    text: 'Réponse invalide du serveur',
                     icon: 'error'
                 });
             }
@@ -3034,7 +2891,7 @@ if (res[0].id == '1') {
 function deleteRappelManuel(idChapitre) {
     Swal.fire({
         title: 'Confirmation',
-        text: 'ÃŠtes-vous sÃ»r de vouloir supprimer ce rappel anatomique manuel?',
+        text: 'Êtes-vous sûr de vouloir supprimer ce rappel anatomique manuel?',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -3052,12 +2909,12 @@ function deleteRappelManuel(idChapitre) {
                 success: function(response) {
                     if (response.id == '1') {
                         Swal.fire({
-                            title: 'SuccÃ¨s',
+                            title: 'Succès',
                             text: response.desc,
                             icon: 'success',
                             timer: 2000
                         }).then(() => {
-                            // Recharger l'affichage (retour au dÃ©faut)
+                            // Recharger l'affichage (retour au défaut)
                             location.reload();
                         });
                     } else {
@@ -3826,9 +3683,7 @@ function deleteRappelManuel(idChapitre) {
                             allowEscapeKey: false
                         }).then((result) => {
                             if (result.value) {
-                                $('#' + idS).closest('.souschap-item').slideUp(300, function() {
-                                    $(this).remove();
-                                });
+                                location.reload();
                             }
                         });
                     } else {
@@ -3858,8 +3713,8 @@ function deleteRappelManuel(idChapitre) {
 }
 
 function editSousChap(idEncoded) {
-    console.log('Ã‰dition:', idEncoded);
-    // Ã€ implÃ©menter
+    console.log('Édition:', idEncoded);
+    // À implémenter
 }
 
 
@@ -3868,7 +3723,7 @@ function editSousChap(idEncoded) {
 
                 var data_plat = new FormData($('#pageForm_Chap')[0]);
                 Swal.fire({
-                    title: 'Veuillez patienter ...<br> Envoi des donnÃ©es en cours .. ',
+                    title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
                     allowOutsideClick: false,
                     allowEscapeKey: false,
                     onBeforeOpen: () => {
@@ -3931,7 +3786,7 @@ function editSousChap(idEncoded) {
 
                 var data_plat = new FormData($('#pageForm_Chap')[0]);
                 Swal.fire({
-                    title: 'Veuillez patienter ...<br> Envoi des donnÃ©es en cours .. ',
+                    title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
                     allowOutsideClick: false,
                     allowEscapeKey: false,
                     onBeforeOpen: () => {
@@ -3984,7 +3839,7 @@ function editSousChap(idEncoded) {
 
                 var data_plat = new FormData($('#pageForm_Chap')[0]);
                 Swal.fire({
-                    title: 'Veuillez patienter ...<br> Envoi des donnÃ©es en cours .. ',
+                    title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
                     allowOutsideClick: false,
                     allowEscapeKey: false,
                     onBeforeOpen: () => {
@@ -4039,7 +3894,7 @@ function editSousChap(idEncoded) {
                 if (!fileInput || !fileInput.files.length) {
                     Swal.fire({
                         type: 'warning',
-                        title: 'Aucun fichier sÃ©lectionnÃ©',
+                        title: 'Aucun fichier sélectionné',
                         text: 'Veuillez choisir un fichier .docx avant de continuer.'
                     });
                     return;
@@ -4071,10 +3926,10 @@ function editSousChap(idEncoded) {
                             if (res[0]?.id == '1') {
                                 Swal.fire({
                                     type: 'success',
-                                    title: 'Fichier attachÃ© avec succÃ¨s',
-                                    text: 'Le fichier du sous-chapitre a Ã©tÃ© converti et enregistrÃ©.',
+                                    title: 'Fichier attaché avec succès',
+                                    text: 'Le fichier du sous-chapitre a été converti et enregistré.',
                                     confirmButtonText: 'OK'
-                                });
+                                }).then(() => location.reload());
                             } else {
                                 Swal.fire({
                                     type: 'error',
@@ -4087,7 +3942,7 @@ function editSousChap(idEncoded) {
                             Swal.fire({
                                 type: 'error',
                                 title: 'Erreur serveur',
-                                text: 'RÃ©ponse du serveur invalide.'
+                                text: 'Réponse du serveur invalide.'
                             });
                         }
                     },
@@ -4096,7 +3951,7 @@ function editSousChap(idEncoded) {
                         Swal.fire({
                             type: 'error',
                             title: 'Erreur lors de lâ€™envoi du fichier',
-                            text: 'Veuillez rÃ©essayer plus tard.'
+                            text: 'Veuillez réessayer plus tard.'
                         });
                     }
                 });
@@ -4177,7 +4032,7 @@ function editSousChap(idEncoded) {
 
                 var data_plat = new FormData($('#pageForm_Chap')[0]);
                 Swal.fire({
-                    title: 'Veuillez patienter ...<br> Envoi des donnÃ©es en cours .. ',
+                    title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
                     allowOutsideClick: false,
                     allowEscapeKey: false,
                     onBeforeOpen: () => {
@@ -4241,7 +4096,7 @@ function editSousChap(idEncoded) {
 
                 var data_plat = new FormData($('#pageForm_Chap')[0]);
                 Swal.fire({
-                    title: 'Veuillez patienter ...<br> Envoi des donnÃ©es en cours .. ',
+                    title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
                     allowOutsideClick: false,
                     allowEscapeKey: false,
                     onBeforeOpen: () => {
@@ -4305,7 +4160,7 @@ function editSousChap(idEncoded) {
 
                 var data_plat = new FormData($('#pageForm_Chap')[0]);
                 Swal.fire({
-                    title: 'Veuillez patienter ...<br> Envoi des donnÃ©es en cours .. ',
+                    title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
                     allowOutsideClick: false,
                     allowEscapeKey: false,
                     onBeforeOpen: () => {
@@ -4368,7 +4223,7 @@ function editSousChap(idEncoded) {
 
                 var data_plat = new FormData($('#pageForm_Chap')[0]);
                 Swal.fire({
-                    title: 'Veuillez patienter ...<br> Envoi des donnÃ©es en cours .. ',
+                    title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
                     allowOutsideClick: false,
                     allowEscapeKey: false,
                     onBeforeOpen: () => {
@@ -4431,7 +4286,7 @@ function editSousChap(idEncoded) {
 
                 var data_plat = new FormData($('#pageForm_Chap')[0]);
                 Swal.fire({
-                    title: 'Veuillez patienter ...<br> Envoi des donnÃ©es en cours .. ',
+                    title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
                     allowOutsideClick: false,
                     allowEscapeKey: false,
                     onBeforeOpen: () => {
@@ -4494,7 +4349,7 @@ function editSousChap(idEncoded) {
 
                 var data_plat = new FormData($('#pageForm_Chap')[0]);
                 Swal.fire({
-                    title: 'Veuillez patienter ...<br> Envoi des donnÃ©es en cours .. ',
+                    title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
                     allowOutsideClick: false,
                     allowEscapeKey: false,
                     onBeforeOpen: () => {
@@ -4561,14 +4416,14 @@ function editSousChap(idEncoded) {
     if (chapitreAssocieField && !chapitreAssocieField.value) {
         Swal.fire({
             icon: 'warning',
-            title: 'SÃ©lection obligatoire',
-            text: 'Veuillez choisir un chapitre associÃ© avant de continuer.'
+            title: 'Sélection obligatoire',
+            text: 'Veuillez choisir un chapitre associé avant de continuer.'
         });
         return false; 
     }
 
     Swal.fire({
-        title: 'Veuillez patienter ...<br> Envoi des donnÃ©es en cours .. ',
+        title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
         allowOutsideClick: false,
         allowEscapeKey: false,
         didOpen: () => {
@@ -4592,7 +4447,7 @@ function editSousChap(idEncoded) {
                 console.error("Erreur JSON :", e, html);
                 Swal.fire({
                     title: 'Erreur serveur',
-                    text: 'Impossible de traiter la rÃ©ponse',
+                    text: 'Impossible de traiter la réponse',
                     icon: 'error'
                 });
                 return;
@@ -4603,7 +4458,7 @@ function editSousChap(idEncoded) {
                 Swal.fire({
                     title: resu[0]["desc"],
                     icon: 'success',
-                    text: 'Chapitre(s) ajoutÃ©s avec succÃ¨s',
+                    text: 'Chapitre(s) ajoutés avec succès',
                     confirmButtonText: 'OK'
                 }).then(() => location.reload());
             } else {
@@ -4630,7 +4485,7 @@ function set_LivSousChap(bookID) {
     var data_plat = new FormData(form);
 
     Swal.fire({
-        title: 'Veuillez patienter ...<br>Envoi des donnÃ©es en cours...',
+        title: 'Veuillez patienter ...<br>Envoi des données en cours...',
         allowOutsideClick: false,
         allowEscapeKey: false,
         didOpen: () => Swal.showLoading()
@@ -4645,7 +4500,7 @@ function set_LivSousChap(bookID) {
         processData: false,
         timeout: 30000000,
         success: function (html) {
-            console.log("RÃ©ponse serveur :", html);
+            console.log("Réponse serveur :", html);
 
             let resu;
             try {
@@ -4654,7 +4509,7 @@ function set_LivSousChap(bookID) {
                 console.error("Erreur de parsing JSON :", e, html);
                 Swal.fire({
                     title: 'Erreur serveur',
-                    text: 'Impossible de traiter la rÃ©ponse',
+                    text: 'Impossible de traiter la réponse',
                     icon: 'error'
                 });
                 return;
@@ -4665,7 +4520,7 @@ function set_LivSousChap(bookID) {
                 Swal.fire({
                     title: resu[0]["desc"],
                     icon: 'success',
-                    text: 'Sous-chapitres ajoutÃ©s avec succÃ¨s',
+                    text: 'Sous-chapitres ajoutés avec succès',
                     confirmButtonText: 'OK'
                 }).then(() => location.reload());
             } else {
@@ -4705,7 +4560,7 @@ function set_LivSousChap(bookID) {
         contentType: "application/json; charset=UTF-8",
         timeout: 10000,
         success: function(html) {
-            console.log("RÃ©ponse serveur :", html);
+            console.log("Réponse serveur :", html);
             let resu;
             try {
                 resu = JSON.parse(html);
@@ -4713,7 +4568,7 @@ function set_LivSousChap(bookID) {
                 console.error("Erreur de parsing JSON :", e, html);
                 Swal.fire({
                     title: 'Erreur serveur',
-                    text: 'Impossible de traiter la rÃ©ponse',
+                    text: 'Impossible de traiter la réponse',
                     icon: 'error'
                 });
                 return;
@@ -4727,14 +4582,14 @@ function set_LivSousChap(bookID) {
                 sousChapHTML += '</ul>';
                 $('.souschap-container').html(sousChapHTML);
                 Swal.fire({
-                    title: 'Sous-chapitres chargÃ©s avec succÃ¨s',
+                    title: 'Sous-chapitres chargés avec succès',
                     icon: 'success',
                     confirmButtonText: 'OK'
                 });
             } else {
                 Swal.fire({
                     icon: 'info',
-                    title: resu[0]?.desc || 'Aucun sous-chapitre trouvÃ©',
+                    title: resu[0]?.desc || 'Aucun sous-chapitre trouvé',
                     timer: 4000
                 });
             }
@@ -4743,7 +4598,7 @@ function set_LivSousChap(bookID) {
             console.error("Erreur AJAX :", status, error);
             Swal.fire({
                 icon: 'error',
-                title: 'Erreur lors de la rÃ©cupÃ©ration des sous-chapitres',
+                title: 'Erreur lors de la récupération des sous-chapitres',
                 showConfirmButton: true
             });
         }
@@ -5131,7 +4986,7 @@ function set_LivSousChap(bookID) {
                 var data_plat = new FormData($(id)[0]);
                 console.log(data_plat)
                 // Swal.fire({
-                //     title: 'Veuillez patienter ...<br> Envoi des donnÃ©es en cours .. ',
+                //     title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
                 //     allowOutsideClick: false,
                 //     allowEscapeKey: false,
                 //     onBeforeOpen: () => {

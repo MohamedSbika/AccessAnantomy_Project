@@ -10,8 +10,8 @@
     #element { width: 100%; background-color: white; font-size: 20px; text-align: center; box-sizing: border-box; display: flex; min-height: 100vh; }
     
     /* Division 50/50 */
-    .col-left { width: 50%; padding: 40px; border-right: 1px solid #f1f1f1; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #fafafa; }
-    .col-right { width: 50%; padding: 20px; position: relative; display: flex; flex-direction: column; align-items: center; }
+    .col-left { width: 55%; padding: 10px; border-right: 1px solid #f1f1f1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; background-color: #fafafa; overflow-y: auto; }
+    .col-right { width: 45%; padding: 10px; position: relative; display: flex; flex-direction: column; align-items: center; }
 
     .slideshow-container { width: 100%; max-width: 100%; position: relative; margin-top: 20px; }
     .mySlides { display: none; width: 100%; text-align: center; }
@@ -40,7 +40,7 @@
                 &nbsp; / &nbsp;
                 <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>livreDetails/<?php print $OneBook[0]["IDLivre"]; ?>"><?php echo $this->lang->line('chapitres'); ?></a>
             </div>
-            <div style="width: 100%; max-width: 500px;">
+            <div style="width: 100%; max-width: 1000px; padding-top: 20px;">
                 <?php echo $CursShow; ?>
             </div>
         </div>

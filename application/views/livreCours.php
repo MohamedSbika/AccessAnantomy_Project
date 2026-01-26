@@ -851,19 +851,19 @@
         </script>
     <?php }?>
 
-    <!-- Modal GÃ©rer les images de rappel (Copie conforme de livreDetails.php) -->
+    <!-- Modal Gérer les images de rappel (Copie conforme de livreDetails.php) -->
     <div class="modal fade" id="addImageRappelModal" tabindex="-1" aria-hidden="true" style="z-index: 10000;">
         <div class="modal-dialog modal-dialog-centered" role="document" style="max-width:1000px;">
             <div class="modal-content" style="background-color: rgb(9,138,99); box-shadow: 0 0 0 50vmax rgba(0,0,0,.7); color: white;">
                 <div class="modal-header">
-                    <h2 class="modal-title h2-modal-login" style="color: white;">GÃ©rer les images de rappel</h2>
+                    <h2 class="modal-title h2-modal-login" style="color: white;">Gérer les images de rappel</h2>
                     <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" style="background: none; border: none; color: white; font-size: 24px;">x</button>
                 </div>
                 <div class="modal-body m-3">
                     <div id="listeImagesRappel" style="margin-bottom: 20px;">
                         <h4 style="color: white; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 10px;">Images existantes (Cliques sur la croix pour supprimer)</h4>
                         <div id="imagesContainer" style="display: flex; flex-wrap: wrap; gap: 10px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px; min-height: 50px;">
-                            <!-- ChargÃ© via JS -->
+                            <!-- Chargé via JS -->
                         </div>
                     </div>
                     <hr style="border-color: rgba(255,255,255,0.2);">
@@ -952,7 +952,7 @@
         const fileInput = document.getElementById('rappelImage');
         
         if (!fileInput.files[0]) {
-            Swal.fire({ icon: 'warning', title: 'Attention', text: 'Veuillez sÃ©lectionner une image' });
+            Swal.fire({ icon: 'warning', title: 'Attention', text: 'Veuillez sélectionner une image' });
             return;
         }
 
@@ -966,7 +966,7 @@
             success: function(response) {
                 const result = JSON.parse(response);
                 if (result[0].id == '1') {
-                    Swal.fire({ icon: 'success', title: 'SuccÃ¨s', timer: 1000, showConfirmButton: false }).then(() => {
+                    Swal.fire({ icon: 'success', title: 'Succès', timer: 1000, showConfirmButton: false }).then(() => {
                         loadRappelImages(idChapitre);
                         form.reset();
                         document.getElementById('previewRappelImage').style.display = 'none';

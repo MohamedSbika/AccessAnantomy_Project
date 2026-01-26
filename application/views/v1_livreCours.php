@@ -307,12 +307,12 @@ if (strlen($this->session->userdata('passTok')) == 200) {
 <script src="//mozilla.github.io/pdf.js/build/pdf.js"></script>
 <script src="<?php echo HTTP_JS; ?>app.js"></script>
 <script type="text/javascript" src="<?php echo HTTP_JS; ?>DataTables/datatables.js"></script>
-    <!-- Modal GÃ©rer les images de rappel -->
+    <!-- Modal Gérer les images de rappel -->
     <div class="modal fade" id="addImageRappelModal" tabindex="-1" aria-hidden="true" style="z-index: 10000; position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; background: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
         <div class="modal-dialog modal-dialog-centered" style="max-width:800px; width: 90%; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
             <div class="modal-content" style="border: none;">
                 <div class="modal-header" style="background: #1d3557; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;">
-                    <h2 class="modal-title" style="margin: 0; font-size: 1.25rem;">GÃ©rer les images de rappel</h2>
+                    <h2 class="modal-title" style="margin: 0; font-size: 1.25rem;">Gérer les images de rappel</h2>
                     <button type="button" onclick="$('#addImageRappelModal').hide()" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">&times;</button>
                 </div>
                 <div class="modal-body" style="padding: 20px; color: #333;">
@@ -399,7 +399,7 @@ if (strlen($this->session->userdata('passTok')) == 200) {
             success: function(response) {
                 const result = JSON.parse(response);
                 if (result[0].id == '1') {
-                    Swal.fire({ icon: 'success', title: 'Image ajoutÃ©e', timer: 1000, showConfirmButton: false });
+                    Swal.fire({ icon: 'success', title: 'Image ajoutée', timer: 1000, showConfirmButton: false });
                     loadRappelImages(idChapitre);
                     document.getElementById('formRappelImage').reset();
                     document.getElementById('previewRappelImage').style.display = 'none';

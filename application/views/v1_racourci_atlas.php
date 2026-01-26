@@ -374,7 +374,7 @@
 				<span class="carreaux" style="background-color: #FB8C00;color: white;" onclick="document.getElementById('modalTestCALQUE').style.display = 'flex';" title="<?php echo $this->lang->line('sidebar_test_tooltip'); ?>">
 					<div class="title_carr"><?php echo $this->lang->line('sidebar_test'); ?></div>
 				</span>
-                <span class="carreaux" style="background-color: #43A047;color: white" onclick="selectUniqueCarreau(this,'pathologie')">
+                <span class="carreaux" style="background-color: #FF3264;color: white" onclick="selectUniqueCarreau(this,'pathologie')">
                     <div class="title_carr"><?php echo $this->lang->line('sidebar_pathologie_anatomie'); ?></div>
                     <!--<i class="fa fa-virus"></i>-->
                 </span>

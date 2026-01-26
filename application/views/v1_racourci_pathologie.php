@@ -434,7 +434,7 @@
 </span>
 */ ?>
 
-                <span class="carreaux" style="background-color: #207c51ff;color: white"
+                <span class="carreaux" style="background-color: #FF3264;color: white"
                     onclick="selectUniqueCarreau(this,'e_a')"
                     title="<?php echo $this->lang->line('sidebar_ad_tooltip'); ?>">
                     <div class="title_carr"><?php echo $this->lang->line('sidebar_pathologie'); ?></div>

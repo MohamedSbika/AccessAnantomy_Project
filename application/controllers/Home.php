@@ -3050,8 +3050,28 @@ public function getRappelCoursContent() {
         $arr['page'] = 'livreFigures';
         $arr['listCat'] = $this->getListCategory();
         
-        $arr['showBannerFigures'] = true; // ✅ Drapeau explicite
-        $arr['CursShow'] = $this->getFiguresContent($id);
+        // Check if it's a course (Anatomy) or pathology
+        $isPatho = in_array((int)$resChap[0]["IDTheme"], [20, 30, 31]);
+
+        if (!$isPatho && count($resCurs) > 0) {
+            // It's a course: try to load course content if available
+            $this->db->select('IDPage');
+            $this->db->from('_page');
+            $this->db->where("IDCours = '$idCours'");
+            $this->db->limit(1);
+            $resPage = $this->db->get()->result_array();
+
+            if (count($resPage) > 0) {
+                $arr['CursShow'] = $this->getCurs($resPage[0]['IDPage']);
+                $arr['showBannerFigures'] = false;
+            } else {
+                $arr['showBannerFigures'] = true;
+                $arr['CursShow'] = $this->getFiguresContent($id);
+            }
+        } else {
+            $arr['showBannerFigures'] = true;
+            $arr['CursShow'] = $this->getFiguresContent($id);
+        }
 
         $this->db->select('encryptFigure, IDFigure, SUBSTRING_INDEX(TitreFigure, ".", 1) as TitreFigure, CAST(SUBSTRING(TitreFigure, 4) AS UNSIGNED) as ord');
         $this->db->from('_figure');

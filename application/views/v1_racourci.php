@@ -399,7 +399,7 @@ else { ?>
 						<div class="title_carr">Mode lecture</div>
 					</span>
 				<?php } ?>
-                <span class="carreaux" style="background-color: #43A047;color: white" onclick="selectUniqueCarreau(this,'pathologie')">
+                <span class="carreaux" style="background-color: #FF3264;color: white" onclick="selectUniqueCarreau(this,'pathologie')">
                     <div class="title_carr"><?php echo $this->lang->line('sidebar_pathologie_anatomie'); ?></div>
                     <!--<i class="fa fa-virus"></i>-->
                 </span>
@@ -1161,7 +1161,7 @@ if (type_sel === 'qcm') {
             if (parseInt(nbreResume) > 0) {
                 window.location.href = `${baseUrl}${lang}/livreResume/${idChapitre}`;
             } else {
-                window.location.href = `${baseUrl}${lang}/livreFigures/${idChapitre}`;
+                window.location.href = `${baseUrl}${lang}/livreCours/${idChapitre}`;
             }
         }
 
