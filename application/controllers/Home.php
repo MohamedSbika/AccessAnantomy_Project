@@ -3,7 +3,11 @@
 if (!defined('BASEPATH'))
 	exit('No direct script access allowed');
 
-    
+// Charger Composer
+require_once FCPATH . "vendor/autoload.php";
+
+// Importer la classe JWT
+use Firebase\JWT\JWT;
 
 class Home extends CI_Controller {
 
@@ -1549,6 +1553,7 @@ header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
                 $arrayFigures[$compteur]['textDroite'] = $arrayTextDroite;
                 $arrayFigures[$compteur]['titre'] = $res[$j]->titre;
                 $arrayFigures[$compteur]['image'] = $res[$j]->image;
+                $arrayFigures[$compteur]['pathAudio'] = $res[$j]->pathAudio;
                 $arrayFigures[$compteur]['idFigure'] = $res[$j]->id;
                 $compteur++;
             }
@@ -1605,6 +1610,7 @@ header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
                 $arrayFigures[$compteur]['textDroite'] = $arrayTextDroite;
                 $arrayFigures[$compteur]['titre'] = $res[$j]->titre;
                 $arrayFigures[$compteur]['image'] = $res[$j]->image;
+                $arrayFigures[$compteur]['pathAudio'] = $res[$j]->pathAudio;
                 $arrayFigures[$compteur]['idFigure'] = $res[$j]->id;
                 $compteur++;
             }
@@ -1655,6 +1661,7 @@ header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
                 $arrayFigures[$compteur]['textDroite'] = $arrayTextDroite;
                 $arrayFigures[$compteur]['titre'] = $res[$j]->titre;
                 $arrayFigures[$compteur]['image'] = $res[$j]->image;
+                $arrayFigures[$compteur]['pathAudio'] = $res[$j]->pathAudio;
                 $arrayFigures[$compteur]['idFigure'] = $res[$j]->id;
                 $compteur++;
             }
@@ -2603,54 +2610,72 @@ header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
         $this->load->view($this->getTypePlatform() ? 'v1_livre' : 'livre', $arr);
     }
 
-    public function  livreDetails($id)
-    {
+    public function livreDetails($id)
+{
+    // 1️⃣ Clé secrète (même que dans Next.js)
+    $secret = "MA_CLE_TRES_SECRETE_2025";
 
-        $this->db->select('*');
-        $this->db->from('_livre , _theme');
-        $this->db->Where("IDLivre = '$id' AND _theme.IDTheme = _livre.IDTheme");
-        $resBook = $this->db->get()->result_array();
-        
-        $idCategory = $resBook[0]['IDCategory'];
-        $this->db->select('*');
-        $this->db->from('_category');
-        $this->db->Where("IDCategory = '$idCategory' ");
-        $category = $this->db->get()->result_array();
-       
-        if($id === "70" || $id === "71"){
-            $category[0]["EstActifQSM"] = 0;
-            $category[0]["EstActifQROC"] = 0;
-            $category[0]["EstActifResume"] = 0;
-            $category[0]["EstActifCalques"] = 1;
-            $category[0]["EstActifTest"] = 1;
-        }
+    // 2️⃣ Générer le token JWT
+    $payload = [
+        "exp"   => time() + 3600,
+        "role"  => "admin",
+        "page"  => "livreDetails",
+        "id"    => $id
+    ];
 
-        //log_message('error', json_encode($category) );
+    $jwt = JWT::encode($payload, $secret, "HS256");
 
-        $this->db->select('* , CAST(SUBSTRING_INDEX(titrechapitre, "-", 1) as SIGNED INTEGER ) AS ord');
-        $this->db->from('_chapitre');
-        $this->db->Where("IDLivre = '$id' ");
-        //$this->db->order_by("NumOrdre" ,"asc");
-        $this->db->order_by("ord" ,"asc");
-        $resChap = $this->db->get()->result_array();
+    // 3️⃣ Toutes tes requêtes EXACTES
+    $this->db->select('*');
+    $this->db->from('_livre , _theme');
+    $this->db->where("IDLivre = '$id' AND _theme.IDTheme = _livre.IDTheme");
+    $resBook = $this->db->get()->result_array();
 
-        $this->db->select('SUM(NbreQcm) AS QcmNBR , SUM(NbreQroc) AS QrocNBR , SUM(NbreTest) AS test');
-        $this->db->from('_chapitre');
-        $this->db->Where("IDLivre = '$id' ");
-        $resNBR = $this->db->get()->result_array();
+    $idCategory = $resBook[0]['IDCategory'];
 
-        $typesVideo = ["cours", "resume"];
+    $this->db->select('*');
+    $this->db->from('_category');
+    $this->db->where("IDCategory = '$idCategory'");
+    $category = $this->db->get()->result_array();
 
-        $arr['typesVideo'] = $typesVideo;
-        $arr['category'] = $category[0];
-        $arr['resNBR'] 		= $resNBR;
-        $arr['OneBook']     = $resBook;
-        $arr['listChap']    = $resChap;
-        $arr['page']        = 'livreDetails';
-        $arr['listCat']     = $this->getListCategory();
-//        $this->load->view('livreDetails',$arr);
-        $this->load->view($this->getTypePlatform() ? 'v1_livre' : 'livreDetails', $arr);
+    if ($id === "70" || $id === "71") {
+        $category[0]["EstActifQSM"] = 0;
+        $category[0]["EstActifQROC"] = 0;
+        $category[0]["EstActifResume"] = 0;
+        $category[0]["EstActifCalques"] = 1;
+        $category[0]["EstActifTest"]   = 1;
     }
+
+    $this->db->select('c.*, r.NbreResume as NbreResumeRappel, r.NbreCours as NbreCoursRappel, CAST(SUBSTRING_INDEX(c.titrechapitre, "-", 1) as SIGNED INTEGER) AS ord');
+$this->db->from('_chapitre as c');
+$this->db->join('_chapitre as r', 'r.IDChapitre = c.IdChapterRappel', 'left');
+$this->db->where("c.IDLivre = '$id'");
+$this->db->order_by("ord", "asc");
+$resChap = $this->db->get()->result_array();
+
+    $this->db->select('SUM(NbreQcm) AS QcmNBR , SUM(NbreQroc) AS QrocNBR , SUM(NbreTest) AS test');
+    $this->db->from('_chapitre');
+    $this->db->where("IDLivre = '$id'");
+    $resNBR = $this->db->get()->result_array();
+
+    // 4️⃣ Ceci sera transmis à la vue
+    $arr = [
+        "jwt"        => $jwt,
+        "typesVideo" => ["cours", "resume"],
+        "category"   => $category[0],
+        "resNBR"     => $resNBR,
+        "OneBook"    => $resBook,
+        "listChap"   => $resChap,
+        "page"       => "livreDetails",
+        "listCat"    => $this->getListCategory()
+    ];
+
+    // 5️⃣ Charger la vue
+    $this->load->view(
+        $this->getTypePlatform() ? 'v1_livre' : 'livreDetails',
+        $arr
+    );
+}
 
     public function  livreCours($id,$indxSearch='')
     {
@@ -2689,7 +2714,13 @@ header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
         $arr['ListPage'] 	= $listPages;
         $arr['page'] 		= 'livreCours';
         $arr['listCat'] 	= $this->getListCategory();
-        $arr['CursShow'] 	= $this->getCurs($listPages[0]['IDPage']);
+        
+        // ✅ PATCH : Charger le contenu texte seulement si des pages existent
+        if (count($listPages) > 0) {
+            $arr['CursShow'] = $this->getCurs($listPages[0]['IDPage']);
+        } else {
+            $arr['CursShow'] = ''; // Pas de contenu texte → affichera seulement les figures
+        }
 
         //        if(count($listPages)>0){
 //            $this->db->select('encryptFigure,IDFigure,SUBSTRING_INDEX(TitreFigure, ".", 1) as TitreFigure,CAST(SUBSTRING_INDEX(TitreFigure, "-", 1) as SIGNED INTEGER ) AS ord');
@@ -2709,14 +2740,220 @@ header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
         $this->db->order_by("TitreFigure" ,"asc");
         $listFigures = $this->db->get()->result_array();
         $arr['listFig'] = $listFigures;
-        if(count($listPages)>0){
-//            $this->load->view('livreCours',$arr);
-            $this->load->view($this->getTypePlatform() ? 'v1_livreCours' : 'livreCours', $arr);
-        }else{
-//            $this->load->view('livreFigure',$arr);
-            $this->load->view($this->getTypePlatform() ? 'v1_livreFigure' : 'livreFigure', $arr);
+        
+        // ✅ PATCH : Toujours charger v1_livreCours (même si pas de pages)
+        // Les figures seront affichées dans tous les cas
+        $this->load->view($this->getTypePlatform() ? 'v1_livreCours' : 'livreCours', $arr);
+
+    }
+
+    // À ajouter dans votre contrôleur (Home.php)
+// Copiez-collez cette méthode complète
+
+public function getRappelCoursContent() {
+    // Vérifier que c'est une requête POST
+    if ($this->input->method() !== 'post') {
+        echo json_encode(['success' => false, 'message' => 'Méthode non autorisée']);
+        return;
+    }
+
+    // Récupérer l'ID du chapitre de rappel
+    $postData = json_decode(file_get_contents('php://input'), true);
+    $idChapterRappel = isset($postData['idChapterRappel']) ? $postData['idChapterRappel'] : null;
+
+    if (empty($idChapterRappel)) {
+        echo json_encode(['success' => false, 'message' => 'ID de rappel manquant']);
+        return;
+    }
+
+    try {
+        // Récupérer les informations du chapitre (même logique que livreCours)
+        $this->db->select('*');
+        $this->db->from('_chapitre, _livre, _theme');
+        $this->db->where("IDChapitre = '$idChapterRappel' AND _chapitre.IDLivre = _livre.IDLivre AND _theme.IDTheme = _livre.IDTheme");
+        $resChap = $this->db->get()->result_array();
+
+        if (empty($resChap)) {
+            echo json_encode(['success' => false, 'message' => 'Chapitre de rappel non trouvé']);
+            return;
         }
 
+        // Récupérer le cours associé au chapitre
+        $this->db->select('*');
+        $this->db->from('_cours');
+        $this->db->where("IDChapitre = '$idChapterRappel' LIMIT 1");
+        $resCurs = $this->db->get()->result_array();
+        
+        $idCours = 0;
+        if (sizeof($resCurs) > 0) {
+            $idCours = $resCurs[0]["IDCours"];
+        }
+
+        if ($idCours == 0) {
+            echo json_encode(['success' => false, 'message' => 'Aucun cours trouvé pour ce rappel']);
+            return;
+        }
+
+        // Récupérer les pages du cours
+        $this->db->select('*');
+        $this->db->from('_page');
+        $this->db->where("IDCours = '$idCours'");
+        $listPages = $this->db->get()->result_array();
+
+        if (empty($listPages)) {
+            echo json_encode(['success' => false, 'message' => 'Aucune page trouvée pour ce cours']);
+            return;
+        }
+
+        // Récupérer le contenu de la première page (comme dans livreCours)
+        $cursShow = $this->getCurs($listPages[0]['IDPage']);
+
+        if (empty($cursShow)) {
+            echo json_encode(['success' => false, 'message' => 'Contenu du cours vide']);
+            return;
+        }
+
+        // Retourner le contenu
+        echo json_encode([
+            'success' => true,
+            'content' => $cursShow,
+            'titre' => isset($resChap[0]['TitreChapitre']) ? $resChap[0]['TitreChapitre'] : 'Rappel Cours'
+        ]);
+
+    } catch (Exception $e) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Erreur lors de la récupération du contenu: ' . $e->getMessage()
+        ]);
+    }
+}
+
+    // === FONCTION POUR RÉCUPÉRER LE FICHIER DU RAPPEL ANATOMIQUE MANUEL ===
+    public function getRappelCoursFile() {
+        // Vérifier que c'est une requête POST
+        if ($this->input->method() !== 'post') {
+            echo json_encode(['success' => false, 'message' => 'Méthode non autorisée']);
+            return;
+        }
+
+        // Récupérer l'ID du chapitre de rappel
+        $postData = json_decode(file_get_contents('php://input'), true);
+        $idChapterRappel = isset($postData['idChapterRappel']) ? $postData['idChapterRappel'] : null;
+
+        if (empty($idChapterRappel)) {
+            echo json_encode(['success' => false, 'message' => 'ID de rappel manquant']);
+            return;
+        }
+
+        try {
+            // Récupérer l'enregistrement du rappel anatomique
+            $this->db->select('*');
+            $this->db->from('_rappel_anatomique');
+            $this->db->where('IDChapitre', $idChapterRappel);
+            $resRappel = $this->db->get()->result_array();
+
+            if (!empty($resRappel) && !empty($resRappel[0]['Fichier'])) {
+                $fichierStocke = $resRappel[0]['Fichier'];
+                
+                // Si le fichier en base est un .docx, convertir en .HTML
+                if (strtolower(pathinfo($fichierStocke, PATHINFO_EXTENSION)) === 'docx') {
+                    $fichierHTML = str_replace('.docx', '.HTML', $fichierStocke);
+                } else {
+                    $fichierHTML = $fichierStocke;
+                }
+
+                // Le fichier du rappel manuel existe
+                echo json_encode([
+                    'success' => true,
+                    'fichier' => $fichierHTML,
+                    'idChapitre' => $idChapterRappel
+                ]);
+                return;
+            }
+
+            // Pas de fichier de rappel manuel
+            echo json_encode([
+                'success' => false,
+                'message' => 'Pas de fichier de rappel'
+            ]);
+
+        } catch (Exception $e) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Erreur lors de la récupération du fichier: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    // === FONCTION POUR CHARGER LE CONTENU DU RAPPEL ANATOMIQUE (FICHIER HTML) ===
+    public function getRappelAnatomiqueCours() {
+        // Vérifier que c'est une requête POST
+        if ($this->input->method() !== 'post') {
+            echo json_encode(['success' => false, 'message' => 'Méthode non autorisée']);
+            return;
+        }
+
+        // Récupérer l'ID du chapitre
+        $postData = json_decode(file_get_contents('php://input'), true);
+        $idChapterRappel = isset($postData['idChapterRappel']) ? $postData['idChapterRappel'] : null;
+
+        if (empty($idChapterRappel)) {
+            echo json_encode(['success' => false, 'message' => 'ID de chapitre manquant']);
+            return;
+        }
+
+        try {
+            // Récupérer l'enregistrement du rappel anatomique
+            $this->db->select('*');
+            $this->db->from('_rappel_anatomique');
+            $this->db->where('IDChapitre', $idChapterRappel);
+            $resRappel = $this->db->get()->result_array();
+
+            if (empty($resRappel) || empty($resRappel[0]['Fichier'])) {
+                echo json_encode(['success' => false, 'message' => 'Pas de fichier de rappel anatomique']);
+                return;
+            }
+
+            $fichierStocke = $resRappel[0]['Fichier'];
+            
+            // Si le fichier en base est un .docx, chercher le fichier .HTML correspondant
+            if (strtolower(pathinfo($fichierStocke, PATHINFO_EXTENSION)) === 'docx') {
+                // Remplacer .docx par .HTML
+                $fichierHTML = str_replace('.docx', '.HTML', $fichierStocke);
+            } else {
+                $fichierHTML = $fichierStocke;
+            }
+
+            $fichierPath = FCPATH . 'PlatFormeConvert/' . $fichierHTML;
+
+            // Vérifier si le fichier existe
+            if (!file_exists($fichierPath)) {
+                log_message('error', 'Fichier de rappel non trouvé: ' . $fichierPath);
+                echo json_encode(['success' => false, 'message' => 'Fichier HTML non trouvé']);
+                return;
+            }
+
+            // Charger le contenu du fichier HTML
+            $content = file_get_contents($fichierPath);
+
+            if ($content === false) {
+                echo json_encode(['success' => false, 'message' => 'Impossible de lire le fichier']);
+                return;
+            }
+
+            // Retourner le contenu du fichier HTML
+            echo json_encode([
+                'success' => true,
+                'content' => $content,
+                'titre' => 'Rappel Anatomique'
+            ]);
+
+        } catch (Exception $e) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Erreur lors du chargement du rappel: ' . $e->getMessage()
+            ]);
+        }
     }
 
     public function  livreCours_simple($id,$indxSearch='')
@@ -2779,6 +3016,102 @@ header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
 
     }
 
+    public function livreFigures($id, $indxSearch = '')
+    {
+        $this->session->set_userdata('curs_id', 'curs_' . $id);
+
+        $this->db->select('*');
+        $this->db->from('_chapitre, _livre, _theme');
+        $this->db->where("IDChapitre = '$id' AND _chapitre.IDLivre = _livre.IDLivre AND _theme.IDTheme = _livre.IDTheme");
+        $resChap = $this->db->get()->result_array();
+
+        if (empty($resChap)) {
+            show_404();
+        }
+
+        $this->db->select('*');
+        $this->db->from('_cours');
+        $this->db->where("IDChapitre = '$id' LIMIT 1");
+        $resCurs = $this->db->get()->result_array();
+        
+        $idCours = 0;
+        if (count($resCurs) > 0) {
+            $idCours = $resCurs[0]["IDCours"];
+        }
+
+        $idLivr = $resChap[0]["IDLivre"];
+        $listChap = $this->listChaptCours($idLivr);
+
+        $arr['listChap'] = $listChap;
+        $arr['indexSearch'] = $indxSearch;
+        $arr['OneBook'] = $resChap;
+        $arr['OneCurs'] = $resCurs;
+        $arr['ListPage'] = array();
+        $arr['page'] = 'livreFigures';
+        $arr['listCat'] = $this->getListCategory();
+        
+        // Check if it's a course (Anatomy) or pathology
+        $isPatho = in_array((int)$resChap[0]["IDTheme"], [20, 30, 31]);
+
+        if (!$isPatho && count($resCurs) > 0) {
+            // It's a course: try to load course content if available
+            $this->db->select('IDPage');
+            $this->db->from('_page');
+            $this->db->where("IDCours = '$idCours'");
+            $this->db->limit(1);
+            $resPage = $this->db->get()->result_array();
+
+            if (count($resPage) > 0) {
+                $arr['CursShow'] = $this->getCurs($resPage[0]['IDPage']);
+                $arr['showBannerFigures'] = false;
+            } else {
+                $arr['showBannerFigures'] = true;
+                $arr['CursShow'] = $this->getFiguresContent($id);
+            }
+        } else {
+            $arr['showBannerFigures'] = true;
+            $arr['CursShow'] = $this->getFiguresContent($id);
+        }
+
+        $this->db->select('encryptFigure, IDFigure, SUBSTRING_INDEX(TitreFigure, ".", 1) as TitreFigure, CAST(SUBSTRING(TitreFigure, 4) AS UNSIGNED) as ord');
+        $this->db->from('_figure');
+        $this->db->where("IDCours = '$idCours'");
+        $this->db->order_by('ord', 'ASC');
+        $this->db->order_by("IDFigure", "asc");
+        $listFigures = $this->db->get()->result_array();
+        
+        $arr['listFig'] = $listFigures;
+
+        $this->load->view($this->getTypePlatform() ? 'v1_livreFigures' : 'livreFigures', $arr);
+    }
+
+    public function getFiguresContent($idChapitre)
+    {
+        return '
+            <div style="
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                border: 1px solid #dee2e6;
+                border-radius: 15px;
+                padding: 40px;
+                margin: 50px auto;
+                max-width: 80%;
+                text-align: center;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            ">
+                <div style="margin-bottom: 20px;">
+                    <i class="fas fa-clock" style="font-size: 50px; color: #6c757d; opacity: 0.5;"></i>
+                </div>
+                <h2 style="color: #343a40; font-weight: 700; margin-bottom: 15px;">Résumé bientôt disponible</h2>
+                <p style="color: #6c757d; font-size: 1.2rem; line-height: 1.6;">
+                    Le résumé de ce chapitre est actuellement en préparation par nos experts. <br>
+                    <strong>Vous pouvez cependant consulter toutes les illustrations de cette section sur la droite.</strong>
+                </p>
+                <div style="margin-top: 30px; border-top: 1px solid #dee2e6; padding-top: 20px;">
+                    <span style="color: #0077b5; font-weight: 500;">Équipe AccessAnatomy</span>
+                </div>
+            </div>';
+    }
+
     public function  livreResume($id,$indxSearch='')
     {
         $this->session->set_userdata('curs_id', 'curs_'.$id);
@@ -2816,27 +3149,36 @@ header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
         $arr['ListPage'] 	= $listPages;
         $arr['page'] 		= 'livreResume';
         $arr['listCat'] 	= $this->getListCategory();
+        // ✅ Récupérer l'IDCours pour charger les "mêmes figures" que le cours complet
+        $this->db->select('IDCours');
+        $this->db->from('_cours');
+        $this->db->where("IDChapitre = '$id' LIMIT 1");
+        $resCursReal = $this->db->get()->result_array();
+        $idCoursReal = 0;
+        if(count($resCursReal) > 0) { $idCoursReal = $resCursReal[0]['IDCours']; }
 
         if(count($listPages)>0){
-            $this->db->select('encryptFigure,IDFigure,SUBSTRING_INDEX(TitreFigure, ".", 1) as TitreFigure,CAST(SUBSTRING_INDEX(TitreFigure, "-", 1) as SIGNED INTEGER ) AS ord');
+            $this->db->select('encryptFigure, IDFigure, SUBSTRING_INDEX(TitreFigure, ".", 1) as TitreFigure, CAST(SUBSTRING(TitreFigure, 4) AS UNSIGNED) as ord');
         }else{
-            $this->db->select('encryptFigure,IDFigure,SUBSTRING_INDEX(TitreFigure, ".", 1) as TitreFigure,CAST(SUBSTRING_INDEX(TitreFigure, "-", 1) as SIGNED INTEGER ) AS ord');
+            $this->db->select('encryptFigure, IDFigure, SUBSTRING_INDEX(TitreFigure, ".", 1) as TitreFigure, CAST(SUBSTRING(TitreFigure, 4) AS UNSIGNED) as ord');
         }
         $this->db->from('_figure');
-        $this->db->Where("IDResume = '$idResum' ");
+        // Afficher les figures associées soit au résumé, soit au cours complet
+        $this->db->where("(IDResume = '$idResum' OR (IDCours = '$idCoursReal' AND IDCours != 0))");
+        $this->db->order_by('ord', 'ASC');
+        $this->db->order_by("IDFigure" ,"asc");
         $this->db->order_by("TitreFigure" ,"asc");
+        $this->db->limit(100); 
         
         $listFigures = $this->db->get()->result_array();
         $arr['listFig'] 	= $listFigures;
-        $arr['CursShow'] 	= $this->getCurs($listPages[0]['IDPage']);
+        
         if(count($listPages)>0){
+            $arr['CursShow'] 	= $this->getCurs($listPages[0]['IDPage']);
             $this->load->view($this->getTypePlatform() ? 'v1_livreResume' : 'livreResume', $arr);
-            //$this->load->view('livreResume',$arr);
-        }else{
-            $this->load->view($this->getTypePlatform() ? 'v1_livreFigure' : 'livreFigure', $arr);
-            //$this->load->view('livreFigure',$arr);
+        } else {
+            redirect($this->lang->line('siteLang').'livreFigures/'.$id);
         }
-
     }
 
     public function  livreQcm($id)
@@ -4921,37 +5263,44 @@ loadingTask.promise.then(function(pdf) {
         exit;
     }
 
-    public function set_LivChap(){
+  public function set_LivChap() {
 
-        $IDLivr 			= $_POST["bookID"];
-        $OrdreChap 			= $_POST["list"];
-        //print_r($OrdreCat);
-        $desc = '' ;//$newTitre;
+    $IDLivr     = $_POST["bookID"];
+    $OrdreChap  = $_POST["list"];
+    $IdChapRappel = isset($_POST["chapitreAssocie"]) && !empty($_POST["chapitreAssocie"]) ? $_POST["chapitreAssocie"] : null;
+    
+    $desc = '';
 
-        foreach ($OrdreChap as $key=>$titleChap){
-            if(trim($titleChap) != ''){
+    foreach ($OrdreChap as $key => $titleChap) {
+        if (trim($titleChap) != '') {
 
-//					print_r($titleBook);
-//					print_r('<br>');
-                $this->db->select('*');
-                $this->db->from('_chapitre');
-                $this->db->Where('TitreChapitre',$titleChap);
-                $this->db->Where('IDLivre',$IDLivr);
-                $resC = $this->db->get()->result_array();
-                if(count($resC) == 0) {
-                    $dataChap = array(
-                        'TitreChapitre' 	=> $titleChap,
-                        'IDLivre' 			=> $IDLivr
-                    );
-                    $idChap = $this->insert_dd('_chapitre', $dataChap);
-                }
+            // Vérifier si le chapitre existe déjà pour ce livre
+            $this->db->select('*');
+            $this->db->from('_chapitre');
+            $this->db->where('TitreChapitre', $titleChap);
+            $this->db->where('IDLivre', $IDLivr);
+            $resC = $this->db->get()->result_array();
+
+            if (count($resC) == 0) {
+                // Préparer les données à insérer
+                $dataChap = array(
+                    'TitreChapitre'   => $titleChap,
+                    'IDLivre'         => $IDLivr,
+                    'IdChapterRappel' => $IdChapRappel // si null, la base accepte NULL
+                );
+
+                // Insertion
+                $idChap = $this->insert_dd('_chapitre', $dataChap);
             }
         }
-        $arr_Res[] = array("id" => '1', "desc" => $desc) ;
-
-        echo json_encode($arr_Res);
-        exit;
     }
+
+    $arr_Res[] = array("id" => '1', "desc" => $desc);
+
+    echo json_encode($arr_Res);
+    exit;
+}
+
 
     public function set_LivreBack(){
 
@@ -6010,6 +6359,85 @@ loadingTask.promise.then(function(pdf) {
         echo json_encode($arr_Res);
         exit;
     }
+
+public function upload_Attach_Save_SubChap() {
+    try {
+        $f = $_FILES;
+        $listSubChap = $_POST['attach_file']; // tableau des IDSousChapitre
+        $file_type = isset($_POST['file_type']) ? $_POST['file_type'] : 'content'; // 'content' ou 'resume'
+        $err_desc = '';
+
+        foreach($f['mFile']['name'] as $key => $p) {
+            $file_size  = $f['mFile']['size'][$key];
+            $file_nameTmp = $f['mFile']['tmp_name'][$key];
+            $idSubChap = $listSubChap[$key];
+
+            if($file_size > 0){
+                require_once APPPATH."third_party/wordToPh/vendor/autoload.php";
+
+                $objReader = \PhpOffice\PhpWord\IOFactory::createReader('Word2007');
+                $contents = $objReader->load($file_nameTmp);
+
+                // PDF renderer si nécessaire
+                $rendername = \PhpOffice\PhpWord\Settings::PDF_RENDERER_TCPDF;
+                $renderLibrary = "tcpdf";
+                $renderLibraryPath = APPPATH."third_party/wordToPh/".$renderLibrary;
+                if(!\PhpOffice\PhpWord\Settings::setPdfRenderer($rendername, $renderLibraryPath)){
+                    // Ignorer si pas utilisé
+                }
+
+                // Définir le chemin du fichier HTML selon le type
+                $suffix = ($file_type === 'resume') ? "_SubResume.HTML" : "_Sub.HTML";
+                $outputPath = FCPATH.'PlatFormeConvert/'.$idSubChap.$suffix;
+
+                // ⚠ Supprimer l'ancien fichier s'il existe
+                if(file_exists($outputPath)){
+                    unlink($outputPath);
+                }
+
+                // Création du nouveau fichier HTML
+                $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($contents, 'HTML');
+                $objWriter->save($outputPath);
+
+                // Lecture du contenu si nécessaire
+                $content = htmlentities(file_get_contents($outputPath, true));
+
+                // Vérifie si le sous-chapitre existe déjà
+                $this->db->select('*');
+                $this->db->from('_souschapitre');
+                $this->db->where('IDSousChapitre', $idSubChap);
+                $res = $this->db->get()->result_array();
+
+                if(count($res) > 0){
+                    // Mise à jour - utiliser le même champ FichierHTML avec différents suffixes
+                    $dataUpdate = [
+                        'FichierHTML' => $idSubChap.$suffix,
+                        'DateModif' => date('Y-m-d H:i:s')
+                    ];
+                    $this->db->where('IDSousChapitre', $idSubChap);
+                    $this->db->update('_souschapitre', $dataUpdate);
+                } else {
+                    // Création
+                    $dataInsert = [
+                        'IDSousChapitre' => $idSubChap,
+                        'FichierHTML' => $idSubChap.$suffix,
+                        'DateCreation' => date('Y-m-d H:i:s')
+                    ];
+                    $this->db->insert('_souschapitre', $dataInsert);
+                }
+            }
+        }
+
+        $arr_Res[] = ["id"=>'1', "desc"=>$err_desc];
+    } catch(Exception $e){
+        log_message('error', 'upload_Attach_Save_SubChap: '.$e->getMessage());
+        $arr_Res[] = ["id"=>'0', "desc"=>"Erreur: ".$e->getMessage()];
+    }
+
+    echo json_encode($arr_Res);
+    exit;
+}
+
     public function upload_Attach_Save_Curs_PDF(){
 
         //$send_ID = "'".$_POST["attach_file"]."'";
@@ -6284,6 +6712,46 @@ loadingTask.promise.then(function(pdf) {
         echo json_encode($arr_Res);
         exit;
     }
+    public function update_SousChapitre()
+{
+    // Récupération du corps JSON envoyé par AJAX
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    // Vérification des champs reçus
+    $idSousChap = isset($data['idSousChap']) ? $data['idSousChap'] : null;
+    $titre      = isset($data['titre']) ? trim($data['titre']) : '';
+
+    // Tableau de réponse
+    $response = ['success' => false, 'message' => 'Erreur inconnue'];
+
+    // Validation basique
+    if (empty($idSousChap) || empty($titre)) {
+        $response['message'] = 'Paramètres invalides.';
+        echo json_encode($response);
+        return;
+    }
+
+    // Mise à jour dans la base de données
+    try {
+        $updateData = ['TitreSousChapitre' => $titre];
+        $this->db->where('IDSousChapitre', $idSousChap);
+        $updated = $this->db->update('_souschapitre', $updateData);
+
+        if ($updated) {
+            $response['success'] = true;
+            $response['message'] = 'Sous-chapitre mis à jour avec succès.';
+        } else {
+            $response['message'] = 'La mise à jour a échoué.';
+        }
+
+    } catch (Exception $e) {
+        $response['message'] = 'Erreur SQL : ' . $e->getMessage();
+    }
+
+    echo json_encode($response);
+    exit;
+}
+
     public function set_ItemBack(){
 
         $idItems 		= $_POST["set_IdItm"];
@@ -7485,7 +7953,6 @@ loadingTask.promise.then(function(pdf) {
 
                 $sent = $mail->send();
 
-                //This is optional - but good when you're in a testing environment.
                 if(isset($sent)){
                     $arr[] = array("id" => '1', "desc" => $this->email->print_debugger());
                 }else{
@@ -7575,7 +8042,6 @@ loadingTask.promise.then(function(pdf) {
 
                 $sent = $mail->send();
 
-                //This is optional - but good when you're in a testing environment.
                 if(isset($sent)){
                     $arr[] = array("id" => '1', "desc" => $this->email->print_debugger());
                 }else{
@@ -7591,22 +8057,17 @@ loadingTask.promise.then(function(pdf) {
 
     }
 
-    // Controller method to fetch social media links
     public function get_social_links() {
-        // Fetch social media links from the database (instead of hardcoding)
         $this->db->select('Libelle_Params, Value_Params');
         $this->db->from('_params');
-        $this->db->like('Libelle_Params', 'social_'); // Get all social media links
+        $this->db->like('Libelle_Params', 'social_'); 
         $resParams = $this->db->get()->result_array();
 
-        // Prepare the social links array and set them in session
         $socialLinks = [];
         foreach ($resParams as $row) {
-            // Store each social link with the 'Libelle_Params' as the key
             $socialLinks[$row['Libelle_Params']] = $row['Value_Params'];
         }
 
-        // Set session data for social media links
         foreach ($socialLinks as $key => $url) {
             $this->session->set_userdata($key, $url);
         }
@@ -7631,5 +8092,896 @@ loadingTask.promise.then(function(pdf) {
 //		// Return the social media links as JSON
 //		echo json_encode($socialLinks);
     }
+
+public function set_LivSousChap()
+{
+    $inputJSON = file_get_contents('php://input');
+    $data = json_decode($inputJSON, true);
+
+    $IDLivr = $data['bookID'] ?? null;
+    $OrdreChap = $data['chapters'] ?? [];
+
+    log_message('debug', 'Chapitres reçus: ' . print_r($OrdreChap, true));
+
+    $arr_Res = [];
+
+    foreach ($OrdreChap as $chap) {
+        if (isset($chap['idChap'])) {
+            $idChap = $chap['idChap'];
+        } else {
+            $titreChap = trim($chap['titreChap'] ?? '');
+            if ($titreChap === '') continue;
+
+            $this->db->select('*')
+                     ->from('_chapitre')
+                     ->where('TitreChapitre', $titreChap)
+                     ->where('IDLivre', $IDLivr);
+            $resC = $this->db->get()->result_array();
+
+            if (!empty($resC)) {
+                $idChap = $resC[0]['IDChapitre'];
+            } else {
+                $dataChap = [
+                    'TitreChapitre' => $titreChap,
+                    'IDLivre' => $IDLivr
+                ];
+                $idChap = $this->insert_dd('_chapitre', $dataChap);
+            }
+        }
+
+        if (isset($chap['sousChaps']) && is_array($chap['sousChaps'])) {
+            foreach ($chap['sousChaps'] as $sTitre) {
+                $sTitre = trim($sTitre);
+                if ($sTitre === '') continue;
+
+                $this->db->select('*')
+                         ->from('_souschapitre')
+                         ->where('TitreSousChapitre', $sTitre)
+                         ->where('IDChapitre', $idChap)
+                         ->where('IDLivre', $IDLivr);
+
+                $resSC = $this->db->get()->result_array();
+
+                if (empty($resSC)) {
+                    $dataSC = [
+                        'TitreSousChapitre' => $sTitre,
+                        'IDChapitre'        => $idChap,
+                        'IDLivre'           => $IDLivr
+                    ];
+                    $this->insert_dd('_souschapitre', $dataSC);
+                }
+            }
+        }
+    }
+
+    $arr_Res[] = [
+        "id"   => 1,
+        "desc" => "Sous-chapitres ajoutés avec succès"
+    ];
+
+    $this->output->set_content_type('application/json');
+    echo json_encode($arr_Res);
+    exit;
+}
+public function get_SousChapitres()
+{
+    $data = json_decode($this->input->raw_input_stream, true);
+    $idChap = isset($data['idChap']) ? $data['idChap'] : null;
+
+    if (!$idChap) {
+        echo json_encode([
+            ['id' => '0', 'desc' => 'IDChapitre manquant']
+        ]);
+        return;
+    }
+
+    $this->db->select('IDSousChapitre, TitreSousChapitre, IDChapitre, IDLivre, FichierHTML');
+    $this->db->where('IDChapitre', $idChap);
+    $this->db->order_by('IDSousChapitre', 'ASC');
+    $query = $this->db->get('_souschapitre');
+    $sousChaps = $query->result_array();
+
+    // Enrichir chaque sous-chapitre avec les fichiers détectés
+    foreach ($sousChaps as &$sc) {
+        $idSC = $sc['IDSousChapitre'];
+        
+        // Vérifier l'existence des fichiers dans le système de fichiers
+        $fichierContenu = $idSC . '_Sub.HTML';
+        $fichierResume = $idSC . '_SubResume.HTML';
+        
+        $cheminContenu = FCPATH . 'PlatFormeConvert/' . $fichierContenu;
+        $cheminResume = FCPATH . 'PlatFormeConvert/' . $fichierResume;
+        
+        // Ajouter les fichiers détectés
+        $sc['FichierHTML'] = file_exists($cheminContenu) ? $fichierContenu : null;
+        $sc['FichierHTML_Resume'] = file_exists($cheminResume) ? $fichierResume : null;
+    }
+
+    echo json_encode($sousChaps);
+}
+
+
+    public function getPathologieByRappel()
+    {
+        $data = json_decode($this->input->raw_input_stream, true);
+        $idChapAnatomy = isset($data['idChap']) ? $data['idChap'] : null;
+        
+        $lang = $this->session->userdata('site_lang');
+        if($lang==''){$lang='FR';}
+
+        if ($idChapAnatomy && $idChapAnatomy != 0) {
+        // Mode contextuel (Chapitre) : Trouver les chapitres de pathologie liés à ce cours d'anatomie
+        $this->db->select('p.IDChapitre, p.TitreChapitre, p.IdChapterRappel, p.IDLivre, r.NbreResume as NbreResumeRappel');
+        $this->db->from('_chapitre as p');
+        $this->db->join('_chapitre as r', 'r.IDChapitre = p.IdChapterRappel', 'left');
+        $this->db->where('p.IdChapterRappel', $idChapAnatomy);
+        $query = $this->db->get();
+        $pathoChaps = $query->result_array();
+    } else {
+        // Mode Livre (Affichage primaire) : Trouver les pathologies liées aux chapitres de ce livre d'anatomie
+        $idLivreAnatomy = isset($data['idLivre']) ? $data['idLivre'] : null;
+        if ($idLivreAnatomy) {
+            $this->db->select('p.IDChapitre, p.TitreChapitre, p.IdChapterRappel, p.IDLivre, r.NbreResume as NbreResumeRappel, CAST(SUBSTRING_INDEX(p.TitreChapitre, "-", 1) as SIGNED INTEGER) AS ord');
+            $this->db->from('_chapitre as p');
+            $this->db->join('_chapitre as r', 'r.IDChapitre = p.IdChapterRappel', 'left');
+            $this->db->where("p.IdChapterRappel IN (SELECT IDChapitre FROM _chapitre WHERE IDLivre = '$idLivreAnatomy')", NULL, FALSE);
+            $this->db->order_by('ord', 'ASC'); 
+            $query = $this->db->get();
+            $pathoChaps = $query->result_array();
+        }
+    }
+
+    if (!empty($pathoChaps)) {
+        $result = [];
+        foreach ($pathoChaps as $chap) {
+            $this->db->select('IDSousChapitre, TitreSousChapitre, IDChapitre, FichierHTML');
+            $this->db->where('IDChapitre', $chap['IDChapitre']);
+            $this->db->order_by('IDSousChapitre', 'ASC');
+            $sousChaps = $this->db->get('_souschapitre')->result_array();
+            
+            // Enrichir chaque sous-chapitre avec les fichiers détectés (comme dans get_SousChapitres)
+            foreach ($sousChaps as &$sc) {
+                $idSC = $sc['IDSousChapitre'];
+                
+                // Vérifier l'existence des fichiers dans le système de fichiers
+                $fichierContenu = $idSC . '_Sub.HTML';
+                $fichierResume = $idSC . '_SubResume.HTML';
+                
+                $cheminContenu = FCPATH . 'PlatFormeConvert/' . $fichierContenu;
+                $cheminResume = FCPATH . 'PlatFormeConvert/' . $fichierResume;
+                
+                // Ajouter les fichiers détectés
+                $sc['FichierHTML'] = file_exists($cheminContenu) ? $fichierContenu : null;
+                $sc['FichierHTML_Resume'] = file_exists($cheminResume) ? $fichierResume : null;
+            }
+            
+            $chap['sousChaps'] = $sousChaps;
+            $result[] = $chap;
+        }
+        echo json_encode(['success' => true, 'type' => 'chapters', 'pathoChapters' => $result]);
+        return;
+    }
+        
+        // Mode Global : Afficher la liste des livres de pathologie (Thèmes 20, 30, 31)
+        // On s'assure que ces livres appartiennent à la langue actuelle via la catégorie
+        $this->db->select('_livre.IDLivre, _livre.Titre, CAST(SUBSTRING_INDEX(_livre.Titre, "-", 1) as SIGNED INTEGER) AS ord');
+        $this->db->from('_livre');
+        $this->db->join('_theme', '_theme.IDTheme = _livre.IDTheme');
+        $this->db->join('_category', '_category.IDCategory = _theme.IDCategory');
+        $this->db->where_in('_livre.IDTheme', [20, 30, 31]);
+        $this->db->where('_category.multi_lingue', $lang);
+        $this->db->order_by('ord', 'ASC');
+        $this->db->order_by('_livre.Titre', 'ASC');
+        $query = $this->db->get();
+        $pathoBooks = $query->result_array();
+
+        if (!empty($pathoBooks)) {
+            echo json_encode(['success' => true, 'type' => 'books', 'pathoBooks' => $pathoBooks]);
+        } else {
+            // Secours si les thèmes sont vides pour cette langue, on cherche par libellé "Pathologie"
+            $this->db->select('_livre.IDLivre, _livre.Titre, CAST(SUBSTRING_INDEX(_livre.Titre, "-", 1) as SIGNED INTEGER) AS ord');
+            $this->db->from('_livre');
+            $this->db->join('_theme', '_theme.IDTheme = _livre.IDTheme');
+            $this->db->join('_category', '_category.IDCategory = _theme.IDCategory');
+            $this->db->where('_category.multi_lingue', $lang);
+            $this->db->like('_category.Libelle', 'Pathologie');
+            $this->db->order_by('ord', 'ASC');
+            $this->db->order_by('_livre.Titre', 'ASC');
+            $query = $this->db->get();
+            $pathoBooks = $query->result_array();
+            
+            if (!empty($pathoBooks)) {
+                echo json_encode(['success' => true, 'type' => 'books', 'pathoBooks' => $pathoBooks]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Aucune pathologie disponible pour cette langue ('.$lang.')']);
+            }
+        }
+    }
+
+public function suppSousChap() {
+    if (!((strlen($this->session->userdata('passTok')) == 200) && ($this->session->userdata('EstAdmin') == 1))) {
+        echo json_encode([["id" => '-1', "desc" => $this->lang->line('supp_delErr')]]);
+        return;
+    }
+
+    $id = $this->input->post('idS');
+    
+    if (empty($id)) {
+        echo json_encode([["id" => '0', "desc" => 'ID manquant']]);
+        return;
+    }
+
+    $idSousChap = intval($id);  
+
+    $this->db->where('IDSousChapitre', $idSousChap);
+    $deleted = $this->db->delete('_souschapitre');
+
+    if ($deleted && $this->db->affected_rows() > 0) {
+        echo json_encode([["id" => '1', "desc" => $this->lang->line('supp_souschap_succes')]]);
+    } else {
+        echo json_encode([["id" => '0', "desc" => 'Erreur lors de la suppression ou sous-chapitre introuvable']]);
+    }
+}
+public function getContentChapter()
+{
+    $postData = json_decode(file_get_contents('php://input'), true);
+
+    if (!isset($postData['idChap']) || empty($postData['idChap'])) {
+        echo "Chapitre non défini.";
+        return;
+    }
+
+    $idChap = $postData['idChap'];
+
+    $this->db->where('IDChapitre', $idChap);
+    $query = $this->db->get('_chapitre');
+    $chapitre = $query->row_array();
+
+    if (!$chapitre) {
+        echo "Chapitre introuvable.";
+        return;
+    }
+
+    $html = '<h2>' . htmlspecialchars($chapitre['TitreChapitre']) . '</h2>';
+    $html .= '<div>' . ($chapitre['FichierHTML'] ?? 'Contenu vide') . '</div>';
+
+    echo $html;
+}
+
+    public function getContentSousChapitre() {
+        $postData = json_decode(file_get_contents('php://input'), true);
+        $idChap = $postData['idChap'];
+        $idSousChap = $postData['idSousChap'];
+
+        $this->db->select('*');
+        $this->db->from('_souschapitre');
+        $this->db->where('IDSousChapitre', $idSousChap);
+        $this->db->where('IDChapitre', $idChap);
+        $query = $this->db->get();
+
+        $sousChapitre = $query->row();
+
+        if ($sousChapitre) {
+            // Vérifier l'existence réelle des fichiers sur le disque (comme dans get_SousChapitres)
+            $fichierContenu = $idSousChap . '_Sub.HTML';
+            $fichierResume = $idSousChap . '_SubResume.HTML';
+            
+            $cheminContenu = FCPATH . 'PlatFormeConvert/' . $fichierContenu;
+            $cheminResume = FCPATH . 'PlatFormeConvert/' . $fichierResume;
+            
+            // Construire les vrais chemins basés sur l'existence des fichiers
+            $fichierHTMLFinal = file_exists($cheminContenu) ? $fichierContenu : null;
+            $fichierResumeFinal = file_exists($cheminResume) ? $fichierResume : null;
+
+            echo json_encode([
+                'status' => 'success',
+                'FichierHTML' => $fichierHTMLFinal,
+                'FichierHTML_Resume' => $fichierResumeFinal,
+                'TitreSousChapitre' => $sousChapitre->TitreSousChapitre
+            ]);
+        } else {
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Sous-chapitre non trouvé'
+            ]);
+        }
+    }
+
+public function PlatFormeConvert($fichierHTML)
+{
+    $data = [];
+
+    function console_log($msg) {
+        echo "<script>console.log(" . json_encode($msg) . ");</script>";
+    }
+    $fichierHTML = str_replace(['..', '/'], '', $fichierHTML);
+    $file_path = FCPATH . 'PlatFormeConvert/' . $fichierHTML;
+
+    if (file_exists($file_path)) {
+        $data['CursShow'] = file_get_contents($file_path);
+    } else {
+        $data['CursShow'] = '<p style="color:red;">Fichier non trouvé : ' . htmlspecialchars($fichierHTML) . '</p>';
+    }
+
+    // Chercher le sous-chapitre par le nom de fichier
+    // Supporte à la fois FichierHTML (_Sub.HTML) et FichierHTML_Resume (_SubResume.HTML)
+    $this->db->select('IDSousChapitre, IDChapitre');
+    $this->db->from('_souschapitre');
+    
+    // Essayer d'abord avec FichierHTML (pattern classique)
+    $this->db->where('FichierHTML', $fichierHTML);
+    $sousChap = $this->db->get()->row_array();
+    
+    // Si pas trouvé, essayer avec le pattern {ID}_Sub.HTML ou {ID}_SubResume.HTML
+    if (!$sousChap) {
+        // Extraire l'ID du fichier
+        if (preg_match('/^(\d+)_(Sub|SubResume)\.HTML$/i', $fichierHTML, $matches)) {
+            $idSousChap = $matches[1];
+            $this->db->select('IDSousChapitre, IDChapitre');
+            $this->db->from('_souschapitre');
+            $this->db->where('IDSousChapitre', $idSousChap);
+            $sousChap = $this->db->get()->row_array();
+        }
+    }
+
+    if (!$sousChap) {
+        $data['listFig'] = [];
+    } else {
+        $idChapitre = $sousChap['IDChapitre'];
+
+        $chapitre = $this->db->where('IDChapitre', $idChapitre)->get('_chapitre')->row_array();
+
+        if (!$chapitre) {
+            $data['listFig'] = [];
+        } else {
+            $idChapitreRappel = $chapitre['IdChapterRappel'] ?? null;
+
+            if (!$idChapitreRappel) {
+                $data['listFig'] = [];
+            } else {
+                $coursList = $this->db
+                    ->select('IDCours, TitreCours')
+                    ->from('_cours')
+                    ->where('IDChapitre', $idChapitreRappel)
+                    ->get()
+                    ->result_array();
+
+                if (empty($coursList)) {
+                    $data['listFig'] = [];
+                } else {
+                    $coursIds = array_column($coursList, 'IDCours');
+
+                    $this->db->select('IDFigure, TitreFigure, UrlFigure, encryptFigure, IDCours');
+                    $this->db->from('_figure');
+                    $this->db->where_in('IDCours', $coursIds);
+                    $this->db->limit(50); // LIMITE pour éviter l'épuisement mémoire
+                    $query = $this->db->get();
+                    $data['listFig'] = $query->result_array();
+
+                }
+            }
+        }
+    }
+    if (!empty($sousChap)) {
+        $livre = $this->db
+            ->select('l.IDLivre, l.Titre, l.IDTheme')
+            ->from('_livre l')
+            ->join('_chapitre c', 'c.IDLivre = l.IDLivre', 'inner')
+            ->where('c.IDChapitre', $sousChap['IDChapitre'])
+            ->get()
+            ->row_array();
+
+        if ($livre) {
+            $data['OneBook'] = [ $livre ];            
+            $data['listChap'] = $this->db
+                ->select('IDChapitre, TitreChapitre, IdChapterRappel, NbreCours, NbreResume')
+                ->from('_chapitre')
+                ->where('IDLivre', $livre['IDLivre'])
+                ->order_by('IDChapitre', 'ASC')
+                ->get()
+                ->result_array();
+
+        } else {
+            $data['OneBook'] = [];
+            $data['listChap'] = []; 
+        }
+    } else {
+        $data['OneBook'] = [];
+        $data['listChap'] = []; 
+    }
+
+    $data['page'] = 'livreCours';
+    $data['listCat'] = $this->getListCategory();
+    $data['indexSearch'] = '';
+    
+    $this->load->view('v1_livreCours_platforme', $data);
+
+}
+
+public function getRappelResumeContent()
+{
+    $postData = json_decode(file_get_contents('php://input'), true);
+    $idChapterRappel = isset($postData['idChapterRappel']) ? $postData['idChapterRappel'] : null;
+    
+    if (!$idChapterRappel) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'ID chapitre rappel manquant'
+        ]);
+        return;
+    }
+
+    // Récupérer les informations du chapitre
+    $this->db->select('IDChapitre, TitreChapitre, NbreResume');
+    $this->db->from('_chapitre');
+    $this->db->where('IDChapitre', $idChapterRappel);
+    $chapitre = $this->db->get()->row_array();
+
+    if (!$chapitre) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Chapitre introuvable'
+        ]);
+        return;
+    }
+
+    // Vérifier s'il y a un résumé
+    if (isset($chapitre['NbreResume']) && (int)$chapitre['NbreResume'] > 0) {
+        // Récupérer le fichier de résumé
+        $this->db->select('FichierHTML');
+        $this->db->from('_resume');
+        $this->db->where('IDChapitre', $idChapterRappel);
+        $this->db->order_by('IDResume', 'ASC');
+        $this->db->limit(1);
+        $resume = $this->db->get()->row_array();
+
+        if ($resume && !empty($resume['FichierHTML'])) {
+            $fichierPath = FCPATH . 'PlatFormeConvert/' . $resume['FichierHTML'];
+            
+            if (file_exists($fichierPath)) {
+                $content = file_get_contents($fichierPath);
+                echo json_encode([
+                    'success' => true,
+                    'content' => $content,
+                    'hasResume' => true
+                ]);
+                return;
+            }
+        }
+    }
+
+    // Pas de résumé : retourner une bannière
+    $bannerContent = '
+        <div style="text-align: center; padding: 50px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 10px; margin: 20px 0;">
+            <i class="fas fa-info-circle" style="font-size: 60px; color: #457b9d; margin-bottom: 20px;"></i>
+            <h3 style="color: #1d3557; margin-bottom: 15px; font-size: 1.5rem;">Contenu bientôt disponible</h3>
+            <p style="color: #666; font-size: 1.1rem; margin-bottom: 10px;">La synthèse structurée de ce chapitre d\'anatomie sera disponible très prochainement.</p>
+            <div style="margin-top: 25px; padding: 15px; background: white; border-left: 4px solid #457b9d; text-align: left; max-width: 600px; margin-left: auto; margin-right: auto;">
+                <p style="margin: 0; color: #555; font-size: 0.95rem;"><strong>En attendant :</strong> Vous pouvez consulter le cours fondamental complet ci-dessus.</p>
+            </div>
+        </div>
+    ';
+
+    echo json_encode([
+        'success' => true,
+        'content' => $bannerContent,
+        'hasResume' => false
+    ]);
+}
+
+public function getRappelSousChapitreFile()
+{
+    $post = json_decode(file_get_contents("php://input"), true);
+
+    if (!isset($post['idChapActuel']) || empty($post['idChapActuel'])) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'IDChapitre actuel manquant'
+        ]);
+        return;
+    }
+
+    $idChapActuel = $post['idChapActuel'];
+
+    // 1️⃣ On récupère le chapitre actuel
+    $chapActuel = $this->db
+        ->where('IDChapitre', $idChapActuel)
+        ->get('_chapitre')
+        ->row_array();
+
+    if (!$chapActuel) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Chapitre actuel introuvable'
+        ]);
+        return;
+    }
+
+    // 2️⃣ On récupère l'id du chapitre Rappel
+    $idChapterRappel = $chapActuel['IdChapterRappel'];
+
+    if (!$idChapterRappel) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Aucun chapitre de rappel configuré'
+        ]);
+        return;
+    }
+
+    // 3️⃣ On cherche le premier sous-chapitre du chapitre rappel
+    $sousChap = $this->db
+        ->where('IDChapitre', $idChapterRappel)
+        ->where('FichierHTML IS NOT NULL', null, false)
+        ->order_by('IDSousChapitre', 'ASC')
+        ->get('_souschapitre')
+        ->row_array();
+
+    if (!$sousChap || empty($sousChap['FichierHTML'])) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Aucun fichier HTML trouvé pour ce chapitre rappel'
+        ]);
+        return;
+    }
+
+    echo json_encode([
+        'success' => true,
+        'file' => $sousChap['FichierHTML'],
+        'idRappelSousChapitre' => $sousChap['IDSousChapitre'],
+        'idChapterRappel' => $idChapterRappel
+    ]);
+}
+
+    // ========== RAPPEL ANATOMIQUE MANUEL ==========
+
+public function check_rappel_manuel() {
+    // Récupérer les données JSON envoyées
+    $postData = json_decode(file_get_contents('php://input'), true);
+    $idChapitre = isset($postData['idChapitre']) ? $postData['idChapitre'] : null;
+    
+    log_message('debug', 'check_rappel_manuel - ID Chapitre reçu: ' . $idChapitre);
+        
+        if (!$idChapitre) {
+            echo json_encode(['exists' => false, 'data' => null]);
+            exit;
+        }
+
+        $this->db->select('*');
+        $this->db->from('_rappel_anatomique');
+        $this->db->where('IDChapitre', $idChapitre);
+        $result = $this->db->get()->result_array();
+
+        if (count($result) > 0) {
+            echo json_encode(['exists' => true, 'data' => $result[0]]);
+        } else {
+            echo json_encode(['exists' => false, 'data' => null]);
+        }
+        exit;
+    }
+
+    public function add_rappel_manuel() {
+        // Ajouter/Mettre à jour un rappel manuel avec fichier .docx
+        // Convertit le .docx en .HTML et le sauvegarde
+        $idChapitre = isset($_POST['rappelChapitre']) ? $_POST['rappelChapitre'] : null;
+        $f = $_FILES;
+        
+        log_message('debug', 'add_rappel_manuel - ID Chapitre: ' . $idChapitre);
+        
+        if (!$idChapitre) {
+            log_message('error', 'Chapitre introuvable');
+            $arr_Res[] = array("id" => '-1', "desc" => 'Chapitre introuvable');
+            echo json_encode($arr_Res);
+            exit;
+        }
+
+        if (!isset($f["rappelFichier"]) || $f["rappelFichier"]["size"] == 0) {
+            log_message('error', 'Aucun fichier sélectionné');
+            $arr_Res[] = array("id" => '-1', "desc" => 'Aucun fichier sélectionné');
+            echo json_encode($arr_Res);
+            exit;
+        }
+
+        $file_size = $f["rappelFichier"]["size"];
+        $file_type = $f["rappelFichier"]["type"];
+        $file_name = $f["rappelFichier"]["name"];
+        $file_nameTmp = $f["rappelFichier"]["tmp_name"];
+
+        // Vérifier extension
+        $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+        if ($file_ext != 'docx') {
+            log_message('error', 'Extension non valide: ' . $file_ext);
+            $arr_Res[] = array("id" => '-1', "desc" => 'Seuls les fichiers .docx sont acceptés');
+            echo json_encode($arr_Res);
+            exit;
+        }
+
+        try {
+            // Générer noms de fichier uniques
+            $timestamp = time();
+            $fichierDocxName = 'Rappel_' . $idChapitre . '_' . $timestamp . '.docx';
+            $fichierHtmlName = 'Rappel_' . $idChapitre . '_' . $timestamp . '.HTML';
+            
+            $fichierDocxPath = FCPATH . 'PlatFormeConvert/' . $fichierDocxName;
+            $fichierHtmlPath = FCPATH . 'PlatFormeConvert/' . $fichierHtmlName;
+            
+            log_message('debug', 'Fichier DOCX: ' . $fichierDocxPath);
+            log_message('debug', 'Fichier HTML: ' . $fichierHtmlPath);
+            
+            // Déplacer le fichier .docx temporaire
+            if (!move_uploaded_file($file_nameTmp, $fichierDocxPath)) {
+                log_message('error', 'Erreur move_uploaded_file');
+                $arr_Res[] = array("id" => '-1', "desc" => 'Erreur lors du téléchargement du fichier');
+                echo json_encode($arr_Res);
+                exit;
+            }
+
+            log_message('debug', 'Fichier DOCX déplacé avec succès');
+
+            // Convertir le .docx en .HTML
+            $objPHPWord = \PhpOffice\PhpWord\IOFactory::load($fichierDocxPath);
+            $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($objPHPWord, 'HTML');
+            $objWriter->save($fichierHtmlPath);
+            
+            log_message('debug', 'Conversion DOCX->HTML réussie');
+
+            // Vérifier si un rappel existe déjà
+            $this->db->select('IDRappel, Fichier');
+            $this->db->from('_rappel_anatomique');
+            $this->db->where('IDChapitre', $idChapitre);
+            $existing = $this->db->get()->result_array();
+
+            log_message('debug', 'Rappels existants: ' . count($existing));
+
+            // Supprimer les anciens fichiers s'ils existent
+            if (count($existing) > 0) {
+                log_message('debug', '=== MISE À JOUR du rappel existant ===');
+                
+                // Supprimer les anciens fichiers
+                if (!empty($existing[0]['Fichier'])) {
+                    $oldDocxPath = FCPATH . 'PlatFormeConvert/' . $existing[0]['Fichier'];
+                    if (file_exists($oldDocxPath)) {
+                        unlink($oldDocxPath);
+                        log_message('debug', 'Ancien DOCX supprimé: ' . $oldDocxPath);
+                    }
+                    
+                    // Supprimer aussi le fichier HTML correspondant
+                    $oldHtmlName = str_replace('.docx', '.HTML', $existing[0]['Fichier']);
+                    $oldHtmlPath = FCPATH . 'PlatFormeConvert/' . $oldHtmlName;
+                    if (file_exists($oldHtmlPath)) {
+                        unlink($oldHtmlPath);
+                        log_message('debug', 'Ancien HTML supprimé: ' . $oldHtmlPath);
+                    }
+                }
+
+                // Mettre à jour
+                $data = [
+                    'Fichier' => $fichierDocxName,
+                    'Contenu' => ''
+                ];
+                
+                $this->db->where('IDChapitre', $idChapitre);
+                $this->db->update('_rappel_anatomique', $data);
+                
+                $affectedRows = $this->db->affected_rows();
+                log_message('debug', 'Affected rows après UPDATE: ' . $affectedRows);
+                
+                $arr_Res[] = array("id" => '1', "desc" => 'Rappel mis à jour avec succès');
+                
+            } else {
+                log_message('debug', '=== INSERTION d\'un nouveau rappel ===');
+                
+                // Insérer
+                $data = [
+                    'IDChapitre' => $idChapitre,
+                    'Contenu' => '',
+                    'Fichier' => $fichierDocxName
+                ];
+                
+                $insertResult = $this->db->insert('_rappel_anatomique', $data);
+                $insertId = $this->db->insert_id();
+                
+                log_message('debug', 'Insert result: ' . ($insertResult ? 'TRUE' : 'FALSE'));
+                log_message('debug', 'Insert ID: ' . $insertId);
+                
+                if ($insertId > 0) {
+                    log_message('debug', '✅ Rappel inséré avec succès - ID: ' . $insertId);
+                    $arr_Res[] = array("id" => '1', "desc" => 'Rappel ajouté avec succès');
+                } else {
+                    log_message('error', '❌ Échec de l\'insertion');
+                    $arr_Res[] = array("id" => '-1', "desc" => 'Erreur insertion BD');
+                }
+            }
+            
+        } catch (Exception $e) {
+            log_message('error', 'Exception: ' . $e->getMessage());
+            $arr_Res[] = array("id" => '-1', "desc" => 'Erreur: ' . $e->getMessage());
+        }
+
+        echo json_encode($arr_Res);
+        exit;
+    }
+
+    public function delete_rappel_manuel() {
+        // Supprimer le rappel manuel (pas le défaut)
+        $postData = json_decode(file_get_contents('php://input'), true);
+        $idChapitre = isset($postData['idChapitre']) ? $postData['idChapitre'] : null;
+        
+        if (!$idChapitre) {
+            echo json_encode(['id' => '-1', 'desc' => 'Chapitre introuvable']);
+            exit;
+        }
+
+        try {
+            // Récupérer les noms des fichiers avant suppression
+            $this->db->select('Fichier');
+            $this->db->from('_rappel_anatomique');
+            $this->db->where('IDChapitre', $idChapitre);
+            $result = $this->db->get()->result_array();
+            
+            if (count($result) > 0) {
+                // Supprimer les fichiers DOCX et HTML
+                if (!empty($result[0]['Fichier'])) {
+                    $docxPath = FCPATH . 'PlatFormeConvert/' . $result[0]['Fichier'];
+                    if (file_exists($docxPath)) {
+                        unlink($docxPath);
+                    }
+                    
+                    // Supprimer aussi le fichier HTML correspondant
+                    $htmlName = str_replace('.docx', '.HTML', $result[0]['Fichier']);
+                    $htmlPath = FCPATH . 'PlatFormeConvert/' . $htmlName;
+                    if (file_exists($htmlPath)) {
+                        unlink($htmlPath);
+                    }
+                }
+            }
+            
+            // Supprimer la ligne de la BD
+            $this->db->where('IDChapitre', $idChapitre);
+            $this->db->delete('_rappel_anatomique');
+            echo json_encode(['id' => '1', 'desc' => 'Rappel supprimé avec succès']);
+        } catch (Exception $e) {
+            echo json_encode(['id' => '-1', 'desc' => 'Erreur: ' . $e->getMessage()]);
+        }
+        exit;
+    }
+
+    // ========== GESTION DES IMAGES DE RAPPEL ANATOMIQUE ==========
+    
+    public function saveRappelImage() {
+        $arr_Res = array();
+        
+        try {
+            $idChapitre = $this->input->post('rappelChapitre');
+            
+            if (!$idChapitre) {
+                $arr_Res[] = array("id" => '-1', "desc" => 'Chapitre introuvable');
+                echo json_encode($arr_Res);
+                exit;
+            }
+            
+            // Vérifier si un fichier a été uploadé
+            if (!isset($_FILES['rappelImage']) || $_FILES['rappelImage']['error'] != 0) {
+                $arr_Res[] = array("id" => '-1', "desc" => 'Aucun fichier sélectionné');
+                echo json_encode($arr_Res);
+                exit;
+            }
+            
+            $file = $_FILES['rappelImage'];
+            $fileName = $file['name'];
+            $fileTmpName = $file['tmp_name'];
+            $fileSize = $file['size'];
+            
+            // Vérifier le type de fichier
+            $allowedTypes = array('image/jpeg', 'image/png', 'image/webp');
+            $fileType = mime_content_type($fileTmpName);
+            
+            if (!in_array($fileType, $allowedTypes)) {
+                $arr_Res[] = array("id" => '-1', "desc" => 'Format non autorisé. Utilisez JPG, PNG ou WEBP');
+                echo json_encode($arr_Res);
+                exit;
+            }
+            
+            // Vérifier la taille (max 2MB)
+            if ($fileSize > 2097152) {
+                $arr_Res[] = array("id" => '-1', "desc" => 'Fichier trop volumineux (max 2MB)');
+                echo json_encode($arr_Res);
+                exit;
+            }
+            
+            // Lire et encoder l'image en base64
+            $imageData = file_get_contents($fileTmpName);
+            $imageBase64 = base64_encode($imageData);
+            
+            // Générer un nom unique pour l'image
+            $extension = pathinfo($fileName, PATHINFO_EXTENSION);
+            $uniqueName = 'rappel_' . $idChapitre . '_' . time() . '.' . $extension;
+            
+            // Obtenir l'ordre d'affichage (dernier + 1)
+            $this->db->select_max('OrdreAffichage');
+            $this->db->from('_rappel_anatomique_images');
+            $this->db->where('IDChapitre', $idChapitre);
+            $result = $this->db->get()->result_array();
+            $ordre = isset($result[0]['OrdreAffichage']) ? $result[0]['OrdreAffichage'] + 1 : 1;
+            
+            // Insérer dans la base de données
+            $data = array(
+                'IDChapitre' => $idChapitre,
+                'NomImage' => $fileName,
+                'CheminImage' => $uniqueName,
+                'ImageData' => $imageBase64,
+                'OrdreAffichage' => $ordre
+            );
+            
+            $this->db->insert('_rappel_anatomique_images', $data);
+            
+            if ($this->db->insert_id() > 0) {
+                $arr_Res[] = array("id" => '1', "desc" => 'Image ajoutée avec succès');
+            } else {
+                $arr_Res[] = array("id" => '-1', "desc" => 'Erreur lors de l\'ajout de l\'image');
+            }
+            
+        } catch (Exception $e) {
+            log_message('error', 'Erreur saveRappelImage: ' . $e->getMessage());
+            $arr_Res[] = array("id" => '-1', "desc" => 'Erreur: ' . $e->getMessage());
+        }
+        
+        echo json_encode($arr_Res);
+        exit;
+    }
+    
+    public function getRappelImages() {
+        $postData = json_decode(file_get_contents('php://input'), true);
+        $idChapitre = isset($postData['idChapter']) ? $postData['idChapter'] : null;
+        
+        if (!$idChapitre) {
+            echo json_encode(array('success' => false, 'message' => 'Chapitre introuvable'));
+            exit;
+        }
+        
+        try {
+            $this->db->select('IDImageRappel, NomImage, ImageData, OrdreAffichage');
+            $this->db->from('_rappel_anatomique_images');
+            $this->db->where('IDChapitre', $idChapitre);
+            $this->db->order_by('OrdreAffichage', 'ASC');
+            $this->db->limit(20); // Limite de 20 images maximum
+            $images = $this->db->get()->result_array();
+            
+            echo json_encode(array('success' => true, 'data' => $images));
+            
+        } catch (Exception $e) {
+            log_message('error', 'Erreur getRappelImages: ' . $e->getMessage());
+            echo json_encode(array('success' => false, 'message' => 'Erreur: ' . $e->getMessage()));
+        }
+        
+        exit;
+    }
+    
+    public function deleteRappelImage() {
+        $postData = json_decode(file_get_contents('php://input'), true);
+        $idImage = isset($postData['idImage']) ? $postData['idImage'] : null;
+        
+        if (!$idImage) {
+            echo json_encode(array('success' => false, 'message' => 'Image introuvable'));
+            exit;
+        }
+        
+        try {
+            $this->db->where('IDImageRappel', $idImage);
+            $this->db->delete('_rappel_anatomique_images');
+            
+            if ($this->db->affected_rows() > 0) {
+                echo json_encode(array('success' => true, 'message' => 'Image supprimée avec succès'));
+            } else {
+                echo json_encode(array('success' => false, 'message' => 'Image non trouvée'));
+            }
+            
+        } catch (Exception $e) {
+            log_message('error', 'Erreur deleteRappelImage: ' . $e->getMessage());
+            echo json_encode(array('success' => false, 'message' => 'Erreur: ' . $e->getMessage()));
+        }
+        
+        exit;
+    }
+
 
 }

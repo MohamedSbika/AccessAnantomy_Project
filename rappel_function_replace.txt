@@ -1,0 +1,110 @@
+function chargerRappelCours(idChapterRappel, event) {
+    if (event) event.stopPropagation();
+
+    if (!idChapterRappel || isNaN(idChapterRappel)) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Aucun rappel disponible',
+            text: 'Ce chapitre n\'a pas de cours de rappel.'
+        });
+        return;
+    }
+
+    const baseUrl = "<?php echo base_url(); ?>";
+    const lang = "<?php echo strtoupper($this->uri->segment(1)); ?>";
+
+    const coursContainer = document.querySelector('.bloc-cours');
+
+    // CAS 1 : on n'est PAS dans la page cours
+    if (!coursContainer) {
+        // Vérifier d'abord s'il y a un rappel manuel
+        fetch(`${baseUrl}home/getRappelCoursFile`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idChapterRappel })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success && data.fichier) {
+                // Rappel manuel trouvé → redirection vers fichier HTML
+                window.location.href = `${baseUrl}${lang}/PlatFormeConvert/${data.fichier}`;
+            } else {
+                // Pas de rappel manuel → comportement ancien
+                window.location.href = `${baseUrl}${lang}/livreCours/${idChapterRappel}`;
+            }
+        })
+        .catch(err => {
+            // En cas d'erreur → comportement ancien
+            window.location.href = `${baseUrl}${lang}/livreCours/${idChapterRappel}`;
+        });
+        return;
+    }
+
+    // CAS 2 : on est DANS le bloc cours
+    const originalContent = coursContainer.innerHTML;
+
+    coursContainer.innerHTML = `
+        <div style="text-align:center; padding:50px;">
+            <i class="fas fa-spinner fa-spin" style="font-size:40px; color:#1d3557;"></i>
+            <p style="margin-top:15px;">Chargement du rappel cours...</p>
+        </div>
+    `;
+
+    // Vérifier d'abord s'il y a un rappel manuel
+    fetch(`${baseUrl}home/getRappelAnatomiqueCours`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idChapterRappel })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success && data.content) {
+            // Rappel manuel trouvé
+            coursContainer.innerHTML = data.content;
+            coursContainer.scrollTop = 0;
+        } else {
+            // Pas de rappel manuel → charger l'ancien rappel (comportement ancien)
+            chargerRappelCoursAncien(idChapterRappel);
+        }
+    })
+    .catch(err => {
+        // En cas d'erreur → charger l'ancien rappel (comportement ancien)
+        chargerRappelCoursAncien(idChapterRappel);
+    });
+}
+
+// Fonction pour charger le comportement ancien du rappel
+function chargerRappelCoursAncien(idChapterRappel) {
+    const baseUrl = "<?php echo base_url(); ?>";
+    const coursContainer = document.querySelector('.bloc-cours');
+    const originalContent = coursContainer.innerHTML;
+
+    fetch(`${baseUrl}home/getRappelCoursContent`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idChapterRappel })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success && data.content) {
+            coursContainer.innerHTML = data.content;
+            coursContainer.scrollTop = 0;
+        } else {
+            coursContainer.innerHTML = originalContent;
+            Swal.fire({
+                icon: 'error',
+                title: 'Erreur',
+                text: 'Impossible de charger le rappel.'
+            });
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        coursContainer.innerHTML = originalContent;
+        Swal.fire({
+            icon: 'error',
+            title: 'Erreur',
+            text: 'Impossible de charger le rappel.'
+        });
+    });
+}

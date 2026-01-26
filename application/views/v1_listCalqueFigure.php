@@ -276,7 +276,7 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
 
 
 								<div class="col-sm-4" style="display:flex; justify-content:center; align-items:center;display: flex;flex-direction: column;align-items: flex-start;/*! gap: 10px; */">
-									<?php if($figure['pathAudio']) { ?>
+									<?php if(isset($figure['pathAudio']) && $figure['pathAudio']) { ?>
 										<span style="width: 100%;text-align: center;color: #1d3557;font-weight: bold;"><?php echo $this->lang->line('sidebar_as_tooltip'); ?></span>
 										<audio style="padding-right: 1rem;width: 100%;" width="100%" height="auto" controls id="<?php echo 'audio'. $compteurFigure; ?>" allow="autoplay"
 											   onplay="handleAudioPlay(<?php echo $compteurFigure; ?>)"  oncontextmenu="return false;"  controlsList="nodownload">

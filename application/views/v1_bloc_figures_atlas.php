@@ -575,14 +575,15 @@ if (in_array((int)$OneBook[0]["IDLivre"], [70, 71]) || in_array((int)$OneBook[0]
                 allThumbs.forEach((img, idx) => {
                     if (idx === index) {
                         img.classList.add("active-thumb");
+                        if (img.scrollIntoView) {
+                            img.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+                        }
                     } else {
                         img.classList.remove("active-thumb");
                     }
                 });
             }
         }
-
-
 
         function nextImage() {
             currentIndex = (currentIndex + 1) % figImages.length;
@@ -592,12 +593,6 @@ if (in_array((int)$OneBook[0]["IDLivre"], [70, 71]) || in_array((int)$OneBook[0]
         function prevImage() {
             currentIndex = (currentIndex - 1 + figImages.length) % figImages.length;
             showFigByIndex(currentIndex);
-        }
-
-        // Dans showFigByIndex
-        const activeImg = document.querySelectorAll('.slider-image')[index];
-        if (activeImg && activeImg.scrollIntoView) {
-            activeImg.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
         }
 
 	</script>

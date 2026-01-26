@@ -46,8 +46,6 @@
             box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.21);
             margin-bottom: 28px;
         }
-        /* webkit requires explicit width, height = 100% of sceeen */
-        /* webkit also takes margin into account in full screen also - so margin should be removed (otherwise black areas will be seen) */
         #element:-webkit-full-screen {
             width: 100%;
             height: 100%;
@@ -65,7 +63,6 @@
             margin: 0;
         }
 
-        /* W3C proposal that will eventually come in all browsers */
         #element:fullscreen {
             background-color: white;
             margin: 0;
@@ -77,10 +74,10 @@
             position: initial;
         }
         #outerContainer #mainContainer div.toolbar {
-            display: none !important; /* hide PDF viewer toolbar */
+            display: none !important; 
         }
         #outerContainer #mainContainer #viewerContainer {
-            top: 0 !important; /* move doc up into empty bar space */
+            top: 0 !important; 
         }
         .btn-outline-primary {
             color: #000000;
@@ -116,19 +113,18 @@
             height: 100%;
         }
         .image img {
-            /* La transition s'applique à la fois sur la largeur et la hauteur, avec une durée d'une seconde. */
-            -webkit-transition: all 1s ease; /* Safari et Chrome */
-            -moz-transition: all 1s ease; /* Firefox */
-            -ms-transition: all 1s ease; /* Internet Explorer 9 */
-            -o-transition: all 1s ease; /* Opera */
+            -webkit-transition: all 1s ease; 
+            -moz-transition: all 1s ease; 
+            -ms-transition: all 1s ease; 
+            -o-transition: all 1s ease; 
             transition: all 1s ease;
         }
         .image:hover img {
             /* L'image est grossie de 25% */
-            -webkit-transform:scale(1.25); /* Safari et Chrome */
-            -moz-transform:scale(1.25); /* Firefox */
-            -ms-transform:scale(1.25); /* Internet Explorer 9 */
-            -o-transform:scale(1.25); /* Opera */
+            -webkit-transform:scale(1.25);
+            -moz-transform:scale(1.25);
+            -ms-transform:scale(1.25); 
+            -o-transform:scale(1.25); 
             transform:scale(1.25);
         }
         .zoom {
@@ -139,7 +135,6 @@
 
         }
 
-        /* magnifying glass icon */
         .zoom:after {
             content:'';
             display:block;
@@ -199,24 +194,23 @@
         .slider-container {
             position: relative;
             width: 100%;
-            max-width: 650px; /* Largeur maximale du slider */
+            max-width: 650px; 
             margin: auto;
-            overflow: hidden; /* Cacher les images qui dépassent */
+            overflow: hidden; 
             max-height: 200px;
         }
 
         .slider {
             display: flex;
-            transition: transform 0.5s ease; /* Animation de transition pour le slider */
+            transition: transform 0.5s ease; 
         }
 
         .slider-image {
-            width: 33.33%; /* Afficher 3 images à la fois */
+            width: 33.33%; 
             object-fit: cover;
-            padding: 5px; /* Espacement entre les images */
+            padding: 5px; 
         }
 
-        /* Style des boutons next/prev */
         .prev , .next {
             position: absolute;
             top: 30%;
@@ -287,13 +281,13 @@
 
         @media (max-width: 768px) {
             .container {
-                height: 40vh;  /* Increase height on smaller screens */
+                height: 40vh; 
             }
         }
 
         @media (min-width: 1200px) {
             .container {
-                height: 85vh;  /* Decrease height on larger screens */
+                height: 85vh;  
             }
         }
 
@@ -320,7 +314,6 @@
             cursor: pointer;
         }
 
-        /* No zoom effect here, we will handle it with JS */
         .zoomable {
             transition: transform 0.5s ease;
         }
@@ -349,6 +342,15 @@
                     <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>login"><?php echo $this->lang->line('accueil'); ?></a>
                     &nbsp;&nbsp;
                     <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>livreDetails/<?php print $OneBook[0]["IDLivre"]; ?>"><?php echo $this->lang->line('chapitres'); ?></a>
+                    
+                    <?php if ($this->session->userdata('EstAdmin') == 1): ?>
+                        <button class="badge bg-info text-white ml-2 border-0" 
+                                onclick="openAddImageRappelModal('<?= $OneBook[0]['IDChapitre']; ?>')" 
+                                style="cursor:pointer; background-color: #457b9d !important; font-size: 0.75rem; vertical-align: middle;">
+                            <i class="fa fa-image"></i> Gérer Images Rappel
+                        </button>
+                    <?php endif; ?>
+
                     <a class="badge bg-success text-white ml-2" id="go-button" href="#" style="float:right; background-color: #8f84d9 !important;"><i class="fa fa-window-maximize" aria-hidden="true"></i></a>
 
                     <div class="input-group input-group-navbar" style="padding-right: 1em;padding-left: 1em;">
@@ -361,13 +363,9 @@
                     <script>
                         var input = document.getElementById("keywordsIN");
 
-                        // Execute a function when the user releases a key on the keyboard
                         input.addEventListener("keyup", function(event) {
-                            // Number 13 is the "Enter" key on the keyboard
                             if (event.keyCode === 13) {
-                                // Cancel the default action, if needed
                                 event.preventDefault();
-                                // Trigger the button element with a click
                                 mySearchIndx();
                             }
                             document.getElementById("keywordsIN").focus();
@@ -399,21 +397,20 @@
 
             <div class="row">
 
-                <div class="scroll-container">
+                <div id="figures-scroll-container" class="scroll-container">
 
                     <?php
                     $counter = -1;
                     foreach ($listFig as $value) {
-                        // Determine the width based on the number of images
-                        $imageWidth = '45px';//count($listFig) > 3 ? '80%' : '40%'; // Set width to 80% if more than 2 images, otherwise 30%
-                        $imageHeight = '45px'; //count($listFig) > 3 ? '40%' : '30%'; // Set width to 80% if more than 2 images, otherwise 30%
-                        $objectFit = count($listFig) > 3 ? '' : 'object-fit: initial;'; // Set width to 80% if more than 2 images, otherwise 30%
+                        $imageWidth = '45px';
+                        $imageHeight = '45px'; 
+                        $objectFit = count($listFig) > 3 ? '' : 'object-fit: initial;';
 
                         echo '<div class="image-container" style="position: relative; display: inline-block; padding-top: 0.2rem;">';
 
-                        echo '<img src="data:image/jpeg;base64,' . $value['encryptFigure'] . '" 
+                        echo '<img src="data:image/jpeg;base64,' . $value['encryptFigure'] . '" data-name="'.$value['TitreFigure'].'"
           style="width: ' . $imageWidth . '; height: '.$imageHeight.';'.$objectFit.'; margin-left: 0.5rem; border: 0.1px solid #ccc;" 
-          class="slider-image zoomable" onclick="myFunction(this);" >' .
+          class="slider-image zoomable" onclick="showFig(this);" >' .
                             '<div><a href="#" class="btn" style="font-size: .75rem;">' . $value['TitreFigure'] . '</a></div>';
 
                         if ($this->session->userdata('EstAdmin') == 1) {
@@ -440,87 +437,92 @@
             </div>
 
             <script>
-                let currentSlide = 0;
-                let zoomedIn = false; // Track whether zoom is active or not
-                let lastTouchX = 0, lastTouchY = 0; // For tracking touch positions
+                var figImages = [];
+                var figTitles = [];
+                var currentIndex = 0;
+                var zoomedIn = false; 
+                var lastTouchX = 0, lastTouchY = 0;
 
-                function moveSlide(direction) {
-                    const images = document.querySelectorAll('.slider-image');
-                    const totalImages = images.length;
+                document.addEventListener("DOMContentLoaded", function () {
+                    const allImages = document.querySelectorAll('.slider-image');
+                    allImages.forEach((img, index) => {
+                        figImages.push(img.src);
+                        figTitles.push(img.getAttribute('data-name') || "");
+                    });
+                    if (figImages.length > 0) showFigByIndex(0);
+                });
 
-                    currentSlide = (currentSlide + direction + totalImages) % totalImages;
-                    const slider = document.getElementById('imageSlider');
-                    const slideWidth = images[0].clientWidth;
-                    slider.style.transform = 'translateX(' + (-currentSlide * slideWidth) + 'px)';
+                function showFigByIndex(index) {
+                    const expandImg = document.getElementById("expandedImg");
+                    const imgText = document.getElementById("imgtext");
+                    if (figImages.length > 0 && figImages[index]) {
+                        expandImg.src = figImages[index];
+                        imgText.innerHTML = figTitles[index];
+                        currentIndex = index;
+                    }
                 }
 
-                function myFunction(imgs) {
+                function showFig(imgs) {
                     var expandImg = document.getElementById("expandedImg");
                     var imgText = document.getElementById("imgtext");
 
                     expandImg.src = imgs.src;
-                    imgText.innerHTML = imgs.alt;
+                    imgText.innerHTML = imgs.getAttribute('data-name');
                     expandImg.parentElement.style.display = "block";
+                    
+                    const index = figImages.indexOf(imgs.src);
+                    if (index !== -1) currentIndex = index;
                 }
 
-                // Toggle zoom effect on click
                 function toggleZoom() {
                     var expandImg = document.getElementById("expandedImg");
 
                     if (!zoomedIn) {
-                        // Activate zoom on hover or touch
                         expandImg.addEventListener("mousemove", zoomImage);
                         expandImg.addEventListener("touchmove", zoomImageTouch);
                         zoomedIn = true;
                     } else {
-                        // Deactivate zoom effect
                         expandImg.removeEventListener("mousemove", zoomImage);
                         expandImg.removeEventListener("touchmove", zoomImageTouch);
-                        expandImg.style.transform = "scale(1)"; // Reset zoom
+                        expandImg.style.transform = "scale(1)"; 
                         zoomedIn = false;
                     }
                 }
 
-                // Zoom effect on hover (after first click)
                 function zoomImage(e) {
                     var img = e.target;
                     var offsetX = e.offsetX / img.width;
                     var offsetY = e.offsetY / img.height;
-                    var scale = 2; // The zoom scale factor
+                    var scale = 2;
 
                     img.style.transformOrigin = `${offsetX * 100}% ${offsetY * 100}%`;
                     img.style.transform = `scale(${scale})`;
                 }
 
-                // Zoom effect for touch events (on mobile devices)
                 function zoomImageTouch(e) {
-                    e.preventDefault(); // Prevent default touch behavior like scrolling
+                    e.preventDefault(); 
                     var img = e.target;
 
-                    // Calculate touch position relative to the image
                     var touch = e.touches[0];
                     var offsetX = (touch.clientX - img.offsetLeft) / img.width;
                     var offsetY = (touch.clientY - img.offsetTop) / img.height;
-                    var scale = 2; // The zoom scale factor
+                    var scale = 2; 
 
                     img.style.transformOrigin = `${offsetX * 100}% ${offsetY * 100}%`;
                     img.style.transform = `scale(${scale})`;
 
-                    // Track touch movement for better zooming
                     lastTouchX = touch.clientX;
                     lastTouchY = touch.clientY;
                 }
 
-                // Reset zoom if touch ends
                 document.getElementById("expandedImg").addEventListener("touchend", function () {
                     var img = document.getElementById("expandedImg");
-                    img.style.transform = "scale(1)"; // Reset zoom
+                    img.style.transform = "scale(1)"; 
                     zoomedIn = false;
                 });
 
-                // Adjust zoom behavior for small screens (optional)
-                if (window.innerWidth <= 768) { // For mobile/tablet screens
-                    document.getElementById("expandedImg").style.cursor = "pointer"; // Remove the zoom-in cursor
+                if (window.innerWidth <= 768) { 
+                    document.getElementById("expandedImg").style.cursor = "pointer";
                 }
 
             </script>
@@ -541,24 +543,18 @@
                 e.preventDefault();
             }, false);
             document.addEventListener("keydown", function (e) {
-                //document.onkeydown = function(e) {
-                //"I" key
                 if (e.ctrlKey && e.shiftKey && e.keyCode == 73) {
                     disabledEvent(e);
                 }
-                //"J" key
                 if (e.ctrlKey && e.shiftKey && e.keyCode == 74) {
                     disabledEvent(e);
                 }
-                //"S" key + macOS
                 if (e.keyCode == 83 && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
                     disabledEvent(e);
                 }
-                //"U" key
                 if (e.ctrlKey && e.keyCode == 85) {
                     disabledEvent(e);
                 }
-                //"F12" key
                 if (event.keyCode == 123) {
                     disabledEvent(e);
                 }
@@ -573,7 +569,6 @@
                 return false;
             }
         }
-        //edit: removed ";" from last "}" because of javascript error
     </script>
 
     <script type='text/javascript'>
@@ -586,11 +581,10 @@
                 "bLengthChange": false,
                 "bFilter": false,
                 "bPaginate": false,
-                "processing": true, //Feature control the processing indicator.
-                "serverSide": true, //Feature control DataTables' server-side processing mode.
-                "order": [], //Initial no order.
+                "processing": true, 
+                "serverSide": true, 
+                "order": [], 
                 "pageLength": 1,
-                // Load data for the table's content from an Ajax source
                 "aoColumns": [
                     null
                 ],
@@ -602,10 +596,9 @@
                         d.indexSearch 	= "<?php print $indexSearch; ?>";
                     }
                 },
-                //Set column definition initialisation properties.
                 "columnDefs": [
                     {
-                        "targets": [0], //first column / numbering column
+                        "targets": [0], 
                         "sClass": "text-left",
                         "orderable": false,
                     },{"sClass": "text-center", "aTargets": [0]},
@@ -675,7 +668,7 @@
                     if(ar[0]["id"]==1)
                     {
                         ur = ar[0]["desc"];
-                        titur = '';// ar[0]["desc"][0]["TitreFigure"];
+                        titur = '';
 
                         $("#figZoo").html(ur);
 
@@ -697,9 +690,9 @@
         function openFullscreen() {
             if (elem.requestFullscreen) {
                 elem.requestFullscreen();
-            } else if (elem.webkitRequestFullscreen) { /* Safari */
+            } else if (elem.webkitRequestFullscreen) { 
                 elem.webkitRequestFullscreen();
-            } else if (elem.msRequestFullscreen) { /* IE11 */
+            } else if (elem.msRequestFullscreen) {
                 elem.msRequestFullscreen();
             }
         }
@@ -716,7 +709,6 @@
 
     <script>
 
-        /* Get into full screen */
         function GoInFullscreen(element) {
             if(element.requestFullscreen)
                 element.requestFullscreen();
@@ -728,7 +720,6 @@
                 element.msRequestFullscreen();
         }
 
-        /* Get out of full screen */
         function GoOutFullscreen() {
             if(document.exitFullscreen)
                 document.exitFullscreen();
@@ -740,11 +731,9 @@
                 document.msExitFullscreen();
         }
 
-        /* Is currently in full screen or not */
         function IsFullScreenCurrently() {
             var full_screen_element = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement || null;
 
-            // If no element is in full-screen
             if(full_screen_element === null)
                 return false;
             else
@@ -813,7 +802,6 @@
 
                                 if(resu[0]["id"]==1)
                                 {
-                                    // $('#namelistFig').load(" #namelistFig > *");
                                     Swal.fire({
                                         title: resu[0]["desc"],
                                         position: 'center',
@@ -849,9 +837,7 @@
 
                             },
                             error: function() {
-                                // SHOW AN ERROR { if php failed to fetch }
 
-                                //$("#user_message_error_pretech").show();
                                 $('.modal-message').html("Sorry, File not Uploaded");
                                 $('#modal-confirm-all').modal('show');
                             }
@@ -865,6 +851,160 @@
         </script>
     <?php }?>
 
+    <!-- Modal Gérer les images de rappel (Copie conforme de livreDetails.php) -->
+    <div class="modal fade" id="addImageRappelModal" tabindex="-1" aria-hidden="true" style="z-index: 10000;">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width:1000px;">
+            <div class="modal-content" style="background-color: rgb(9,138,99); box-shadow: 0 0 0 50vmax rgba(0,0,0,.7); color: white;">
+                <div class="modal-header">
+                    <h2 class="modal-title h2-modal-login" style="color: white;">Gérer les images de rappel</h2>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" style="background: none; border: none; color: white; font-size: 24px;">x</button>
+                </div>
+                <div class="modal-body m-3">
+                    <div id="listeImagesRappel" style="margin-bottom: 20px;">
+                        <h4 style="color: white; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 10px;">Images existantes (Cliques sur la croix pour supprimer)</h4>
+                        <div id="imagesContainer" style="display: flex; flex-wrap: wrap; gap: 10px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px; min-height: 50px;">
+                            <!-- Chargé via JS -->
+                        </div>
+                    </div>
+                    <hr style="border-color: rgba(255,255,255,0.2);">
+                    <h4 style="color: white;">Ajouter une nouvelle image</h4>
+                    <form id="formRappelImage" name="formRappelImage" enctype="multipart/form-data">
+                        <input type="hidden" id="rappelChapitreImage" name="rappelChapitre">
+                        <div class="form-group mb-3">
+                            <label style="color: white;">Image anatomique (JPG, PNG, WEBP)</label>
+                            <input type="file" class="form-control" id="rappelImage" name="rappelImage" accept="image/png, image/jpeg, image/webp" onchange="previewImageRappel(event)">
+                        </div>
+                        <div class="form-group text-center mb-3">
+                            <img id="previewRappelImage" src="" alt="" style="max-width:100%; max-height:250px; display:none; border-radius:8px; border: 2px solid white;">
+                        </div>
+                        <div class="text-center">
+                            <button type="button" class="btn btn-primary" onclick="saveRappelImage()" style="background-color: white; color: rgb(9,138,99); border: none; font-weight: bold; padding: 8px 25px;">Enregistrer</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" style="margin-left: 10px;">Fermer</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // ========== FONCTIONS GESTION IMAGES RAPPEL (POUR LIVRE COURS) ==========
+
+    function openAddImageRappelModal(idChapitre) {
+        document.getElementById('rappelChapitreImage').value = idChapitre;
+        const fileInput = document.getElementById('rappelImage');
+        if (fileInput) fileInput.value = '';
+        document.getElementById('previewRappelImage').style.display = 'none';
+        loadRappelImages(idChapitre);
+        $('#addImageRappelModal').modal('show');
+    }
+
+    function loadRappelImages(idChapitre) {
+        const baseUrl = "<?php echo base_url(); ?>";
+        fetch(`${baseUrl}home/getRappelImages`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idChapter: idChapitre })
+        })
+        .then(r => r.json())
+        .then(data => {
+            const container = document.getElementById('imagesContainer');
+            if (data.success && data.data.length > 0) {
+                let html = '';
+                data.data.forEach(img => {
+                    html += `
+                        <div style="position: relative; width: 120px; background: rgba(0,0,0,0.2); padding: 5px; border-radius: 5px;">
+                            <img src="data:image/jpeg;base64,${img.ImageData}" 
+                                 style="width: 100%; height: 100px; object-fit: cover; border-radius: 5px;">
+                            <button type="button" 
+                                    onclick="deleteRappelImageItem(${img.IDImageRappel}, ${idChapitre})"
+                                    style="position: absolute; top: 0px; right: 0px; background: #dc3545; color: white; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; font-size: 16px; line-height: 1; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.3);">
+                                &times;
+                            </button>
+                            <p style="color: white; font-size: 10px; margin-top: 5px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 0;" title="${img.NomImage}">${img.NomImage}</p>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = '<p style="color: white; font-style: italic; font-size: 13px;">Aucune image pour ce chapitre</p>';
+            }
+        });
+    }
+
+    function previewImageRappel(event) {
+        const file = event.target.files[0];
+        const preview = document.getElementById('previewRappelImage');
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = e => {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function saveRappelImage() {
+        const form = document.getElementById('formRappelImage');
+        const formData = new FormData(form);
+        const idChapitre = document.getElementById('rappelChapitreImage').value;
+        const fileInput = document.getElementById('rappelImage');
+        
+        if (!fileInput.files[0]) {
+            Swal.fire({ icon: 'warning', title: 'Attention', text: 'Veuillez sélectionner une image' });
+            return;
+        }
+
+        Swal.fire({ title: 'Envoi...', allowOutsideClick: false, onBeforeOpen: () => Swal.showLoading() });
+
+        $.ajax({
+            type: 'POST',
+            url: '<?php echo base_url(); ?>home/saveRappelImage',
+            data: formData,
+            cache: false, contentType: false, processData: false,
+            success: function(response) {
+                const result = JSON.parse(response);
+                if (result[0].id == '1') {
+                    Swal.fire({ icon: 'success', title: 'Succès', timer: 1000, showConfirmButton: false }).then(() => {
+                        loadRappelImages(idChapitre);
+                        form.reset();
+                        document.getElementById('previewRappelImage').style.display = 'none';
+                    });
+                } else {
+                    Swal.fire({ icon: 'error', title: 'Erreur', text: result[0].desc });
+                }
+            },
+            error: () => Swal.fire({ icon: 'error', title: 'Erreur', text: 'Erreur lors de lenvoi' })
+        });
+    }
+
+    function deleteRappelImageItem(idImage, idChapitre) {
+        Swal.fire({
+            title: 'Supprimer cette image ?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            confirmButtonText: 'Supprimer'
+        }).then(result => {
+            if (result.value) {
+                fetch('<?php echo base_url(); ?>home/deleteRappelImage', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ idImage: idImage })
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        loadRappelImages(idChapitre);
+                    } else {
+                        Swal.fire({ icon: 'error', title: 'Erreur', text: data.message });
+                    }
+                });
+            }
+        });
+    }
+    </script>
     </html>
 
 <?php }else{ ?>

@@ -26,12 +26,10 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    // Fonction pour ouvrir le modal
     function openModalDetailsCurs() {
         document.getElementById("customModal").style.display = "flex";
     }
 
-    // Fonction pour fermer le modal
     function closeModal() {
         document.getElementById("customModal").style.display = "none";
     }
@@ -39,7 +37,6 @@
     function showCurs(){
 
         let idChapitre = "<?php echo $this->session->userdata('curs_id'); ?>".replace(/^curs_/, "");
-		// Construire l'URL
         let baseUrl 	= "<?php echo base_url(); ?>";
         let lang 		= "<?php echo $this->lang->line('siteLang'); ?>";
         let redirectUrl = `${baseUrl}${lang}livreCours/${idChapitre}`;
@@ -47,7 +44,6 @@
         window.location.href = redirectUrl;
 	}
 
-    // Ferme le modal en cliquant à l'extérieur
     window.onclick = function(event) {
         let modal = document.getElementById("customModal");
         if (event.target === modal) {

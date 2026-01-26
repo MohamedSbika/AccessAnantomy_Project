@@ -1,5 +1,5 @@
 <?php if(strlen($this->session->userdata('passTok'))==200) { ?>
-<div style="display: flex;background-color: white">
+<div style="display: flex;background-color: white; margin-right: 80px;">
 	<style>
 		.zoom {
 			width: 320px;
@@ -331,10 +331,10 @@
 
 	</style>
 
-	<input type="hidden" value="<?php print count($listFig) ?>" id="cmpFig" name="cmpFig">
+	<input type="hidden" value="<?php print isset($listFig) && is_array($listFig) ? count($listFig) : 0 ?>" id="cmpFig" name="cmpFig">
 
 	<div class="">
-		<div class="scroll-container">
+		<div id="figures-scroll-container" class="scroll-container">
 
 			<?php
 			$counter = -1;
@@ -365,10 +365,21 @@
 	</div>
 
 	<?php
-if (in_array((int)$OneBook[0]["IDLivre"], [70, 71]) || in_array((int)$OneBook[0]["IDCategory"], [4, 9])) {
-	 $showScroll = true;
-} else { ?>
-	<?php $showScroll = false; } ?>
+// Vérification robuste de $OneBook pour éviter les erreurs "Undefined offset"
+if (isset($OneBook) && !empty($OneBook) && is_array($OneBook) && isset($OneBook[0])) {
+    $idLivre = isset($OneBook[0]["IDLivre"]) ? (int)$OneBook[0]["IDLivre"] : 0;
+    $idTheme = isset($OneBook[0]["IDTheme"]) ? (int)$OneBook[0]["IDTheme"] : 0;
+    
+    if (in_array($idLivre, [70, 71]) || in_array($idTheme, [16, 27, 34])) {
+        $showScroll = true;
+    } else {
+        $showScroll = false;
+    }
+} else {
+    // Fallback si $OneBook n'est pas disponible (accès direct au fichier HTML)
+    $showScroll = false;
+}
+?>
 	<div class="" style="width: 100%;">
 		<div class="container-fig" style="max-height: 50vw; overflow: hidden;height: 100vh;background: rgb(255, 255, 255);position: relative;
   											width: 100%;  max-width: 900px; margin: auto; display: flex;
@@ -542,9 +553,9 @@ if (in_array((int)$OneBook[0]["IDLivre"], [70, 71]) || in_array((int)$OneBook[0]
 
 	<script>
 
-        let figImages = [];
-        let figTitles = [];
-        let currentIndex = 0;
+        var figImages = [];
+        var figTitles = [];
+        var currentIndex = 0;
 
         document.addEventListener("DOMContentLoaded", function () {
             const allImages = document.querySelectorAll('.slider-image');
@@ -575,14 +586,15 @@ if (in_array((int)$OneBook[0]["IDLivre"], [70, 71]) || in_array((int)$OneBook[0]
                 allThumbs.forEach((img, idx) => {
                     if (idx === index) {
                         img.classList.add("active-thumb");
+                        if (img.scrollIntoView) {
+                            img.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+                        }
                     } else {
                         img.classList.remove("active-thumb");
                     }
                 });
             }
         }
-
-
 
         function nextImage() {
             currentIndex = (currentIndex + 1) % figImages.length;
@@ -592,12 +604,6 @@ if (in_array((int)$OneBook[0]["IDLivre"], [70, 71]) || in_array((int)$OneBook[0]
         function prevImage() {
             currentIndex = (currentIndex - 1 + figImages.length) % figImages.length;
             showFigByIndex(currentIndex);
-        }
-
-        // Dans showFigByIndex
-        const activeImg = document.querySelectorAll('.slider-image')[index];
-        if (activeImg && activeImg.scrollIntoView) {
-            activeImg.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
         }
 
 	</script>

@@ -531,7 +531,7 @@ class Video extends CI_Controller
         $this->db->Where("idChapitre = '$idChapitre' AND type = '$idType'");
         $resVideos = $this->db->get()->result_array();
 
-        log_message('listVideo', json_encode($resVideos) );
+        log_message('debug', 'listVideo: ' . json_encode($resVideos) );
 
         $arr_Res = array("id" => '1', "desc" => $resVideos);
         echo json_encode($arr_Res);

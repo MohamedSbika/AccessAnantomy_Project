@@ -16,14 +16,12 @@
 
 	<style>
 		body {
-			/*font-family: 'Manrope', sans-serif;*/
 			font-family: 'Roboto', sans-serif;
 			margin: 0;
 			padding: 0;
 			background-color: #f5f5f5;
 			color: white;
 			overflow-x: hidden;
-			/* Prevent horizontal scrolling */
 		}
 
 		h1,
@@ -39,38 +37,31 @@
 
 		h1 {
 			font-weight: 600;
-			/* Pour un titre plus bold */
 		}
 
 		h2 {
 			font-weight: 500;
-			/* Moins bold que h1 */
 		}
 
 		h3 {
 			font-weight: 400;
-			/* Poids normal pour h3 */
 		}
 
 		h4 {
 			font-weight: 300;
-			/* Poids normal pour h3 */
 		}
 
 		h5 {
 			font-weight: 200;
-			/* Poids normal pour h3 */
 		}
 
 		.top-bar {
-			/*background: #0E2A47;*/
 			color: white;
 			padding: 10px 5%;
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
 			flex-wrap: wrap;
-			/* Allows stacking on small screens */
 		}
 
 		.top-bar nav a {
@@ -79,17 +70,14 @@
 			text-decoration: none;
 		}
 
-		/* Sidebar (initially hidden) */
 		.side-nav {
 			position: fixed;
 			top: 0;
 			left: -250px;
-			/* Hidden offscreen initially */
 			width: 250px;
 			height: 100%;
 			background-color: #0E2A47;
 			transition: 0.3s;
-			/* Smooth transition */
 			z-index: 1000;
 			padding-top: 60px;
 			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -121,7 +109,6 @@
 		/* Hamburger menu button */
 		.menu-btn {
 			display: none;
-			/* Hide by default */
 			font-size: 30px;
 			color: white;
 			background: none;
@@ -129,10 +116,8 @@
 			cursor: pointer;
 		}
 
-		/* Main navigation bar */
 		.main-nav {
 			width: 90%;
-			/* margin-left: 5%; */
 			font-size: 10px;
 			background: white;
 			color: #120E47;
@@ -142,8 +127,6 @@
 			align-items: center;
 			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 			flex-wrap: wrap;
-			/* Wraps navigation items on small screens */
-			/* border-radius: 10px; */
 		}
 
 		.btn {
@@ -161,7 +144,6 @@
 			padding: 10px 22px;
 		}
 
-		/* Media Queries for Mobile */
 		@media (max-width: 768px) {
 			.menu-btn {
 				display: flex;
@@ -171,25 +153,20 @@
 				width: 40px;
 			}
 
-			/* Sidebar navigation visible when toggled */
 			.side-nav {
 				padding-top: 80px;
 			}
 		}
 
-		/* Adjust the layout for larger screens */
 		@media (min-width: 769px) {
 			.side-nav {
 				display: none;
-				/* Sidebar hidden by default on large screens */
 			}
 
 			.main-nav ul {
 				display: flex;
 			}
 		}
-
-		/* Show the toggle button on smaller screens */
 		@media (max-width: 768px) {
 			.menu-btn {
 				display: flex;
@@ -200,16 +177,13 @@
 
 			.main-nav {
 				display: none;
-				/* Hide default nav on small screens */
 			}
 
 			.side-nav {
 				padding-top: 80px;
-				/* Adjust padding for mobile */
 			}
 		}
 
-		/* Adjust main-nav for mobile */
 		@media (min-width: 769px) {
 			.main-nav ul {
 				display: flex;
@@ -218,14 +192,12 @@
 
 
 		.top-bar {
-			/*background: #0E2A47;*/
 			color: white;
 			padding: 10px 5%;
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
 			flex-wrap: wrap;
-			/* Allows stacking on small screens */
 		}
 
 		.top-bar nav a {
@@ -272,7 +244,6 @@
 			padding: 20px 5%;
 			background: white;
 			flex-wrap: wrap;
-			/* Allow elements to stack on small screens */
 		}
 
 		.hero-text {
@@ -534,19 +505,17 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 	</header>
 
 	<script>
-		// Function to open the sidebar menu
 		function toggleNav() {
 			var sideNav = document.getElementById("sideNav");
 			if (sideNav.style.left === "0px") {
-				sideNav.style.left = "-250px";  // Close menu
+				sideNav.style.left = "-250px"; 
 			} else {
-				sideNav.style.left = "0";  // Open menu
+				sideNav.style.left = "0";  
 			}
 		}
 
-		// Function to close the sidebar
 		function closeNav() {
-			document.getElementById("sideNav").style.left = "-250px";  // Close menu
+			document.getElementById("sideNav").style.left = "-250px"; 
 		}
 	</script>
 
@@ -565,11 +534,8 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 						.buttons {
 							display: flex;
 							justify-content: space-between;
-							/* Aligne les boutons horizontalement avec un espace entre eux */
 							gap: 20px;
-							/* Espace entre les deux boutons */
 							align-items: center;
-							/* Aligne verticalement les boutons si nécessaire */
 						}
 
 
@@ -577,18 +543,14 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 							background: none;
 							padding: 10px 20px;
 							border-radius: 30px;
-							/* Bord arrondi pour avoir un bouton légèrement arrondi */
 							text-decoration: none;
 							color: #120E47;
 							font-weight: bold;
 							display: flex;
 							align-items: center;
-							/* Aligne l'icône et le texte verticalement */
 							font-size: 1em;
 							white-space: nowrap;
-							/* Empêche le texte de se couper */
 							gap: 10px;
-							/* Ajoute un espacement entre l'icône et le texte */
 						}
 
 						.play-icon {
@@ -614,7 +576,7 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 				</div>
 			</div>
 			<div class="hero-image">
-				<img src="<?php echo HTTP_IMAGES; ?>photos/brain.png" alt="Image anatomique">
+				<img src="<?php echo HTTP_IMAGES; ?>photos/brain1.webp" alt="Image anatomique">
 			</div>
 		</section>
 
@@ -651,7 +613,7 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 				<h2><?php echo $this->lang->line('types_cours'); ?></h2>
 			</div>
 		</section>
-
+3
 		<style>
 			.section-info {
 				display: flex;
@@ -797,7 +759,7 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 		</style>
 		<section class="section-info">
 			<div class="image-container">
-				<img src="<?php echo HTTP_IMAGES; ?>photos/brain.png" alt="Cerveau énergétique">
+				<img src="<?php echo HTTP_IMAGES; ?>photos/brain1.webp" alt="Cerveau énergétique">
 			</div>
 			<div class="text-container">
 				<h3><?php echo $this->lang->line('access_desc_title'); ?></h3>
@@ -1092,7 +1054,6 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 
 					<div class="step-card">
 
-						<!-- Bloc gauche -->
 						<div class="left-box">
 							<h1 style="margin: 0; font-size: 25px;">3</h1>
 							<h2 style="font-size: 14px; text-transform: uppercase;">
@@ -1100,7 +1061,6 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 							</h2>
 						</div>
 
-						<!-- Bloc droit -->
 						<div class="right-box" style="padding: 10px; flex: 1;">
 							<p style="margin: 0; color: #333;font-size: 13px;">
 								<?php echo $this->lang->line('step_3_desc'); ?>
@@ -1109,10 +1069,8 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 
 					</div>
 
-					<div class="step-card"
-						style="display: flex; background: #f5f5f5; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); overflow: hidden; margin-bottom: 15px;">
+					<div class="step-card">
 
-						<!-- Bloc gauche -->
 						<div class="left-box">
 							<h1 style="margin: 0; font-size: 25px;">4</h1>
 							<h2 style="font-size: 14px; text-transform: uppercase;">
@@ -1120,7 +1078,6 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 							</h2>
 						</div>
 
-						<!-- Bloc droit -->
 						<div class="right-box" style="padding: 10px; flex: 1;">
 							<p style="margin: 0; color: #333;font-size: 13px;">
 								<?php echo $this->lang->line('step_4_desc'); ?>
@@ -1131,7 +1088,6 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 
 					<div class="step-card" style="margin-bottom: 0px !important;">
 
-						<!-- Bloc gauche -->
 						<div class="left-box">
 							<h1 style="margin: 0; font-size: 25px;">5</h1>
 							<h2 style="font-size: 14px; text-transform: uppercase;">
@@ -1139,7 +1095,6 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 							</h2>
 						</div>
 
-						<!-- Bloc droit -->
 						<div class="right-box" style="padding: 10px; flex: 1;">
 							<p style="margin: 0; color: #333;font-size: 13px;">
 								<?php echo $this->lang->line('step_5_desc'); ?>
@@ -1346,7 +1301,6 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 					background: #d39e00;
 				}
 
-				/* Media Queries for smaller screens */
 				@media (max-width: 768px) {
 					.section-price-plan {
 						padding: 10px 2%;
@@ -1360,7 +1314,6 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 					.plan {
 						margin-bottom: 10px;
 						min-width: auto;
-						/* Allow plan width to shrink */
 					}
 
 					.price {
@@ -1408,14 +1361,11 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 					}
 				}
 
-				/* Appliquer la croix (X) uniquement dans le bloc Basique */
 				.plan:nth-child(1) .features li:nth-child(5)::before,
 				.plan:nth-child(1) .features li:nth-child(6)::before,
 				.plan:nth-child(1) .features li:nth-child(7)::before {
 					content: '\2716';
-					/* Symbole "X" */
 					color: white;
-					/* Couleur de la croix */
 					background-color: red;
 					border-radius: 50%;
 					width: 20px;
@@ -1436,33 +1386,34 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 					<img src="<?php echo HTTP_IMAGES; ?>photos/chatbot.png" alt="Cerveau énergétique">
 				</div>
 				<div class="text-container">
-					<h3><?php echo $this->lang->line('chatbot_title'); ?></h3>
-					<p><?php echo $this->lang->line('chatbot_p'); ?></p>
-					<p><?php echo $this->lang->line('chatbot_p1'); ?></p>
-					<ul>
-						<li><?php echo $this->lang->line('chatbot_li1'); ?></li>
-						<li><?php echo $this->lang->line('chatbot_li2'); ?></li>
-						<li><?php echo $this->lang->line('chatbot_li3'); ?></li>
-						<li><?php echo $this->lang->line('chatbot_li4'); ?></li>
-						<li><?php echo $this->lang->line('chatbot_li5'); ?></li>
-					</ul>
-					<p><?php echo $this->lang->line('chatbot_p2'); ?></p>
+	<h3><?php echo $this->lang->line('chatbot_title'); ?></h3>
+	<p><?php echo $this->lang->line('chatbot_p'); ?></p>
+	<p><?php echo $this->lang->line('chatbot_p1'); ?></p>
+	<ul>
+		<li><?php echo $this->lang->line('chatbot_li1'); ?></li>
+		<li><?php echo $this->lang->line('chatbot_li2'); ?></li>
+		<li><?php echo $this->lang->line('chatbot_li3'); ?></li>
+		<li><?php echo $this->lang->line('chatbot_li4'); ?></li>
+		<li><?php echo $this->lang->line('chatbot_li5'); ?></li>
+	</ul>
+	<p><?php echo $this->lang->line('chatbot_p2'); ?></p>
 
-					<!-- 🔘 Bouton corrigé -->
-					<a href="http://localhost:5173" class="btn-chatbot" target="_blank">
-						<?php
-						// Vérifiez d'abord si la ligne existe
-						$button_text = $this->lang->line('chatbot_button');
-						echo !empty($button_text) ? $button_text : 'hello';
-						?>
-					</a>
-				</div>
+	<?php $button_text = $this->lang->line('chatbot_button') ?? 'hello'; ?>
 
+	<?php if ($this->session->userdata('user_id') > 0): ?>
+		<a href="http://localhost:5173" class="btn-chatbot" target="_blank">
+			<?= $button_text; ?>
+		</a>
+	<?php else: ?>
+		<a href="#" class="btn-chatbot" onclick="openModalLogin(); return false;">
+			<?= $button_text; ?>
+		</a>
+	<?php endif; ?>
+</div>
 				<style>
 					.section-info .btn-chatbot {
 						display: inline-block;
 						padding: 15px 40px;
-						/* Padding réduit pour un bouton plus normal */
 						margin-top: 15px;
 						background-color: #2A9D8F;
 						color: #fff;
@@ -1473,16 +1424,13 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 						transition: background 0.3s ease;
 						text-align: center;
 						min-width: 120px;
-						/* Largeur minimum */
 					}
 
 					.section-info .btn-chatbot:hover {
 						background-color: #203b6f;
 						color: #fff;
-						/* Assure que le texte reste blanc au hover */
 					}
 
-					/* Assure que le lien ne hérite pas de styles indésirables */
 					.section-info .btn-chatbot:link,
 					.section-info .btn-chatbot:visited {
 						color: #fff;
@@ -1491,6 +1439,151 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 				</style>
 			</section>
 
+<!-- <section class="section-paces">
+    <div class="paces-wrapper">
+        <div class="image-container">
+            <img src="<?php echo HTTP_IMAGES; ?>photos/paces.png" alt="Anatomie PACES">
+        </div>
+
+        <div class="text-container">
+            <h3>Application PACES – Anatomie (1ère année Médecine)</h3>
+
+            <p class="intro">
+                Accédez à une plateforme dédiée aux étudiants en première année de médecine (PACES),
+                conçue pour faciliter l’apprentissage de l’anatomie humaine de manière claire,
+                structurée et progressive.
+            </p>
+
+            <p class="highlight">
+                L’application PACES propose des cours d’anatomie illustrés, organisés par systèmes
+                et régions anatomiques, adaptés au programme officiel de la première année de médecine.
+            </p>
+
+            <ul class="features">
+                <li>Cours d’anatomie détaillés et structurés</li>
+                <li>Schémas explicatifs et visuels pédagogiques</li>
+                <li>Révisions ciblées pour examens et concours</li>
+                <li>Navigation simple par chapitres</li>
+                <li>Pensée spécialement pour les étudiants PACES</li>
+            </ul>
+
+            <a href="http://localhost/pacess/FR/login" class="btn-paces" target="_blank">
+                Accéder à PACES Anatomie
+            </a>
+        </div>
+    </div>
+
+    <style>
+        /* ===== SECTION ===== */
+        .section-paces {
+            background: rgba(3, 26, 75, 0.97);
+            padding: 60px 40px;
+            color: #ffffff;
+        }
+
+        /* ===== WRAPPER FLEX STABLE ===== */
+        .section-paces .paces-wrapper {
+            display: flex;
+            align-items: center;        /* alignement vertical */
+            justify-content: center;
+            gap: 50px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* ===== IMAGE ===== */
+        .section-paces .image-container {
+            flex: 0 0 280px;
+        }
+
+        .section-paces .image-container img {
+            width: auto;
+            height: 400px;
+            display: block;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ===== TEXTE ===== */
+        .section-paces .text-container {
+            flex: 1;
+            text-align: left;
+        }
+
+        .section-paces h3 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #38bdf8;
+            margin-bottom: 15px;
+        }
+
+        .section-paces .intro {
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+
+        .section-paces .highlight {
+            background-color: rgba(56, 189, 248, 0.12);
+            border-left: 4px solid #38bdf8;
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 15px;
+        }
+
+        .section-paces .features {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 25px;
+        }
+
+        .section-paces .features li {
+            padding: 6px 0;
+            font-size: 15px;
+			color: #fff;
+        }
+
+        .section-paces .features li::before,
+        .section-paces .features li::marker {
+            content: none !important;
+            display: none !important;
+        }
+
+        /* ===== BOUTON ===== */
+        .section-paces .btn-paces {
+            display: inline-block;
+            padding: 14px 36px;
+            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .section-paces .btn-paces:hover {
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            transform: translateY(-2px);
+            color: #fff;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .section-paces .paces-wrapper {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .section-paces .text-container {
+                text-align: center;
+            }
+        }
+    </style>
+</section> -->
+
+
 
 			<div class="section-price-plan">
 				<div class="price_plan">
@@ -1498,7 +1591,7 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 						<?php echo $this->lang->line('pricing_title'); ?>
 					</h1>
 					<div class="toggle-container">
-						<span><?php echo $this->lang->line('monthly'); ?></span>
+						<span><?php echo $this->lang->line('monthly'); ?></span> 
 						<label class="toggle-switch">
 							<input type="checkbox" checked>
 							<span class="slider-toggle"></span>
@@ -1544,7 +1637,6 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 					font-size: 18px;
 					background: #fff;
 
-					/* Center slide text vertically */
 					display: -webkit-box;
 					display: -ms-flexbox;
 					display: -webkit-flex;
@@ -1562,13 +1654,10 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 				.swiper-slide img {
 					display: block;
 					width: 100%;
-					/* Modifier ici pour ajuster la largeur de l'image */
 					height: auto;
-					/* Maintient le ratio d'aspect de l'image */
 					object-fit: cover;
 					box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7),
 						0 6px 20px rgba(0, 0, 0, 0.3);
-					/* Double ombre pour plus de réalisme */
 					border-radius: 8px;
 				}
 
@@ -1624,7 +1713,6 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 			<style>
 				.swiper-wrapper {
 					transition-timing-function: linear !important;
-					/* Assure un mouvement constant */
 				}
 			</style>
 
@@ -1634,13 +1722,13 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 					slidesPerView: 4,
 					spaceBetween: 30,
 					autoplay: {
-						delay: 0, // Pas d'arrêt
+						delay: 0, 
 						disableOnInteraction: false
 					},
-					speed: 4000, // Ajustez pour un mouvement plus fluide et continu
-					freeMode: true, // Permet un défilement continu
-					freeModeMomentum: false, // Empêche les arrêts naturels
-					freeModeSticky: false, // Garantit un mouvement fluide
+					speed: 4000, 
+					freeMode: true, 
+					freeModeMomentum: false, 
+					freeModeSticky: false, 
 					pagination: { el: '.swiper-pagination', clickable: true },
 					navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
 				});
@@ -1668,9 +1756,7 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 				max-width: 1200px;
 				width: 100%;
 				flex-wrap: wrap;
-				/* Allow wrapping on small screens */
 				gap: 20px;
-				/* Space between left and right sections */
 			}
 
 			.left {
@@ -1745,7 +1831,6 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 			@media (max-width: 768px) {
 				.container-contact {
 					flex-direction: column;
-					/* Stack left and right sections */
 					padding: 10px;
 				}
 
@@ -1754,7 +1839,6 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 					flex: 1;
 					padding: 15px;
 					margin-bottom: 20px;
-					/* Add space between the sections */
 				}
 
 				.left h1 {
@@ -1767,7 +1851,6 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 
 				.contact-info img {
 					width: 35px;
-					/* Reduce image size */
 				}
 
 				.right h2 {
@@ -1796,7 +1879,6 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 
 				.contact-info img {
 					width: 30px;
-					/* Further reduce image size */
 				}
 
 				.right h2 {

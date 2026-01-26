@@ -557,7 +557,7 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
                     "url": "<?php echo base_url(); ?>home/ajax_PagesResume_list",
                     "type": "POST",
                     "data": function(d) {
-                        d.ic = "<?= $OneCurs[0]['IDResume']; ?>";
+                        d.ic = "<?= isset($OneCurs[0]['IDResume']) ? $OneCurs[0]['IDResume'] : ''; ?>";
                         d.indexSearch = "<?php print $indexSearch; ?>";
                     }
                 },
