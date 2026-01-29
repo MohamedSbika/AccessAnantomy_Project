@@ -36,19 +36,20 @@
 
     .pathologies-content {
         max-height: 0;
-        overflow: hidden;
+        overflow-y: hidden;
         transition: max-height 0.4s ease, opacity 0.3s ease;
         opacity: 0;
     }
 
     .pathologies-content.expanded {
-        max-height: 500px;
+        max-height: 280px;
+        overflow-y: auto;
         opacity: 1;
     }
 		.sidebar-racc {
 			position: fixed;
-			width: 35%;
-			padding: 15px;
+			width: 75px;
+			padding: 15px 5px;
 			border-radius: 10px;
 			display: flex;
 			flex-direction: column;
@@ -61,8 +62,8 @@
 			background: #eaebec94;
 		}
 		.sidebar-racc.collapsed {
-			width: 5%;
-			padding: 8px;
+			width: 75px;
+			padding: 8px 5px;
 			opacity: 0.9;
 		}
 		.sidebar-racc.collapsed .chapter-item,
@@ -600,7 +601,7 @@ function afficherSousChapitres(sousChapList, data) {
 html += `
     <li class="sous-chapitre-item rappel-item" 
         style="font-weight:bold; color:#1d3557; background-color:#dce6f1; cursor:pointer;"
-        onclick="chargerRappelDefaut('${idChapterRappel || ''}', event)">
+        onclick="chargerRappelDefaut('${idChapterRappel || ''}', '${nbreResumeRappel}', event)">
         Anatomie - Cours fondamental complet
     </li>
 `;
@@ -640,12 +641,12 @@ html += `
                     <div class="patho-version-container">
                         <a href="#" class="patho-version-link essential" 
                            onclick="selectSousChapitre('${sousChap.IDSousChapitre}', '${sousChap.IDChapitre}', '${idChapterRappel}', this, event, 'essential', ${sousChap.FichierHTML ? 'true' : 'false'})">
-                            <span>Version essentielle</span>
+                            <span>Version intégrale</span>
                             <i class="fas fa-chevron-right"></i>
                         </a>
                         <a href="#" class="patho-version-link integral" 
                            onclick="selectSousChapitre('${sousChap.IDSousChapitre}', '${sousChap.IDChapitre}', '${idChapterRappel}', this, event, 'integral', ${sousChap.FichierHTML_Resume ? 'true' : 'false'})">
-                            <span>Version intégrale</span>
+                            <span>Version essentielle</span>
                             <i class="fas fa-chevron-right"></i>
                         </a>
                     </div>
@@ -915,7 +916,7 @@ function redirectToAnatomyResume(idChapitre, nbreResume, event) {
 }
 
 // === FONCTION POUR CHARGER LE RAPPEL PAR DÉFAUT ===
-function chargerRappelDefaut(idChapterRappel, event) {
+function chargerRappelDefaut(idChapterRappel, nbreResume = 0, event) {
     if (event) event.stopPropagation();
 
     if (!idChapterRappel || isNaN(idChapterRappel)) {
@@ -933,7 +934,8 @@ function chargerRappelDefaut(idChapterRappel, event) {
 
     // CAS 1 : PAS dans la page cours - redirection
     if (!coursContainer) {
-        window.location.href = `${baseUrl}${lang}/livreCours/${idChapterRappel}`;
+        const target = (parseInt(nbreResume) > 0) ? 'livreResume' : 'livreFigures';
+        window.location.href = `${baseUrl}${lang}/${target}/${idChapterRappel}`;
         return;
     }
 
@@ -947,7 +949,8 @@ function chargerRappelDefaut(idChapterRappel, event) {
         </div>
     `;
 
-    fetch(`${baseUrl}home/getRappelCoursContent`, {
+    const endpoint = (parseInt(nbreResume) > 0) ? 'getRappelResumeContent' : 'getRappelCoursContent';
+    fetch(`${baseUrl}home/${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ idChapterRappel })

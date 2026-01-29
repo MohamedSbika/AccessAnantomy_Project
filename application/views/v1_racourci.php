@@ -19,8 +19,8 @@ else { ?>
 	<style>
 		.sidebar-racc {
 			position: fixed;
-			width: 35%;
-			padding: 15px;
+			width: 75px;
+			padding: 15px 5px;
 			border-radius: 10px;
 			display: flex;
 			flex-direction: column;
@@ -33,8 +33,8 @@ else { ?>
 			background: #eaebec94;
 		}
 		.sidebar-racc.collapsed {
-			width: 5%;
-			padding: 8px;
+			width: 75px;
+			padding: 8px 5px;
 			opacity: 0.9;
 		}
 		.sidebar-racc.collapsed .chapter-item,
@@ -240,13 +240,14 @@ else { ?>
 
     .pathologies-content {
         max-height: 0;
-        overflow: hidden;
+        overflow-y: hidden;
         transition: max-height 0.4s ease, opacity 0.3s ease;
         opacity: 0;
     }
 
     .pathologies-content.expanded {
-        max-height: 800px;
+        max-height: 280px;
+        overflow-y: auto;
         opacity: 1;
     }
 
@@ -376,7 +377,7 @@ else { ?>
                         }
 					</script>
 
-					<span class="carreaux" style="background-color: #1E88E5;color: white" onclick="selectUniqueCarreau(this,'resume')">
+					<span class="carreaux" style="background-color: #1E88E5;color: white" onclick="selectUniqueCarreau(this,'theme')">
                     <div class="title_carr"><?php echo $this->lang->line('sidebar_cours'); ?></div>
                     <i class="fas fa-headphones-alt"></i>
                 </span>
@@ -696,7 +697,7 @@ if (type_sel === 'qcm') {
                                     </div>
                                     <ul class="patho-sous-chap-list" style="${displayStyle} list-style: none; padding: 0; background: #fafafa; border-bottom: 1px solid #eee;">
                                         <li class="sous-chapitre-item" style="font-weight:bold; color:#1d3557; background-color:#dce6f1; border-left: 3px solid #1d3557;"
-                                            onclick="window.location.href='${baseUrl}${lang}/livreCours/${chap.IdChapterRappel}'">
+                                            onclick="window.location.href='${baseUrl}${lang}/${(parseInt(chap.NbreResumeRappel) > 0) ? 'livreResume' : 'livreFigures'}/${chap.IdChapterRappel}'">
                                             Anatomie - Cours fondamental complet
                                         </li>`;
 
@@ -716,12 +717,12 @@ if (type_sel === 'qcm') {
                                             <div class="patho-version-container">
                                                 <a href="#" class="patho-version-link essential" 
                                                    onclick="selectSousChapitrePatho('${sc.IDSousChapitre}', '${chap.IDChapitre}', '${chap.IdChapterRappel}', event, 'essential', ${sc.FichierHTML ? 'true' : 'false'})">
-                                                    <span>Version essentielle</span>
+                                                    <span>Version intégrale</span>
                                                     <i class="fas fa-chevron-right"></i>
                                                 </a>
                                                 <a href="#" class="patho-version-link integral" 
                                                    onclick="selectSousChapitrePatho('${sc.IDSousChapitre}', '${chap.IDChapitre}', '${chap.IdChapterRappel}', event, 'integral', ${sc.FichierHTML_Resume ? 'true' : 'false'})">
-                                                    <span>Version intégrale</span>
+                                                    <span>Version essentielle</span>
                                                     <i class="fas fa-chevron-right"></i>
                                                 </a>
                                             </div>
@@ -859,8 +860,8 @@ if (type_sel === 'qcm') {
                     .then(data => {
                         if (data.success && data.type === 'chapters' && data.pathoChapters.length > 0) {
                             const firstPathoChap = data.pathoChapters[0];
-                            // On passe l'ID d'anatomie (idChapitre) ET l'ID de pathologie (firstPathoChap.IDChapitre)
-                            afficherSousChapitresPatho(sousChapList, firstPathoChap.sousChaps, firstPathoChap.IDChapitre, idChapitre);
+                            // On passe l'ID d'anatomie (idChapitre) ET l'ID de pathologie (firstPathoChap.IDChapitre) et nbreResume
+                            afficherSousChapitresPatho(sousChapList, firstPathoChap.sousChaps, firstPathoChap.IDChapitre, idChapitre, firstPathoChap.NbreResumeRappel);
                         } else if (data.success && data.type === 'books') {
                              sousChapList.innerHTML = `<li class="sous-chapitre-item" onclick="window.location.href='<?php echo base_url(); ?><?php echo strtoupper($this->uri->segment(1)); ?>/livre/${data.pathoBooks[0].IDLivre}'">Voir pathologies</li>`;
                         } else {
@@ -875,7 +876,7 @@ if (type_sel === 'qcm') {
             }
         }
 
-        function afficherSousChapitresPatho(container, sousChaps, idChapitre, idAnatomy = null) {
+        function afficherSousChapitresPatho(container, sousChaps, idChapitre, idAnatomy = null, nbreResume = '0') {
             let html = '';
             let finalIdAnatomy = idAnatomy || idChapitre;
             
@@ -886,7 +887,7 @@ if (type_sel === 'qcm') {
             html += `
                 <li class="sous-chapitre-item rappel-item" 
                     style="font-weight:bold; color:#1d3557; background-color:#dce6f1; cursor:pointer;"
-                    onclick="chargerRappelDefaut('${finalIdAnatomy}', event)">
+                    onclick="chargerRappelDefaut('${finalIdAnatomy}', '${nbreResume}', event)">
                     Anatomie - Cours fondamental complet
                 </li>
             `;
@@ -925,12 +926,12 @@ if (type_sel === 'qcm') {
                             <div class="patho-version-container">
                                 <a href="#" class="patho-version-link essential" 
                                    onclick="selectSousChapitrePatho('${sc.IDSousChapitre}', '${idChapitre}', '${finalIdAnatomy}', event, 'essential', ${sc.FichierHTML ? 'true' : 'false'})">
-                                    <span>Version essentielle</span>
+                                    <span>Version intégrale</span>
                                     <i class="fas fa-chevron-right"></i>
                                 </a>
                                 <a href="#" class="patho-version-link integral" 
                                    onclick="selectSousChapitrePatho('${sc.IDSousChapitre}', '${idChapitre}', '${finalIdAnatomy}', event, 'integral', ${sc.FichierHTML_Resume ? 'true' : 'false'})">
-                                    <span>Version intégrale</span>
+                                    <span>Version essentielle</span>
                                     <i class="fas fa-chevron-right"></i>
                                 </a>
                             </div>
@@ -1020,7 +1021,7 @@ if (type_sel === 'qcm') {
 
 
         // === FONCTION POUR CHARGER LE RAPPEL PAR DÉFAUT ===
-        function chargerRappelDefaut(idChapterRappel, event) {
+        function chargerRappelDefaut(idChapterRappel, nbreResume = 0, event) {
             if (event) event.stopPropagation();
 
             if (!idChapterRappel || isNaN(idChapterRappel)) {
@@ -1038,7 +1039,8 @@ if (type_sel === 'qcm') {
 
             // CAS 1 : PAS dans la page cours - redirection
             if (!coursContainer) {
-                window.location.href = `${baseUrl}${lang}/livreCours/${idChapterRappel}`;
+                const target = (parseInt(nbreResume) > 0) ? 'livreResume' : 'livreFigures';
+                window.location.href = `${baseUrl}${lang}/${target}/${idChapterRappel}`;
                 return;
             }
 
@@ -1052,7 +1054,8 @@ if (type_sel === 'qcm') {
                 </div>
             `;
 
-            fetch(`${baseUrl}home/getRappelCoursContent`, {
+            const endpoint = (parseInt(nbreResume) > 0) ? 'getRappelResumeContent' : 'getRappelCoursContent';
+            fetch(`${baseUrl}home/${endpoint}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ idChapterRappel })
