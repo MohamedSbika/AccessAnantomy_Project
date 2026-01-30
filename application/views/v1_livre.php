@@ -12,6 +12,7 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 	<link href="<?php echo HTTP_CSS; ?>v1_app.css" rel="stylesheet">
+    <link href="<?php echo HTTP_CSS; ?>responsive.css" rel="stylesheet">
 	<style >
 
 		.btn{
@@ -49,7 +50,7 @@
 			padding: 20px;
 			border-radius: 8px;
 			max-width: 50%;
-			max-height: 80vh; 
+			max-height: 80vh;
 			overflow-y: auto;
 			box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 		}
@@ -131,8 +132,8 @@
 			color: white;
 			font-size: 16px;
 			line-height: 1.6;
-			max-height: 500px; 
-			overflow-y: auto; 
+			max-height: 500px;
+			overflow-y: auto;
 			padding-top: 15px;
 			box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.74);
 		}
@@ -153,20 +154,29 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 
 <div class="main-section" id="mainSection" style="padding-top: 10px;">
 	<div class="row" style="align-items: flex-start;">
-		
+
 		<!-- Colonne image : 1/3 -->
 		<div class="col-md-4">
-			<?php if($OneBook[0]["encryptCouverture"] =='') { ?>
-				<img src="<?php echo HTTP_IMAGES; ?>photos/NoPicture.png" alt="" class="img-fluid" style="max-height: 500px; width: 100%; object-fit: contain;">
-			<?php } else { ?>
-				<img src="data:image/png;base64,<?php print $OneBook[0]["encryptCouverture"]; ?>" 
-				     class="img-fluid" style="max-height: 450px; width: 100%; object-fit: contain; margin-left: 30px;">
-			<?php }?>
+            <div id="arrowViewImage" onclick="viewImage()" class="arrowViewImage d-flex d-md-none">
+                <span class="style"><</span>
+            </div>
+
+            <div id="arrowHideImage" onclick="hideImage()" class="arrowHideImage d-none">
+                <span class="style">></span>
+            </div>
+			<div id="imageView" class="imageView">
+                <?php if($OneBook[0]["encryptCouverture"] =='') { ?>
+                    <img src="<?php echo HTTP_IMAGES; ?>photos/NoPicture.png" alt="" class="img-fluid" style="max-height: 500px; width: 100%; object-fit: contain;">
+                <?php } else { ?>
+                    <img src="data:image/png;base64,<?php print $OneBook[0]["encryptCouverture"]; ?>"
+                         class="img-fluid" style="max-height: 450px; width: 100%; object-fit: contain; margin-left: 30px;">
+                <?php }?>
+            </div>
 		</div>
 
 		<!-- Colonne contenu : 2/3 -->
 		<div class="col-md-8">
-			<div class="bloc_pub" style="padding: 20px; color: black">
+			<div class="bloc_pub bloc_pub_responsive" style="padding: 20px; color: black">
 				<?php
 				$html = $OneBook[0]["Description"];
 				if (!empty($html)) {
@@ -210,3 +220,36 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 	?>
 
 <?php } ?>
+
+<script>
+    // Function to view image
+    function viewImage() {
+        let imageView = document.getElementById("imageView");
+        let arrowViewImage = document.getElementById("arrowViewImage");
+        let arrowHideImage = document.getElementById("arrowHideImage");
+
+        imageView.classList.remove("imageView");
+        imageView.classList.add("imageViewAnimation");
+
+        arrowViewImage.classList.remove("d-flex", "d-md-none");
+        arrowViewImage.classList.add("d-none");
+
+        arrowHideImage.classList.remove("d-none");
+        arrowHideImage.classList.add("d-flex",  "d-md-none");
+    }
+
+    function hideImage(){
+        let imageView = document.getElementById("imageView");
+        let arrowViewImage = document.getElementById("arrowViewImage");
+        let arrowHideImage = document.getElementById("arrowHideImage");
+
+        imageView.classList.add("imageView");
+        imageView.classList.remove("imageViewAnimation");
+
+        arrowViewImage.classList.add("d-flex", "d-md-none");
+        arrowViewImage.classList.remove("d-none");
+
+        arrowHideImage.classList.add("d-none");
+        arrowHideImage.classList.remove("d-flex",  "d-md-none");
+    }
+</script>

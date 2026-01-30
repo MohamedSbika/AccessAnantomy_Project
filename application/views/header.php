@@ -26,7 +26,7 @@
   gtag('config', 'G-GRLDWS8QBM');
 </script>
     <?php
-  
+
     if(isset($page)){
         $meta = '';
         $indx = '';
@@ -70,6 +70,7 @@
     <title>Access Anatomy</title>
 
     <link href="<?php echo HTTP_CSS; ?>app.css" rel="stylesheet">
+    <link href="<?php echo HTTP_CSS; ?>responsive.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="<?php echo HTTP_JS; ?>DataTables/datatables.css"/>
     <link rel="stylesheet" type="text/css" href="<?php echo HTTP_JS; ?>Zoom/zoomove.min.css"/>
 

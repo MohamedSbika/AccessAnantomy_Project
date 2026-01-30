@@ -521,7 +521,7 @@
 </div>
 
 <!-- Main Navigation for larger screens -->
-<nav class="main-nav">
+<nav class="main-nav mmm">
 
 	<img   src="<?php echo HTTP_IMAGES; ?>photos/logoNavbar.png" width="100px"
 		   onclick="window.location.href='<?php echo base_url() . $this->lang->line('siteLang'); ?>login';" >

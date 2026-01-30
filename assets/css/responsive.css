@@ -3,3 +3,87 @@
         width: 100% !important;
     }
 }
+
+.overflow-initial {
+    overflow: initial !important;
+}
+
+.sidebar-racc {
+    width: 75px !important;
+    background: #ffffff !important;
+    opacity: 1 !important;
+    top: 170px !important;
+}
+
+.imageViewAnimation {
+    display: block !important; /* make sure it's visible */
+    animation: slideInRight 0.8s ease forwards;
+}
+
+/* Keyframes for sliding in from the right */
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%); /* start off-screen to the right */
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0); /* end at normal position */
+        opacity: 1;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .bloc_pub_responsive {
+        margin-right: initial !important;
+        margin-left: initial !important;
+        padding-right: 15px !important;
+        padding-left: 15px !important;
+        margin-bottom: initial !important;
+        border-radius: initial !important;
+        max-height: initial !important;
+        overflow-y: initial !important;
+        padding-top: initial !important;
+        box-shadow: initial !important;
+    }
+
+    .imageView {
+        animation: slideOutRight 0.3s ease forwards;
+    }
+
+    .imageViewAnimation img {
+        margin-left: initial !important;
+    }
+
+    /* Keyframes for sliding out to the right */
+    @keyframes slideOutRight {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+            display: block;
+        }
+        to {
+            transform: translateX(100%);
+            opacity: 0;
+            display: none; /* hides after animation */
+        }
+    }
+}
+
+.arrowViewImage, .arrowHideImage {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #203b6f;
+    color: #ffffff;
+    border-radius: 10px;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    z-index: 9;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: 700;
+}

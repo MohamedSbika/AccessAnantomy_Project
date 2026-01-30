@@ -360,7 +360,7 @@
                 <div class="modal-body m-3">
                     <form id="formRappelManuel" name="formRappelManuel" enctype="multipart/form-data">
                         <input type="hidden" id="rappelChapitre" name="rappelChapitre" value="">
-                        
+
                         <div class="form-group">
                             <label>Fichier Rappel Anatomique (.docx)</label>
                             <input type="file" class="form-control" id="rappelFichier" name="rappelFichier" accept=".docx" required>
@@ -380,14 +380,14 @@
 <div class="modal fade" id="addImageRappelModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document" style="max-width:1000px;">
         <div class="modal-content" style="background-color: rgb(9,138,99); box-shadow: 0 0 0 50vmax rgba(0,0,0,.7);">
-            
+
             <div class="modal-header">
                 <h2 class="modal-title h2-modal-login">Gérer les images de rappel</h2>
                 <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close">x</button>
             </div>
 
             <div class="modal-body m-3">
-                
+
                 <!-- Liste des images existantes -->
                 <div id="listeImagesRappel" style="margin-bottom: 20px;">
                     <h4 style="color: white;">Images existantes</h4>
@@ -395,13 +395,13 @@
                         <!-- Les images seront chargées ici via JavaScript -->
                     </div>
                 </div>
-                
+
                 <hr style="border-color: white;">
-                
+
                 <!-- Formulaire d'ajout -->
                 <h4 style="color: white;">Ajouter une nouvelle image</h4>
                 <form id="formRappelImage" name="formRappelImage" enctype="multipart/form-data">
-                    
+
                     <!-- ID Chapitre -->
                     <input type="hidden" id="rappelChapitreImage" name="rappelChapitre">
 
@@ -454,14 +454,14 @@
                 <form id="formSousChap" name="formSousChap">
                     <input type="hidden" id="sousChap_bookID" name="bookID" value="">
                     <input type="hidden" id="sousChap_chapID" name="chapID" value="">
-                    
+
                     <div class="form-group">
                         <label class="form-label label-modal-login">Titres des sous-chapitres / pathologies</label>
-                        <textarea 
-                            id="sousChaps" 
-                            name="sousChaps" 
-                            rows="4" 
-                            class="form-control form-control-lg input-modal-login" 
+                        <textarea
+                            id="sousChaps"
+                            name="sousChaps"
+                            rows="4"
+                            class="form-control form-control-lg input-modal-login"
                             placeholder="Entrez les titres séparés par des virgules. Exemple: Pathologie 1, Pathologie 2, Pathologie 3"
                             style="font-size: 0.9rem; padding: 0.5rem;"
                         ></textarea>
@@ -620,9 +620,9 @@
 
     <div class="wrapper">
 
-        <div class="main" oncontextmenu="return false" onbeforeprint="return false" onselectstart="return false" ondragstart="return false">
+        <div class="main overflow-initial" oncontextmenu="return false" onbeforeprint="return false" onselectstart="return false" ondragstart="return false">
             <main class="content">
-                <div class="container-fluid p-0">
+                <div class="container-fluid">
                     <?php
                     include('header_nav.php');
                     ?>
@@ -676,7 +676,7 @@
 
 
 
-                                <div class="card-body" style=" display: flex;  justify-content: center;">
+                                <div class="card-body overflow-auto">
                                     <?php if ((strlen($this->session->userdata('passTok')) == 200) && ($this->session->userdata('EstAdmin') == 1)) { ?>
 <form name="pageForm_SetChap" id="pageForm_SetChap_<?= $OneBook[0]['IDLivre']; ?>" action="">
     <div class="row" style="flex: 1 0 0%;">
@@ -696,14 +696,14 @@
                     </div>
 
                     <div class="card-body">
-                        <?php 
+                        <?php
                         $idTheme = $OneBook[0]['IDTheme'];
-                        
-                        if (in_array($idTheme, [20, 31, 36])): 
+
+                        if (in_array($idTheme, [20, 31, 36])):
                             $themesCibles = [];
-                            if ($idTheme == 20) $themesCibles = [1];   
-                            if ($idTheme == 31) $themesCibles = [21];  
-                            if ($idTheme == 36) $themesCibles = [33];  
+                            if ($idTheme == 20) $themesCibles = [1];
+                            if ($idTheme == 31) $themesCibles = [21];
+                            if ($idTheme == 36) $themesCibles = [33];
 
                             $livres = $this->db->where_in('IDTheme', $themesCibles)->get('_livre')->result_array();
                         ?>
@@ -712,9 +712,9 @@
                                     Sélectionner un chapitre associé <span style="color:red;">*</span>
                                 </label>
 
-                                <select name="chapitreAssocie" 
-                                        id="chapitreAssocie_<?= $OneBook[0]['IDLivre']; ?>" 
-                                        class="form-control select-chapitre-associe" 
+                                <select name="chapitreAssocie"
+                                        id="chapitreAssocie_<?= $OneBook[0]['IDLivre']; ?>"
+                                        class="form-control select-chapitre-associe"
                                         required>
                                     <option value="">-- Choisissez un chapitre --</option>
 
@@ -788,7 +788,7 @@ echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chap
                                     <table class="table table-striped" style="width: 95%; align-self: center;">
                                         <thead>
                                         <tr>
-                                            <?php 
+                                            <?php
                                             $estPathologieBook = in_array((int)$OneBook[0]["IDTheme"], [20, 30, 31]);
                                             if ($estPathologieBook): ?>
                                                 <th width="5%" style="text-align: left;"></th>
@@ -830,7 +830,7 @@ echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chap
                                         </thead>
                                         <tbody id="serChap">
                                         <form name="pageForm_Chap" id="pageForm_Chap" action="">
-                                            <?php foreach ($listChap as $value) { 
+                                            <?php foreach ($listChap as $value) {
                 $estPathologie = in_array($value['IDLivre'], [20, 30, 31]) || in_array((int)$OneBook[0]["IDTheme"], [20, 30, 31]);
             ?>
                 <tr>
@@ -849,9 +849,9 @@ echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chap
                 <a href="#" onclick="suppCh('<?php print base64_encode($value['IDChapitre']); ?>')" name="<?php print str_replace("'", '&#39;', $value['TitreChapitre']); ?>" id="<?php print base64_encode($value['IDChapitre']); ?>">
                     <i class="fa fa-trash-alt" title="<?php echo $this->lang->line('actionSupp'); ?>"></i>
                 </a>
-                <?php if ((strlen($this->session->userdata('passTok')) == 200) 
-                        && ($this->session->userdata('EstAdmin') == 1) 
-                        && (in_array($value['IDLivre'], [20, 30, 31]) 
+                <?php if ((strlen($this->session->userdata('passTok')) == 200)
+                        && ($this->session->userdata('EstAdmin') == 1)
+                        && (in_array($value['IDLivre'], [20, 30, 31])
                             || in_array((int)$OneBook[0]["IDTheme"], [20, 30, 31]))) { ?>
                     <a href="#" onclick="openSousChapForm('<?php print $value['IDChapitre']; ?>', '<?php print $value['IDLivre']; ?>')" title="Ajouter Sous-Chapitre">
                         <i class="fa fa-plus"></i>
@@ -985,14 +985,14 @@ echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chap
                                                             <div class="row">
                                                                 <div class="col-md-6" style="font-size: 0.97rem;">
                                                                     <?php if ($value['NbreResume'] > 0) { ?>
-                                                                        <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>livreResume/<?= $value['IDChapitre']; ?>" 
-                                                                           class="btn btn-outline-primary mr-1" 
+                                                                        <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>livreResume/<?= $value['IDChapitre']; ?>"
+                                                                           class="btn btn-outline-primary mr-1"
                                                                            style="border-color: #f8f9fa;color: #000000;">
                                                                             <?php echo $this->lang->line('resume'); ?>
                                                                         </a>
                                                                     <?php } else { ?>
-                                                                        <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>livreFigures/<?= $value['IDChapitre']; ?>" 
-                                                                           class="btn btn-outline-primary mr-1" 
+                                                                        <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>livreFigures/<?= $value['IDChapitre']; ?>"
+                                                                           class="btn btn-outline-primary mr-1"
                                                                            style="border-color: #eb7648ff;color: #eb7648ff;">
                                                                             vide
                                                                         </a>
@@ -1588,16 +1588,16 @@ echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chap
 <!-- Ligne suivante pour le contenu accordéon (masqué par défaut) -->
 <tr>
     <td colspan="5" style="padding: 0; border-top: none;">
-        
+
         <script>
         $(document).ready(function() {
             const estAdmin = <?= ((strlen($this->session->userdata('passTok')) == 200) && ($this->session->userdata('EstAdmin') == 1)) ? 'true' : 'false'; ?>;
             checkAndDisplayRappel(<?= $value['IDChapitre']; ?>, '<?= $value['IdChapterRappel'] ?? ''; ?>', <?= $value['IDLivre']; ?>, <?= (int)$OneBook[0]["IDTheme"]; ?>, estAdmin, <?= (int)($value['NbreCoursRappel'] ?? 0); ?>, <?= (int)($value['NbreResumeRappel'] ?? 0); ?>);
         });
         </script>
-        
+
         <!-- Container unique pour Pathologies (fusionné) -->
-        <div class="souschap-container" 
+        <div class="souschap-container"
              id="patho-container-<?= $value['IDChapitre']; ?>"
              style="display:none; padding: 15px; background: #fafafa; border-bottom: 2px solid #efefef;">
         </div>
@@ -1645,7 +1645,7 @@ function togglePathoContainer(idChapitre) {
 
     // Charger le contenu via AJAX
     const endpoint = "home/get_SousChapitres";
-    
+
     $.ajax({
         url: "<?= base_url(); ?>" + endpoint,
         type: "POST",
@@ -1654,7 +1654,7 @@ function togglePathoContainer(idChapitre) {
         dataType: "json",
         success: function(sousChaps) {
             container.html("");
-            
+
             if (sousChaps.length === 0) {
                 container.append(
                     `<div style="font-style:italic; color:#888; padding: 15px; text-align: center;">Aucune pathologie trouvée</div>`
@@ -1681,11 +1681,11 @@ function togglePathoContainer(idChapitre) {
                     const titre = (sc.TitreSousChapitre || '').replace(/'/g, "&#39;");
                     const estAdmin = <?= ($this->session->userdata('EstAdmin') == 1) ? 'true' : 'false'; ?>;
                     const siteLang = "<?= $this->lang->line('siteLang'); ?>";
-                    
+
                     let html = `
                     <div class="pathologie-item" style="margin-bottom: 4px; background: #fff; border: 1px solid #f1f5f9; border-radius: 6px; padding: 10px 0; transition: all 0.2s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
                         <div style="display: flex; align-items: center; width: 100%;">
-                            
+
                             <!-- 1. ADMIN OUTILS (5%) -->
                             <div style="width: 5%; display: flex; justify-content: center; align-items: center;">
                                 ${estAdmin ? `
@@ -1727,9 +1727,9 @@ function togglePathoContainer(idChapitre) {
                                 <div class="row align-items-center" style="width: 100%; margin: 0;">
                                     <div class="col-8" style="padding: 0; text-align: center;">
                                         ${sc.FichierHTML ? `
-                                            <a href="<?= base_url('PlatFormeConvert/'); ?>${sc.FichierHTML}" 
+                                            <a href="<?= base_url('PlatFormeConvert/'); ?>${sc.FichierHTML}"
                                                target="_blank"
-                                               class="btn btn-sm btn-outline-primary" 
+                                               class="btn btn-sm btn-outline-primary"
                                                style="font-size: 0.75rem; padding: 4px 10px; width: 90%; border-radius: 4px; font-weight: 600;">
                                                Contenu
                                             </a>
@@ -1748,9 +1748,9 @@ function togglePathoContainer(idChapitre) {
                                 <div class="row align-items-center" style="width: 100%; margin: 0;">
                                     <div class="col-8" style="padding: 0; text-align: center;">
                                         ${sc.FichierHTML_Resume ? `
-                                            <a href="<?= base_url('PlatFormeConvert/'); ?>${sc.FichierHTML_Resume}" 
+                                            <a href="<?= base_url('PlatFormeConvert/'); ?>${sc.FichierHTML_Resume}"
                                                target="_blank"
-                                               class="btn btn-sm btn-outline-warning" 
+                                               class="btn btn-sm btn-outline-warning"
                                                style="font-size: 0.75rem; padding: 4px 10px; width: 90%; border-radius: 4px; font-weight: 600; color: #92400e;">
                                                Résumé
                                             </a>
@@ -1781,14 +1781,14 @@ function togglePathoContainer(idChapitre) {
 }
 </script>
 
-   
+
                                     </table>
                                 </div>
 
 
 
 
-                                
+
                                 <div class="row" style="padding-top: 5rem ; background-color: white"></div>
                             </div>
                         </div>
@@ -1859,16 +1859,16 @@ $(document).ready(function() {
 
 // Dans la génération HTML :
 let html = `
-<div class="souschap-item" 
+<div class="souschap-item"
      style="display:flex;align-items:center;padding:0.5em 0;border-bottom:1px solid #eee;">
-    
+
     <div style="flex:1;display:flex;align-items:center;gap:0.5em;">
-        
+
         <div class="dropdown" style="position:relative;">
-            <a href="#" data-toggle="dropdown" data-display="static" 
+            <a href="#" data-toggle="dropdown" data-display="static"
                aria-expanded="false" title="Modifier / gérer le fichier">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" 
-                     viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                 </svg>
@@ -1878,20 +1878,20 @@ let html = `
                 <div class="row">
                     <div class="col-md-12">
                         <!-- ðŸ”¥ Ajout de l'attribut ID -->
-                        <input type="file" 
+                        <input type="file"
                                id="mFile_${idEncoded}"
-                               name="mFile_${idEncoded}" 
-                               class="form-control form-control-sm mb-2" 
+                               name="mFile_${idEncoded}"
+                               class="form-control form-control-sm mb-2"
                                accept=".docx">
-                        <input type="hidden" 
-                               name="attach_file_${idEncoded}" 
+                        <input type="hidden"
+                               name="attach_file_${idEncoded}"
                                value="${idEncoded}">
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-12 text-center">
-                        <span class="btn btn-info btn-sm mt-1" 
+                        <span class="btn btn-info btn-sm mt-1"
                               onclick="set_SubChapCurs('${idEncoded}')">
                             <i class="fas fa-upload"></i> Upload (COURS.docx)
                         </span>
@@ -1903,9 +1903,9 @@ let html = `
                 <div class="row">
                     <div class="col-12 text-center">
                         <!-- ðŸ”¥ Correction : suppSousChap au lieu de suppCurs -->
-                        <span class="btn btn-danger btn-sm" 
+                        <span class="btn btn-danger btn-sm"
                               onclick="suppSousChap('${idEncoded}')"
-                              name="${titre}" 
+                              name="${titre}"
                               id="del_${idEncoded}">
                             <i class="fa fa-trash-alt"></i> Supprimer
                         </span>
@@ -1930,19 +1930,19 @@ let html = `
                         html += `
                             <div style="margin-left: auto; display: flex; gap: 0.8em;">
                                 <!-- Édition simple du titre -->
-<div class="dropdown" 
-     style="position: relative;" 
+<div class="dropdown"
+     style="position: relative;"
      onclick="event.stopPropagation()">
                                     <a href="#" data-toggle="dropdown" aria-expanded="false" title="Modifier le titre">
                                         <i class="fa fa-edit" style="color: #3085d6; font-size: 1.1em;"></i>
                                     </a>
                                     <div class="dropdown-menu" style="min-width: 20rem; padding: 1rem;">
-                                        <input type="text" id="editSousChap_${idEncoded}" 
-                                            class="form-control" 
-                                            placeholder="Nouveau titre..." 
+                                        <input type="text" id="editSousChap_${idEncoded}"
+                                            class="form-control"
+                                            placeholder="Nouveau titre..."
                                             value="${sc.TitreSousChapitre}" />
                                         <div class="mt-2 text-center">
-                                            <span class="btn btn-info btn-sm" 
+                                            <span class="btn btn-info btn-sm"
                                                 onclick="validerEditSousChap('${idEncoded}')">
                                                 Valider
                                             </span>
@@ -2623,11 +2623,11 @@ function validerEditSousChap(idSousChap) {
 
 function checkAndDisplayRappel(idChapitre, idChapterRappelDefaut, idLivre, idTheme, estAdmin, nbreCoursRappel = 0, nbreResumeRappel = 0) {
     console.log('checkAndDisplayRappel - Chapitre:', idChapitre, 'Défaut:', idChapterRappelDefaut, 'Livre:', idLivre, 'Theme:', idTheme, 'Admin:', estAdmin, 'CoursRappel:', nbreCoursRappel, 'ResumeRappel:', nbreResumeRappel);
-    
+
     // Vérifier si c'est un thème pathologique
-    const estPathologie = (idLivre && [20, 30, 31].includes(parseInt(idLivre))) || 
+    const estPathologie = (idLivre && [20, 30, 31].includes(parseInt(idLivre))) ||
                           (idTheme && [20, 30, 31].includes(parseInt(idTheme)));
-    
+
     $.ajax({
         url: "<?= base_url('home/check_rappel_manuel'); ?>",
         type: "POST",
@@ -2636,22 +2636,22 @@ function checkAndDisplayRappel(idChapitre, idChapterRappelDefaut, idLivre, idThe
         dataType: "json",
         success: function(response) {
             console.log('Réponse check_rappel_manuel:', response);
-            
+
             if (estPathologie) {
                 const detailZone = $('#rappel-detail-zone-' + idChapitre);
                 const resumeZone = $('#rappel-resume-zone-' + idChapitre);
                 const baseUrl = "<?= base_url(); ?>";
                 const siteLang = "<?= $this->lang->line('siteLang'); ?>";
-                
+
                 // --- 1. VERSION DÉTAILLÉE (ZONE GAUCHE) ---
                 let detailHtml = '<div class="row align-items-center" style="width: 100%; margin: 0;">';
                 detailHtml += '<div class="col-md-7" style="text-align: center; padding: 0;">';
-                
+
                 if (idChapterRappelDefaut && idChapterRappelDefaut !== '') {
                     // Priorité au chapitre d'anatomie lié (Lien demandé par l'utilisateur)
                     detailHtml += `
-                        <a href="${baseUrl}${siteLang}livreCours/${idChapterRappelDefaut}" 
-                           class="btn btn-outline-primary" 
+                        <a href="${baseUrl}${siteLang}livreCours/${idChapterRappelDefaut}"
+                           class="btn btn-outline-primary"
                            style="border-color: #f8f9fa; color: #000000; font-size: 0.8rem; padding: 4px 8px; width: 90%;">
                            Vers. Détaillée
                         </a>`;
@@ -2659,15 +2659,15 @@ function checkAndDisplayRappel(idChapitre, idChapterRappelDefaut, idLivre, idThe
                     // Fallback sur le rappel manuel si aucun chapitre lié n'existe
                     const htmlFile = response.data.Fichier.replace('.docx', '.HTML');
                     detailHtml += `
-                        <a href="${baseUrl}PlatFormeConvert/${htmlFile}" 
+                        <a href="${baseUrl}PlatFormeConvert/${htmlFile}"
                            target="_blank"
-                           class="btn btn-outline-primary" 
+                           class="btn btn-outline-primary"
                            style="border-color: #f8f9fa; color: #000000; font-size: 0.8rem; padding: 4px 8px; width: 90%;">
                            Vers. Détaillée
                         </a>`;
                 } else {
                     // ✅ Rien à afficher si aucun rappel (lié ou manuel)
-                    detailHtml += ''; 
+                    detailHtml += '';
                 }
                 detailHtml += '</div>';
 
@@ -2685,15 +2685,15 @@ function checkAndDisplayRappel(idChapitre, idChapterRappelDefaut, idLivre, idThe
                 // --- 2. RÉSUMÉ RAPPEL (ZONE DROITE) ---
                 let resumeHtml = '<div class="row align-items-center" style="width: 100%; margin: 0;">';
                 resumeHtml += '<div class="col-md-7" style="text-align: center; padding: 0;">';
-                
+
                 if (idChapterRappelDefaut && idChapterRappelDefaut !== '') {
                     // ✅ PATCH : Redirige vers livreResume si nbreResume > 0, sinon livreFigures
-                    const targetUrl = (parseInt(nbreResumeRappel) > 0) 
+                    const targetUrl = (parseInt(nbreResumeRappel) > 0)
                                       ? `${baseUrl}${siteLang}livreResume/${idChapterRappelDefaut}`
                                       : `${baseUrl}${siteLang}livreFigures/${idChapterRappelDefaut}`;
                     resumeHtml += `
-                        <a href="${targetUrl}" 
-                           class="btn btn-outline-warning" 
+                        <a href="${targetUrl}"
+                           class="btn btn-outline-warning"
                            style="border-color: #f8f9fa; color: #000000; font-size: 0.8rem; padding: 4px 8px; width: 90%;">
                            Résumé
                         </a>`;
@@ -2714,7 +2714,7 @@ function checkAndDisplayRappel(idChapitre, idChapterRappelDefaut, idLivre, idThe
                     resumeHtml += `<a href="#" onclick="event.preventDefault(); return false;" title="Vidéos"><i class="fa fa-play-circle" style="color: #3085d6; font-size: 0.8rem; cursor: pointer;"></i></a>`;
                     resumeHtml += '</div>';
                 }
-                
+
                 resumeHtml += '</div>';
                 resumeZone.html(resumeHtml);
 
@@ -2723,22 +2723,22 @@ function checkAndDisplayRappel(idChapitre, idChapterRappelDefaut, idLivre, idThe
                 let html = '';
                 const zoneID = '#rappel-zone-' + idChapitre;
                 html += '<div style="display: flex; gap: 10px; height: 100%;">';
-                
+
                 // ========== SECTION 1 : RAPPEL MANUEL (Anatomie cours résumé) ==========
                 // ✅ PATCH : Afficher "Version détaillée" dans tous les cas
                 html += '<div style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">';
                 html += '<div style="font-weight: bold; margin-bottom: 6px; font-size: 0.9rem;">Anatomie cours résumé</div>';
-                
+
                 // ✅ Toujours afficher "Version détaillée" (redirige vers le résumé du chapitre actuel)
                 // La page affichera les figures même si le texte résumé est vide
                 html += `
-                    <a href="<?= base_url() . $this->lang->line('siteLang'); ?>livreResume/${idChapitre}" 
+                    <a href="<?= base_url() . $this->lang->line('siteLang'); ?>livreResume/${idChapitre}"
                        class="btn btn-outline-success btn-sm"
                        style="margin-bottom: 6px;">
                         <i class="fas fa-eye"></i> Version détaillée
                     </a>
                 `;
-                
+
                 // ✅ Icônes d'administration (si admin)
                 html += `
                     <?php if ($this->session->userdata('EstAdmin') == 1): ?>
@@ -2758,13 +2758,13 @@ function checkAndDisplayRappel(idChapitre, idChapterRappelDefaut, idLivre, idThe
                     </div>
                     <?php endif; ?>
                 `;
-                
+
                 html += '</div>';
-                
+
                 // ========== SECTION 2 : RAPPEL ANATOMIQUE (Anatomie cours complet) ==========
                 html += '<div style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">';
                 html += '<div style="font-weight: bold; margin-bottom: 6px; font-size: 0.9rem;">Anatomie cours complet</div>';
-                
+
                 if (idChapterRappelDefaut && idChapterRappelDefaut !== '') {
                     html += `
                         <a href="<?= base_url() . $this->lang->line('siteLang'); ?>livreCours/${idChapterRappelDefaut}"
@@ -2780,7 +2780,7 @@ function checkAndDisplayRappel(idChapitre, idChapterRappelDefaut, idLivre, idThe
                     `;
                 }
                 html += '</div>';
-                html += '</div>'; 
+                html += '</div>';
                 $(zoneID).html(html);
             }
         },
@@ -2843,14 +2843,14 @@ function saveRappelManuel() {
         processData: false,
         success: function(response) {
             console.log('Réponse brute:', response);
-            
+
             try {
                 const res = typeof response === 'string' ? JSON.parse(response) : response;
                 console.log('Réponse parsée:', res);
-                
+
 if (res[0].id == '1') {
     $('#addRappelModal').modal('hide');
-    
+
     Swal.fire({
         title: 'Succès',
         text: res[0].desc,
@@ -3639,7 +3639,7 @@ function deleteRappelManuel(idChapitre) {
        function suppSousChap(idS) {
     var elem = document.getElementById(idS);
     var tit = elem ? elem.getAttribute('name') : 'cet élément';
-    
+
     Swal.fire({
         title: '<?php echo $this->lang->line('supp_title'); ?>' + ' <br> ' + tit,
         text: '<?php echo $this->lang->line('supp_textC'); ?>',
@@ -3649,7 +3649,7 @@ function deleteRappelManuel(idChapitre) {
         confirmButtonText: '<?php echo $this->lang->line('supp_OK'); ?>'
     }).then((result) => {
         if (result.value) {
-            
+
             Swal.fire({
                 title: '<?php echo $this->lang->line('supp_Inprgs'); ?>',
                 allowOutsideClick: false,
@@ -3708,7 +3708,7 @@ function deleteRappelManuel(idChapitre) {
             });
         }
     });
-    
+
     return false;
 }
 
@@ -3913,7 +3913,7 @@ function editSousChap(idEncoded) {
                 });
 
                 $.ajax({
-                    url: "<?= base_url('home/upload_Attach_Save_SubChap'); ?>", 
+                    url: "<?= base_url('home/upload_Attach_Save_SubChap'); ?>",
                     type: "POST",
                     data: formData,
                     contentType: false,
@@ -3984,7 +3984,7 @@ function editSousChap(idEncoded) {
                 });
 
                 $.ajax({
-                    url: "<?= base_url('home/upload_Attach_Save_SubChap'); ?>", 
+                    url: "<?= base_url('home/upload_Attach_Save_SubChap'); ?>",
                     type: "POST",
                     data: formData,
                     contentType: false,
@@ -4409,7 +4409,7 @@ function editSousChap(idEncoded) {
             }
 
           function set_LivChap(bookID) {
-    var form = $('#pageForm_SetChap_' + bookID)[0]; 
+    var form = $('#pageForm_SetChap_' + bookID)[0];
     var data_plat = new FormData(form);
 
     var chapitreAssocieField = form.chapitreAssocie;
@@ -4419,7 +4419,7 @@ function editSousChap(idEncoded) {
             title: 'Sélection obligatoire',
             text: 'Veuillez choisir un chapitre associé avant de continuer.'
         });
-        return false; 
+        return false;
     }
 
     Swal.fire({
@@ -4440,7 +4440,7 @@ function editSousChap(idEncoded) {
         processData: false,
         timeout: 30000000,
         success: function(html) {
-            console.log(html); 
+            console.log(html);
             try {
                 var resu = JSON.parse(html);
             } catch(e) {
@@ -4493,7 +4493,7 @@ function set_LivSousChap(bookID) {
 
     $.ajax({
         type: "POST",
-        url: "<?= base_url('home/set_LivSousChap'); ?>", 
+        url: "<?= base_url('home/set_LivSousChap'); ?>",
         data: data_plat,
         cache: false,
         contentType: false,
@@ -4609,7 +4609,7 @@ function set_LivSousChap(bookID) {
 
             function delChap(iTH, xx) {
                 var elem = document.getElementsByClassName('row ' + xx);
-                $("#" + iTH + '_' + xx).remove(); 
+                $("#" + iTH + '_' + xx).remove();
             }
 
             function set_KeysIndex(idChp, typeKeys) {
@@ -4699,12 +4699,12 @@ function set_LivSousChap(bookID) {
             $(document).ready(function()
 
             {
-                var x = 0; 
-                var list_maxField = 10; 
+                var x = 0;
+                var list_maxField = 10;
 
                 $('.list_add_button').click(function() {
                     var idTh = $(this).val();
-                    x++; 
+                    x++;
                     var cmp = x + 1;
                     var list_fieldHTML = '<div style="margin-top: 0.5em" class="row ' + x + '" id=' + idTh + '_' + x + '><div class="col-xs-7 col-sm-7 col-md-7"><div class="form-group"><input name="list[]" type="text" placeholder="Chapitre ' + cmp + '" class="form-control"/></div></div><div class="col-xs-1 col-sm-7 col-md-1"><button type="button" class="btn btn-danger list_remove_button" onclick="delChap(' + idTh + ',' + x + ')" value="' + idTh + '">-</button></div></div>'; //New input field html
                     $(".list_wrapper_" + idTh).append(list_fieldHTML);
@@ -5386,7 +5386,7 @@ function openAddImageRappelModal(idChapitre) {
 
 function loadRappelImages(idChapitre) {
     const baseUrl = "<?php echo base_url(); ?>";
-    
+
     fetch(`${baseUrl}home/getRappelImages`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -5395,15 +5395,15 @@ function loadRappelImages(idChapitre) {
     .then(r => r.json())
     .then(data => {
         const container = document.getElementById('imagesContainer');
-        
+
         if (data.success && data.data.length > 0) {
             let html = '';
             data.data.forEach(img => {
                 html += `
                     <div style="position: relative; width: 120px; background: rgba(0,0,0,0.1); padding: 5px; border-radius: 5px;">
-                        <img src="data:image/jpeg;base64,${img.ImageData}" 
+                        <img src="data:image/jpeg;base64,${img.ImageData}"
                              style="width: 100%; height: 100px; object-fit: cover; border-radius: 5px;">
-                        <button type="button" 
+                        <button type="button"
                                 onclick="deleteRappelImageItem(${img.IDImageRappel}, ${idChapitre})"
                                 style="position: absolute; top: 0px; right: 0px; background: #dc3545; color: white; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; font-size: 16px; line-height: 1; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
                             &times;
@@ -5425,7 +5425,7 @@ function loadRappelImages(idChapitre) {
 // Fonction pour charger et afficher les images inline dans la section résumé
 function loadRappelImagesInline(idChapitre, containerElementId) {
     const baseUrl = "<?php echo base_url(); ?>";
-    
+
     fetch(`${baseUrl}home/getRappelImages`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -5435,13 +5435,13 @@ function loadRappelImagesInline(idChapitre, containerElementId) {
     .then(data => {
         const container = document.getElementById(containerElementId);
         if (!container) return;
-        
+
         if (data.success && data.data.length > 0) {
             let html = '<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;">';
             data.data.forEach(img => {
                 html += `
                     <div style="position: relative; width: 120px; background: rgba(0,0,0,0.05); padding: 5px; border-radius: 5px; border: 1px solid #e0e0e0;">
-                        <img src="data:image/jpeg;base64,${img.ImageData}" 
+                        <img src="data:image/jpeg;base64,${img.ImageData}"
                              style="width: 100%; height: 100px; object-fit: cover; border-radius: 4px; cursor: pointer;"
                              onclick="window.open(this.src, '_blank')"
                              title="Cliquez pour agrandir">
@@ -5487,19 +5487,19 @@ function saveRappelImage() {
     const idChapitreInput = document.getElementById('rappelChapitreImage');
     if(!idChapitreInput) return;
     const idChapitre = idChapitreInput.value;
-    
+
     const fileInput = document.getElementById('rappelImage');
     if (!fileInput.files[0]) {
         Swal.fire({ icon: 'warning', title: 'Attention', text: 'Veuillez sélectionner une image' });
         return;
     }
-    
+
     Swal.fire({
         title: 'Envoi en cours...',
         allowOutsideClick: false,
         didOpen: () => Swal.showLoading()
     });
-    
+
     $.ajax({
         type: 'POST',
         url: '<?php echo base_url(); ?>home/saveRappelImage',
@@ -5576,4 +5576,4 @@ function deleteRappelImageItem(idImage, idChapitre) {
     });
 }
 </script>
-<?php } 
+<?php }
