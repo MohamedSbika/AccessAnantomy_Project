@@ -582,16 +582,10 @@ if (type_sel === 'qcm') {
         </div>
     `;
 
-    // Gestion des clics sur les labels — popup si autre niveau
+    // Gestion des clics sur les labels — suppression du blocage pour permettre le switch
     diffBox.querySelectorAll(".diff-label").forEach(label => {
         label.addEventListener("click", function (e) {
-            const selected = this.dataset.diff;
-
-            if (selected !== "avance") {
-                e.preventDefault();
-                showDifficultyPopup(`Le niveau <b>${selected}</b> sera bientôt disponible`);
-                document.getElementById("defaultDiff").checked = true;
-            }
+            // Le switch se fait désormais normalement
         });
     });
 
@@ -800,6 +794,12 @@ if (type_sel === 'qcm') {
                         : `${baseUrl}${lang}livreFigures/${idChapitre}`;
                     break;
                 case 'qcm':
+                    // Vérifier la difficulté sélectionnée
+                    const selectedDiff = document.querySelector('input[name="difficulty"]:checked');
+                    if (selectedDiff && (selectedDiff.value === 'basique' || selectedDiff.value === 'intermediaire')) {
+                        showDifficultyPopup(`Le QCM niveau <b>${selectedDiff.value}</b> sera bientôt disponible`);
+                        return; // Arrêter ici, pas de redirection
+                    }
                     redirectUrl = `${baseUrl}${lang}livreQcm/${idChapitre}`;
                     break;
                 case 'qroc':

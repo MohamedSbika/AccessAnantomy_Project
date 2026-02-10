@@ -3085,6 +3085,50 @@ public function getRappelCoursContent() {
         $this->load->view($this->getTypePlatform() ? 'v1_livreFigures' : 'livreFigures', $arr);
     }
 
+    public function figuresOnly($id)
+    {
+        $this->session->set_userdata('curs_id', 'curs_' . $id);
+
+        $this->db->select('*');
+        $this->db->from('_chapitre, _livre, _theme');
+        $this->db->where("IDChapitre = '$id' AND _chapitre.IDLivre = _livre.IDLivre AND _theme.IDTheme = _livre.IDTheme");
+        $resChap = $this->db->get()->result_array();
+
+        if (empty($resChap)) {
+            show_404();
+        }
+
+        $this->db->select('*');
+        $this->db->from('_cours');
+        $this->db->where("IDChapitre = '$id' LIMIT 1");
+        $resCurs = $this->db->get()->result_array();
+        
+        $idCours = 0;
+        if (count($resCurs) > 0) {
+            $idCours = $resCurs[0]["IDCours"];
+        }
+
+        // Get figures list
+        $this->db->select('encryptFigure, IDFigure, SUBSTRING_INDEX(TitreFigure, ".", 1) as TitreFigure, CAST(SUBSTRING(TitreFigure, 4) AS UNSIGNED) as ord');
+        $this->db->from('_figure');
+        $this->db->where("IDCours = '$idCours'");
+        $this->db->order_by('ord', 'ASC');
+        $this->db->order_by("IDFigure", "asc");
+        $listFigures = $this->db->get()->result_array();
+        
+        // Get list of chapters for sidebar
+        $idLivr = $resChap[0]["IDLivre"];
+        $listChap = $this->listChaptCours($idLivr);
+        
+        $arr['listFig'] = $listFigures;
+        $arr['OneBook'] = $resChap;
+        $arr['listChap'] = $listChap;
+        $arr['listCat'] = $this->getListCategory();
+        $arr['page'] = 'figuresOnly';
+
+        $this->load->view($this->getTypePlatform() ? 'v1_figures_only' : 'v1_figures_only', $arr);
+    }
+
     public function getFiguresContent($idChapitre)
     {
         return '

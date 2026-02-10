@@ -366,3 +366,13 @@ $lang['lecture_valider'] 	= "Valider";
 $lang['sidebar_anatomie'] = "Anat";
 $lang['sidebar_pathologie'] = "Path";
 $lang['sidebar_pathologie_anatomie'] = "Path";
+
+$lang['pathologie_title'] = "🩺 Pathologie Clinique : le lien entre l’anatomie et la pratique médicale";
+$lang['pathologie_p'] = "La compréhension des pathologies passe d'abord par une maîtrise parfaite de l'anatomie normale. Notre base de données clinique vous permet de faire le pont entre la théorie et la pratique hospitalière.";
+$lang['pathologie_p1'] = "📌 Ressources cliniques disponibles :";
+$lang['pathologie_li1'] = "Fiches descriptives de pathologies courantes et rares";
+$lang['pathologie_li2'] = "Corrélation directe entre lésions et structures anatomiques";
+$lang['pathologie_li3'] = "Cas cliniques réels avec imagerie médicale (IRM, Scanner, Radio)";
+$lang['pathologie_li4'] = "Rappels anatomiques ciblés pour chaque diagnostic";
+$lang['pathologie_li5'] = "Outils d'aide à la compréhension des mécanismes pathologiques";
+$lang['pathologie_p2'] = "✨ Explorez la pathologie de manière visuelle et structurée pour parfaire votre diagnostic et enrichir votre expertise médicale.";

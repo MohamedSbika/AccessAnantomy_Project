@@ -724,7 +724,7 @@
                 redirectUrl = `${baseUrl}${lang}livreCours/${idChapitre}`;
                 break;
             case 'e_a':
-                redirectUrl = `${baseUrl}${lang}livreCours/${idChapitre}`;
+                redirectUrl = `${baseUrl}${lang}figuresOnly/${idChapitre}`;
                 break;
             case 'calque':
                 redirectUrl = `${baseUrl}${lang}listCalque/${idChapitre}`;
