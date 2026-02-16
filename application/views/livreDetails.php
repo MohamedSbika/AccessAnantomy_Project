@@ -2117,45 +2117,98 @@ function openTranslationModal(idSousChap) {
     Swal.fire({
         title: 'Gestion des Traductions',
         html: `
-            <div style="display: grid; grid-template-columns: 70px 1fr 1fr; gap: 20px; align-items: center; padding: 20px; text-align: left;">
-                <!-- Header (Optional, for clarity) -->
-                <div style="font-weight: bold; border-bottom: 1px solid #eee; padding-bottom: 5px;">Lang</div>
-                <div style="font-weight: bold; border-bottom: 1px solid #eee; padding-bottom: 5px; text-align: center;">Action</div>
-                <div style="font-weight: bold; border-bottom: 1px solid #eee; padding-bottom: 5px; text-align: center;">Contenu</div>
+            <div style="display: grid; grid-template-columns: 60px 1fr 1fr 1fr 160px; gap: 15px; align-items: center; padding: 20px; text-align: left;">
+                <!-- Header -->
+                <div style="font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 8px; color: #444;">Lang</div>
+                <div style="font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 8px; text-align: center; color: #444;">Action</div>
+                <div style="font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 8px; text-align: center; color: #444;">Contenu</div>
+                <div style="font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 8px; text-align: center; color: #444;">Erreurs</div>
+                <div style="font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 8px; text-align: center; color: #444;">Confirmation</div>
 
                 <!-- Row EN -->
                 <div style="font-weight: bold; color: #1d3557; font-size: 1.1rem;">EN</div>
                 <div style="text-align: center;">
-                    <button class="btn btn-primary btn-lg" style="width: 100%;" onclick="lancerTraduction('${idSousChap}', 'en')">
-                        <i class="fas fa-magic"></i> Lancer traduction
+                    <button class="btn btn-primary" style="width: 100%;" onclick="lancerTraduction('${idSousChap}', 'en')">
+                        <i class="fas fa-magic"></i> Traduire
                     </button>
                 </div>
                 <div style="text-align: center;">
-                    <button class="btn btn-outline-info btn-lg" style="width: 100%;" onclick="voirTraduction('${idSousChap}', 'en')">
-                        <i class="fas fa-eye"></i> Voir traduction
+                    <button class="btn btn-outline-info" style="width: 100%;" onclick="voirTraduction('${idSousChap}', 'en')">
+                        <i class="fas fa-eye"></i> Voir
+                    </button>
+                </div>
+                <div style="text-align: center;">
+                    <button class="btn btn-outline-danger" style="width: 100%;" onclick="voirErreursTraduction('${idSousChap}', 'en')">
+                        <i class="fas fa-exclamation-circle"></i> Erreurs
+                    </button>
+                </div>
+                <div style="text-align: center; display: flex; gap: 5px; justify-content: center;">
+                    <button class="btn btn-success" style="flex: 1;" onclick="confirmerTraduction('${idSousChap}', 'en', 'oui')">
+                        <i class="fas fa-check"></i> Oui
+                    </button>
+                    <button class="btn btn-danger" style="flex: 1;" onclick="confirmerTraduction('${idSousChap}', 'en', 'non')">
+                        <i class="fas fa-times"></i> Non
                     </button>
                 </div>
 
                 <!-- Row ES -->
                 <div style="font-weight: bold; color: #1d3557; font-size: 1.1rem;">ES</div>
                 <div style="text-align: center;">
-                    <button class="btn btn-primary btn-lg" style="width: 100%;" onclick="lancerTraduction('${idSousChap}', 'es')">
-                        <i class="fas fa-magic"></i> Lancer traduction
+                    <button class="btn btn-primary" style="width: 100%;" onclick="lancerTraduction('${idSousChap}', 'es')">
+                        <i class="fas fa-magic"></i> Traduire
                     </button>
                 </div>
                 <div style="text-align: center;">
-                    <button class="btn btn-outline-info btn-lg" style="width: 100%;" onclick="voirTraduction('${idSousChap}', 'es')">
-                        <i class="fas fa-eye"></i> Voir traduction
+                    <button class="btn btn-outline-info" style="width: 100%;" onclick="voirTraduction('${idSousChap}', 'es')">
+                        <i class="fas fa-eye"></i> Voir
+                    </button>
+                </div>
+                <div style="text-align: center;">
+                    <button class="btn btn-outline-danger" style="width: 100%;" onclick="voirErreursTraduction('${idSousChap}', 'es')">
+                        <i class="fas fa-exclamation-circle"></i> Erreurs
+                    </button>
+                </div>
+                <div style="text-align: center; display: flex; gap: 5px; justify-content: center;">
+                    <button class="btn btn-success" style="flex: 1;" onclick="confirmerTraduction('${idSousChap}', 'es', 'oui')">
+                        <i class="fas fa-check"></i> Oui
+                    </button>
+                    <button class="btn btn-danger" style="flex: 1;" onclick="confirmerTraduction('${idSousChap}', 'es', 'non')">
+                        <i class="fas fa-times"></i> Non
                     </button>
                 </div>
             </div>
         `,
         showConfirmButton: false,
         showCloseButton: true,
-        width: '750px',
-        height: '500px',
+        width: '900px',
         customClass: {
             container: 'my-swal-container'
+        }
+    });
+}
+
+function voirErreursTraduction(idSousChap, lang) {
+    Swal.fire({
+        icon: 'warning',
+        title: 'Erreurs de Traduction (' + lang.toUpperCase() + ')',
+        text: 'Aucune erreur détectée pour le moment.'
+    }).then(() => openTranslationModal(idSousChap));
+}
+
+function confirmerTraduction(idSousChap, lang, status) {
+    Swal.fire({
+        icon: 'question',
+        title: 'Confirmation',
+        text: 'Voulez-vous confirmer la traduction en ' + lang.toUpperCase() + ' ? (Choix: ' + status + ')',
+        showCancelButton: true,
+        confirmButtonText: 'Oui, valider',
+        cancelButtonText: 'Annuler'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire('Confirmé !', 'La traduction a été marquée comme validée.', 'success')
+                .then(() => openTranslationModal(idSousChap));
+        } else {
+            openTranslationModal(idSousChap);
         }
     });
 }
@@ -2165,7 +2218,7 @@ function lancerTraduction(idSousChap, lang) {
         icon: 'info',
         title: 'Information',
         text: 'La traduction (' + lang.toUpperCase() + ') sera bientôt disponible pour ce sous-chapitre.'
-    });
+    }).then(() => openTranslationModal(idSousChap));
 }
 
 function voirTraduction(idSousChap, lang) {
@@ -2173,7 +2226,7 @@ function voirTraduction(idSousChap, lang) {
         icon: 'info',
         title: 'Information',
         text: 'L\'affichage de la traduction (' + lang.toUpperCase() + ') sera bientôt disponible.'
-    });
+    }).then(() => openTranslationModal(idSousChap));
 }
 
 function validerEditSousChap(idSousChap) {

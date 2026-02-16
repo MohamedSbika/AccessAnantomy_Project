@@ -5970,9 +5970,10 @@ loadingTask.promise.then(function(pdf) {
             $file_type  	=  $f["mFileQCM"]["type"][$key];
             $file_name  	=  $f["mFileQCM"]["name"][$key];
             $file_nameTmp  	=  $f["mFileQCM"]["tmp_name"][$key];
-            $idChap			= $idChapList[$key];
             //print_r($file_size);
             if($file_size > 0){
+                if(!isset($idChapList[$key])) continue;
+                $idChap			= $idChapList[$key];
 
                 $fileDocx 	= $f["mFileQCM"]["tmp_name"][$key] ;
 
@@ -6095,15 +6096,16 @@ loadingTask.promise.then(function(pdf) {
         //$bin_data_target    = base64_encode(file_get_contents( $f["mFile"]["tmp_name"] ));
         $err_desc = '';
 
-        foreach($f["mFileQCM"]["name"] as $key=>$p) {
+        foreach($f["mFileQROC"]["name"] as $key=>$p) {
 
             $file_size  	=  $f["mFileQROC"]["size"][$key];
             $file_type  	=  $f["mFileQROC"]["type"][$key];
             $file_name  	=  $f["mFileQROC"]["name"][$key];
             $file_nameTmp  	=  $f["mFileQROC"]["tmp_name"][$key];
-            $idChap			= $idChapList[$key];
             //print_r($file_size);
             if($file_size > 0){
+                if(!isset($idChapList[$key])) continue;
+                $idChap			= $idChapList[$key];
 
                 $fileDocx = $f["mFileQROC"]["tmp_name"][$key] ;
 
