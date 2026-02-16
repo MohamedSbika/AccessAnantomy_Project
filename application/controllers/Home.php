@@ -3085,6 +3085,50 @@ public function getRappelCoursContent() {
         $this->load->view($this->getTypePlatform() ? 'v1_livreFigures' : 'livreFigures', $arr);
     }
 
+    public function figuresOnly($id)
+    {
+        $this->session->set_userdata('curs_id', 'curs_' . $id);
+
+        $this->db->select('*');
+        $this->db->from('_chapitre, _livre, _theme');
+        $this->db->where("IDChapitre = '$id' AND _chapitre.IDLivre = _livre.IDLivre AND _theme.IDTheme = _livre.IDTheme");
+        $resChap = $this->db->get()->result_array();
+
+        if (empty($resChap)) {
+            show_404();
+        }
+
+        $this->db->select('*');
+        $this->db->from('_cours');
+        $this->db->where("IDChapitre = '$id' LIMIT 1");
+        $resCurs = $this->db->get()->result_array();
+        
+        $idCours = 0;
+        if (count($resCurs) > 0) {
+            $idCours = $resCurs[0]["IDCours"];
+        }
+
+        // Get figures list
+        $this->db->select('encryptFigure, IDFigure, SUBSTRING_INDEX(TitreFigure, ".", 1) as TitreFigure, CAST(SUBSTRING(TitreFigure, 4) AS UNSIGNED) as ord');
+        $this->db->from('_figure');
+        $this->db->where("IDCours = '$idCours'");
+        $this->db->order_by('ord', 'ASC');
+        $this->db->order_by("IDFigure", "asc");
+        $listFigures = $this->db->get()->result_array();
+        
+        // Get list of chapters for sidebar
+        $idLivr = $resChap[0]["IDLivre"];
+        $listChap = $this->listChaptCours($idLivr);
+        
+        $arr['listFig'] = $listFigures;
+        $arr['OneBook'] = $resChap;
+        $arr['listChap'] = $listChap;
+        $arr['listCat'] = $this->getListCategory();
+        $arr['page'] = 'figuresOnly';
+
+        $this->load->view($this->getTypePlatform() ? 'v1_figures_only' : 'v1_figures_only', $arr);
+    }
+
     public function getFiguresContent($idChapitre)
     {
         return '
@@ -5926,9 +5970,10 @@ loadingTask.promise.then(function(pdf) {
             $file_type  	=  $f["mFileQCM"]["type"][$key];
             $file_name  	=  $f["mFileQCM"]["name"][$key];
             $file_nameTmp  	=  $f["mFileQCM"]["tmp_name"][$key];
-            $idChap			= $idChapList[$key];
             //print_r($file_size);
             if($file_size > 0){
+                if(!isset($idChapList[$key])) continue;
+                $idChap			= $idChapList[$key];
 
                 $fileDocx 	= $f["mFileQCM"]["tmp_name"][$key] ;
 
@@ -6051,15 +6096,16 @@ loadingTask.promise.then(function(pdf) {
         //$bin_data_target    = base64_encode(file_get_contents( $f["mFile"]["tmp_name"] ));
         $err_desc = '';
 
-        foreach($f["mFileQCM"]["name"] as $key=>$p) {
+        foreach($f["mFileQROC"]["name"] as $key=>$p) {
 
             $file_size  	=  $f["mFileQROC"]["size"][$key];
             $file_type  	=  $f["mFileQROC"]["type"][$key];
             $file_name  	=  $f["mFileQROC"]["name"][$key];
             $file_nameTmp  	=  $f["mFileQROC"]["tmp_name"][$key];
-            $idChap			= $idChapList[$key];
             //print_r($file_size);
             if($file_size > 0){
+                if(!isset($idChapList[$key])) continue;
+                $idChap			= $idChapList[$key];
 
                 $fileDocx = $f["mFileQROC"]["tmp_name"][$key] ;
 

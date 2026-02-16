@@ -94,6 +94,7 @@ $route['^FR/livreCours/(:any)'] 	    = "home/livreCours/$1";
 $route['^FR/livreResume/(:any)/(:any)'] = "home/livreResume/$1/$2";
 $route['^FR/livreResume/(:any)']        = "home/livreResume/$1";
 $route['^FR/livreFigures/(:any)']       = "home/livreFigures/$1";
+$route['^FR/figuresOnly/(:any)']        = "home/figuresOnly/$1";
 
 $route['^FR/livreQcm/(:any)'] 			= "home/livreQcm/$1";
 $route['^FR/livreQroc/(:any)'] 			= "home/livreQroc/$1";
@@ -132,6 +133,7 @@ $route['^EN/livreCours/(:any)'] 	    = "home/livreCours/$1";
 $route['^EN/livreResume/(:any)/(:any)'] = "home/livreResume/$1/$2";
 $route['^EN/livreResume/(:any)']        = "home/livreResume/$1";
 $route['^EN/livreFigures/(:any)']       = "home/livreFigures/$1";
+$route['^EN/figuresOnly/(:any)']        = "home/figuresOnly/$1";
 
 $route['^EN/livreQcm/(:any)'] 			= "home/livreQcm/$1";
 $route['^EN/livreQroc/(:any)'] 			= "home/livreQroc/$1";
@@ -176,6 +178,7 @@ $route['^ES/livreCours/(:any)'] 	    = "home/livreCours/$1";
 $route['^ES/livreResume/(:any)/(:any)'] = "home/livreResume/$1/$2";
 $route['^ES/livreResume/(:any)']        = "home/livreResume/$1";
 $route['^ES/livreFigures/(:any)']       = "home/livreFigures/$1";
+$route['^ES/figuresOnly/(:any)']        = "home/figuresOnly/$1";
 
 $route['^ES/livreQcm/(:any)'] 			= "home/livreQcm/$1";
 $route['^ES/livreQroc/(:any)'] 			= "home/livreQroc/$1";

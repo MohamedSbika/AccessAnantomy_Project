@@ -950,7 +950,6 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 				}
 
 				.left-box {
-					background-color: #120e47;
 					color: white;
 					display: flex;
 					flex-direction: column;
@@ -960,6 +959,12 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 					min-width: 140px;
 					padding: 10px;
 				}
+
+				.step-card:nth-child(1) .left-box { background-color: #120E47; }
+				.step-card:nth-child(2) .left-box { background-color: #203B6F; }
+				.step-card:nth-child(3) .left-box { background-color: #2A9D8F; }
+				.step-card:nth-child(4) .left-box { background-color: #008B6A; }
+				.step-card:nth-child(5) .left-box { background-color: #28A745; }
 
 				.left-box h1 {
 					margin: 0;
@@ -1113,6 +1118,49 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 
 
 
+
+		<style>
+			.section-info.pathology {
+				background-color: #fff;
+				flex-direction: row-reverse;
+				position: center;
+				justify-content: center;
+			}
+			.section-info.pathology .text-container {
+				margin-left: 0;
+				margin-right: 5%;
+			}
+			.section-info.pathology .image-container::before {
+				background: #008B6A;
+				left: 10px;
+			}
+			@media (max-width: 1200px) {
+				.section-info.pathology {
+					flex-direction: column;
+				}
+				.section-info.pathology .text-container {
+					margin-right: 0;
+				}
+			}
+		</style>
+		<section class="section-info pathology">
+			<div class="image-container">
+				<img src="<?php echo HTTP_IMAGES; ?>photos/anatomy.png" alt="Pathologie Médicale">
+			</div>
+			<div class="text-container">
+				<h3><?php echo $this->lang->line('pathologie_title'); ?></h3>
+				<p><?php echo $this->lang->line('pathologie_p'); ?></p>
+				<p><?php echo $this->lang->line('pathologie_p1'); ?></p>
+				<ul>
+					<li><?php echo $this->lang->line('pathologie_li1'); ?></li>
+					<li><?php echo $this->lang->line('pathologie_li2'); ?></li>
+					<li><?php echo $this->lang->line('pathologie_li3'); ?></li>
+					<li><?php echo $this->lang->line('pathologie_li4'); ?></li>
+					<li><?php echo $this->lang->line('pathologie_li5'); ?></li>
+				</ul>
+				<p><?php echo $this->lang->line('pathologie_p2'); ?></p>
+			</div>
+		</section>
 
 		<section>
 			<style>

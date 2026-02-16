@@ -846,7 +846,7 @@ echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chap
                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                     </svg>
                 </a>
-                <a href="#" onclick="suppCh('<?php print base64_encode($value['IDChapitre']); ?>')" name="<?php print str_replace("'", '&#39;', $value['TitreChapitre']); ?>" id="<?php print base64_encode($value['IDChapitre']); ?>">
+                <a href="#" onclick="return suppCh('<?php print base64_encode($value['IDChapitre']); ?>')" name="<?php print str_replace("'", '&#39;', $value['TitreChapitre']); ?>" id="<?php print base64_encode($value['IDChapitre']); ?>">
                     <i class="fa fa-trash-alt" title="<?php echo $this->lang->line('actionSupp'); ?>"></i>
                 </a>
                 <?php if ((strlen($this->session->userdata('passTok')) == 200)
@@ -1535,7 +1535,7 @@ echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chap
                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                     </svg>
                 </a>
-                <a href="#" onclick="suppCh('<?php print base64_encode($value['IDChapitre']); ?>')" title="<?php echo $this->lang->line('actionSupp'); ?>">
+                <a href="#" onclick="return suppCh('<?php print base64_encode($value['IDChapitre']); ?>')" name="<?php print str_replace("'", '&#39;', $value['TitreChapitre']); ?>" id="<?php print base64_encode($value['IDChapitre']); ?>" title="<?php echo $this->lang->line('actionSupp'); ?>">
                     <i class="fa fa-trash-alt"></i>
                 </a>
                 <a href="#" onclick="openSousChapForm('<?php print $value['IDChapitre']; ?>', '<?php print $value['IDLivre']; ?>')" title="Ajouter Sous-Chapitre">
@@ -1739,6 +1739,7 @@ function togglePathoContainer(idChapitre) {
                                         <a href="#" onclick="return false;"><i class="fas fa-key" style="color: #3085d6; font-size: 0.8rem;"></i></a>
                                         <a href="#" onclick="openRenomeModal('${idEncoded}', '${titre}'); return false;"><i class="fas fa-edit" style="color: #3085d6; font-size: 0.8rem;"></i></a>
                                         <a href="#" onclick="return false;"><i class="fa fa-play-circle" style="color: #3085d6; font-size: 0.8rem;"></i></a>
+                                        <a href="#" onclick="openTranslationModal('${sc.IDSousChapitre}'); return false;"><i class="fa fa-globe" style="color: #3085d6; font-size: 1rem;"></i></a>
                                     </div>
                                 </div>
                             </div>
@@ -1759,7 +1760,8 @@ function togglePathoContainer(idChapitre) {
                                     <div class="col-4" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 0; justify-items: center;">
                                         <a href="#" onclick="return false;"><i class="fas fa-key" style="color: #3085d6; font-size: 0.8rem;"></i></a>
                                         <a href="#" onclick="return false;"><i class="fas fa-edit" style="color: #3085d6; font-size: 0.8rem;"></i></a>
-                                        <a href="#" onclick="return false;"><i class="fa fa-play-circle" style="color: #3085d6; font-size: 0.8rem;"></i></a>
+                                        <a href="#" onclick="return false;"><i class="fa fa-play-circle" style="color: #3085d6; font-size: 1rem;"></i></a>
+                                        <a href="#" onclick="openTranslationModal('${sc.IDSousChapitre}'); return false;"><i class="fa fa-globe" style="color: #3085d6; font-size: 1rem;"></i></a>
                                     </div>
                                 </div>
                             </div>
@@ -2108,6 +2110,124 @@ function openRenomeModal(idSousChap, oldTitle) {
             });
         }
     });
+}
+
+
+
+function openTranslationModal(idSousChap) {
+    Swal.fire({
+        title: 'Gestion des Traductions',
+        html: `
+            <div style="display: grid; grid-template-columns: 60px 1fr 1fr 1fr 160px; gap: 15px; align-items: center; padding: 20px; text-align: left;">
+                <!-- Header -->
+                <div style="font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 8px; color: #444;">Lang</div>
+                <div style="font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 8px; text-align: center; color: #444;">Action</div>
+                <div style="font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 8px; text-align: center; color: #444;">Contenu</div>
+                <div style="font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 8px; text-align: center; color: #444;">Erreurs</div>
+                <div style="font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 8px; text-align: center; color: #444;">Confirmation</div>
+
+                <!-- Row EN -->
+                <div style="font-weight: bold; color: #1d3557; font-size: 1.1rem;">EN</div>
+                <div style="text-align: center;">
+                    <button class="btn btn-primary" style="width: 100%;" onclick="lancerTraduction('${idSousChap}', 'en')">
+                        <i class="fas fa-magic"></i> Traduire
+                    </button>
+                </div>
+                <div style="text-align: center;">
+                    <button class="btn btn-outline-info" style="width: 100%;" onclick="voirTraduction('${idSousChap}', 'en')">
+                        <i class="fas fa-eye"></i> Voir
+                    </button>
+                </div>
+                <div style="text-align: center;">
+                    <button class="btn btn-outline-danger" style="width: 100%;" onclick="voirErreursTraduction('${idSousChap}', 'en')">
+                        <i class="fas fa-exclamation-circle"></i> Erreurs
+                    </button>
+                </div>
+                <div style="text-align: center; display: flex; gap: 5px; justify-content: center;">
+                    <button class="btn btn-success" style="flex: 1;" onclick="confirmerTraduction('${idSousChap}', 'en', 'oui')">
+                        <i class="fas fa-check"></i> Oui
+                    </button>
+                    <button class="btn btn-danger" style="flex: 1;" onclick="confirmerTraduction('${idSousChap}', 'en', 'non')">
+                        <i class="fas fa-times"></i> Non
+                    </button>
+                </div>
+
+                <!-- Row ES -->
+                <div style="font-weight: bold; color: #1d3557; font-size: 1.1rem;">ES</div>
+                <div style="text-align: center;">
+                    <button class="btn btn-primary" style="width: 100%;" onclick="lancerTraduction('${idSousChap}', 'es')">
+                        <i class="fas fa-magic"></i> Traduire
+                    </button>
+                </div>
+                <div style="text-align: center;">
+                    <button class="btn btn-outline-info" style="width: 100%;" onclick="voirTraduction('${idSousChap}', 'es')">
+                        <i class="fas fa-eye"></i> Voir
+                    </button>
+                </div>
+                <div style="text-align: center;">
+                    <button class="btn btn-outline-danger" style="width: 100%;" onclick="voirErreursTraduction('${idSousChap}', 'es')">
+                        <i class="fas fa-exclamation-circle"></i> Erreurs
+                    </button>
+                </div>
+                <div style="text-align: center; display: flex; gap: 5px; justify-content: center;">
+                    <button class="btn btn-success" style="flex: 1;" onclick="confirmerTraduction('${idSousChap}', 'es', 'oui')">
+                        <i class="fas fa-check"></i> Oui
+                    </button>
+                    <button class="btn btn-danger" style="flex: 1;" onclick="confirmerTraduction('${idSousChap}', 'es', 'non')">
+                        <i class="fas fa-times"></i> Non
+                    </button>
+                </div>
+            </div>
+        `,
+        showConfirmButton: false,
+        showCloseButton: true,
+        width: '900px',
+        customClass: {
+            container: 'my-swal-container'
+        }
+    });
+}
+
+function voirErreursTraduction(idSousChap, lang) {
+    Swal.fire({
+        icon: 'warning',
+        title: 'Erreurs de Traduction (' + lang.toUpperCase() + ')',
+        text: 'Aucune erreur détectée pour le moment.'
+    }).then(() => openTranslationModal(idSousChap));
+}
+
+function confirmerTraduction(idSousChap, lang, status) {
+    Swal.fire({
+        icon: 'question',
+        title: 'Confirmation',
+        text: 'Voulez-vous confirmer la traduction en ' + lang.toUpperCase() + ' ? (Choix: ' + status + ')',
+        showCancelButton: true,
+        confirmButtonText: 'Oui, valider',
+        cancelButtonText: 'Annuler'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire('Confirmé !', 'La traduction a été marquée comme validée.', 'success')
+                .then(() => openTranslationModal(idSousChap));
+        } else {
+            openTranslationModal(idSousChap);
+        }
+    });
+}
+
+function lancerTraduction(idSousChap, lang) {
+    Swal.fire({
+        icon: 'info',
+        title: 'Information',
+        text: 'La traduction (' + lang.toUpperCase() + ') sera bientôt disponible pour ce sous-chapitre.'
+    }).then(() => openTranslationModal(idSousChap));
+}
+
+function voirTraduction(idSousChap, lang) {
+    Swal.fire({
+        icon: 'info',
+        title: 'Information',
+        text: 'L\'affichage de la traduction (' + lang.toUpperCase() + ') sera bientôt disponible.'
+    }).then(() => openTranslationModal(idSousChap));
 }
 
 function validerEditSousChap(idSousChap) {
@@ -2648,9 +2768,12 @@ function checkAndDisplayRappel(idChapitre, idChapterRappelDefaut, idLivre, idThe
                 detailHtml += '<div class="col-md-7" style="text-align: center; padding: 0;">';
 
                 if (idChapterRappelDefaut && idChapterRappelDefaut !== '') {
-                    // Priorité au chapitre d'anatomie lié (Lien demandé par l'utilisateur)
+                    // Redirection vers le résumé si existant, sinon figures (Lien demandé par l'utilisateur)
+                    const targetUrlDet = (parseInt(nbreResumeRappel) > 0)
+                                      ? `${baseUrl}${siteLang}livreResume/${idChapterRappelDefaut}`
+                                      : `${baseUrl}${siteLang}livreFigures/${idChapterRappelDefaut}`;
                     detailHtml += `
-                        <a href="${baseUrl}${siteLang}livreCours/${idChapterRappelDefaut}"
+                        <a href="${targetUrlDet}"
                            class="btn btn-outline-primary"
                            style="border-color: #f8f9fa; color: #000000; font-size: 0.8rem; padding: 4px 8px; width: 90%;">
                            Vers. Détaillée
@@ -3562,76 +3685,68 @@ function deleteRappelManuel(idChapitre) {
             }
 
             function suppCh(idC) {
-                var tit = document.getElementById(idC).name
+                var elem = document.getElementById(idC);
+                var tit = elem ? elem.getAttribute('name') : 'ce chapitre';
+
                 Swal.fire({
                     title: '<?php echo $this->lang->line('supp_title'); ?>' + ' <br> ' + tit,
                     text: '<?php echo $this->lang->line('supp_textC'); ?>',
+                    icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: '<?php echo $this->lang->line('supp_OK'); ?>'
+                    confirmButtonText: '<?php echo $this->lang->line('supp_OK'); ?>',
+                    cancelButtonText: 'Annuler'
                 }).then((result) => {
-                    if (result.value) {
+                    if (result.value || result.isConfirmed) {
 
                         Swal.fire({
                             title: '<?php echo $this->lang->line('supp_Inprgs'); ?>',
                             allowOutsideClick: false,
                             allowEscapeKey: false,
-                            onBeforeOpen: () => {
+                            didOpen: () => {
                                 Swal.showLoading()
                             }
                         })
 
                         $.ajax({
-
                             type: "POST",
                             url: "<?php echo base_url(); ?>home/suppCh",
                             data: {
                                 idC: idC
                             },
-                            timeout: 300000,
                             success: function(html) {
-
-                                console.log(html);
-                                var resu = JSON.parse(html);
-                                console.log(resu);
-
-                                if (resu[0]["id"] == 1) {
-                                    Swal.fire({
-                                        title: resu[0]["desc"],
-                                        position: 'center',
-                                        type: 'success',
-                                        confirmButtonColor: '#3085d6',
-                                        cancelButtonColor: '#d33',
-                                        confirmButtonText: 'OK',
-                                        allowOutsideClick: false,
-                                        allowEscapeKey: false
-                                    }).then((result) => {
-                                        if (result.value) {
+                                try {
+                                    var resu = typeof html === 'string' ? JSON.parse(html) : html;
+                                    if (resu[0]["id"] == 1) {
+                                        Swal.fire({
+                                            title: resu[0]["desc"] || 'Supprimé avec succès',
+                                            icon: 'success',
+                                            timer: 1500,
+                                            showConfirmButton: false
+                                        }).then(() => {
                                             location.reload();
-                                        }
-                                    })
-
-                                } else {
-                                    Swal.fire({
-                                        position: 'center',
-                                        type: 'error',
-                                        title: resu[0]["desc"],
-                                        showConfirmButton: false,
-                                        timer: 4000
-                                    })
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Erreur',
+                                            text: resu[0]["desc"]
+                                        });
+                                    }
+                                } catch (e) {
+                                    console.error('Erreur parsing JSON:', e, html);
+                                    Swal.fire({ icon: 'error', title: 'Erreur', text: 'Réponse serveur invalide' });
                                 }
-
-
                             },
                             error: function() {
-
-                                $('.modal-message').html("Sorry, File not Uploaded");
-                                $('#modal-confirm-all').modal('show');
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Erreur',
+                                    text: 'Erreur lors de la suppression'
+                                });
                             }
-
                         });
-
                     }
                 })
                 return false;

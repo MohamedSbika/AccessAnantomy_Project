@@ -150,6 +150,29 @@
         transform: translate(-50%, -50%) !important;
         z-index: 9999; /* Optionnel : assure que le toast soit bien au-dessus de tout autre élément */
     }
+
+    .btn_app{
+        border-radius: 10px;
+        padding: 10px;
+        font-size: 0.9em;
+        text-align: center;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border: 2px solid #182540;
+        height: 35px;
+        background-color: #182540;
+        color: white !important;
+        font-weight: bold;
+    }
+
+    .btn_app:hover, .btn_app.active {
+        background-color: #2d5e51ff !important;
+        border-color: #2d5e51ff !important;
+    }
 </style>
 
 <body oncontextmenu="return false" onbeforeprint="return false" onselectstart="return false" ondragstart="return false">
@@ -217,11 +240,13 @@
                         <?php } $compteurFigure++; ?>
 
                         <div class="row">
-                            <div class="col-sm-4">
+                            <div class="col-sm-3" style="margin-top: 20px; display: flex;justify-content: center; align-items: center;">
+                                <button class="btn-info btn_app restoreNormalMode" id="btnAscensionPedagogique"><?php echo $this->lang->line('sidebar_ap_tooltip'); ?></button>
                             </div>
 
-                            <div class="col-sm-4" style="margin-top:20px; display:flex; justify-content:center; align-items:center;">
+                            <div class="col-sm-3" style="display:flex; justify-content:center; align-items:center;display: flex;flex-direction: column;align-items: flex-start;/*! gap: 10px; */">
                                 <?php if(isset($figure['pathAudio']) && $figure['pathAudio']) { ?>
+                                    <span style="width: 100%;text-align: center;color: #1d3557;font-weight: bold;"><?php echo $this->lang->line('sidebar_as_tooltip'); ?></span>
                                     <audio style="padding-right: 1rem;width: 100%;" width="100%" height="auto" controls id="<?php echo 'audio'. $compteurFigure; ?>" allow="autoplay"
                                            onplay="handleAudioPlay(<?php echo $compteurFigure; ?>)"  oncontextmenu="return false;"  controlsList="nodownload">
                                         <source src="<?php echo base_url() .'uploads/'. $figure['pathAudio']; ?>" type="audio/mp3">
@@ -232,10 +257,16 @@
                                     <?php } ?>
 
                                 <?php } ?>
-                                <button class="btn btn-info beginTest" style="background-color: #0077b5"  >TEST</button>
                             </div>
 
-                            <div class="col-sm-4">
+                            <div class="col-sm-3" style="margin-top:20px; display:flex; justify-content:center; align-items:center;">
+                                <button class="btn-info btn_app" onclick="document.getElementById('modalTestCALQUE').style.display = 'flex';" title="<?php echo $this->lang->line('sidebar_test_tooltip'); ?>">
+                                    <?php echo $this->lang->line('sidebar_test'); ?>
+                                </button>
+                            </div>
+
+                            <div class="col-sm-3" style="margin-top:20px; display:flex; justify-content:center; align-items:center;">
+                                <button class="btn-info btn_app beginTest active"><?php echo $this->lang->line('test_legendes'); ?></button>
                             </div>
 
                         </div>
@@ -394,6 +425,84 @@
         }, 5000); // Masque après 3 secondes
     }
 
+    // Function to restore normal mode (Ascension pédagogique)
+    var restoreButtons = document.querySelectorAll('.restoreNormalMode');
+    restoreButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            // Manage active states
+            document.querySelectorAll('.btn_app').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+
+            // Hide text input fields
+            var text_saisie_gauche = document.getElementsByClassName('text_saisie_gauche');
+            for (let sais of text_saisie_gauche) {
+                sais.style.display = 'none';
+            }
+
+            // Show all correction buttons gauche
+            var btnGaucheButtons = document.getElementsByClassName('btn-gauche');
+            for (let btn of btnGaucheButtons) {
+                btn.style = "padding: 0px;\n" +
+                    "  right: 0px;\n" +
+                    "  position: absolute;\n" +
+                    "  width: 100%;\n" +
+                    "  color: green;\n" +
+                    "  height: 100%;";
+            }
+
+            // Show all correction buttons droite
+            var correctionButtonsD = document.getElementsByClassName('btn-droite');
+            for (let btn of correctionButtonsD) {
+                btn.style = "padding: 0px;\n" +
+                    "  left: 0px;\n" +
+                    "  position: absolute;\n" +
+                    "  width: 100%;\n" +
+                    "  color: green;\n" +
+                    "  height: 100%;";
+            }
+
+            // Hide textGauche divs
+            var textGaucheDivs = document.getElementsByClassName('textGauche');
+            for (let div of textGaucheDivs) {
+                div.style.visibility = 'hidden';
+            }
+
+            // Show text responses
+            var textResponses = document.getElementsByClassName('text_response');
+            for (let div of textResponses) {
+                div.style.display = 'flex';
+            }
+
+            // Hide textGaucheCoteDroite
+            var textGaucheDrDivs = document.getElementsByClassName('textGaucheCoteDroite');
+            for (let div of textGaucheDrDivs) {
+                div.style.display = 'none';
+            }
+
+            // Hide text_titre
+            var correctionButtonsTT = document.getElementsByClassName('text_titre');
+            for (let j = 0; j < correctionButtonsTT.length; j++) {
+                correctionButtonsTT[j].style.display = 'none';
+            }
+
+            // Show bloc_titre
+            var correctionButtonsBT = document.getElementsByClassName('bloc_titre');
+            for (let btn of correctionButtonsBT) {
+                btn.style.display = 'flex';
+            }
+
+            // Show titre button
+            var correctionButtonsT = document.getElementsByClassName('btn-titre');
+            for (let j = 0; j < correctionButtonsT.length; j++) {
+                correctionButtonsT[j].style = "padding: 0px;\n" +
+                    " float: right;\n" +
+                    "  position: absolute;\n" +
+                    "  width: 100%;\n" +
+                    "  height: 100%;\n" ;
+            }
+        });
+    });
+
 
     // Function triggered by clicking the "Begin Test" button
     // Select all buttons with the class 'beginTest'
@@ -402,6 +511,9 @@
     // Loop through each button and add an event listener
     testButtons.forEach(function(button) {
         button.addEventListener('click', function() {
+            // Manage active states
+            document.querySelectorAll('.btn_app').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
 
             var text_saisie_gauche = document.getElementsByClassName('text_saisie_gauche');
             for (let sais of text_saisie_gauche) {
@@ -479,79 +591,56 @@
             }
         }
 
-        var text_saisie_gauche = document.getElementsByClassName('text_saisie_gauche');
-        for (let sais of text_saisie_gauche) {
-            sais.style.display = 'none';
+        // Toujours réactiver le bouton "Légende active" lors du changement de figure
+        document.querySelectorAll('.btn_app').forEach(b => b.classList.remove('active'));
+        var beginTestButton = document.querySelector('.beginTest');
+        if (beginTestButton) {
+            beginTestButton.classList.add('active');
         }
 
+        // Toujours activer le mode test lors du changement de figure
+        var text_saisie_gauche = document.getElementsByClassName('text_saisie_gauche');
+        for (let sais of text_saisie_gauche) {
+            sais.style.display = 'flex';
+        }
 
-        var correctionButtonsG = document.getElementsByClassName('btn-gauche');
-        // Mettre tous les boutons de correction sur display: block
-        for (let j = 0; j < correctionButtonsG.length; j++) {
-            correctionButtonsG[j].style = "padding: 0px;\n" +
-                "  right: 0px;\n" +
-                "  position: absolute;\n" +
-                "  width: 100%;\n" +
-                "  color: green;\n" +
-                "  height: 100%;";
+        // Hide all buttons with class 'btn-gauche'
+        var btnGaucheButtons = document.getElementsByClassName('btn-gauche');
+        for (let btn of btnGaucheButtons) {
+            btn.style.display = 'none';
         }
 
         var correctionButtonsD = document.getElementsByClassName('btn-droite');
-        // Mettre tous les boutons de correction sur display: block
-        for (let j = 0; j < correctionButtonsD.length; j++) {
-            correctionButtonsD[j].style = "padding: 0px;\n" +
-                "  left: 0px;\n" +
-                "  position: absolute;\n" +
-                "  width: 100%;\n" +
-                "  color: green;\n" +
-                "  height: 100%;";
+        for (let btn of correctionButtonsD) {
+            btn.style.display = 'none';
         }
 
-        var correctionButtonsT = document.getElementsByClassName('btn-titre');
-        // Mettre tous les boutons de correction sur display: block
-        for (let j = 0; j < correctionButtonsT.length; j++) {
-            correctionButtonsT[j].style = "padding: 0px;\n" +
-                " float: right;\n" +
-                "  position: absolute;\n" +
-                "  width: 100%;\n" +
-                "  height: 100%;\n" ;
-        }
-
-        ///display:flex; fex-direction:raw; flex-wrap:nowrap;" id="textGauche"
-// Now loop through all elements with the class 'textGauche'
-        var correctionButtonsTG = document.getElementsByClassName('textGauche');
-// Adjust display based on the value of audio_path
-        for (let j = 0; j < correctionButtonsTG.length; j++) {
-            correctionButtonsTG[j].style.display =   "flex"  ;
-            // correctionButtonsTG[j].style.display = (audio_path == null ) ? "flex" : "none";
-            correctionButtonsTG[j].style.visibility = (audio_path === null) ? "visible" : "hidden";
-            correctionButtonsTG[j].style.flexDirection = "row"; // Ensure flex-direction is applied
-            correctionButtonsTG[j].style.flexWrap = "nowrap"; // Ensure flex-wrap is applied
-        }
-
-        var textGaucheDrDivs = document.getElementsByClassName('textGaucheCoteDroite');
-        for (let div of textGaucheDrDivs) {
-            div.style.display = 'none';
-        }
-
-        var correctionButtonsTT = document.getElementsByClassName('text_titre');
-        // Mettre tous les boutons de correction sur display: block
-        for (let j = 0; j < correctionButtonsTT.length; j++) {
-            correctionButtonsTT[j].style.display =  "none";
-            // correctionButtonsTT[j].style.display = (audio_path === null) ? "flex" : "none";
-        }
-
-        var correctionButtonsBT = document.getElementsByClassName('bloc_titre');
-        // Mettre tous les boutons de correction sur display: block
-        for (let btn of correctionButtonsBT) {
-            btn.style.display = 'flex';
+        // Show all divs with class 'textGauche'
+        var textGaucheDivs = document.getElementsByClassName('textGauche');
+        for (let div of textGaucheDivs) {
+            div.style.visibility = 'visible';
         }
 
         var textResponses = document.getElementsByClassName('text_response');
         for (let div of textResponses) {
-            div.style.display =  'flex'; // Show if 'show' is true, otherwise hide
+            div.style.display = 'none';
         }
 
+        var textGaucheDrDivs = document.getElementsByClassName('textGaucheCoteDroite');
+        for (let div of textGaucheDrDivs) {
+            div.style.display = 'flex';
+            div.style.flexWrap = "nowrap";
+        }
+
+        var correctionButtonsTT = document.getElementsByClassName('text_titre');
+        for (let j = 0; j < correctionButtonsTT.length; j++) {
+            correctionButtonsTT[j].style.display = 'flex';
+        }
+
+        var correctionButtonsBT = document.getElementsByClassName('bloc_titre');
+        for (let btn of correctionButtonsBT) {
+            btn.style.display = 'none';
+        }
 
     }
 
@@ -601,6 +690,54 @@
     }
 
     window.onload = function() {
+        // Activer automatiquement le mode test si le bouton "Légende active" est sélectionné par défaut
+        var activeTestButton = document.querySelector('.beginTest.active');
+        if (activeTestButton) {
+            // Simuler le clic sur le bouton pour activer le mode test
+            var text_saisie_gauche = document.getElementsByClassName('text_saisie_gauche');
+            for (let sais of text_saisie_gauche) {
+                sais.style.display = 'flex';
+            }
+
+            // Hide all buttons with class 'btn-gauche'
+            var btnGaucheButtons = document.getElementsByClassName('btn-gauche');
+            for (let btn of btnGaucheButtons) {
+                btn.style.display = 'none';
+            }
+
+            var correctionButtonsD = document.getElementsByClassName('btn-droite');
+            for (let btn of correctionButtonsD) {
+                btn.style.display = 'none';
+            }
+
+            // Show all divs with class 'textGauche'
+            var textGaucheDivs = document.getElementsByClassName('textGauche');
+            for (let div of textGaucheDivs) {
+                div.style.visibility = 'visible';
+            }
+
+            var textResponses = document.getElementsByClassName('text_response');
+            for (let div of textResponses) {
+                div.style.display = 'none';
+            }
+
+            var textGaucheDrDivs = document.getElementsByClassName('textGaucheCoteDroite');
+            for (let div of textGaucheDrDivs) {
+                div.style.display = 'flex';
+                div.style.flexWrap = "nowrap";
+            }
+
+            var correctionButtonsTT = document.getElementsByClassName('text_titre');
+            for (let j = 0; j < correctionButtonsTT.length; j++) {
+                correctionButtonsTT[j].style.display = 'flex';
+            }
+
+            var correctionButtonsBT = document.getElementsByClassName('bloc_titre');
+            for (let btn of correctionButtonsBT) {
+                btn.style.display = 'none';
+            }
+        }
+
         // playAudio();
         // setTimeout(function() {
         //     let firstButtonPlayAudio = document.getElementById('buttonPlayAudioId')
@@ -664,6 +801,8 @@
 
 
 </script>
+
+<?php include('v1_modal_test_calque.php'); ?>
 
 </body>
 

@@ -372,3 +372,13 @@ $lang['lecture_valider']      = "Confirm";
 $lang['sidebar_anatomie'] = "Anat";
 $lang['sidebar_pathologie'] = "Path";
 $lang['sidebar_pathologie_anatomie'] = "Path";
+
+$lang['pathologie_title'] = "🩺 Clinical Pathology: The Link Between Anatomy and Medical Practice";
+$lang['pathologie_p'] = "Understanding pathologies starts with a perfect mastery of normal anatomy. Our clinical database allows you to bridge the gap between theory and hospital practice.";
+$lang['pathologie_p1'] = "📌 Available Clinical Resources:";
+$lang['pathologie_li1'] = "Descriptive sheets for common and rare pathologies";
+$lang['pathologie_li2'] = "Direct correlation between lesions and anatomical structures";
+$lang['pathologie_li3'] = "Real clinical cases with medical imaging (MRI, CT, X-ray)";
+$lang['pathologie_li4'] = "Targeted anatomical reminders for each diagnosis";
+$lang['pathologie_li5'] = "Tools to help understand pathological mechanisms";
+$lang['pathologie_p2'] = "✨ Explore pathology in a visual and structured way to refine your diagnosis and enrich your medical expertise.";
