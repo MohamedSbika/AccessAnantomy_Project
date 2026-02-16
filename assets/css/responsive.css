@@ -18,6 +18,12 @@
 .imageViewAnimation {
     display: block !important; /* make sure it's visible */
     animation: slideInRight 0.8s ease forwards;
+    position: absolute;
+    z-index: 9999;
+    top: 105px;
+    left: 50%;
+    width: 400px;
+    margin-left: -200px;
 }
 
 /* Keyframes for sliding in from the right */
@@ -34,6 +40,34 @@
 
 
 @media (max-width: 768px) {
+
+    .top-bar {
+        justify-content: end !important;
+    }
+
+    a {
+        margin-left: 10px !important;
+    }
+
+    a img {
+        width: 30px !important;
+        height: 30px !important;
+    }
+
+    span, a {
+        font-size: 14px !important;
+    }
+
+    .top-bar .navbar-nav {
+        margin-left: 0 !important;
+        padding-left: 0 !important;
+    }
+
+    .top-bar .navbar-nav .dropdown-menu {
+        position: absolute !important;
+        top: 25px !important;
+    }
+
     .bloc_pub_responsive {
         margin-right: initial !important;
         margin-left: initial !important;
@@ -86,4 +120,15 @@
     cursor: pointer;
     font-size: 20px;
     font-weight: 700;
+}
+
+.arrowHideImage {
+    position: absolute;
+    top: 85px;
+    right: 10px;
+    z-index: 99999;
+}
+
+.main-section.backgroundOpacity {
+    background: rgba(0, 0, 0, 0.3);
 }

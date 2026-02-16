@@ -162,7 +162,7 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
             </div>
 
             <div id="arrowHideImage" onclick="hideImage()" class="arrowHideImage d-none">
-                <span class="style">></span>
+                <span class="style">x</span>
             </div>
 			<div id="imageView" class="imageView">
                 <?php if($OneBook[0]["encryptCouverture"] =='') { ?>
@@ -227,6 +227,9 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
         let imageView = document.getElementById("imageView");
         let arrowViewImage = document.getElementById("arrowViewImage");
         let arrowHideImage = document.getElementById("arrowHideImage");
+        let mainSection = document.getElementById("mainSection");
+
+        mainSection.classList.add("backgroundOpacity");
 
         imageView.classList.remove("imageView");
         imageView.classList.add("imageViewAnimation");
@@ -242,6 +245,9 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
         let imageView = document.getElementById("imageView");
         let arrowViewImage = document.getElementById("arrowViewImage");
         let arrowHideImage = document.getElementById("arrowHideImage");
+        let mainSection = document.getElementById("mainSection");
+
+        mainSection.classList.remove("backgroundOpacity");
 
         imageView.classList.add("imageView");
         imageView.classList.remove("imageViewAnimation");
