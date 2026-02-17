@@ -132,3 +132,51 @@
 .main-section.backgroundOpacity {
     background: rgba(0, 0, 0, 0.3);
 }
+
+.new-side-nav {
+    padding-top: 20px !important;
+}
+
+.new-side-nav .navbar-nav {
+    margin-left: 0 !important;
+    padding: 0 !important;
+}
+
+.new-side-nav a {
+    margin-left: 0 !important;
+    padding-left: 10px !important;
+}
+
+.new-side-nav .navbar-nav .nav-item .dropdown-menu .dropdown-item {
+    color: #000000 !important;
+    width: initial !important;
+}
+
+.new-side-nav .navbar-nav .nav-item .dropdown-menu {
+    margin-left: 10px !important;
+}
+
+.new-side-nav.livre-side-nav {
+    flex-direction: column !important;
+    z-index: 99999;
+}
+
+.new-side-nav.livre-side-nav .navbar-nav .nav-item .dropdown-menu {
+    position: static !important;
+}
+
+.new-side-nav.livre-side-nav .language-class .dropdown {
+    position: relative;
+}
+
+.new-side-nav.livre-side-nav .language-class .dropdown .dropdown-menu {
+    left: -130px !important;
+}
+
+.menu-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

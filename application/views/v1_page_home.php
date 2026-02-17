@@ -482,40 +482,41 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 		<button class="menu-btn" onclick="toggleNav()">☰</button>
 
 		<!-- Sidebar Navigation (Initially hidden) -->
-		<div class="side-nav" id="sideNav">
-			<a href="javascript:void(0)" class="close-btn" onclick="closeNav()">×</a>
-			<a href="#">Accueil</a>
-			<a href="#">Anatomie ▼</a>
-			<a href="#">Embryologie ▼</a>
-			<a href="#">ELearning</a>
-			<a href="#">Contact</a>
-		</div>
+<!--		<div class="side-nav" id="sideNav">-->
+<!--			<a href="javascript:void(0)" class="close-btn" onclick="closeNav()">×</a>-->
+<!--			<a href="#">Accueil</a>-->
+<!--			<a href="#">Anatomie ▼</a>-->
+<!--			<a href="#">Embryologie ▼</a>-->
+<!--			<a href="#">ELearning</a>-->
+<!--			<a href="#">Contact</a>-->
+<!--		</div>-->
 
 		<!-- Main Navigation for larger screens -->
-		<nav class="main-nav">
+		<div class="side-nav new-side-nav" id="sideNav">
 
-			<img style="width: 120px" src="<?php echo HTTP_IMAGES; ?>photos/logoNavbar.png" alt="Access Anatomy Logo">
+            <img style="width: 120px" src="<?php echo HTTP_IMAGES; ?>photos/logoNavbar.png" alt="Access Anatomy Logo">
+            <a href="javascript:void(0)" class="close-btn" onclick="closeNav()">×</a>
 
 			<?php include('v1_header_category.php'); ?>
 
 			<a href="<?php echo base_url('FR/livreList/1/1'); ?>" class="btn"
 				style="font-size: small;"><?php echo $this->lang->line('demarrerGratuit'); ?></a>
 
-		</nav>
+		</div>
 	</header>
 
 	<script>
 		function toggleNav() {
 			var sideNav = document.getElementById("sideNav");
 			if (sideNav.style.left === "0px") {
-				sideNav.style.left = "-250px"; 
+				sideNav.style.left = "-250px";
 			} else {
-				sideNav.style.left = "0";  
+				sideNav.style.left = "0";
 			}
 		}
 
 		function closeNav() {
-			document.getElementById("sideNav").style.left = "-250px"; 
+			document.getElementById("sideNav").style.left = "-250px";
 		}
 	</script>
 
@@ -1639,7 +1640,7 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 						<?php echo $this->lang->line('pricing_title'); ?>
 					</h1>
 					<div class="toggle-container">
-						<span><?php echo $this->lang->line('monthly'); ?></span> 
+						<span><?php echo $this->lang->line('monthly'); ?></span>
 						<label class="toggle-switch">
 							<input type="checkbox" checked>
 							<span class="slider-toggle"></span>
@@ -1770,13 +1771,13 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 					slidesPerView: 4,
 					spaceBetween: 30,
 					autoplay: {
-						delay: 0, 
+						delay: 0,
 						disableOnInteraction: false
 					},
-					speed: 4000, 
-					freeMode: true, 
-					freeModeMomentum: false, 
-					freeModeSticky: false, 
+					speed: 4000,
+					freeMode: true,
+					freeModeMomentum: false,
+					freeModeSticky: false,
 					pagination: { el: '.swiper-pagination', clickable: true },
 					navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
 				});

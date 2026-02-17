@@ -511,20 +511,21 @@
 <button class="menu-btn" onclick="toggleNav()">☰</button>
 
 <!-- Sidebar Navigation (Initially hidden) -->
-<div class="side-nav" id="sideNav">
-	<a href="javascript:void(0)" class="close-btn" onclick="closeNav()">×</a>
-	<a href="#">Accueil</a>
-	<a href="#">Anatomie ▼</a>
-	<a href="#">Embryologie ▼</a>
-	<a href="#">ELearning</a>
-	<a href="#">Contact</a>
-</div>
+<!--<div class="side-nav" id="sideNav">-->
+<!--	<a href="javascript:void(0)" class="close-btn" onclick="closeNav()">×</a>-->
+<!--	<a href="#">Accueil</a>-->
+<!--	<a href="#">Anatomie ▼</a>-->
+<!--	<a href="#">Embryologie ▼</a>-->
+<!--	<a href="#">ELearning</a>-->
+<!--	<a href="#">Contact</a>-->
+<!--</div>-->
 
 <!-- Main Navigation for larger screens -->
-<nav class="main-nav mmm">
+<div class="side-nav new-side-nav livre-side-nav" id="sideNav">
 
 	<img   src="<?php echo HTTP_IMAGES; ?>photos/logoNavbar.png" width="100px"
 		   onclick="window.location.href='<?php echo base_url() . $this->lang->line('siteLang'); ?>login';" >
+    <a href="javascript:void(0)" class="close-btn" onclick="closeNav()">×</a>
 
 
 	<?php include('v1_header_category.php'); ?>
@@ -553,7 +554,7 @@
 
 		<div style="display:flex; flex-direction:column; max-width: 300px; width: auto;padding-top: 10px;">
 
-			<div class="language-user-navbar"  style="justify-content: space-between;">
+			<div class="language-user-navbar language-class"  style="justify-content: space-between;">
 
 				<?php if($this->session->userdata('user_id') > 0) { ?>
 
@@ -636,7 +637,7 @@
 
 	<?php include('v1_header_langauge.php'); ?>
 
-</nav>
+</div>
 
 <script>
     // Function to open the sidebar menu
