@@ -34,7 +34,7 @@
                 display: block;
             }
 
-            
+
             .card-audio {
                 box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
                 max-width: 300px;
@@ -66,13 +66,13 @@
             }
 
             .card-audio-active p{
-                color:white; 
+                color:white;
             }
 
             .card-audio p {
                 text-align: justify;
                 word-break:break-all;
-            
+
             }
 
             .card-audio div {
@@ -116,11 +116,11 @@
 
             .lien-repartoir{
                 padding: 5px;
-            } 
+            }
 
             .lien-repartoir:hover{
                 color:blue;
-                cursor: pointer; 
+                cursor: pointer;
             }
 
             .active-lien-repartoir{
@@ -211,7 +211,7 @@
                                             <textarea rows="15" cols="33" class="form-control form-control-lg input-modal-login" type="text" name="textGauche" placeholder="" style="font-size: 0.8rem;min-height: calc(1px);padding: 0.2rem 0.2rem;"></textarea>
                                         </div>
                                     </div>
-                                   
+
                                     <div class="col-sm-4" style="padding:0px;">
 
                                         <div class="mb-2 text-center">
@@ -231,7 +231,7 @@
                                         </div>
 
                                     </div>
-                                   
+
                                     <div class="col-sm-4">
                                         <div class="mb-2">
                                             <label class="form-label label-modal-login"><?php echo $this->lang->line('textDroite'); ?></label>
@@ -319,7 +319,7 @@
                     </div>
                 </div>
             </div>
-            
+
         <?php } ?>
 
 
@@ -362,7 +362,7 @@
         <?php } ?>
 
         <main class="content">
-            <div class="container-fluid p-0">
+            <div class="container-fluid">
 
                 <?php
                 include('header_nav.php');
@@ -463,7 +463,7 @@
                             </div>
 
                         <?php } ?>
-                    
+
                         <div id="tabVideos">
 
                         </div>
@@ -503,7 +503,7 @@
                                 </div>
 
                                 <br>
-                                
+
                                 <div class="text-center mt-3">
                                     <button type="button" class="btn btn-primary button-modal-login" onclick="addEdit_audio('#video_upload')"><?php echo $this->lang->line('save'); ?></button>
                                 </div>
@@ -523,7 +523,7 @@
                             <button type="button" class="style-button-modal" data-dismiss="modal" aria-label="Close"> × </button>
                         </div>
                         <div class="modal-body m-3" style="padding:0px;">
-                            
+
                             <form id="uploads_audio" name="uploads_audio" method="POST">
 
                                 <div class="col-sm-12">
@@ -546,7 +546,7 @@
 
                                 <div class="progress">
                                     <div class="progress-bar">
-                            
+
                                     </div>
                                 </div>
                                 <br>
@@ -559,13 +559,13 @@
                                 <div  class="col-md-12">
                                     <div  class="row">
                                         <div  class="bloc-repertoire-videos col-md-4" id="bloc-repertoire-videos">
-                                            
+
                                         </div>
-            
+
                                         <div  class="col-md-8">
                                             <h1>Liste Audio</h1>
                                             <div id="bloc-repertoire-audios2">
-                                                
+
                                             </div>
                                         </div>
                                     </div>
@@ -606,7 +606,7 @@
             </div>
         </div>
 
-        
+
         <!-- end Modal select audio -->
 
     </body>
@@ -622,7 +622,7 @@
             image.setAttribute("class", "class-hidden")
 
             var image2 = document.getElementById(oldImage);
-            
+
             if (image2 != null) {
                 image2.setAttribute("class", "class-hidden")
             }
@@ -640,7 +640,7 @@
             image.setAttribute("class", "class-hidden")
 
             var image2 = document.getElementById(oldImage);
-            
+
             if (image2 != null) {
                 image2.setAttribute("class", "class-hidden")
             }
@@ -648,12 +648,12 @@
 
         var loadFile = function(event, newImage, oldImage) {
             var image = document.getElementById(newImage);
- 
+
             console.log(image)
 
             image.src = URL.createObjectURL(event.target.files[0]);
             image.setAttribute("class", "class-block")
-            
+
             var image2 = document.getElementById(oldImage);
             if (image2 != null) {
                 image2.setAttribute("class", "class-hidden")
@@ -703,7 +703,7 @@
                             if (result.value) {
                                 $('#setCouv').load(" #setCouv > *");
                                 window.location.reload()
-                       
+
                             }
                         })
 
@@ -813,7 +813,7 @@
             var data_plat = new FormData($('#addFigure')[0]);
 
             console.log(data_plat)
-            
+
             Swal.fire({
                 title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
                 allowOutsideClick: false,
@@ -930,7 +930,7 @@
                     }
 
                     figure.pathAudio = "uploads/"+figure.pathAudio
-                    
+
                     document.getElementById("idBlockButtonAddAudio").style="display:none;"
 
                     somme += `
@@ -944,7 +944,7 @@
                             <div class="col-sm-4" style="float:right; width:120px;">
                                 <?php if ((strlen($this->session->userdata('passTok')) == 200) && ($this->session->userdata('EstAdmin') == 1)) { ?>
                                     <h2></h2>
-                                    <button style="padding: 10px;" onclick="open_delete_audio(` + figure['id'] + `)" data-toggle="modal" data-target="#centeredModalPrimaryDeleteAudio" class="btn btn-primary button-modal-login" > 
+                                    <button style="padding: 10px;" onclick="open_delete_audio(` + figure['id'] + `)" data-toggle="modal" data-target="#centeredModalPrimaryDeleteAudio" class="btn btn-primary button-modal-login" >
                                        <i class="fa fa-trash" style="font-size:18px; color:white;" aria-hidden="true"></i>
                                     </button>
                                     <button  style="padding: 10px;" type="button" onclick="open_add_audio();" class="btn btn-primary button-modal-login" data-toggle="modal" data-target="#addAudioModal">
@@ -988,7 +988,7 @@
         }
 
         function refreshRepertoire(refreshFolder) {
-                
+
             var data_plat = new FormData($('#pageForm_TestQCM')[0]);
 
             Swal.fire({
@@ -999,9 +999,9 @@
                     Swal.showLoading()
                 }
             })
-            
-            $.ajax({    
-            
+
+            $.ajax({
+
                 type: "POST",
                 url: "<?php echo base_url(); ?>video/getSubDirectoriesAudio",
                 data: data_plat,
@@ -1012,35 +1012,35 @@
                 success: function(html) {
                     swal.close()
                     var resu = JSON.parse(html);
-                    
+
                     if (resu["id"] == "1") {
                         // $('#modalChap').modal('hide');
-                       
+
                         var result = resu["search_results"]
 
                         var newItems = [{path:"uploads", items:result, name:"uploads", isFolder:true}]
-           
+
                         localStorage.setItem("listvideosSelectionnee", JSON.stringify(newItems))
-                        
+
                         var inputPathRepartoire = document.getElementById("pathFolderAudio")
                         var pathRepartoire = "uploads"
                         if(inputPathRepartoire && inputPathRepartoire.value && inputPathRepartoire.value.length > 0){
-                            pathRepartoire = inputPathRepartoire.value 
+                            pathRepartoire = inputPathRepartoire.value
                         }
-                        
+
                         if(refreshFolder){
                             setRepertoirAudioToHTML(newItems, pathRepartoire)
                             selecteRepertoirAudioToHTML(null, pathRepartoire)
-                            var elements = document.getElementsByClassName("lien-repartoir") 
+                            var elements = document.getElementsByClassName("lien-repartoir")
                             selecteRepertoirAudioToHTML(elements[0], pathRepartoire)
                         }else{
-                            var elements = document.getElementsByClassName("active-lien-repartoir") 
+                            var elements = document.getElementsByClassName("active-lien-repartoir")
                             selecteRepertoirAudioToHTML(elements[0], pathRepartoire)
                         }
-                        
-                       
-                        
-                      
+
+
+
+
                         // contener.innerHTML = setRepertoirAudioToHTML(result)
 
                     } else {
@@ -1055,23 +1055,23 @@
                 },
                 error: function() {
                     // SHOW AN ERROR { if php failed to fetch }
-            
+
                     //$("#user_message_error_pretech").show();
                     $('.modal-message').html("Sorry, File not Uploaded");
                     $('#modal-confirm-all').modal('show');
                 }
-            
+
             });
-            
+
             return false;
-            
+
         }
 
         function selecteRepertoirAudioToHTML(e, path){
-            var elements = document.getElementsByClassName("active-lien-repartoir") 
+            var elements = document.getElementsByClassName("active-lien-repartoir")
             elements.forEach(x => {
                 x.classList.remove("active-lien-repartoir")
-            })  
+            })
 
             if(e && e.classList) e.classList.add("active-lien-repartoir")
 
@@ -1080,34 +1080,34 @@
 
             var inputFolder = document.getElementById("pathFolderAudio")
             if(inputFolder) inputFolder.value = path
-            
+
             var contener = document.getElementById("bloc-repertoire-audios2")
             contener.innerHTML = innerHTML
             refereshAudios()
         }
 
         function selecteAudio(e){
-            var elements = document.getElementsByClassName("card-audio-active") 
+            var elements = document.getElementsByClassName("card-audio-active")
             elements.forEach(x => {
                 x.classList.remove("card-audio-active")
-            })  
+            })
 
             if(e && e.classList) e.classList.add("card-audio-active")
 
         }
 
         function valideSelectedAudio(){
-            var elements = document.getElementsByClassName("card-audio-active") 
+            var elements = document.getElementsByClassName("card-audio-active")
             elements.forEach(x => {
                     var input = document.getElementById("pathVideoAdd")
                     input.value = x.getAttribute('name')
                      var input2 = document.getElementById("pathVideoAdd2")
                     input2.value = x.getAttribute('name')
                     $('#selectAudioModal').modal('hide');
-                    return  
-            })  
+                    return
+            })
         }
-         
+
         function opencloseRepertoirAudioToHTML(e){
             if(e.parentElement.classList == "span-inline-block"){
                 e.parentElement.classList.add('desactive-sous-list')
@@ -1133,16 +1133,16 @@
                     var compteur = 0
                     for (let j = 0; j < directories[i].items.length; j++) {
                        if(!directories[i].items[j].isFolder){
-                        compteur++ 
+                        compteur++
                         innerHTML += `
                          <div class="card-audio" name="`+directories[i].items[j].path+`" onclick="selecteAudio(this)">
                             <audio style="padding-right:10px;" width="100%" height="auto" id="repartoir`+compteur+`" controls>
                               <source src="<?php echo base_url(); ?>`+directories[i].items[j].path+`" type="audio/mp3" >
-                            </audio>   
-                            <div> 
-                               <p>`+ 
-                                   directories[i].items[j].name 
-                               +`</p> 
+                            </audio>
+                            <div>
+                               <p>`+
+                                   directories[i].items[j].name
+                               +`</p>
                             </div>
                          </div>`
                        }
@@ -1187,7 +1187,7 @@
                     var dd = this.id
                     console.log("dd = ",dd)
                     $('video').each(function( index ) {
-                        
+
                         if(dd != this.id){
                             this.pause();
                             this.currentTime = 0;
@@ -1223,7 +1223,7 @@
         $("#selectAudioModal").on('show.bs.modal', function(){
             setPauseAllAudios()
         });
-         
+
         $("#selectAudioModal").on('hide.bs.modal', function(){
             setPauseAllAudios()
         });
@@ -1255,11 +1255,11 @@
                 contentType: false,
                 processData: false,
                 timeout: 30000000,
-                
+
                 success: function(html) {
 
                     var resu = JSON.parse(html);
-                
+
                     if (resu[0]["id"] == 1) {
                         Swal.fire({
                             title: resu[0]["desc"],
@@ -1286,7 +1286,7 @@
                         //setTimeout(() => {
                         //    window.location.reload();
                         //}, 1000);
-                        
+
                     } else {
                         Swal.fire({
                             position: 'center',
@@ -1322,7 +1322,7 @@
                 //         Swal.showLoading()
                 //     }
                 // })
-                
+
                 $.ajax({
                     xhr: function(){
                        var xhr = new window.XMLHttpRequest();
@@ -1333,7 +1333,7 @@
                             $(".progress-bar").html(Math.trunc(percentComplete)+"%");
                           }
                        }, false);
-                
+
                        return xhr;
                     },
                     type: "POST",
@@ -1347,14 +1347,14 @@
                         $(".progress-bar").width('0%');
                         $(".progress-bar").html('<h1> Loading .... </h1>')
                     },
-                
+
                     success: function(html) {
-                
+
                         console.log("sucess");
                         console.log(html);
                         var resu = JSON.parse(html);
                         console.log(resu);
-                
+
                         if (resu[0]["id"] == 1) {
                             console.log("sucess");
                             Swal.fire({
@@ -1370,7 +1370,7 @@
 
                                 $(".progress-bar").width('0%');
                                 // $(".progress-bar").html('<h1> Loading .... </h1>')
-                    
+
                                 refreshRepertoire(false)
                                 // if (result.value) {
                                 //     $('#setCouv').load(" #setCouv > *");
@@ -1381,7 +1381,7 @@
                                 //     chargeVideos(idChapitre, idType)
                                 // }
                             })
-                
+
                         } else {
                             console.log("error");
                             Swal.fire({
@@ -1392,18 +1392,18 @@
                                 timer: 4000
                             })
                         }
-                
+
                     },
                     error: function() {
                         // SHOW AN ERROR { if php failed to fetch }
-                
+
                         //$("#user_message_error_pretech").show();
                         $('.modal-message').html("Sorry, File not Uploaded");
                         $('#modal-confirm-all').modal('show');
                     }
-                
+
                 });
-                
+
                 return false;
             }
 
@@ -1421,7 +1421,7 @@
                 })
 
                 $.ajax({
-                
+
                     type: "POST",
                     url: "<?php echo base_url(); ?>video/deleteAudio",
                     data: data_plat,
@@ -1430,12 +1430,12 @@
                     processData: false,
                     timeout: 30000000,
                     success: function(html) {
-                    
+
                         console.log("sucess");
                         console.log(html);
                         var resu = JSON.parse(html);
                         console.log(resu);
-                    
+
                         if (resu[0]["id"] == 1) {
                             console.log("sucess");
                             Swal.fire({
@@ -1459,7 +1459,7 @@
                                     //}, 1000);
                                 }
                             })
-                        
+
                         } else {
                             console.log("error");
                             Swal.fire({
@@ -1470,16 +1470,16 @@
                                 timer: 4000
                             })
                         }
-                    
+
                     },
                     error: function() {
                         // SHOW AN ERROR { if php failed to fetch }
-                    
+
                         //$("#user_message_error_pretech").show();
                         $('.modal-message').html("Sorry, File not Uploaded");
                         $('#modal-confirm-all').modal('show');
                     }
-                
+
                 });
 
                 return false;

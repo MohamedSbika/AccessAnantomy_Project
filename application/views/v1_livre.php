@@ -149,7 +149,7 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 	<div class="main" >
 		<?php include('v1_header_nav.php'); ?>
 		<main class="content">
-			<div class="container-fluid p-0">
+			<div class="container-fluid">
 				<?php include('v1_racourci.php'); ?>
 
 <div class="main-section" id="mainSection" style="padding-top: 10px;">

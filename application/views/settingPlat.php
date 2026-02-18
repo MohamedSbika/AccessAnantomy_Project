@@ -14,7 +14,7 @@
     </style>
 
     <main class="content">
-        <div class="container-fluid p-0">
+        <div class="container-fluid">
             <div class="row">
 
                 <div class="col-12">
@@ -32,7 +32,7 @@
                                                 <th style="text-align: left;"><?php echo $this->lang->line('paramsLib'); ?></th>
                                                 <th style="text-align: left;"><?php echo $this->lang->line('paramsVal'); ?></th>
                                                 <th style="text-align: left;"><?php echo $this->lang->line('paramsAction'); ?></th>
-                                              
+
                                             </tr>
                                             </thead>
                                             <tbody id="serChap">

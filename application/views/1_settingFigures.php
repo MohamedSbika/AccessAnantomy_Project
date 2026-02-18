@@ -55,7 +55,7 @@
                                             <textarea rows="15" cols="33" class="form-control form-control-lg input-modal-login" type="text" name="textGauche" placeholder="" style="font-size: 0.8rem;min-height: calc(1px);padding: 0.2rem 0.2rem;"></textarea>
                                         </div>
                                     </div>
-                                   
+
                                     <div class="col-sm-4" style="padding:0px;">
 
                                         <div class="mb-2 text-center">
@@ -75,7 +75,7 @@
                                         </div>
 
                                     </div>
-                                   
+
                                     <div class="col-sm-4">
                                         <div class="mb-2">
                                             <label class="form-label label-modal-login"><?php echo $this->lang->line('textDroite'); ?></label>
@@ -163,7 +163,7 @@
                     </div>
                 </div>
             </div>
-            
+
         <?php } ?>
 
 
@@ -206,7 +206,7 @@
         <?php } ?>
 
         <main class="content">
-            <div class="container-fluid p-0">
+            <div class="container-fluid">
 
                 <?php
                 include('header_nav.php');
@@ -298,7 +298,7 @@
             image.setAttribute("class", "class-hidden")
 
             var image2 = document.getElementById(oldImage);
-            
+
             if (image2 != null) {
                 image2.setAttribute("class", "class-hidden")
             }
@@ -316,7 +316,7 @@
             image.setAttribute("class", "class-hidden")
 
             var image2 = document.getElementById(oldImage);
-            
+
             if (image2 != null) {
                 image2.setAttribute("class", "class-hidden")
             }
@@ -324,12 +324,12 @@
 
         var loadFile = function(event, newImage, oldImage) {
             var image = document.getElementById(newImage);
- 
+
             console.log(image)
 
             image.src = URL.createObjectURL(event.target.files[0]);
             image.setAttribute("class", "class-block")
-            
+
             var image2 = document.getElementById(oldImage);
             if (image2 != null) {
                 image2.setAttribute("class", "class-hidden")
@@ -381,7 +381,7 @@
                             if (result.value) {
                                 $('#setCouv').load(" #setCouv > *");
                                 window.location.reload()
-                       
+
                             }
                         })
 
@@ -492,7 +492,7 @@
             var data_plat = new FormData($('#addFigure')[0]);
 
             console.log(data_plat)
-            
+
             Swal.fire({
                 title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
                 allowOutsideClick: false,

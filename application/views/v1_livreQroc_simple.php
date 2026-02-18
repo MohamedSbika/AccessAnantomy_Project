@@ -48,7 +48,7 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 		<div class="main" >
 			<?php include('v1_header_nav.php'); ?>
 			<main class="content" style="max-width: inherit;">
-				<div class="container-fluid p-0">
+				<div class="container-fluid">
 
 
 

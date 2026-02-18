@@ -23,7 +23,7 @@
     <div class="wrapper">
         <div class="main" >
             <main class="content">
-                <div class="container-fluid p-0">
+                <div class="container-fluid">
                     <?php
                     include('header_nav.php');
                     ?>
@@ -298,7 +298,7 @@
             for(var i = 0; i < elmCDT.length; i++)
             {elmCDT[i].style.visibility = 'visible';}
         }
-        
+
         function myFunction_old() {
             var elmsResp		= document.querySelector("[id='setKeyResp']");
             elmsResp.style.visibility = 'visible';

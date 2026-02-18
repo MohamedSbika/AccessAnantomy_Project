@@ -73,7 +73,7 @@ include('header_steppes.php');
 
     <div class="main"   ondragstart="return false">
         <main class="content">
-            <div class="container-fluid p-0" id="setCouv">
+            <div class="container-fluid" id="setCouv">
                 <form name="pageForm_up" id="pageForm_up" action="">
                     <?php foreach ($listCat as $value) { ?>
                         <?php if($value['Cats']['EstActifAccueil'] == 1) { ?>

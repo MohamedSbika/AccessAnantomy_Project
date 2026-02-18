@@ -15,7 +15,7 @@
 
 
     <main class="content">
-        <div class="container-fluid p-0">
+        <div class="container-fluid">
             <div class="row">
 
                 <div class="col-12">
@@ -94,7 +94,7 @@
 
     </body>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
-    
+
     </script>
 
     </html>

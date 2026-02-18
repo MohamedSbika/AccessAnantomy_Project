@@ -36,7 +36,7 @@ include('header_steppes.php');
 
 	<div class="main">
 		<main class="content">
-			<div class="container-fluid p-0">
+			<div class="container-fluid">
 
 				<div class="row">
 

@@ -46,7 +46,7 @@
     }
 
     a {
-        margin-left: 10px !important;
+        margin-left: 5px !important;
     }
 
     a img {
@@ -55,7 +55,7 @@
     }
 
     span, a {
-        font-size: 14px !important;
+        font-size: 12px !important;
     }
 
     .top-bar .navbar-nav {
@@ -65,7 +65,8 @@
 
     .top-bar .navbar-nav .dropdown-menu {
         position: absolute !important;
-        top: 25px !important;
+        top: 40px !important;
+        left: -60px !important;
     }
 
     .bloc_pub_responsive {
@@ -179,4 +180,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.swal2-content {
+    overflow: auto;
 }

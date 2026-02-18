@@ -30,7 +30,7 @@
     <div class="wrapper">
         <div class="main" oncontextmenu="return false" onbeforeprint="return false" onselectstart="return false" onmousedown="return false" ondragstart="return false">
             <main class="content">
-                <div class="container-fluid p-0">
+                <div class="container-fluid">
                     <?php
                     include('header_nav.php');
                     ?>

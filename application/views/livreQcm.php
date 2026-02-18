@@ -25,7 +25,7 @@ include('header.php');
 	<div class="wrapper">
 		<div class="main" oncontextmenu="return false" onbeforeprint="return false" onselectstart="return false" onmousedown="return false" ondragstart="return false">
 			<main class="content">
-				<div class="container-fluid p-0">
+				<div class="container-fluid">
 					<?php
 					include('header_nav.php');
 					?>
@@ -203,7 +203,7 @@ include('header.php');
             "paging": true,                // Enable pagination
             "dom": '<"top"fi>rt<"bottom"lp><"clear">',  // Custom layout for the DataTable
             "renderer": "full_numbers_no_ellipses",  // Apply the custom pagination functio
-            
+
 			"bLengthChange": false,
 			"bFilter": false,
 			"processing": true, //Feature control the processing indicator.
