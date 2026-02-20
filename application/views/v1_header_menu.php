@@ -510,7 +510,7 @@
 <!-- Hamburger Menu Icon -->
 <button class="menu-btn" onclick="toggleNav()">☰</button>
 
-<!-- Sidebar Navigation (Initially hidden) -->
+<!-- Sidebar Navigation (Initially hidden)-->
 <!--<div class="side-nav" id="sideNav">-->
 <!--	<a href="javascript:void(0)" class="close-btn" onclick="closeNav()">×</a>-->
 <!--	<a href="#">Accueil</a>-->
@@ -521,7 +521,7 @@
 <!--</div>-->
 
 <!-- Main Navigation for larger screens -->
-<div class="side-nav new-side-nav livre-side-nav" id="sideNav">
+<div class="side-nav new-side-nav livre-side-nav d-md-none d-flex" id="sideNav">
 
 	<img   src="<?php echo HTTP_IMAGES; ?>photos/logoNavbar.png" width="100px"
 		   onclick="window.location.href='<?php echo base_url() . $this->lang->line('siteLang'); ?>login';" >
@@ -638,6 +638,124 @@
 	<?php include('v1_header_langauge.php'); ?>
 
 </div>
+
+<nav class="main-nav d-md-flex d-none">
+
+    <img   src="<?php echo HTTP_IMAGES; ?>photos/logoNavbar.png" width="100px"
+           onclick="window.location.href='<?php echo base_url() . $this->lang->line('siteLang'); ?>login';" >
+    <a href="javascript:void(0)" class="close-btn" onclick="closeNav()">×</a>
+
+
+    <?php include('v1_header_category.php'); ?>
+
+    <?php if($this->session->userdata('user_id') > 0) { ?>
+
+        <div>
+            <form style="margin-top:5px; width:100%;" action="<?php echo base_url(); ?><?php echo $this->session->userdata('site_lang'); ?>/searchIndex" method="post">
+                <div class="input-group input-group-navbar" style="display: flex; align-items: center; padding-right: 0.5em; border-bottom: 1px solid rgba(9,138,99);">
+                    <input style="background-color:white; border:none; padding:5px 10px; height:30px; font-size:12px; flex:1;"
+                           name="indexSearch" id="indexSearch" type="text"
+                           value="<?php if(isset($indexSearch)){print $indexSearch; } ?>"
+                           class="form-control" placeholder="<?php echo $this->lang->line('search'); ?>…"
+                           aria-label="<?php echo $this->lang->line('search'); ?>">
+                    <button style="background-color:white; border:none; padding:5px 10px; height:31px; display: flex; align-items: center; justify-content: center;"
+                            class="btn" type="submit" id="validSearch">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search align-middle" style="transform: rotate(-20deg); color:rgba(9,138,99);">
+                            <circle cx="11" cy="11" r="6"></circle>
+                            <line x1="17" y1="17" x2="15" y2="15"></line>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+
+        <div style="display:flex; flex-direction:column; max-width: 300px; width: auto;padding-top: 10px;">
+
+            <div class="language-user-navbar language-class"  style="justify-content: space-between;">
+
+                <?php if($this->session->userdata('user_id') > 0) { ?>
+
+                    <li class="nav-item dropdown" style="list-style: none;float: right;">
+
+                        <a class="nav-icon dropdown-toggle d-inline-block d-sm-none" href="#" data-toggle="dropdown">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-settings align-middle"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                        </a>
+
+                        <a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#" data-toggle="dropdown">
+                            <i class="fas fa-user-circle user-icon" style="color: white"></i>
+                            <span class="text-dark"><?php echo $this->session->userdata('logged_in_name'); ?> </span>
+                        </a>
+
+                        <div class="dropdown-menu dropdown-menu-right" style="min-width: 10rem">
+                            <style>
+                                .dropdown .dropdown-menu.show {
+                                    top: 33px !important;
+                                }
+
+                            </style>
+                            <div class="m-sm-1">
+
+                                <?php if($this->session->userdata('EstAdmin') ==1) { ?>
+
+                                    <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>pagesSetting"  class="dropdown-item" style="padding: .5rem 0.2rem;">
+                                        <i class="fa fa-tools"></i>
+                                        <span class="text-dark"><?php echo $this->lang->line('settings'); ?></span>
+                                    </a>
+                                    <?php
+                                    // Exemple de cryptage de l'URL à transmettre
+                                    $encrypted_url = urlencode(base64_encode($this->uri->uri_string()));
+                                    ?>
+
+                                    <a href="<?php echo base_url() . $this->lang->line('siteLang') . 'switchPlatform/' . $encrypted_url; ?>"
+                                       class="dropdown-item"
+                                       style="padding: .5rem 0.2rem;">
+                                        <?php if ($this->session->userdata('typePlatform') == true) { ?>
+                                            <i class="fa fa-tools"></i>
+                                            <span class="text-dark" style="margin-left: 10px">Mode admin</span>
+                                        <?php } else { ?>
+                                            <i class="fa fa-book-open"></i>
+                                            <span class="text-dark" style="margin-left: 10px">Mode lecture</span>
+                                        <?php } ?>
+                                    </a>
+                                <?php } ?>
+                                <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>logout" class="dropdown-item" style="padding: .5rem 0.2rem;">
+                                    <i class="fa fa-sign-out-alt"></i>
+                                    <span class="text-dark">Déconnexion</span>
+                                </a>
+                            </div>
+                        </div>
+
+                    </li>
+
+                <?php }else{ ?>
+                    <li class="nav-item dropdown">
+                        <a class="nav-icon dropdown-toggle d-inline-block d-sm-none" href="#" data-toggle="dropdown">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-settings align-middle"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                        </a>
+
+                        <a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#" data-toggle="modal"
+                           onclick="redirectLogLivr(0)" data-target="#centeredModalPrimary">
+                            <span class="text-dark">
+							    <img src="<?php echo HTTP_IMAGES; ?>photos/user-icon.png" class="mr-1" alt="Avatar" width="25" data-toggle="dropdown" style=" margin-top:auto; margin-bottom:auto">
+                                Connexion
+							</span>
+                        </a>
+
+                    </li>
+                <?php } ?>
+
+            </div>
+
+        </div>
+
+    <?php }else{ ?>
+        <a href="#" onclick="openModal(); return false;">Se connecter</a>
+    <?php } ?>
+
+    <?php include('v1_header_langauge.php'); ?>
+
+</nav>
 
 <script>
     // Function to open the sidebar menu

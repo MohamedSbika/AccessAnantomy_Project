@@ -222,14 +222,16 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 <?php } ?>
 
 <script>
-    // Function to view image
     function viewImage() {
         let imageView = document.getElementById("imageView");
         let arrowViewImage = document.getElementById("arrowViewImage");
         let arrowHideImage = document.getElementById("arrowHideImage");
-        let mainSection = document.getElementById("mainSection");
 
-        mainSection.classList.add("backgroundOpacity");
+        // Create overlay div
+        let overlay = document.createElement("div");
+        overlay.classList.add("backgroundOpacity");
+        overlay.id = "backgroundOverlay"; // give it an ID for easy removal
+        document.body.appendChild(overlay);
 
         imageView.classList.remove("imageView");
         imageView.classList.add("imageViewAnimation");
@@ -238,16 +240,19 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
         arrowViewImage.classList.add("d-none");
 
         arrowHideImage.classList.remove("d-none");
-        arrowHideImage.classList.add("d-flex",  "d-md-none");
+        arrowHideImage.classList.add("d-flex", "d-md-none");
     }
 
-    function hideImage(){
+    function hideImage() {
         let imageView = document.getElementById("imageView");
         let arrowViewImage = document.getElementById("arrowViewImage");
         let arrowHideImage = document.getElementById("arrowHideImage");
-        let mainSection = document.getElementById("mainSection");
 
-        mainSection.classList.remove("backgroundOpacity");
+        // Remove overlay div if it exists
+        let overlay = document.getElementById("backgroundOverlay");
+        if (overlay) {
+            overlay.remove();
+        }
 
         imageView.classList.add("imageView");
         imageView.classList.remove("imageViewAnimation");
@@ -256,6 +261,6 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
         arrowViewImage.classList.remove("d-none");
 
         arrowHideImage.classList.add("d-none");
-        arrowHideImage.classList.remove("d-flex",  "d-md-none");
+        arrowHideImage.classList.remove("d-flex", "d-md-none");
     }
 </script>

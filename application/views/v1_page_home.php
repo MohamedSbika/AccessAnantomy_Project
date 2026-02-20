@@ -492,7 +492,7 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 <!--		</div>-->
 
 		<!-- Main Navigation for larger screens -->
-		<div class="side-nav new-side-nav" id="sideNav">
+		<div class="side-nav new-side-nav d-md-none d-block" id="sideNav">
 
             <img style="width: 120px" src="<?php echo HTTP_IMAGES; ?>photos/logoNavbar.png" alt="Access Anatomy Logo">
             <a href="javascript:void(0)" class="close-btn" onclick="closeNav()">×</a>
@@ -503,6 +503,17 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 				style="font-size: small;"><?php echo $this->lang->line('demarrerGratuit'); ?></a>
 
 		</div>
+
+        <div class="main-nav d-md-block d-none">
+
+            <img style="width: 120px" src="<?php echo HTTP_IMAGES; ?>photos/logoNavbar.png" alt="Access Anatomy Logo">
+
+            <?php include('v1_header_category.php'); ?>
+
+            <a href="<?php echo base_url('FR/livreList/1/1'); ?>" class="btn"
+               style="font-size: small;"><?php echo $this->lang->line('demarrerGratuit'); ?></a>
+
+        </div>
 	</header>
 
 	<script>

@@ -12,6 +12,7 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 	<link href="<?php echo HTTP_CSS; ?>v1_app.css" rel="stylesheet">
+    <link href="<?php echo HTTP_CSS; ?>responsive.css" rel="stylesheet">
 
 	<style type="text/css">
 		body {
@@ -44,7 +45,7 @@
 
 	<div class="main-container">
 		<?php include('v1_racourci_atlas.php'); ?>
-		
+
 		<div class="figures-container">
 			<?php include('v1_bloc_figures_atlas.php'); ?>
 		</div>

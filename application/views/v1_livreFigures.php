@@ -14,6 +14,7 @@ if (strlen($this->session->userdata('passTok')) == 200) {
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="<?php echo HTTP_CSS; ?>v1_app.css" rel="stylesheet">
+    <link href="<?php echo HTTP_CSS; ?>responsive.css" rel="stylesheet">
     <style>
         body { margin: 0; padding-bottom: 30px; background-color: white; }
         #element { display: flex; flex-wrap: wrap; width: 100%; background-color: white; min-height: 100vh; }
