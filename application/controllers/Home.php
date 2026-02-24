@@ -6441,6 +6441,24 @@ public function upload_Attach_Save_SubChap() {
                     unlink($outputPath);
                 }
 
+                // ==========================================
+                // SAUVEGARDE DU FICHIER ORIGINAL POUR LA TRADUCTION
+                // ==========================================
+                $originalDocxDir = FCPATH . 'uploads/docx_originals/';
+                if (!is_dir($originalDocxDir)) {
+                    mkdir($originalDocxDir, 0777, true);
+                }
+                // Convention : cours → {id}.docx | resume → {id}_resume.docx
+                $docxSuffix = ($file_type === 'resume') ? '_resume' : '';
+                $originalDocxPath = $originalDocxDir . $idSubChap . $docxSuffix . '.docx';
+                
+                // Copie du fichier temporaire vers le stockage permanent
+                if (!copy($file_nameTmp, $originalDocxPath)) {
+                    log_message('error', 'upload_Attach_Save_SubChap: impossible de copier vers '.$originalDocxPath);
+                }
+                // Recharger depuis le chemin permanent pour PhpWord
+                $contents = $objReader->load($originalDocxPath);
+
                 // Création du nouveau fichier HTML
                 $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($contents, 'HTML');
                 $objWriter->save($outputPath);

@@ -1740,7 +1740,7 @@ function togglePathoContainer(idChapitre) {
                                         <a href="#" onclick="return false;"><i class="fas fa-key" style="color: #3085d6; font-size: 0.8rem;"></i></a>
                                         <a href="#" onclick="openRenomeModal('${idEncoded}', '${titre}'); return false;"><i class="fas fa-edit" style="color: #3085d6; font-size: 0.8rem;"></i></a>
                                         <a href="#" onclick="return false;"><i class="fa fa-play-circle" style="color: #3085d6; font-size: 0.8rem;"></i></a>
-                                        <a href="#" onclick="openTranslationModal('${sc.IDSousChapitre}'); return false;"><i class="fa fa-globe" style="color: #3085d6; font-size: 1rem;"></i></a>
+                                        <a href="#" title="Traduire le Contenu" onclick="openTranslationModal('${sc.IDSousChapitre}', 'cours', '${titre}'); return false;"><i class="fa fa-globe" style="color: #3085d6; font-size: 1rem;"></i></a>
                                     </div>
                                 </div>
                             </div>
@@ -1762,7 +1762,7 @@ function togglePathoContainer(idChapitre) {
                                         <a href="#" onclick="return false;"><i class="fas fa-key" style="color: #3085d6; font-size: 0.8rem;"></i></a>
                                         <a href="#" onclick="return false;"><i class="fas fa-edit" style="color: #3085d6; font-size: 0.8rem;"></i></a>
                                         <a href="#" onclick="return false;"><i class="fa fa-play-circle" style="color: #3085d6; font-size: 1rem;"></i></a>
-                                        <a href="#" onclick="openTranslationModal('${sc.IDSousChapitre}'); return false;"><i class="fa fa-globe" style="color: #3085d6; font-size: 1rem;"></i></a>
+                                        <a href="#" title="Traduire le Résumé" onclick="openTranslationModal('${sc.IDSousChapitre}', 'resume', '${titre}'); return false;"><i class="fa fa-globe" style="color: #e67e22; font-size: 1rem;"></i></a>
                                     </div>
                                 </div>
                             </div>
@@ -2113,121 +2113,454 @@ function openRenomeModal(idSousChap, oldTitle) {
     });
 }
 
-function openTranslationModal(idSousChap) {
+// --- TRANSLATION WORKFLOW : FRONTEND ---
+
+async function openTranslationModal(idSousChap, docType, docTitre) {
+    // docType: 'cours' ou 'resume' (indique quel fichier DOCX traduire)
+    // docTitre: titre du sous-chapitre pour affichage
+    docType = docType || 'cours';
+    docTitre = docTitre || '';
+
+    if (!Swal.isVisible()) {
+        Swal.fire({
+            title: 'Chargement...',
+            allowOutsideClick: false,
+            didOpen: () => Swal.showLoading()
+        });
+    }
+
+    try {
+        // Construction de l'URL propre (évite les doubles slashes)
+        const baseUrl = "<?= rtrim(base_url('Traduction/etat'), '/'); ?>/";
+        
+        console.log('Fetching translation status for:', idSousChap, docType);
+        
+        const [enRes, esRes] = await Promise.all([
+             fetch(baseUrl + idSousChap + '/' + docType + '/en').then(f => f.ok ? f.json() : Promise.reject('HTTP ' + f.status)),
+             fetch(baseUrl + idSousChap + '/' + docType + '/es').then(f => f.ok ? f.json() : Promise.reject('HTTP ' + f.status))
+        ]);
+
+        // Si le fichier source est manquant, ne pas afficher le modal de traduction
+        if (!enRes.has_source && !esRes.has_source) {
+            Swal.close();
+            Swal.fire({
+                icon: 'warning',
+                title: 'Fichier introuvable',
+                text: "Aucun fichier source (" + (docType === 'resume' ? 'résumé' : 'cours') + ") n'est présent. Veuillez d'abord uploader le document.",
+                confirmButtonColor: '#3085d6'
+            });
+            return;
+        }
+
+        const docLabel = docType === 'resume' ? '&#x1F4DD; Résumé' : '&#x1F4D6; Contenu';
+        const docBadgeColor = docType === 'resume' ? '#e67e22' : '#3085d6';
+
+        const renderRow = (lang, stats) => {
+            const isProcessing = stats.status === 'processing';
+            const isFinished = stats.status === 'finished';
+            const isNotStarted = stats.status === 'not_started';
+            const errorCount = (stats.stats?.REJECTED || 0) + (stats.stats?.ERROR || 0);
+            const successCount = stats.stats?.SUCCESS || 0;
+            const progress = stats.progress || 0;
+
+            // Badge statut
+            let statusBadge = '';
+            if (isNotStarted) statusBadge = '<span class="badge badge-secondary">Non démarré</span>';
+            else if (isProcessing) statusBadge = '<span class="badge badge-info">En cours...</span>';
+            else if (isFinished) statusBadge = `<span class="badge badge-success">${successCount} traduits</span>${errorCount > 0 ? ' <span class="badge badge-danger">' + errorCount + ' erreurs</span>' : ''}`;
+            else if (stats.status === 'error') statusBadge = '<span class="badge badge-danger">Erreur script</span>';
+            
+            let btnTraduire = `<button class="btn btn-primary btn-sm" style="width: 100%;" onclick="lancerTraduction('${idSousChap}', '${lang}', '${docType}')" ${isProcessing ? 'disabled' : ''}>
+                                <i class="fas fa-magic"></i> ${isFinished ? 'Retraduire' : 'Traduire'}
+                               </button>`;
+            
+            let btnVoir = `<button class="btn btn-outline-info btn-sm" style="width: 100%;" ${!isFinished ? 'disabled' : ''} onclick="voirTraduction('${idSousChap}', '${lang}', '${docType}')">
+                            <i class="fas fa-eye"></i> Voir
+                           </button>`;
+                           
+            let btnErreurs = `<button class="btn btn-${errorCount > 0 ? 'danger' : 'outline-secondary'} btn-sm" style="width: 100%;" ${!isFinished ? 'disabled' : ''} onclick="voirErreursTraduction('${idSousChap}', '${lang}', '${docType}')">
+                                <i class="fas fa-exclamation-circle"></i> Erreurs ${errorCount > 0 ? '('+errorCount+')' : ''}
+                              </button>`;
+                              
+            let btnGenerer = `<button class="btn btn-warning btn-sm" style="width: 100%;" ${!isFinished ? 'disabled' : ''} onclick="genererDocument('${idSousChap}', '${lang}', '${docType}')">
+                                <i class="fas fa-file-word"></i> Générer
+                              </button>`;
+
+            let btnConfirmer = `<button class="btn btn-success btn-sm" style="width: 100%;" ${!isFinished ? 'disabled' : ''} onclick="confirmerTraduction('${idSousChap}', '${lang}', '${docType}')">
+                                  <i class="fas fa-check"></i> Confirmer
+                                </button>`;
+
+            if (isProcessing) {
+                return `
+                    <div style="font-weight: bold; color: #1d3557; font-size: 1.1rem;">${lang.toUpperCase()}<br><small style="font-weight:normal; color:#888;">${statusBadge}</small></div>
+                    <div style="text-align: center;">${btnTraduire}</div>
+                    <div style="grid-column: span 2; align-self: center;">
+                        <div class="progress" style="height: 22px; border-radius: 4px;">
+                          <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" 
+                               style="width: ${progress}%" aria-valuenow="${progress}" aria-valuemin="0" aria-valuemax="100">
+                               ${progress}%
+                          </div>
+                        </div>
+                        <div style="font-size: 0.8rem; text-align: center; color: #666; margin-top: 4px;">Traduction en cours...</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <button class="btn btn-sm btn-outline-secondary" onclick="openTranslationModal('${idSousChap}', '${docType}', '${docTitre}')"><i class="fas fa-sync-alt"></i> Actualiser</button>
+                    </div>
+                `;
+            }
+
+            return `
+                <div style="font-weight: bold; color: #1d3557; font-size: 1.1rem;">${lang.toUpperCase()}<br><small style="font-weight:normal; color:#888;">${statusBadge}</small></div>
+                <div style="text-align: center;">${btnTraduire}</div>
+                <div style="text-align: center;">${btnVoir}</div>
+                <div style="text-align: center;">${btnGenerer}</div>
+                <div style="text-align: center;">${btnConfirmer}</div>
+            `;
+        };
+
+        // Determine if we need to poll
+        const needsPolling = (enRes.status === 'processing' || esRes.status === 'processing');
+
+        Swal.fire({
+            title: `<i class="fa fa-globe" style="color:${docBadgeColor};"></i> Traduction &mdash; ${docLabel}`,
+            html: `
+                <div style="margin-bottom: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; font-size: 0.9rem; color: #555; text-align: left;">
+                    <i class="fas fa-file-alt"></i> <strong>Sous-chapitre :</strong> ${docTitre || idSousChap}
+                </div>
+                <div style="display: grid; grid-template-columns: 90px 1fr 1fr 1fr 1fr; gap: 8px; align-items: center; padding: 10px 0; text-align: left;">
+                    <div style="font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 8px; color: #444;">Langue</div>
+                    <div style="font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 8px; text-align: center; color: #444;">Traduire</div>
+                    <div style="font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 8px; text-align: center; color: #444;">Voir</div>
+                    <div style="font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 8px; text-align: center; color: #444;">Générer</div>
+                    <div style="font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 8px; text-align: center; color: #444;">Confirmer</div>
+ 
+                    ${renderRow('en', enRes)}
+                    <div style="grid-column: span 5; border-bottom: 1px solid #eee; margin: 6px 0;"></div>
+                    ${renderRow('es', esRes)}
+                </div>
+            `,
+            showConfirmButton: false,
+            showCloseButton: true,
+            width: '900px',
+            customClass: { container: 'my-swal-container' },
+            didOpen: () => {
+                if (needsPolling) {
+                    setTimeout(() => openTranslationModal(idSousChap, docType, docTitre), 4000);
+                }
+            }
+        });
+
+    } catch (e) {
+        console.error('openTranslationModal error:', e);
+        Swal.fire('Erreur', 'Impossible de charger les statuts de traduction : ' + (e.message || e), 'error');
+    }
+}
+
+function lancerTraduction(idSousChap, lang, docType) {
+    docType = docType || 'cours';
     Swal.fire({
-        title: 'Gestion des Traductions',
-        html: `
-            <div style="display: grid; grid-template-columns: 60px 1fr 1fr 1fr 160px; gap: 15px; align-items: center; padding: 20px; text-align: left;">
-                <!-- Header -->
-                <div style="font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 8px; color: #444;">Lang</div>
-                <div style="font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 8px; text-align: center; color: #444;">Action</div>
-                <div style="font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 8px; text-align: center; color: #444;">Contenu</div>
-                <div style="font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 8px; text-align: center; color: #444;">Erreurs</div>
-                <div style="font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 8px; text-align: center; color: #444;">Confirmation</div>
+        title: 'Lancement de la traduction...',
+        text: 'Extraction et traduction via AI en cours. Cela peut prendre quelques minutes.',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+    });
 
-                <!-- Row EN -->
-                <div style="font-weight: bold; color: #1d3557; font-size: 1.1rem;">EN</div>
-                <div style="text-align: center;">
-                    <button class="btn btn-primary" style="width: 100%;" onclick="lancerTraduction('${idSousChap}', 'en')">
-                        <i class="fas fa-magic"></i> Traduire
-                    </button>
-                </div>
-                <div style="text-align: center;">
-                    <button class="btn btn-outline-info" style="width: 100%;" onclick="voirTraduction('${idSousChap}', 'en')">
-                        <i class="fas fa-eye"></i> Voir
-                    </button>
-                </div>
-                <div style="text-align: center;">
-                    <button class="btn btn-outline-danger" style="width: 100%;" onclick="voirErreursTraduction('${idSousChap}', 'en')">
-                        <i class="fas fa-exclamation-circle"></i> Erreurs
-                    </button>
-                </div>
-                <div style="text-align: center; display: flex; gap: 5px; justify-content: center;">
-                    <button class="btn btn-success" style="flex: 1;" onclick="confirmerTraduction('${idSousChap}', 'en', 'oui')">
-                        <i class="fas fa-check"></i> Oui
-                    </button>
-                    <button class="btn btn-danger" style="flex: 1;" onclick="confirmerTraduction('${idSousChap}', 'en', 'non')">
-                        <i class="fas fa-times"></i> Non
-                    </button>
-                </div>
+    const launchUrl = "<?= rtrim(base_url('Traduction/lancer'), '/'); ?>/" + idSousChap + "/" + docType + "/" + lang;
+    console.log('Launching translation:', launchUrl);
 
-                <!-- Row ES -->
-                <div style="font-weight: bold; color: #1d3557; font-size: 1.1rem;">ES</div>
-                <div style="text-align: center;">
-                    <button class="btn btn-primary" style="width: 100%;" onclick="lancerTraduction('${idSousChap}', 'es')">
-                        <i class="fas fa-magic"></i> Traduire
-                    </button>
-                </div>
-                <div style="text-align: center;">
-                    <button class="btn btn-outline-info" style="width: 100%;" onclick="voirTraduction('${idSousChap}', 'es')">
-                        <i class="fas fa-eye"></i> Voir
-                    </button>
-                </div>
-                <div style="text-align: center;">
-                    <button class="btn btn-outline-danger" style="width: 100%;" onclick="voirErreursTraduction('${idSousChap}', 'es')">
-                        <i class="fas fa-exclamation-circle"></i> Erreurs
-                    </button>
-                </div>
-                <div style="text-align: center; display: flex; gap: 5px; justify-content: center;">
-                    <button class="btn btn-success" style="flex: 1;" onclick="confirmerTraduction('${idSousChap}', 'es', 'oui')">
-                        <i class="fas fa-check"></i> Oui
-                    </button>
-                    <button class="btn btn-danger" style="flex: 1;" onclick="confirmerTraduction('${idSousChap}', 'es', 'non')">
-                        <i class="fas fa-times"></i> Non
-                    </button>
-                </div>
-            </div>
-        `,
-        showConfirmButton: false,
-        showCloseButton: true,
-        width: '900px',
-        customClass: {
-            container: 'my-swal-container'
+    $.ajax({
+        url: launchUrl,
+        type: "GET",
+        dataType: "json",
+        success: function(res) {
+            if (res.status === 'success') {
+                // Lancer le polling de progression
+                pollProgression(idSousChap, lang, docType);
+            } else {
+                Swal.fire('Erreur', res.message || 'Erreur inconnue', 'error');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('lancerTraduction error:', status, error, xhr.responseText);
+            Swal.fire('Erreur', 'Erreur de communication avec le serveur (Lancer). ' + error, 'error');
         }
     });
 }
 
-function voirErreursTraduction(idSousChap, lang) {
-    Swal.fire({
-        icon: 'warning',
-        title: 'Erreurs de Traduction (' + lang.toUpperCase() + ')',
-        text: 'Aucune erreur détectée pour le moment.'
-    }).then(() => openTranslationModal(idSousChap));
+// Polling de progression avec barre en temps réel
+function pollProgression(idSousChap, lang, docType) {
+    docType = docType || 'cours';
+    const progressUrl = "<?= rtrim(base_url('Traduction/progression'), '/'); ?>/" + idSousChap + "/" + docType + "/" + lang;
+    let pollingTimer = null;
+
+    function updateProgressBar(pct, current, total) {
+        const bar = document.getElementById('swal-progress-bar');
+        const pctLabel = document.getElementById('swal-progress-pct');
+        const countLabel = document.getElementById('swal-progress-count');
+        if (bar) bar.style.width = pct + '%';
+        if (pctLabel) pctLabel.textContent = pct + '%';
+        if (countLabel) countLabel.textContent = current + ' / ' + total + ' segments traduits';
+    }
+
+    function showProgressModal(pct, current, total) {
+        Swal.fire({
+            title: '<i class="fas fa-language" style="color:#3085d6;"></i> Traduction en cours...',
+            html: `
+                <div style="text-align:left; margin-bottom: 10px; color: #555; font-size: 0.9rem;">
+                    <i class="fas fa-cog fa-spin" style="color:#3085d6;"></i>
+                    Langue : <strong>${lang.toUpperCase()}</strong> &mdash; Type : <strong>${docType}</strong>
+                </div>
+                <div class="progress" style="height: 28px; border-radius: 8px; background: #e9ecef; margin-bottom: 8px;">
+                    <div id="swal-progress-bar"
+                         class="progress-bar progress-bar-striped progress-bar-animated"
+                         role="progressbar"
+                         style="width: ${pct}%; background: linear-gradient(90deg, #3085d6, #00b4d8); transition: width 0.5s ease; font-size: 0.9rem; font-weight: bold;">
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #666;">
+                    <span id="swal-progress-count">${current} / ${total} segments traduits</span>
+                    <span id="swal-progress-pct" style="font-weight: bold; color: #3085d6;">${pct}%</span>
+                </div>
+                <div style="margin-top: 12px; font-size: 0.8rem; color: #aaa; text-align: center;">
+                    <i class="fas fa-info-circle"></i> La traduction utilise l'IA (ChatGPT). Patience...
+                </div>
+            `,
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            showCloseButton: false,
+            width: '520px'
+        });
+    }
+
+    function doPoll() {
+        fetch(progressUrl)
+            .then(r => r.json())
+            .then(data => {
+                if (data.status === 'finished') {
+                    clearTimeout(pollingTimer);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Traduction terminée !',
+                        text: 'Tous les segments ont été traités.',
+                        timer: 2500,
+                        showConfirmButton: false
+                    }).then(() => openTranslationModal(idSousChap, docType));
+
+                } else if (data.status === 'error') {
+                    clearTimeout(pollingTimer);
+                    Swal.fire('Erreur Python', data.message || 'Erreur inconnue dans le script.', 'error');
+
+                } else if (data.status === 'processing') {
+                    const pct = data.progress || 0;
+                    const current = data.current || 0;
+                    const total = data.total || 0;
+
+                    // Afficher ou mettre à jour le modal de progression
+                    if (!document.getElementById('swal-progress-bar')) {
+                        showProgressModal(pct, current, total);
+                    } else {
+                        updateProgressBar(pct, current, total);
+                    }
+                    pollingTimer = setTimeout(doPoll, 2000);
+
+                } else {
+                    // not_started → attendre encore
+                    pollingTimer = setTimeout(doPoll, 2000);
+                }
+            })
+            .catch(err => {
+                console.error('pollProgression error:', err);
+                pollingTimer = setTimeout(doPoll, 3000); // retry
+            });
+    }
+
+    // Démarrer le polling après 1 seconde
+    setTimeout(doPoll, 1000);
 }
 
-function confirmerTraduction(idSousChap, lang, status) {
+function voirErreursTraduction(idSousChap, lang, docType) {
+    docType = docType || 'cours';
     Swal.fire({
+        title: 'Chargement des segments...',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+    });
+
+    $.ajax({
+        url: "<?= base_url('Traduction/get_segments'); ?>/" + idSousChap + "/" + docType + "/" + lang,
+        type: "GET",
+        dataType: "json",
+        success: function(res) {
+            if (res.status === 'success') {
+                let html = '<div style="max-height: 400px; overflow-y: auto; text-align: left;">';
+                let hasErrors = false;
+
+                res.segments.forEach(seg => {
+                    if (seg.translation_status !== 'SUCCESS') {
+                        hasErrors = true;
+                        html += `
+                            <div style="background: #fff0f0; border: 1px solid #ffcccc; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
+                                <div style="font-size: 0.85em; color: #666; margin-bottom: 5px;"><strong>Original :</strong> ${seg.source_text}</div>
+                                <textarea id="correction_${seg.metadata_id}" class="form-control" rows="2" placeholder="Saisir la traduction corrigée...">${seg.translated_text || ''}</textarea>
+                                <div style="font-size: 0.8em; color: red; margin-top: 4px;">Statut: ${seg.translation_status}</div>
+                            </div>
+                        `;
+                    }
+                });
+
+                if (!hasErrors) {
+                    html += '<div style="padding: 20px; text-align: center; color: green;"><i class="fas fa-check-circle"></i> Aucune erreur détectée ! Tout est traduit.</div>';
+                }
+                html += '</div>';
+
+                Swal.fire({
+                    title: 'Correction des Erreurs (' + lang.toUpperCase() + ')',
+                    html: html,
+                    width: '800px',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sauvegarder les corrections',
+                    cancelButtonText: 'Fermer',
+                    preConfirm: () => {
+                        let corrections = {};
+                        res.segments.forEach(seg => {
+                            if (seg.translation_status !== 'SUCCESS') {
+                                const val = document.getElementById('correction_' + seg.metadata_id).value;
+                                if (val && val.trim() !== '') {
+                                    corrections[seg.metadata_id] = val;
+                                }
+                            }
+                        });
+                        return corrections;
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed && Object.keys(result.value).length > 0) {
+                        saveCorrections(idSousChap, lang, docType, result.value);
+                    } else if (result.isConfirmed) {
+                       Swal.fire('Info', 'Aucune correction saisie.', 'info');
+                    }
+                });
+            } else {
+                Swal.fire('Erreur', res.message, 'error');
+            }
+        }
+    });
+}
+
+function saveCorrections(idSousChap, lang, docType, corrections) {
+    docType = docType || 'cours';
+    $.ajax({
+        url: "<?= base_url('Traduction/save_corrections'); ?>",
+        type: "POST",
+        data: JSON.stringify({ idSousChap: idSousChap, lang: lang, docType: docType, corrections: corrections }),
+        contentType: "application/json",
+        success: function(res) {
+             Swal.fire('Succès', 'Corrections enregistrées.', 'success')
+                 .then(() => openTranslationModal(idSousChap, docType));
+        }
+    });
+}
+
+function genererDocument(idSousChap, lang, docType) {
+    docType = docType || 'cours';
+    Swal.fire({
+        title: 'Génération du document...',
+        text: 'Reconstruction du fichier Word en cours.',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+    });
+
+    $.ajax({
+        url: "<?= base_url('Traduction/generer'); ?>/" + idSousChap + "/" + docType + "/" + lang,
+        type: "GET",
+        dataType: "json",
+        success: function(res) {
+            if (res.status === 'success') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Document généré !',
+                    html: `Le fichier a été créé.<br><a href="${res.file_url}" class="btn btn-success mt-2" download><i class="fas fa-download"></i> Télécharger</a>`,
+                }).then(() => openTranslationModal(idSousChap, docType));
+            } else {
+                Swal.fire('Erreur', res.message, 'error');
+            }
+        }
+    });
+}
+
+function confirmerTraduction(idSousChap, lang, docType) {
+    docType = docType || 'cours';
+    Swal.fire({
+        title: 'Confirmer la traduction',
+        text: 'Voulez-vous valider cette version et l\'archiver ? Elle sera convertie en HTML et disponible à l\'affichage.',
         icon: 'question',
-        title: 'Confirmation',
-        text: 'Voulez-vous confirmer la traduction en ' + lang.toUpperCase() + ' ? (Choix: ' + status + ')',
         showCancelButton: true,
-        confirmButtonText: 'Oui, valider',
+        confirmButtonText: 'Oui, confirmer',
         cancelButtonText: 'Annuler'
     }).then((result) => {
         if (result.isConfirmed) {
-            Swal.fire('Confirmé !', 'La traduction a été marquée comme validée.', 'success')
-                .then(() => openTranslationModal(idSousChap));
-        } else {
-            openTranslationModal(idSousChap);
+            Swal.fire({ title: 'Confirmation en cours...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+            $.ajax({
+                url: "<?= base_url('Traduction/confirmer'); ?>/" + idSousChap + "/" + docType + "/" + lang,
+                type: "GET",
+                dataType: "json",
+                success: function(res) {
+                    if (res.status === 'success') {
+                        Swal.fire('Succès !', res.message, 'success')
+                            .then(() => openTranslationModal(idSousChap, docType));
+                    } else {
+                        Swal.fire('Erreur', res.message, 'error');
+                    }
+                }
+            });
+        }
+    });
+}
+ 
+function voirTraduction(idSousChap, lang, docType) {
+    docType = docType || 'cours';
+    Swal.fire({
+        title: 'Chargement de la prévisualisation...',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+    });
+
+    $.ajax({
+        url: "<?= base_url('Traduction/get_segments'); ?>/" + idSousChap + "/" + docType + "/" + lang,
+        type: "GET",
+        dataType: "json",
+        success: function(res) {
+            if (res.status === 'success') {
+                let html = '<div style="max-height: 450px; overflow-y: auto; text-align: left;">';
+                
+                res.segments.forEach(seg => {
+                    let color = seg.translation_status === 'SUCCESS' ? '#e8f5e9' : '#fff0f0';
+                    let border = seg.translation_status === 'SUCCESS' ? '#c8e6c9' : '#ffcccc';
+                    
+                    html += `
+                        <div style="background: ${color}; border: 1px solid ${border}; padding: 10px; margin-bottom: 8px; border-radius: 5px;">
+                            <div style="font-size: 0.8em; color: #888; margin-bottom: 4px; font-style: italic;">${seg.source_text}</div>
+                            <div style="font-weight: 500; color: #333;">${seg.translated_text || '<i style="color:#aaa;">(Non traduit)</i>'}</div>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+
+                Swal.fire({
+                    title: 'Prévisualisation (' + lang.toUpperCase() + ')',
+                    html: html,
+                    width: '800px',
+                    confirmButtonText: 'Fermer'
+                });
+            } else {
+                Swal.fire('Erreur', res.message, 'error');
+            }
         }
     });
 }
 
-function lancerTraduction(idSousChap, lang) {
-    Swal.fire({
-        icon: 'info',
-        title: 'Information',
-        text: 'La traduction (' + lang.toUpperCase() + ') sera bientôt disponible pour ce sous-chapitre.'
-    }).then(() => openTranslationModal(idSousChap));
-}
-
-function voirTraduction(idSousChap, lang) {
-    Swal.fire({
-        icon: 'info',
-        title: 'Information',
-        text: 'L\'affichage de la traduction (' + lang.toUpperCase() + ') sera bientôt disponible.'
-    }).then(() => openTranslationModal(idSousChap));
-}
+// NOTE: Les fonctions voirErreursTraduction, confirmerTraduction, lancerTraduction, voirTraduction
+// sont définies plus haut avec leur implémentation complète AJAX. Les stubs ont été supprimés.
 
 function validerEditSousChap(idSousChap) {
     const newTitle = $('#editSousChap_' + idSousChap).val();
