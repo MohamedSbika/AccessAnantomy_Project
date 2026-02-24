@@ -69,4 +69,5 @@ package-lock.json
 ehthumbs.db
 Thumbs.db
 
-/application/third_party/libs
+# Third party translation libs (large binary dependencies)
+/application/third_party/traduction/libs/
