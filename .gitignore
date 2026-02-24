@@ -68,3 +68,5 @@ package-lock.json
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+/application/third_party/libs
