@@ -45,7 +45,7 @@ except Exception as e:
 # CONFIGURATION
 # ============================================================================
 
-API_KEY = "VOTRE_CLE_API_ICI"  # ← Remplacez par votre clé API ChatGPT
+API_KEY = os.environ.get("OPENAI_API_KEY", "VOTRE_CLE_API_ICI")  # ← Clé lue depuis .env (variable OPENAI_API_KEY)
 
 MODEL = "gpt-4o"
 
