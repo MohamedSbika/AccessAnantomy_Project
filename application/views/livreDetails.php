@@ -650,7 +650,7 @@
     <div style="flex: 1; text-align: center;">
         <button type="button"
                 class="btn btn-primary"
-        onclick="window.open('http://localhost:3000/admin/?token=<?= $jwt ?>', '_blank');">
+        onclick="window.open('https://iamedexia.com/admin/?token=<?= $jwt ?>', '_blank');">
             <?= $this->lang->line('actionAjout'); ?> Chapitres
         </button>
     </div>
@@ -719,8 +719,9 @@
                                     <option value="">-- Choisissez un chapitre --</option>
 
                                     <?php
+                                    $optionsHtml = "";
                                     foreach ($livres as $livre) {
-                                        echo "<optgroup label='" . htmlspecialchars($livre['Titre']) . "'>";
+                                        $optionsHtml .= "<optgroup label='" . htmlspecialchars($livre['Titre'], ENT_QUOTES) . "'>";
 
                                         $chapitres = $this->db
                                             ->where('IDLivre', $livre['IDLivre'])
@@ -729,17 +730,25 @@
 
                                         if (count($chapitres) > 0) {
                                             foreach ($chapitres as $chapitre) {
-echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chapitre['TitreChapitre']) . "</option>";
+                                                // Utiliser guillemets doubles pour value => compatibilité selectEl.value
+                                                $optionsHtml .= '<option value="' . (int)$chapitre['IDChapitre'] . '">' . htmlspecialchars($chapitre['TitreChapitre'], ENT_QUOTES) . '</option>';
                                             }
                                         } else {
-                                            echo "<option disabled>(Aucun chapitre)</option>";
+                                            $optionsHtml .= '<option disabled>(Aucun chapitre)</option>';
                                         }
 
-                                        echo "</optgroup>";
+                                        $optionsHtml .= '</optgroup>';
                                     }
+                                    echo $optionsHtml;
                                     ?>
                                 </select>
                             </div>
+
+                            <script>
+                                window.chapitreAssocieOptions = <?= json_encode(
+                                    '<option value="">-- Choisissez un chapitre --</option>' . $optionsHtml
+                                ); ?>;
+                            </script>
 
                             <style>
                             .select-chapitre-associe,
@@ -753,6 +762,90 @@ echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chap
                                 appearance: menulist !important;
                             }
                             </style>
+                        <?php endif; ?>
+
+                        <?php
+                        // ====================================================
+                        // SECTION : Pathologie référente en français
+                        // Visible UNIQUEMENT si la langue du livre est EN ou ES
+                        // ====================================================
+                        if (in_array($category['multi_lingue'], ['EN', 'ES'])):
+                            $livresFR = $this->db
+                                ->select('l.IDLivre, l.Titre')
+                                ->from('_livre l')
+                                ->join('_theme t', 'l.IDTheme = t.IDTheme')
+                                ->join('_category cat', 't.IDCategory = cat.IDCategory')
+                                ->where('cat.multi_lingue', 'FR')
+                                ->order_by('l.Titre', 'ASC')
+                                ->get()->result_array();
+                        ?>
+                            <div class="form-group mb-3">
+                                <label for="pathologieFR_<?= $OneBook[0]['IDLivre']; ?>" style="font-weight:bold;">
+                                    Lier à une pathologie en français <span style="color:red;">*</span>
+                                </label>
+
+                                <select name="pathologieFR"
+                                        id="pathologieFR_<?= $OneBook[0]['IDLivre']; ?>"
+                                        class="form-control select-chapitre-associe"
+                                        required>
+                                    <option value="">-- Choisissez un chapitre --</option>
+
+                                    <?php foreach ($livresFR as $livreFR):
+                                        $chapitresFR = $this->db
+                                            ->select('IDChapitre, TitreChapitre')
+                                            ->where('IDLivre', $livreFR['IDLivre'])
+                                            ->order_by('TitreChapitre', 'ASC')
+                                            ->get('_chapitre')
+                                            ->result_array();
+                                        if (count($chapitresFR) > 0):
+                                    ?>
+                                        <optgroup label="<?= htmlspecialchars($livreFR['Titre']); ?>">
+                                            <?php foreach ($chapitresFR as $chapFR): ?>
+                                                <option value="<?= $chapFR['IDChapitre']; ?>">
+                                                    <?= htmlspecialchars($chapFR['TitreChapitre']); ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </optgroup>
+                                    <?php
+                                        endif;
+                                    endforeach; ?>
+                                </select>
+                            </div>
+
+                        <?php endif; // fin : langue EN ou ES ?>
+
+                        <?php
+                        // Générer les options FR pour le modal JS (seulement si EN ou ES)
+                        if (in_array($category['multi_lingue'], ['EN', 'ES'])):
+                            $optionsFRHtml = '<option value="">-- Choisissez une pathologie FR --</option>';
+                            foreach ($livresFR as $livreFR) {
+                                $chapsFR2 = $this->db
+                                    ->select('IDChapitre, TitreChapitre')
+                                    ->where('IDLivre', $livreFR['IDLivre'])
+                                    ->order_by('TitreChapitre', 'ASC')
+                                    ->get('_chapitre')
+                                    ->result_array();
+                                if (count($chapsFR2) > 0) {
+                                    $optionsFRHtml .= '<optgroup label="' . htmlspecialchars($livreFR['Titre'], ENT_QUOTES) . '">';
+                                    foreach ($chapsFR2 as $cFR) {
+                                        $optionsFRHtml .= '<option value="' . (int)$cFR['IDChapitre'] . '">' . htmlspecialchars($cFR['TitreChapitre'], ENT_QUOTES) . '</option>';
+                                    }
+                                    $optionsFRHtml .= '</optgroup>';
+                                }
+                            }
+                        endif;
+                        ?>
+
+                        <?php if (in_array($category['multi_lingue'], ['EN', 'ES'])): ?>
+                        <script>
+                            window.pathologieFROptions = <?= json_encode($optionsFRHtml ?? ''); ?>;
+                            window.bookIsMultiLingue   = true;
+                        </script>
+                        <?php else: ?>
+                        <script>
+                            window.pathologieFROptions = null;
+                            window.bookIsMultiLingue   = false;
+                        </script>
                         <?php endif; ?>
 
                         <div class="list_wrapper_<?= $OneBook[0]['IDLivre']; ?>">
@@ -1542,6 +1635,20 @@ echo "<option value='" . $chapitre['IDChapitre'] . "'>" . htmlspecialchars($chap
                 <a href="#" onclick="openSousChapForm('<?php print $value['IDChapitre']; ?>', '<?php print $value['IDLivre']; ?>')" title="Ajouter Sous-Chapitre">
                     <i class="fa fa-plus"></i>
                 </a>
+                <?php $estAdminBool = ((strlen($this->session->userdata('passTok')) == 200) && ($this->session->userdata('EstAdmin') == 1)) ? 'true' : 'false'; ?>
+                <a href="#"
+                   data-chap-link="<?php print $value['IDChapitre']; ?>"
+                   onclick="openLinkChapterModal(<?php print $value['IDChapitre']; ?>, '<?php print $value['IdChapterRappel']; ?>', <?php print $value['IDLivre']; ?>, <?php print (int)$OneBook[0]['IDTheme']; ?>, <?php print $estAdminBool; ?>)"
+                   title="Modifier le chapitre associé (Rappel)">
+                    <i class="fas fa-link" style="color:#3085d6; margin-left:5px;"></i>
+                </a>
+                <?php if (in_array($category['multi_lingue'], ['EN', 'ES'])): ?>
+                <a href="#"
+                   onclick="openPathoFRModal(<?php print $value['IDChapitre']; ?>)"
+                   title="Modifier la pathologie référente (FR)">
+                    <i class="fas fa-stethoscope" style="color:#e67e22; margin-left:5px;"></i>
+                </a>
+                <?php endif; ?>
                 <div class="dropdown-menu">
                     <div class="row">
                         <div class="col-md-12" style="padding-left: 1.4em; padding-right: 1.4em;">
@@ -2130,15 +2237,21 @@ async function openTranslationModal(idSousChap, docType, docTitre) {
     }
 
     try {
-        // Construction de l'URL propre (évite les doubles slashes)
         const baseUrl = "<?= rtrim(base_url('Traduction/etat'), '/'); ?>/";
         
-        console.log('Fetching translation status for:', idSousChap, docType);
-        
-        const [enRes, esRes] = await Promise.all([
-             fetch(baseUrl + idSousChap + '/' + docType + '/en').then(f => f.ok ? f.json() : Promise.reject('HTTP ' + f.status)),
-             fetch(baseUrl + idSousChap + '/' + docType + '/es').then(f => f.ok ? f.json() : Promise.reject('HTTP ' + f.status))
-        ]);
+        // Fonction helper pour récupérer le statut sans crasher si 404
+        const getStatus = async (lang) => {
+            try {
+                const res = await fetch(baseUrl + idSousChap + '/' + docType + '/' + lang);
+                if (res.ok) return await res.json();
+                // Si 404 ou autre erreur, on retourne un état "non démarré" par défaut
+                return { status: 'not_started', has_source: true, stats: { SUCCESS: 0, ERROR: 0 } };
+            } catch (err) {
+                return { status: 'not_started', has_source: true, stats: { SUCCESS: 0, ERROR: 0 } };
+            }
+        };
+
+        const [enRes, esRes] = await Promise.all([getStatus('en'), getStatus('es')]);
 
         // Si le fichier source est manquant, ne pas afficher le modal de traduction
         if (!enRes.has_source && !esRes.has_source) {
@@ -2152,7 +2265,7 @@ async function openTranslationModal(idSousChap, docType, docTitre) {
             return;
         }
 
-        const docLabel = docType === 'resume' ? '&#x1F4DD; Résumé' : '&#x1F4D6; Contenu';
+        const docLabel = docType === 'resume' ? '&#x1F4DD; Résumé' : ' Contenu';
         const docBadgeColor = docType === 'resume' ? '#e67e22' : '#3085d6';
 
         const renderRow = (lang, stats) => {
@@ -2190,11 +2303,19 @@ async function openTranslationModal(idSousChap, docType, docTitre) {
                                   <i class="fas fa-check"></i> Confirmer
                                 </button>`;
 
+            let btnModifier = `<button class="btn btn-info btn-sm" style="width: 100%;" ${!isFinished ? 'disabled' : ''} onclick="modifierTraduction('${idSousChap}', '${lang}', '${docType}')">
+                                  <i class="fas fa-pencil-alt"></i> Modifier
+                                </button>`;
+
+            let btnTelecharger = `<button class="btn btn-secondary btn-sm" style="width: 100%;" ${!isFinished ? 'disabled' : ''} onclick="telechargerTraduction('${idSousChap}', '${lang}', '${docType}')">
+                                    <i class="fas fa-download"></i> Télécharger
+                                  </button>`;
+
             if (isProcessing) {
                 return `
                     <div style="font-weight: bold; color: #1d3557; font-size: 1.1rem;">${lang.toUpperCase()}<br><small style="font-weight:normal; color:#888;">${statusBadge}</small></div>
                     <div style="text-align: center;">${btnTraduire}</div>
-                    <div style="grid-column: span 2; align-self: center;">
+                    <div style="grid-column: span 4; align-self: center;">
                         <div class="progress" style="height: 22px; border-radius: 4px;">
                           <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" 
                                style="width: ${progress}%" aria-valuenow="${progress}" aria-valuemin="0" aria-valuemax="100">
@@ -2213,7 +2334,9 @@ async function openTranslationModal(idSousChap, docType, docTitre) {
                 <div style="font-weight: bold; color: #1d3557; font-size: 1.1rem;">${lang.toUpperCase()}<br><small style="font-weight:normal; color:#888;">${statusBadge}</small></div>
                 <div style="text-align: center;">${btnTraduire}</div>
                 <div style="text-align: center;">${btnVoir}</div>
+                <div style="text-align: center;">${btnModifier}</div>
                 <div style="text-align: center;">${btnGenerer}</div>
+                <div style="text-align: center;">${btnTelecharger}</div>
                 <div style="text-align: center;">${btnConfirmer}</div>
             `;
         };
@@ -2222,20 +2345,22 @@ async function openTranslationModal(idSousChap, docType, docTitre) {
         const needsPolling = (enRes.status === 'processing' || esRes.status === 'processing');
 
         Swal.fire({
-            title: `<i class="fa fa-globe" style="color:${docBadgeColor};"></i> Traduction &mdash; ${docLabel}`,
+            title: `Traduction &mdash; ${docLabel}`,
             html: `
                 <div style="margin-bottom: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; font-size: 0.9rem; color: #555; text-align: left;">
                     <i class="fas fa-file-alt"></i> <strong>Sous-chapitre :</strong> ${docTitre || idSousChap}
                 </div>
-                <div style="display: grid; grid-template-columns: 90px 1fr 1fr 1fr 1fr; gap: 8px; align-items: center; padding: 10px 0; text-align: left;">
+                <div style="display: grid; grid-template-columns: 90px 1fr 1fr 1fr 1fr 1fr 1fr; gap: 8px; align-items: center; padding: 10px 0; text-align: left;">
                     <div style="font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 8px; color: #444;">Langue</div>
                     <div style="font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 8px; text-align: center; color: #444;">Traduire</div>
                     <div style="font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 8px; text-align: center; color: #444;">Voir</div>
+                    <div style="font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 8px; text-align: center; color: #444;">Modifier</div>
                     <div style="font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 8px; text-align: center; color: #444;">Générer</div>
+                    <div style="font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 8px; text-align: center; color: #444;">Télécharger</div>
                     <div style="font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 8px; text-align: center; color: #444;">Confirmer</div>
  
                     ${renderRow('en', enRes)}
-                    <div style="grid-column: span 5; border-bottom: 1px solid #eee; margin: 6px 0;"></div>
+                    <div style="grid-column: span 7; border-bottom: 1px solid #eee; margin: 6px 0;"></div>
                     ${renderRow('es', esRes)}
                 </div>
             `,
@@ -2252,38 +2377,25 @@ async function openTranslationModal(idSousChap, docType, docTitre) {
 
     } catch (e) {
         console.error('openTranslationModal error:', e);
-        Swal.fire('Erreur', 'Impossible de charger les statuts de traduction : ' + (e.message || e), 'error');
+        if (e === 'HTTP 404' || (typeof e === 'string' && e.indexOf('404') !== -1)) {
+            Swal.fire({
+                icon: 'info',
+                title: 'Outils de traduction',
+                text: 'La traduction sera bientôt disponible sur cet environnement.',
+                confirmButtonColor: '#3085d6'
+            });
+        } else {
+            Swal.fire('Erreur', 'Impossible de charger les statuts de traduction : ' + (e.message || e), 'error');
+        }
     }
 }
 
 function lancerTraduction(idSousChap, lang, docType) {
-    docType = docType || 'cours';
     Swal.fire({
-        title: 'Lancement de la traduction...',
-        text: 'Extraction et traduction via AI en cours. Cela peut prendre quelques minutes.',
-        allowOutsideClick: false,
-        didOpen: () => Swal.showLoading()
-    });
-
-    const launchUrl = "<?= rtrim(base_url('Traduction/lancer'), '/'); ?>/" + idSousChap + "/" + docType + "/" + lang;
-    console.log('Launching translation:', launchUrl);
-
-    $.ajax({
-        url: launchUrl,
-        type: "GET",
-        dataType: "json",
-        success: function(res) {
-            if (res.status === 'success') {
-                // Lancer le polling de progression
-                pollProgression(idSousChap, lang, docType);
-            } else {
-                Swal.fire('Erreur', res.message || 'Erreur inconnue', 'error');
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error('lancerTraduction error:', status, error, xhr.responseText);
-            Swal.fire('Erreur', 'Erreur de communication avec le serveur (Lancer). ' + error, 'error');
-        }
+        icon: 'info',
+        title: 'Bientôt disponible',
+        text: 'La fonctionnalité de traduction automatique est en cours de déploiement sur ce serveur.',
+        confirmButtonColor: '#3085d6'
     });
 }
 
@@ -2461,106 +2573,270 @@ function saveCorrections(idSousChap, lang, docType, corrections) {
 }
 
 function genererDocument(idSousChap, lang, docType) {
-    docType = docType || 'cours';
     Swal.fire({
-        title: 'Génération du document...',
-        text: 'Reconstruction du fichier Word en cours.',
-        allowOutsideClick: false,
-        didOpen: () => Swal.showLoading()
-    });
-
-    $.ajax({
-        url: "<?= base_url('Traduction/generer'); ?>/" + idSousChap + "/" + docType + "/" + lang,
-        type: "GET",
-        dataType: "json",
-        success: function(res) {
-            if (res.status === 'success') {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Document généré !',
-                    html: `Le fichier a été créé.<br><a href="${res.file_url}" class="btn btn-success mt-2" download><i class="fas fa-download"></i> Télécharger</a>`,
-                }).then(() => openTranslationModal(idSousChap, docType));
-            } else {
-                Swal.fire('Erreur', res.message, 'error');
-            }
-        }
+        icon: 'info',
+        title: 'Bientôt disponible',
+        text: 'La génération de documents traduits sera disponible une fois le module activé.',
+        confirmButtonColor: '#3085d6'
     });
 }
 
 function confirmerTraduction(idSousChap, lang, docType) {
-    docType = docType || 'cours';
     Swal.fire({
-        title: 'Confirmer la traduction',
-        text: 'Voulez-vous valider cette version et l\'archiver ? Elle sera convertie en HTML et disponible à l\'affichage.',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: 'Oui, confirmer',
-        cancelButtonText: 'Annuler'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            Swal.fire({ title: 'Confirmation en cours...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-            $.ajax({
-                url: "<?= base_url('Traduction/confirmer'); ?>/" + idSousChap + "/" + docType + "/" + lang,
-                type: "GET",
-                dataType: "json",
-                success: function(res) {
-                    if (res.status === 'success') {
-                        Swal.fire('Succès !', res.message, 'success')
-                            .then(() => openTranslationModal(idSousChap, docType));
-                    } else {
-                        Swal.fire('Erreur', res.message, 'error');
-                    }
-                }
-            });
-        }
+        icon: 'info',
+        title: 'Bientôt disponible',
+        text: 'La validation des traductions sera disponible prochainement.',
+        confirmButtonColor: '#3085d6'
     });
 }
  
 function voirTraduction(idSousChap, lang, docType) {
-    docType = docType || 'cours';
     Swal.fire({
-        title: 'Chargement de la prévisualisation...',
-        allowOutsideClick: false,
-        didOpen: () => Swal.showLoading()
-    });
-
-    $.ajax({
-        url: "<?= base_url('Traduction/get_segments'); ?>/" + idSousChap + "/" + docType + "/" + lang,
-        type: "GET",
-        dataType: "json",
-        success: function(res) {
-            if (res.status === 'success') {
-                let html = '<div style="max-height: 450px; overflow-y: auto; text-align: left;">';
-                
-                res.segments.forEach(seg => {
-                    let color = seg.translation_status === 'SUCCESS' ? '#e8f5e9' : '#fff0f0';
-                    let border = seg.translation_status === 'SUCCESS' ? '#c8e6c9' : '#ffcccc';
-                    
-                    html += `
-                        <div style="background: ${color}; border: 1px solid ${border}; padding: 10px; margin-bottom: 8px; border-radius: 5px;">
-                            <div style="font-size: 0.8em; color: #888; margin-bottom: 4px; font-style: italic;">${seg.source_text}</div>
-                            <div style="font-weight: 500; color: #333;">${seg.translated_text || '<i style="color:#aaa;">(Non traduit)</i>'}</div>
-                        </div>
-                    `;
-                });
-                
-                html += '</div>';
-
-                Swal.fire({
-                    title: 'Prévisualisation (' + lang.toUpperCase() + ')',
-                    html: html,
-                    width: '800px',
-                    confirmButtonText: 'Fermer'
-                });
-            } else {
-                Swal.fire('Erreur', res.message, 'error');
-            }
-        }
+        icon: 'info',
+        title: 'Bientôt disponible',
+        text: 'La prévisualisation sera disponible après la première traduction.',
+        confirmButtonColor: '#3085d6'
     });
 }
 
 // NOTE: Les fonctions voirErreursTraduction, confirmerTraduction, lancerTraduction, voirTraduction
 // sont définies plus haut avec leur implémentation complète AJAX. Les stubs ont été supprimés.
+
+function modifierTraduction(idSousChap, lang, docType) {
+    Swal.fire({
+        icon: 'info',
+        title: 'Bientôt disponible',
+        text: 'La modification directe des segments sera disponible prochainement.',
+        confirmButtonColor: '#3085d6'
+    });
+}
+
+function telechargerTraduction(idSousChap, lang, docType) {
+    Swal.fire({
+        icon: 'info',
+        title: 'Bientôt disponible',
+        text: 'Le téléchargement direct du document traduit sera disponible après activation du module.',
+        confirmButtonColor: '#3085d6'
+    });
+}
+
+function openLinkChapterModal(idChapitre, currentIdRappel, idLivre, idTheme, estAdmin) {
+
+    // 1. Afficher un loader Swal pendant le chargement
+    Swal.fire({ title: 'Chargement...', allowOutsideClick: false, showConfirmButton: false, didOpen: () => Swal.showLoading() });
+
+    // 2. Charger les chapitres anatomiques via AJAX
+    $.post(
+        "<?= base_url('home/get_anatomy_chapters'); ?>",
+        { idLivre: idLivre, idTheme: idTheme },
+        function(data) {
+            Swal.close();
+
+            if (!data.success) {
+                Swal.fire('Erreur', 'Impossible de charger les chapitres anatomiques.', 'error');
+                return;
+            }
+
+            const rappelActuel = String(currentIdRappel || '').trim();
+            const modalId = 'modalLinkChapAssoc';
+
+            // 3. Supprimer tout ancien modal résiduel
+            $('#' + modalId).remove();
+            $('body').removeClass('modal-open');
+            $('.modal-backdrop').remove();
+
+            // 4. Construire le modal Bootstrap avec le select déjà rempli
+            //    (Bootstrap ne sanitize pas, les <option> s'affichent correctement)
+            const modalHtml = `
+                <div class="modal fade" id="${modalId}" tabindex="-1" role="dialog" aria-labelledby="${modalId}Label">
+                    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width:560px;">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background:#f8f9fa; border-bottom:1px solid #dee2e6;">
+                                <h5 class="modal-title" id="${modalId}Label">
+                                    <i class="fas fa-link" style="color:#3085d6;"></i> Modifier le chapitre associé
+                                </h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <label style="font-weight:bold; margin-bottom:8px; display:block;">
+                                    Chapitre anatomique lié :
+                                </label>
+                                <select id="link-chap-select" class="form-control" style="color:#000; background:#fff;">
+                                    ${data.options}
+                                </select>
+                                <div class="mt-2">
+                                    <small class="text-muted">
+                                        <i class="fas fa-info-circle"></i>
+                                        Les boutons "Version détaillée" et "Résumé" se mettront à jour automatiquement.
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                    <i class="fas fa-times"></i> Annuler
+                                </button>
+                                <button type="button" class="btn btn-primary" id="btn-save-link-chap">
+                                    <i class="fas fa-save"></i> Enregistrer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+
+            $('body').append(modalHtml);
+
+            // 5. Pré-sélectionner le chapitre actuel (jQuery .val() est fiable)
+            if (rappelActuel) {
+                $('#link-chap-select').val(rappelActuel);
+                console.log('[LinkModal] Pré-sélection:', rappelActuel, '| obtenu:', $('#link-chap-select').val(), '| nb options:', $('#link-chap-select option').length);
+            }
+
+            // 6. Ouvrir le modal
+            $('#' + modalId).modal('show');
+
+            // 7. Gérer le clic Enregistrer
+            $('#btn-save-link-chap').off('click').on('click', function() {
+                const nouveauIdRappel = $('#link-chap-select').val();
+                if (!nouveauIdRappel) {
+                    Swal.fire({ toast: true, position: 'top', icon: 'warning', title: 'Veuillez sélectionner un chapitre.', showConfirmButton: false, timer: 2500 });
+                    return;
+                }
+
+                $('#' + modalId).modal('hide');
+
+                Swal.fire({ title: 'Enregistrement...', allowOutsideClick: false, showConfirmButton: false, didOpen: () => Swal.showLoading() });
+
+                $.post(
+                    "<?= base_url('home/update_chapitre_associe'); ?>",
+                    { idChapitre: idChapitre, nouveauIdRappel: nouveauIdRappel },
+                    function(res) {
+                        Swal.close();
+                        if (res.success) {
+                            // Mettre à jour le onclick du bouton pour la prochaine ouverture
+                            const linkBtn = document.querySelector('a[data-chap-link="' + idChapitre + '"]');
+                            if (linkBtn) {
+                                linkBtn.setAttribute('onclick',
+                                    'openLinkChapterModal(' + idChapitre + ',\'' + res.nouveauIdRappel + '\',' + idLivre + ',' + idTheme + ',' + estAdmin + ')'
+                                );
+                            }
+
+                            // Rafraîchir les zones Version détaillée + Résumé
+                            checkAndDisplayRappel(
+                                idChapitre, String(res.nouveauIdRappel),
+                                idLivre, idTheme, estAdmin,
+                                res.nbreCoursRappel || 0,
+                                res.nbreResumeRappel || 0
+                            );
+
+                            // Toast succès
+                            Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 2500, timerProgressBar: true })
+                                .fire({ icon: 'success', title: 'Chapitre associé mis à jour !' });
+
+                        } else {
+                            Swal.fire('Erreur', res.message || 'Erreur serveur.', 'error');
+                        }
+                    },
+                    'json'
+                ).fail(function(xhr) {
+                    Swal.fire('Erreur', 'Requête échouée : ' + xhr.status, 'error');
+                });
+            });
+
+            // 8. Nettoyer le modal quand il est fermé
+            $('#' + modalId).on('hidden.bs.modal', function() {
+                $(this).remove();
+            });
+        },
+        'json'
+    ).fail(function() {
+        Swal.close();
+        Swal.fire('Erreur', 'Impossible de charger les chapitres depuis le serveur.', 'error');
+    });
+}
+
+function openPathoFRModal(idChapitre) {
+    if (!window.pathologieFROptions) {
+        Swal.fire({
+            icon: 'info',
+            title: 'Bientôt disponible',
+            text: 'La liaison avec une pathologie FR sera disponible prochainement.',
+            confirmButtonColor: '#3085d6'
+        });
+        return;
+    }
+
+    const modalId = 'modalPathoFRAssoc';
+
+    // Supprimer tout modal résiduel
+    $('#' + modalId).remove();
+    $('body').removeClass('modal-open');
+    $('.modal-backdrop').remove();
+
+    const modalHtml = `
+        <div class="modal fade" id="${modalId}" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document" style="max-width:560px;">
+                <div class="modal-content">
+                    <div class="modal-header" style="background:#fff8f0; border-bottom:2px solid #e67e22;">
+                        <h5 class="modal-title">
+                            <i class="fas fa-stethoscope" style="color:#e67e22;"></i>
+                            Pathologie référente (FR)
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <label style="font-weight:bold; margin-bottom:8px; display:block;">
+                            Lier à une pathologie en français :
+                        </label>
+                        <select id="pathoFR-select" class="form-control" style="color:#000; background:#fff;">
+                            ${window.pathologieFROptions}
+                        </select>
+                        <div class="mt-2">
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle"></i>
+                                Cette fonctionnalité sera entièrement active prochainement.
+                            </small>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                            <i class="fas fa-times"></i> Annuler
+                        </button>
+                        <button type="button" class="btn btn-warning" id="btn-save-patho-fr" style="color:#fff;">
+                            <i class="fas fa-save"></i> Enregistrer
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+
+    $('body').append(modalHtml);
+    $('#' + modalId).modal('show');
+
+    // Bouton Enregistrer → Bientôt disponible
+    $('#btn-save-patho-fr').off('click').on('click', function() {
+        const val = $('#pathoFR-select').val();
+        if (!val) {
+            Swal.fire({ toast: true, position: 'top', icon: 'warning', title: 'Veuillez sélectionner une pathologie.', showConfirmButton: false, timer: 2000 });
+            return;
+        }
+        $('#' + modalId).modal('hide');
+        Swal.fire({
+            icon: 'info',
+            title: 'Bientôt disponible',
+            text: 'La sauvegarde de la pathologie référente sera disponible prochainement.',
+            confirmButtonColor: '#e67e22'
+        });
+    });
+
+    // Nettoyage à la fermeture
+    $('#' + modalId).on('hidden.bs.modal', function() {
+        $(this).remove();
+    });
+}
 
 function validerEditSousChap(idSousChap) {
     const newTitle = $('#editSousChap_' + idSousChap).val();
@@ -3100,10 +3376,8 @@ function checkAndDisplayRappel(idChapitre, idChapterRappelDefaut, idLivre, idThe
                 detailHtml += '<div class="col-md-7" style="text-align: center; padding: 0;">';
                 
                 if (idChapterRappelDefaut && idChapterRappelDefaut !== '') {
-                    // Redirection vers le résumé si existant, sinon figures (Lien demandé par l'utilisateur)
-                    const targetUrlDet = (parseInt(nbreResumeRappel) > 0) 
-                                      ? `${baseUrl}${siteLang}livreResume/${idChapterRappelDefaut}`
-                                      : `${baseUrl}${siteLang}livreFigures/${idChapterRappelDefaut}`;
+                    // Redirection toujours vers livreFigures
+                    const targetUrlDet = `${baseUrl}${siteLang}livreFigures/${idChapterRappelDefaut}`;
                     detailHtml += `
                         <a href="${targetUrlDet}" 
                            class="btn btn-outline-primary" 
@@ -3142,10 +3416,8 @@ function checkAndDisplayRappel(idChapitre, idChapterRappelDefaut, idLivre, idThe
                 resumeHtml += '<div class="col-md-7" style="text-align: center; padding: 0;">';
                 
                 if (idChapterRappelDefaut && idChapterRappelDefaut !== '') {
-                    // ✅ PATCH : Redirige vers livreResume si nbreResume > 0, sinon livreFigures
-                    const targetUrl = (parseInt(nbreResumeRappel) > 0) 
-                                      ? `${baseUrl}${siteLang}livreResume/${idChapterRappelDefaut}`
-                                      : `${baseUrl}${siteLang}livreFigures/${idChapterRappelDefaut}`;
+                    // Redirection toujours vers livreFigures
+                    const targetUrl = `${baseUrl}${siteLang}livreFigures/${idChapterRappelDefaut}`;
                     resumeHtml += `
                         <a href="${targetUrl}" 
                            class="btn btn-outline-warning" 
@@ -4867,6 +5139,16 @@ function editSousChap(idEncoded) {
             text: 'Veuillez choisir un chapitre associé avant de continuer.'
         });
         return false; 
+    }
+
+    var pathologieFRField = form.pathologieFR;
+    if (pathologieFRField && !pathologieFRField.value) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Sélection obligatoire',
+            text: 'Veuillez choisir une pathologie en français associée avant de continuer.'
+        });
+        return false;
     }
 
     Swal.fire({

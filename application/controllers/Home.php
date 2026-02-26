@@ -5345,6 +5345,92 @@ loadingTask.promise.then(function(pdf) {
     exit;
 }
 
+public function update_chapitre_associe() {
+    header('Content-Type: application/json');
+    $idChapitre    = isset($_POST['idChapitre'])    ? (int)$_POST['idChapitre']    : 0;
+    $nouveauIdRappel = isset($_POST['nouveauIdRappel']) ? (int)$_POST['nouveauIdRappel'] : 0;
+
+    if ($idChapitre > 0 && $nouveauIdRappel > 0) {
+        $this->db->where('IDChapitre', $idChapitre);
+        $this->db->update('_chapitre', ['IdChapterRappel' => $nouveauIdRappel]);
+
+        // Récupérer NbreCours et NbreResume du nouveau chapitre de rappel
+        $rappelChap = $this->db
+            ->select('NbreCours, NbreResume')
+            ->where('IDChapitre', $nouveauIdRappel)
+            ->get('_chapitre')
+            ->row_array();
+
+        echo json_encode([
+            'success'          => true,
+            'nouveauIdRappel'  => $nouveauIdRappel,
+            'nbreCoursRappel'  => isset($rappelChap['NbreCours'])  ? (int)$rappelChap['NbreCours']  : 0,
+            'nbreResumeRappel' => isset($rappelChap['NbreResume']) ? (int)$rappelChap['NbreResume'] : 0,
+        ]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Donn\u00e9es invalides (idChapitre=' . $idChapitre . ', rappel=' . $nouveauIdRappel . ').']);
+    }
+    exit;
+}
+
+
+public function get_anatomy_chapters() {
+    header('Content-Type: application/json');
+    $idLivre = isset($_POST['idLivre']) ? (int)$_POST['idLivre'] : 0;
+    $idTheme = isset($_POST['idTheme']) ? (int)$_POST['idTheme'] : 0;
+
+    if (!$idTheme && $idLivre) {
+        $livreRow = $this->db->select('IDTheme')->where('IDLivre', $idLivre)->get('_livre')->row_array();
+        $idTheme = $livreRow ? (int)$livreRow['IDTheme'] : 0;
+    }
+    $map = [
+        20 => [1],
+        30 => [1],
+        31 => [21],
+        36 => [33]
+    ];
+
+    if (isset($map[$idTheme])) {
+        $themesCibles = $map[$idTheme];
+    } else {
+        $themesCibles = [1, 21, 33];
+    }
+
+    $livresAnat = $this->db->where_in('IDTheme', $themesCibles)->get('_livre')->result_array();
+
+    $optionsHtml = '<option value="">-- Choisissez un chapitre --</option>';
+    foreach ($livresAnat as $livreAnat) {
+        $chapitres = $this->db
+            ->select('IDChapitre, TitreChapitre')
+            ->where('IDLivre', $livreAnat['IDLivre'])
+            ->order_by('TitreChapitre', 'ASC')
+            ->get('_chapitre')
+            ->result_array();
+
+        if (count($chapitres) > 0) {
+            $optionsHtml .= '<optgroup label="' . htmlspecialchars($livreAnat['Titre'], ENT_QUOTES) . '">';
+            foreach ($chapitres as $chap) {
+                $optionsHtml .= '<option value="' . (int)$chap['IDChapitre'] . '">'
+                    . htmlspecialchars($chap['TitreChapitre'], ENT_QUOTES)
+                    . '</option>';
+            }
+            $optionsHtml .= '</optgroup>';
+        }
+    }
+
+    echo json_encode([
+        'success'      => true,
+        'options'      => $optionsHtml,
+        '_debug'       => [
+            'idLivre'      => $idLivre,
+            'idTheme'      => $idTheme,
+            'themesCibles' => $themesCibles,
+            'nbLivres'     => count($livresAnat)
+        ]
+    ]);
+    exit;
+}
+
 
     public function set_LivreBack(){
 
