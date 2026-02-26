@@ -784,10 +784,9 @@
                                     Lier à une pathologie en français <span style="color:red;">*</span>
                                 </label>
 
-                                <select name="pathologieFR"
-                                        id="pathologieFR_<?= $OneBook[0]['IDLivre']; ?>"
-                                        class="form-control select-chapitre-associe"
-                                        required>
+                                <select name="idpathologieFR"
+                                        id="idpathologieFR_<?= $OneBook[0]['IDLivre']; ?>"
+                                        class="form-control select-chapitre-associe">
                                     <option value="">-- Choisissez un chapitre --</option>
 
                                     <?php foreach ($livresFR as $livreFR):
@@ -1644,7 +1643,7 @@
                 </a>
                 <?php if (in_array($category['multi_lingue'], ['EN', 'ES'])): ?>
                 <a href="#"
-                   onclick="openPathoFRModal(<?php print $value['IDChapitre']; ?>)"
+                   onclick="openPathoFRModal(<?php print $value['IDChapitre']; ?>, '<?php print $value['idpathologieFR'] ?? ''; ?>')"
                    title="Modifier la pathologie référente (FR)">
                     <i class="fas fa-stethoscope" style="color:#e67e22; margin-left:5px;"></i>
                 </a>
@@ -2756,85 +2755,155 @@ function openLinkChapterModal(idChapitre, currentIdRappel, idLivre, idTheme, est
     });
 }
 
-function openPathoFRModal(idChapitre) {
-    if (!window.pathologieFROptions) {
-        Swal.fire({
-            icon: 'info',
-            title: 'Bientôt disponible',
-            text: 'La liaison avec une pathologie FR sera disponible prochainement.',
-            confirmButtonColor: '#3085d6'
-        });
-        return;
-    }
+function openPathoFRModal(idChapitre, currentPathoFR) {
+    // 1. Afficher un loader Swal pendant le chargement des options
+    Swal.fire({ title: 'Chargement...', allowOutsideClick: false, showConfirmButton: false, didOpen: () => Swal.showLoading() });
 
-    const modalId = 'modalPathoFRAssoc';
+    // 2. Charger les options de pathologie via AJAX (comme pour chapitre associé)
+    $.post(
+        "<?= base_url('home/get_patho_fr_options'); ?>",
+        {},
+        function(data) {
+            Swal.close();
 
-    // Supprimer tout modal résiduel
-    $('#' + modalId).remove();
-    $('body').removeClass('modal-open');
-    $('.modal-backdrop').remove();
+            if (!data.success) {
+                Swal.fire('Erreur', 'Impossible de charger les pathologies FR.', 'error');
+                return;
+            }
 
-    const modalHtml = `
-        <div class="modal fade" id="${modalId}" tabindex="-1" role="dialog">
-            <div class="modal-dialog modal-dialog-centered" role="document" style="max-width:560px;">
-                <div class="modal-content">
-                    <div class="modal-header" style="background:#fff8f0; border-bottom:2px solid #e67e22;">
-                        <h5 class="modal-title">
-                            <i class="fas fa-stethoscope" style="color:#e67e22;"></i>
-                            Pathologie référente (FR)
-                        </h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <label style="font-weight:bold; margin-bottom:8px; display:block;">
-                            Lier à une pathologie en français :
-                        </label>
-                        <select id="pathoFR-select" class="form-control" style="color:#000; background:#fff;">
-                            ${window.pathologieFROptions}
-                        </select>
-                        <div class="mt-2">
-                            <small class="text-muted">
-                                <i class="fas fa-info-circle"></i>
-                                Cette fonctionnalité sera entièrement active prochainement.
-                            </small>
+            const pathoActuelle = String(currentPathoFR || '').trim();
+            console.log("[PathoFR] Valeur à pré-sélectionner:", pathoActuelle);
+            const modalId = 'modalPathoFRAssoc';
+
+            // 3. Supprimer tout ancien modal résiduel
+            $('#' + modalId).remove();
+            $('body').removeClass('modal-open');
+            $('.modal-backdrop').remove();
+
+            // 4. Construire le modal
+            const modalHtml = `
+                <div class="modal fade" id="${modalId}" tabindex="-1" role="dialog">
+                    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width:560px;">
+                        <div class="modal-content">
+                            <div class="modal-header" style=" border-bottom:2px solid ;">
+                                <h5 class="modal-title">
+                                    Pathologie référente (FR)
+                                </h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <label style="font-weight:bold; margin-bottom:8px; display:block;">
+                                    Lier à une pathologie en français :
+                                </label>
+                                <div style="display: flex; gap: 8px;">
+                                    <select id="pathoFR-select" class="form-control" style="color:#000; background:#fff; flex: 1;">
+                                        ${data.options}
+                                    </select>
+                                    <button type="button" class="btn btn-outline-danger" id="btn-delete-patho-fr" title="Supprimer le lien">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                    <i class="fas fa-times"></i> Annuler
+                                </button>
+                                <button type="button" class="btn btn-primary" id="btn-save-patho-fr" style="color:#fff;">
+                                    <i class="fas fa-save"></i> Enregistrer
+                                </button>
+                            </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                            <i class="fas fa-times"></i> Annuler
-                        </button>
-                        <button type="button" class="btn btn-warning" id="btn-save-patho-fr" style="color:#fff;">
-                            <i class="fas fa-save"></i> Enregistrer
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>`;
+                </div>`;
 
-    $('body').append(modalHtml);
-    $('#' + modalId).modal('show');
+            $('body').append(modalHtml);
+            
+            // 5. Pré-sélectionner (Pattern AJAX fiable)
+            if (pathoActuelle) {
+                $('#pathoFR-select').val(pathoActuelle);
+                console.log("[PathoFR] Valeur sélectionnée après .val():", $('#pathoFR-select').val());
+            }
+            
+            // 6. Ouvrir le modal
+            $('#' + modalId).modal('show');
 
-    // Bouton Enregistrer → Bientôt disponible
-    $('#btn-save-patho-fr').off('click').on('click', function() {
-        const val = $('#pathoFR-select').val();
-        if (!val) {
-            Swal.fire({ toast: true, position: 'top', icon: 'warning', title: 'Veuillez sélectionner une pathologie.', showConfirmButton: false, timer: 2000 });
-            return;
-        }
-        $('#' + modalId).modal('hide');
-        Swal.fire({
-            icon: 'info',
-            title: 'Bientôt disponible',
-            text: 'La sauvegarde de la pathologie référente sera disponible prochainement.',
-            confirmButtonColor: '#e67e22'
-        });
-    });
+            // 7. Gérer le bouton supprimer (Détacher)
+            $('#btn-delete-patho-fr').off('click').on('click', function() {
+                Swal.fire({
+                    title: 'Détacher la pathologie ?',
+                    text: "Le lien entre ce chapitre et la pathologie fr sera supprimé.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Oui, supprimer',
+                    cancelButtonText: 'Annuler'
+                }).then((result) => {
+                    if (result.value) {
+                        $('#' + modalId).modal('hide');
+                        Swal.fire({ title: 'Suppression du lien...', allowOutsideClick: false, showConfirmButton: false, didOpen: () => Swal.showLoading() });
 
-    // Nettoyage à la fermeture
-    $('#' + modalId).on('hidden.bs.modal', function() {
-        $(this).remove();
+                        $.post(
+                            "<?= base_url('home/update_pathologie_fr'); ?>",
+                            { idAnatomy: idChapitre, idPathoFR: 0 },
+                            function(res) {
+                                Swal.close();
+                                if (res.success) {
+                                    Swal.fire({ icon: 'success', title: 'Supprimé', text: 'Le lien a été supprimé', timer: 1500, showConfirmButton: false })
+                                    .then(() => window.location.reload());
+                                } else {
+                                    Swal.fire('Erreur', res.message, 'error').then(() => $('#' + modalId).modal('show'));
+                                }
+                            },
+                            'json'
+                        );
+                    }
+                });
+            });
+
+            // 7. Gérer le clic Enregistrer
+            $('#btn-save-patho-fr').off('click').on('click', function() {
+                const val = $('#pathoFR-select').val();
+                
+                $('#' + modalId).modal('hide');
+                Swal.fire({ title: 'Enregistrement...', allowOutsideClick: false, showConfirmButton: false, didOpen: () => Swal.showLoading() });
+
+                $.post(
+                    "<?= base_url('home/update_pathologie_fr'); ?>",
+                    { idAnatomy: idChapitre, idPathoFR: val },
+                    function(res) {
+                        Swal.close();
+                        if (res.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Succès',
+                                text: res.message,
+                                timer: 1500,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire('Erreur', res.message || 'Impossible de mettre à jour', 'error');
+                        }
+                    },
+                    'json'
+                ).fail(function() {
+                    Swal.fire('Erreur', 'Une erreur est survenue.', 'error');
+                });
+            });
+
+            // 8. Nettoyer
+            $('#' + modalId).on('hidden.bs.modal', function() {
+                $(this).remove();
+            });
+        },
+        'json'
+    ).fail(function() {
+        Swal.close();
+        Swal.fire('Erreur', 'Impossible de charger les données.', 'error');
     });
 }
 
@@ -5141,8 +5210,8 @@ function editSousChap(idEncoded) {
         return false; 
     }
 
-    var pathologieFRField = form.pathologieFR;
-    if (pathologieFRField && !pathologieFRField.value) {
+    var idpathologieFRField = form.idpathologieFR;
+    if (idpathologieFRField && !idpathologieFRField.value && window.bookIsMultiLingue) {
         Swal.fire({
             icon: 'warning',
             title: 'Sélection obligatoire',
