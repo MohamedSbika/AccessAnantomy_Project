@@ -38,6 +38,19 @@ class Home extends CI_Controller {
 
 	}
 
+    public function patch_db_pathologie() {
+        if (!$this->db->field_exists('idpathologieFR', '_chapitre')) {
+            $this->load->dbforge();
+            $fields = array(
+                'idpathologieFR' => array('type' => 'INT', 'constraint' => 11, 'null' => TRUE, 'default' => NULL)
+            );
+            $this->dbforge->add_column('_chapitre', $fields);
+            echo "Colonne idpathologieFR ajoutée avec succès.";
+        } else {
+            echo "La colonne idpathologieFR existe déjà.";
+        }
+    }
+
     public function switchPlatform($encrypted_url) {
         $decrypted_url = base64_decode(urldecode($encrypted_url));
 
@@ -5312,6 +5325,7 @@ loadingTask.promise.then(function(pdf) {
     $IDLivr     = $_POST["bookID"];
     $OrdreChap  = $_POST["list"];
     $IdChapRappel = isset($_POST["chapitreAssocie"]) && !empty($_POST["chapitreAssocie"]) ? $_POST["chapitreAssocie"] : null;
+    $idPathoFR = isset($_POST["idpathologieFR"]) && !empty($_POST["idpathologieFR"]) ? $_POST["idpathologieFR"] : null;
     
     $desc = '';
 
@@ -5330,7 +5344,8 @@ loadingTask.promise.then(function(pdf) {
                 $dataChap = array(
                     'TitreChapitre'   => $titleChap,
                     'IDLivre'         => $IDLivr,
-                    'IdChapterRappel' => $IdChapRappel // si null, la base accepte NULL
+                    'IdChapterRappel' => $IdChapRappel, // si null, la base accepte NULL
+                    'idpathologieFR'  => $idPathoFR
                 );
 
                 // Insertion
@@ -5345,6 +5360,139 @@ loadingTask.promise.then(function(pdf) {
     exit;
 }
 
+public function update_chapitre_associe() {
+    header('Content-Type: application/json');
+    $idChapitre    = isset($_POST['idChapitre'])    ? (int)$_POST['idChapitre']    : 0;
+    $nouveauIdRappel = isset($_POST['nouveauIdRappel']) ? (int)$_POST['nouveauIdRappel'] : 0;
+
+    if ($idChapitre > 0 && $nouveauIdRappel > 0) {
+        $this->db->where('IDChapitre', $idChapitre);
+        $this->db->update('_chapitre', ['IdChapterRappel' => $nouveauIdRappel]);
+
+        // Récupérer NbreCours et NbreResume du nouveau chapitre de rappel
+        $rappelChap = $this->db
+            ->select('NbreCours, NbreResume')
+            ->where('IDChapitre', $nouveauIdRappel)
+            ->get('_chapitre')
+            ->row_array();
+
+        echo json_encode([
+            'success' => true, 
+            'nouveauIdRappel' => $nouveauIdRappel, 
+            'nbreCoursRappel' => $rappelChap['NbreCours'], 
+            'nbreResumeRappel' => $rappelChap['NbreResume']
+        ]);
+    } else {
+        echo json_encode(['success' => false]);
+    }
+    exit;
+}
+
+public function update_pathologie_fr() {
+    header('Content-Type: application/json');
+    $idAnatomy    = isset($_POST['idAnatomy'])    ? (int)$_POST['idAnatomy']    : 0;
+    $idPathoFR    = isset($_POST['idPathoFR'])    ? (int)$_POST['idPathoFR']    : 0;
+
+    if ($idAnatomy > 0) {
+        $this->db->where('IDChapitre', $idAnatomy);
+        $this->db->update('_chapitre', ['idpathologieFR' => ($idPathoFR > 0 ? $idPathoFR : null)]);
+        echo json_encode(['success' => true, 'message' => 'Pathologie FR mise à jour']);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'ID Chapitre Anatomy invalide']);
+    }
+    exit;
+}
+
+public function get_anatomy_chapters() {
+    header('Content-Type: application/json');
+    $idLivre = isset($_POST['idLivre']) ? (int)$_POST['idLivre'] : 0;
+    $idTheme = isset($_POST['idTheme']) ? (int)$_POST['idTheme'] : 0;
+
+    if (!$idTheme && $idLivre) {
+        $livreRow = $this->db->select('IDTheme')->where('IDLivre', $idLivre)->get('_livre')->row_array();
+        $idTheme = $livreRow ? (int)$livreRow['IDTheme'] : 0;
+    }
+    $map = [
+        20 => [1],
+        30 => [1],
+        31 => [21],
+        36 => [33]
+    ];
+
+    if (isset($map[$idTheme])) {
+        $themesCibles = $map[$idTheme];
+    } else {
+        $themesCibles = [1, 21, 33];
+    }
+
+    $livresAnat = $this->db->where_in('IDTheme', $themesCibles)->get('_livre')->result_array();
+
+    $optionsHtml = '<option value="">-- Choisissez un chapitre --</option>';
+    foreach ($livresAnat as $livreAnat) {
+        $chapitres = $this->db
+            ->select('IDChapitre, TitreChapitre')
+            ->where('IDLivre', $livreAnat['IDLivre'])
+            ->order_by('TitreChapitre', 'ASC')
+            ->get('_chapitre')
+            ->result_array();
+
+        if (count($chapitres) > 0) {
+            $optionsHtml .= '<optgroup label="' . htmlspecialchars($livreAnat['Titre'], ENT_QUOTES) . '">';
+            foreach ($chapitres as $chap) {
+                $optionsHtml .= '<option value="' . (int)$chap['IDChapitre'] . '">'
+                    . htmlspecialchars($chap['TitreChapitre'], ENT_QUOTES)
+                    . '</option>';
+            }
+            $optionsHtml .= '</optgroup>';
+        }
+    }
+
+    echo json_encode([
+        'success'      => true,
+        'options'      => $optionsHtml,
+        '_debug'       => [
+            'idLivre'      => $idLivre,
+            'idTheme'      => $idTheme,
+            'themesCibles' => $themesCibles,
+            'nbLivres'     => count($livresAnat)
+        ]
+    ]);
+    exit;
+}
+
+public function get_patho_fr_options() {
+    header('Content-Type: application/json');
+    $lang = 'FR';
+    
+    $this->db->select('_livre.IDLivre, _livre.Titre');
+    $this->db->from('_livre');
+    $this->db->join('_theme', '_theme.IDTheme = _livre.IDTheme');
+    $this->db->join('_category', '_category.IDCategory = _theme.IDCategory');
+    $this->db->where_in('_livre.IDTheme', [20, 30, 31]);
+    $this->db->where('_category.multi_lingue', $lang);
+    $this->db->order_by('_livre.Titre', 'ASC');
+    $resBooks = $this->db->get()->result_array();
+
+    $optionsHtml = '<option value="">-- Choisissez une pathologie FR --</option>';
+    foreach ($resBooks as $livre) {
+        $this->db->select('IDChapitre, TitreChapitre');
+        $this->db->from('_chapitre');
+        $this->db->where('IDLivre', $livre['IDLivre']);
+        $this->db->order_by('TitreChapitre', 'ASC');
+        $resChap = $this->db->get()->result_array();
+
+        if (count($resChap) > 0) {
+            $optionsHtml .= '<optgroup label="' . htmlspecialchars($livre['Titre'], ENT_QUOTES) . '">';
+            foreach ($resChap as $chap) {
+                $optionsHtml .= '<option value="' . $chap['IDChapitre'] . '">' . htmlspecialchars($chap['TitreChapitre'], ENT_QUOTES) . '</option>';
+            }
+            $optionsHtml .= '</optgroup>';
+        }
+    }
+
+    echo json_encode(['success' => true, 'options' => $optionsHtml]);
+    exit;
+}
 
     public function set_LivreBack(){
 
@@ -6440,6 +6588,24 @@ public function upload_Attach_Save_SubChap() {
                 if(file_exists($outputPath)){
                     unlink($outputPath);
                 }
+
+                // ==========================================
+                // SAUVEGARDE DU FICHIER ORIGINAL POUR LA TRADUCTION
+                // ==========================================
+                $originalDocxDir = FCPATH . 'uploads/docx_originals/';
+                if (!is_dir($originalDocxDir)) {
+                    mkdir($originalDocxDir, 0777, true);
+                }
+                // Convention : cours → {id}.docx | resume → {id}_resume.docx
+                $docxSuffix = ($file_type === 'resume') ? '_resume' : '';
+                $originalDocxPath = $originalDocxDir . $idSubChap . $docxSuffix . '.docx';
+                
+                // Copie du fichier temporaire vers le stockage permanent
+                if (!copy($file_nameTmp, $originalDocxPath)) {
+                    log_message('error', 'upload_Attach_Save_SubChap: impossible de copier vers '.$originalDocxPath);
+                }
+                // Recharger depuis le chemin permanent pour PhpWord
+                $contents = $objReader->load($originalDocxPath);
 
                 // Création du nouveau fichier HTML
                 $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($contents, 'HTML');
@@ -8255,27 +8421,44 @@ public function get_SousChapitres()
         $lang = $this->session->userdata('site_lang');
         if($lang==''){$lang='FR';}
 
+        $pathoChaps = [];
+
         if ($idChapAnatomy && $idChapAnatomy != 0) {
-        // Mode contextuel (Chapitre) : Trouver les chapitres de pathologie liés à ce cours d'anatomie
-        $this->db->select('p.IDChapitre, p.TitreChapitre, p.IdChapterRappel, p.IDLivre, r.NbreResume as NbreResumeRappel');
-        $this->db->from('_chapitre as p');
-        $this->db->join('_chapitre as r', 'r.IDChapitre = p.IdChapterRappel', 'left');
-        $this->db->where('p.IdChapterRappel', $idChapAnatomy);
-        $query = $this->db->get();
-        $pathoChaps = $query->result_array();
-    } else {
-        // Mode Livre (Affichage primaire) : Trouver les pathologies liées aux chapitres de ce livre d'anatomie
-        $idLivreAnatomy = isset($data['idLivre']) ? $data['idLivre'] : null;
-        if ($idLivreAnatomy) {
-            $this->db->select('p.IDChapitre, p.TitreChapitre, p.IdChapterRappel, p.IDLivre, r.NbreResume as NbreResumeRappel, CAST(SUBSTRING_INDEX(p.TitreChapitre, "-", 1) as SIGNED INTEGER) AS ord');
-            $this->db->from('_chapitre as p');
-            $this->db->join('_chapitre as r', 'r.IDChapitre = p.IdChapterRappel', 'left');
-            $this->db->where("p.IdChapterRappel IN (SELECT IDChapitre FROM _chapitre WHERE IDLivre = '$idLivreAnatomy')", NULL, FALSE);
-            $this->db->order_by('ord', 'ASC'); 
-            $query = $this->db->get();
-            $pathoChaps = $query->result_array();
+            // Vérifier s'il y a une pathologie spécifique pour le français (idpathologieFR) sur le chapitre d'anatomie
+            $this->db->select('idpathologieFR');
+            $this->db->where('IDChapitre', $idChapAnatomy);
+            $anaChap = $this->db->get('_chapitre')->row_array();
+
+            if (!empty($anaChap['idpathologieFR']) && strtoupper($lang) == 'FR') {
+                $idPathoFR = $anaChap['idpathologieFR'];
+                $this->db->select('p.IDChapitre, p.TitreChapitre, p.IdChapterRappel, p.IDLivre, r.NbreResume as NbreResumeRappel');
+                $this->db->from('_chapitre as p');
+                $this->db->join('_chapitre as r', 'r.IDChapitre = p.IdChapterRappel', 'left');
+                $this->db->where('p.IDChapitre', $idPathoFR);
+                $query = $this->db->get();
+                $pathoChaps = $query->result_array();
+            } else {
+                // Mode contextuel (Chapitre) : Trouver les chapitres de pathologie liés à ce cours d'anatomie
+                $this->db->select('p.IDChapitre, p.TitreChapitre, p.IdChapterRappel, p.IDLivre, r.NbreResume as NbreResumeRappel');
+                $this->db->from('_chapitre as p');
+                $this->db->join('_chapitre as r', 'r.IDChapitre = p.IdChapterRappel', 'left');
+                $this->db->where('p.IdChapterRappel', $idChapAnatomy);
+                $query = $this->db->get();
+                $pathoChaps = $query->result_array();
+            }
+        } else {
+            // Mode Livre (Affichage primaire) : Trouver les pathologies liées aux chapitres de ce livre d'anatomie
+            $idLivreAnatomy = isset($data['idLivre']) ? $data['idLivre'] : null;
+            if ($idLivreAnatomy) {
+                $this->db->select('p.IDChapitre, p.TitreChapitre, p.IdChapterRappel, p.IDLivre, r.NbreResume as NbreResumeRappel, CAST(SUBSTRING_INDEX(p.TitreChapitre, "-", 1) as SIGNED INTEGER) AS ord');
+                $this->db->from('_chapitre as p');
+                $this->db->join('_chapitre as r', 'r.IDChapitre = p.IdChapterRappel', 'left');
+                $this->db->where("p.IdChapterRappel IN (SELECT IDChapitre FROM _chapitre WHERE IDLivre = '$idLivreAnatomy')", NULL, FALSE);
+                $this->db->order_by('ord', 'ASC'); 
+                $query = $this->db->get();
+                $pathoChaps = $query->result_array();
+            }
         }
-    }
 
     if (!empty($pathoChaps)) {
         $result = [];

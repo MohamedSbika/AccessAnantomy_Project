@@ -68,3 +68,6 @@ package-lock.json
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Third party translation libs (large binary dependencies)
+/application/third_party/traduction/libs/

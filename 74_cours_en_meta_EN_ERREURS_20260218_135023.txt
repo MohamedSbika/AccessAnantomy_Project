@@ -1,0 +1,46 @@
+================================================================================
+  RAPPORT D'ERREURS DE TRADUCTION
+  Pour traitement manuel
+================================================================================
+  Date          : 2026-02-18 13:50:23
+  Fichier source: C:\xampp\7.4\htdocs\public_html\uploads/docx_originals/74.docx
+  Langue cible  : EN (English)
+  Total erreurs : 1
+================================================================================
+
+INSTRUCTIONS :
+----------------------------------------
+Dans le fichier Word traduit (script 3), chaque métadonnée
+non traduite sera remplacée par sa référence :
+  [REF: NomFichier_XXXX]
+
+Pour corriger manuellement :
+  1. Ouvrez le JSON traduit
+  2. Cherchez les metadata_id listés ci-dessous
+  3. Remplacez translated_text par votre traduction
+  4. Changez translation_status en SUCCESS
+  5. Relancez le script 3 pour reconstruire le Word
+----------------------------------------
+
+────────────────────────────────────────────────────────────────────────────────
+  ANOMALIE 1/1
+────────────────────────────────────────────────────────────────────────────────
+  Référence  : 74_0044
+  Marqueur   : [REF: 74_0044]
+  Statut     : ERROR
+  Problème   : Tag [UNTRANSLATED] persistant après 3 tentatives
+
+  CONTENU FRANÇAIS (à traduire manuellement) :
+  ........................................
+  |  (Fig.118)
+  ........................................
+
+  DERNIÈRE TENTATIVE DE TRADUCTION (rejetée) :
+  ........................................
+  | [UNTRANSLATED]
+  ........................................
+
+
+================================================================================
+  FIN DU RAPPORT
+================================================================================
