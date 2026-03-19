@@ -50,10 +50,12 @@ class Traduction extends CI_Controller {
             : 'python';
 
         // Tous les chemins en backslashes Windows purs (évite les erreurs proc_open)
-        $this->scriptDir       = str_replace('/', DIRECTORY_SEPARATOR, FCPATH . 'application/third_party/traduction/');
-        $this->uploadDir       = str_replace('/', DIRECTORY_SEPARATOR, FCPATH . 'uploads/translations/');
-        $this->docxOriginalDir = str_replace('/', DIRECTORY_SEPARATOR, FCPATH . 'uploads/docx_originals/');
-        $this->convertDir      = str_replace('/', DIRECTORY_SEPARATOR, FCPATH . 'PlatFormeConvert/');
+        $basePath = rtrim(FCPATH, '/\\') . DIRECTORY_SEPARATOR;
+        
+        $this->scriptDir       = $basePath . 'application' . DIRECTORY_SEPARATOR . 'third_party' . DIRECTORY_SEPARATOR . 'traduction' . DIRECTORY_SEPARATOR;
+        $this->uploadDir       = $basePath . 'uploads' . DIRECTORY_SEPARATOR . 'translations' . DIRECTORY_SEPARATOR;
+        $this->docxOriginalDir = $basePath . 'uploads' . DIRECTORY_SEPARATOR . 'docx_originals' . DIRECTORY_SEPARATOR;
+        $this->convertDir      = $basePath . 'PlatFormeConvert' . DIRECTORY_SEPARATOR;
 
         // Créer les dossiers si nécessaire
         foreach ([$this->uploadDir, $this->docxOriginalDir, $this->convertDir] as $dir) {
@@ -381,14 +383,38 @@ class Traduction extends CI_Controller {
     // Body  : { idSousChap, lang, docType, corrections: { metadata_id: text } }
     // =========================================================================
     public function save_corrections() {
-        $dataPost    = json_decode(file_get_contents('php://input'), true);
-        $idSubChap   = $dataPost['idSousChap'];
-        $lang        = strtolower($dataPost['lang']);
-        $docType     = isset($dataPost['docType']) ? $dataPost['docType'] : 'cours';
-        $corrections = $dataPost['corrections'];
+        $input = file_get_contents('php://input');
+        $dataPost = json_decode($input, true);
+        
+        $basePath = rtrim(FCPATH, '/\\') . DIRECTORY_SEPARATOR;
+        $logPath = $basePath . 'debug_trad.txt';
+        $logMsgs = ["--- Save Request at " . date('H:i:s') . " ---"];
+        $logMsgs[] = "Raw Input: " . substr($input, 0, 500) . (strlen($input) > 500 ? '...' : '');
+
+        if (!$dataPost) {
+            $logMsgs[] = "Error: Invalid JSON input";
+            file_put_contents($logPath, implode("\n", $logMsgs));
+            $this->jsonResponse(['status' => 'error', 'message' => 'JSON invalide.']);
+            return;
+        }
+
+        $idSubChap   = $dataPost['idSousChap'] ?? null;
+        $lang        = strtolower($dataPost['lang'] ?? '');
+        $docType     = $dataPost['docType'] ?? 'cours';
+        $corrections = $dataPost['corrections'] ?? [];
+
+        if (!$idSubChap || !$lang) {
+            $logMsgs[] = "Error: Missing idSousChap or lang";
+            file_put_contents($logPath, implode("\n", $logMsgs));
+            $this->jsonResponse(['status' => 'error', 'message' => 'Paramètres manquants.']);
+            return;
+        }
 
         $docType        = ($docType === 'resume') ? 'resume' : 'cours';
         $translatedJson = $this->translatedJsonPath($idSubChap, $docType, $lang);
+
+        $logMsgs[] = "Target: " . basename($translatedJson);
+        $logMsgs[] = "Corrections count: " . count($corrections);
 
         if (!file_exists($translatedJson)) {
             $this->jsonResponse(['status' => 'error', 'message' => 'Fichier de traduction introuvable.']);
@@ -396,12 +422,47 @@ class Traduction extends CI_Controller {
         }
 
         $data = json_decode(file_get_contents($translatedJson), true);
-        $this->applyCorrectionsRecursive($data['structure'], $corrections);
-        file_put_contents($translatedJson, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        if (!$data) {
+            $this->jsonResponse(['status' => 'error', 'message' => 'Échec de lecture du fichier JSON.']);
+            return;
+        }
 
-        $this->jsonResponse(['status' => 'success', 'message' => 'Corrections enregistrées.']);
+        // Appliquer les corrections
+        $matchCount = 0;
+        $this->applyCorrectionsGeneric($data['structure'], $corrections, $matchCount);
+        $logMsgs[] = "Match count: " . $matchCount;
+
+        if ($matchCount > 0) {
+            $jsonStr = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+            $success = file_put_contents($translatedJson, $jsonStr);
+            $logMsgs[] = "Write success: " . ($success !== false ? 'YES ('.$success.' bytes)' : 'NO');
+        } else {
+            $logMsgs[] = "Skip write: NO MATCHES. Sent IDs: " . implode(', ', array_keys($corrections));
+            // Pour débugger, listons quelques IDs présents dans le JSON
+            $sampleIds = [];
+            $this->getSampleIds($data['structure'], $sampleIds);
+            $logMsgs[] = "Sample IDs in JSON: " . implode(', ', array_slice($sampleIds, 0, 10));
+        }
+
+        file_put_contents($logPath, implode("\n", $logMsgs));
+
+        $this->jsonResponse([
+            'status'  => 'success', 
+            'message' => 'Modifications enregistrées.',
+            'matches' => $matchCount,
+            'debug'   => $logMsgs
+        ]);
     }
 
+    private function getSampleIds($array, &$ids) {
+        if (!is_array($array)) return;
+        if (isset($array['metadata_id'])) $ids[] = $array['metadata_id'];
+        foreach ($array as $val) {
+            if (is_array($val)) $this->getSampleIds($val, $ids);
+        }
+    }
+
+/*
     // =========================================================================
     // STEP 3 : Reconstruire le DOCX traduit
     // Route : GET Traduction/generer/{idSubChap}/{docType}/{lang}
@@ -452,6 +513,7 @@ class Traduction extends CI_Controller {
             'file_url' => base_url("PlatFormeConvert/{$idSubChap}_{$docType}_{$lang}.docx")
         ]);
     }
+*/
 
     // =========================================================================
     // Confirmer la traduction : archiver DOCX + convertir en HTML
@@ -472,7 +534,7 @@ class Traduction extends CI_Controller {
         }
 
         // Archiver le DOCX dans un dossier permanent
-        $finalDir  = FCPATH . 'uploads/final_translations/';
+        $finalDir = rtrim(FCPATH, '/\\') . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'final_translations' . DIRECTORY_SEPARATOR;
         if (!is_dir($finalDir)) mkdir($finalDir, 0777, true);
         $finalDocx = $finalDir . "{$idSubChap}_{$docType}_{$lang}.docx";
         copy($tempDocx, $finalDocx);
@@ -503,58 +565,108 @@ class Traduction extends CI_Controller {
     }
 
     // =========================================================================
+    // Télécharger le fichier traduit (DOCX)
+    // Route : GET Traduction/telecharger/{idSubChap}/{docType}/{lang}
+    // =========================================================================
+    public function telecharger($idSubChap, $docType = 'cours', $lang = 'en') {
+        $docType = ($docType === 'resume') ? 'resume' : 'cours';
+        $lang    = strtolower($lang);
+        $mimeType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+        $downloadName = "{$idSubChap}_{$docType}_{$lang}.docx";
+
+        // Chercher le DOCX dans l'ordre de priorité :
+        // 1. Archive finale (uploads/final_translations/)
+        $finalDir = rtrim(FCPATH, '/\\') . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'final_translations' . DIRECTORY_SEPARATOR;
+        $filePath = $finalDir . $downloadName;
+
+        // 2. Fallback : DOCX temporaire dans PlatFormeConvert/
+        if (!file_exists($filePath)) {
+            $filePath = $this->convertDir . $downloadName;
+        }
+
+        // 3. Fallback : essayer aussi le chemin finalDocxPath (PlatFormeConvert/{id}_{docType}_{lang}.docx)
+        if (!file_exists($filePath)) {
+            $filePath = $this->finalDocxPath($idSubChap, $docType, $lang);
+        }
+
+        if (!file_exists($filePath)) {
+            $this->jsonResponse([
+                'status'  => 'error',
+                'message' => "Fichier DOCX traduit introuvable. Veuillez d'abord générer le document."
+            ]);
+            return;
+        }
+
+        header('Content-Type: ' . $mimeType);
+        header('Content-Disposition: attachment; filename="' . $downloadName . '"');
+        header('Content-Length: ' . filesize($filePath));
+        header('Cache-Control: no-cache, must-revalidate');
+        readfile($filePath);
+        exit;
+    }
+
+    // =========================================================================
     // Helpers récursifs pour parcourir la structure JSON
     // =========================================================================
 
+    private function applyCorrectionsGeneric(&$array, $corrections, &$matchCount) {
+        if (!is_array($array)) return;
+        
+        // Si c'est un segment (un groupe de méta avec metadata_id)
+        if (isset($array['metadata_id']) && isset($corrections[$array['metadata_id']])) {
+            $array['translated_text']    = $corrections[$array['metadata_id']];
+            $array['translation_status'] = 'SUCCESS';
+            $matchCount++;
+            // On ne return pas car il peut y avoir d'autres segments dans des sous-clés (peu probable mais bon)
+        }
+
+        // Parcourir récursivement toutes les clés
+        foreach ($array as $key => &$value) {
+            if (is_array($value)) {
+                $this->applyCorrectionsGeneric($value, $corrections, $matchCount);
+            }
+        }
+    }
+
+    /**
+     * Trouve tous les segments de manière récursive pour l'affichage.
+     */
     private function recursiveFindGroups($structure) {
         $groups = [];
+        if (!is_array($structure)) return $groups;
+
         foreach ($structure as $item) {
-            if ($item['type'] === 'paragraph') {
-                foreach ($item['metadata_groups'] ?? [] as $g) {
+            if (!is_array($item)) continue;
+
+            // Paragraphes
+            if (isset($item['metadata_groups']) && is_array($item['metadata_groups'])) {
+                foreach ($item['metadata_groups'] as $g) {
                     if (!empty($g['metadata_id'])) {
                         $groups[] = $g;
                     }
                 }
-            } elseif ($item['type'] === 'table') {
-                foreach ($item['rows'] ?? [] as $row) {
+            }
+
+            // Tables
+            if (isset($item['type']) && $item['type'] === 'table' && isset($item['rows'])) {
+                foreach ($item['rows'] as $row) {
                     foreach ($row['cells'] ?? [] as $cell) {
-                        foreach ($cell['paragraphs'] ?? [] as $para) {
-                            foreach ($para['metadata_groups'] ?? [] as $g) {
-                                if (!empty($g['metadata_id'])) {
-                                    $groups[] = $g;
-                                }
-                            }
+                        if (isset($cell['paragraphs'])) {
+                            $groups = array_merge($groups, $this->recursiveFindGroups($cell['paragraphs']));
                         }
+                    }
+                }
+            }
+            
+            // Autres structures imbriquées
+            foreach ($item as $key => $val) {
+                if ($key !== 'metadata_groups' && $key !== 'rows' && is_array($val)) {
+                    if (isset($val[0]) && is_array($val[0])) {
+                        $groups = array_merge($groups, $this->recursiveFindGroups($val));
                     }
                 }
             }
         }
         return $groups;
-    }
-
-    private function applyCorrectionsRecursive(&$structure, $corrections) {
-        foreach ($structure as &$item) {
-            if ($item['type'] === 'paragraph') {
-                foreach ($item['metadata_groups'] as &$g) {
-                    if (isset($corrections[$g['metadata_id']])) {
-                        $g['translated_text']    = $corrections[$g['metadata_id']];
-                        $g['translation_status'] = 'SUCCESS';
-                    }
-                }
-            } elseif ($item['type'] === 'table') {
-                foreach ($item['rows'] as &$row) {
-                    foreach ($row['cells'] as &$cell) {
-                        foreach ($cell['paragraphs'] as &$para) {
-                            foreach ($para['metadata_groups'] as &$g) {
-                                if (isset($corrections[$g['metadata_id']])) {
-                                    $g['translated_text']    = $corrections[$g['metadata_id']];
-                                    $g['translation_status'] = 'SUCCESS';
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
     }
 }

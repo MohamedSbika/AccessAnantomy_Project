@@ -164,3 +164,6 @@
 		Access Anatomy © 2025
 	</div>
 </section>
+
+<!-- Google Translate Image Swap Script -->
+<script src="<?php echo HTTP_JS; ?>google_translate_images.js"></script>

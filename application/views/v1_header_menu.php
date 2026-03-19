@@ -773,3 +773,5 @@
         document.getElementById("sideNav").style.left = "-250px";  // Close menu
     }
 </script>
+
+<?php include_once('v1_google_translate.php'); ?>

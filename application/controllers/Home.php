@@ -8407,6 +8407,16 @@ public function get_SousChapitres()
         // Ajouter les fichiers détectés
         $sc['FichierHTML'] = file_exists($cheminContenu) ? $fichierContenu : null;
         $sc['FichierHTML_Resume'] = file_exists($cheminResume) ? $fichierResume : null;
+
+        // Détecter les fichiers traduits (EN, ES)
+        foreach (['en', 'es'] as $trLang) {
+            $fContenuLang = $idSC . '_' . $trLang . '_Sub.HTML';
+            $fResumeLang  = $idSC . '_' . $trLang . '_SubResume.HTML';
+            $keyContenu   = 'FichierHTML_' . strtoupper($trLang);
+            $keyResume    = 'FichierHTML_Resume_' . strtoupper($trLang);
+            $sc[$keyContenu] = file_exists(FCPATH . 'PlatFormeConvert/' . $fContenuLang) ? $fContenuLang : null;
+            $sc[$keyResume]  = file_exists(FCPATH . 'PlatFormeConvert/' . $fResumeLang) ? $fResumeLang : null;
+        }
     }
 
     echo json_encode($sousChaps);
@@ -8482,6 +8492,14 @@ public function get_SousChapitres()
                 // Ajouter les fichiers détectés
                 $sc['FichierHTML'] = file_exists($cheminContenu) ? $fichierContenu : null;
                 $sc['FichierHTML_Resume'] = file_exists($cheminResume) ? $fichierResume : null;
+
+                // Détecter les fichiers traduits (EN, ES)
+                foreach (['en', 'es'] as $trLang) {
+                    $fContenuLang = $idSC . '_' . $trLang . '_Sub.HTML';
+                    $fResumeLang  = $idSC . '_' . $trLang . '_SubResume.HTML';
+                    $sc['FichierHTML_' . strtoupper($trLang)] = file_exists(FCPATH . 'PlatFormeConvert/' . $fContenuLang) ? $fContenuLang : null;
+                    $sc['FichierHTML_Resume_' . strtoupper($trLang)] = file_exists(FCPATH . 'PlatFormeConvert/' . $fResumeLang) ? $fResumeLang : null;
+                }
             }
             
             $chap['sousChaps'] = $sousChaps;
@@ -8602,12 +8620,22 @@ public function getContentChapter()
             $fichierHTMLFinal = file_exists($cheminContenu) ? $fichierContenu : null;
             $fichierResumeFinal = file_exists($cheminResume) ? $fichierResume : null;
 
-            echo json_encode([
+            $response = [
                 'status' => 'success',
                 'FichierHTML' => $fichierHTMLFinal,
                 'FichierHTML_Resume' => $fichierResumeFinal,
                 'TitreSousChapitre' => $sousChapitre->TitreSousChapitre
-            ]);
+            ];
+
+            // Ajouter les fichiers traduits
+            foreach (['en', 'es'] as $trLang) {
+                $fContenuLang = $idSousChap . '_' . $trLang . '_Sub.HTML';
+                $fResumeLang  = $idSousChap . '_' . $trLang . '_SubResume.HTML';
+                $response['FichierHTML_' . strtoupper($trLang)] = file_exists(FCPATH . 'PlatFormeConvert/' . $fContenuLang) ? $fContenuLang : null;
+                $response['FichierHTML_Resume_' . strtoupper($trLang)] = file_exists(FCPATH . 'PlatFormeConvert/' . $fResumeLang) ? $fResumeLang : null;
+            }
+
+            echo json_encode($response);
         } else {
             echo json_encode([
                 'status' => 'error',

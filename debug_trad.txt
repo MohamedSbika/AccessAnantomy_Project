@@ -1,0 +1,6 @@
+--- Save Request at 10:35:32 ---
+Raw Input: {"idSousChap":"76","lang":"en","docType":"cours","corrections":{"76_0001":"TEST_MARKER_FROM_JS"}}
+Target: 76_cours_en_translated_EN.json
+Corrections count: 1
+Match count: 1
+Write success: YES (603903 bytes)

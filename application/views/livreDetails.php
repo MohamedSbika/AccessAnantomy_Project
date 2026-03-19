@@ -1788,6 +1788,13 @@ function togglePathoContainer(idChapitre) {
                     const estAdmin = <?= ($this->session->userdata('EstAdmin') == 1) ? 'true' : 'false'; ?>;
                     const siteLang = "<?= $this->lang->line('siteLang'); ?>";
 
+                    // Sélectionner le fichier selon la langue
+                    const langUpper = siteLang.toUpperCase();
+                    const fichierContenu = (langUpper !== 'FR' && sc['FichierHTML_' + langUpper])
+                        ? sc['FichierHTML_' + langUpper] : sc.FichierHTML;
+                    const fichierResume = (langUpper !== 'FR' && sc['FichierHTML_Resume_' + langUpper])
+                        ? sc['FichierHTML_Resume_' + langUpper] : sc.FichierHTML_Resume;
+
                     let html = `
                     <div class="pathologie-item" style="margin-bottom: 4px; background: #fff; border: 1px solid #f1f5f9; border-radius: 6px; padding: 10px 0; transition: all 0.2s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
                         <div style="display: flex; align-items: center; width: 100%;">
@@ -1832,8 +1839,8 @@ function togglePathoContainer(idChapitre) {
                             <div style="width: 35%; display: flex; align-items: center; padding: 0 10px; border-left: 1px solid #f1f5f9;">
                                 <div class="row align-items-center" style="width: 100%; margin: 0;">
                                     <div class="col-8" style="padding: 0; text-align: center;">
-                                        ${sc.FichierHTML ? `
-                                            <a href="<?= base_url('PlatFormeConvert/'); ?>${sc.FichierHTML}"
+                                        ${fichierContenu ? `
+                                            <a href="<?= base_url('PlatFormeConvert/'); ?>${fichierContenu}"
                                                target="_blank"
                                                class="btn btn-sm btn-outline-primary"
                                                style="font-size: 0.75rem; padding: 4px 10px; width: 90%; border-radius: 4px; font-weight: 600;">
@@ -1854,8 +1861,8 @@ function togglePathoContainer(idChapitre) {
                             <div style="width: 35%; display: flex; align-items: center; padding: 0 10px; border-left: 1px solid #f1f5f9;">
                                 <div class="row align-items-center" style="width: 100%; margin: 0;">
                                     <div class="col-8" style="padding: 0; text-align: center;">
-                                        ${sc.FichierHTML_Resume ? `
-                                            <a href="<?= base_url('PlatFormeConvert/'); ?>${sc.FichierHTML_Resume}"
+                                        ${fichierResume ? `
+                                            <a href="<?= base_url('PlatFormeConvert/'); ?>${fichierResume}"
                                                target="_blank"
                                                class="btn btn-sm btn-outline-warning"
                                                style="font-size: 0.75rem; padding: 4px 10px; width: 90%; border-radius: 4px; font-weight: 600; color: #92400e;">
@@ -2293,10 +2300,11 @@ async function openTranslationModal(idSousChap, docType, docTitre) {
                                 <i class="fas fa-exclamation-circle"></i> Erreurs ${errorCount > 0 ? '('+errorCount+')' : ''}
                               </button>`;
 
+            /*
             let btnGenerer = `<button class="btn btn-warning btn-sm" style="width: 100%;" ${!isFinished ? 'disabled' : ''} onclick="genererDocument('${idSousChap}', '${lang}', '${docType}')">
                                 <i class="fas fa-file-word"></i> Générer
                               </button>`;
-
+            */
             let btnConfirmer = `<button class="btn btn-success btn-sm" style="width: 100%;" ${!isFinished ? 'disabled' : ''} onclick="confirmerTraduction('${idSousChap}', '${lang}', '${docType}')">
                                   <i class="fas fa-check"></i> Confirmer
                                 </button>`;
@@ -2333,7 +2341,6 @@ async function openTranslationModal(idSousChap, docType, docTitre) {
                 <div style="text-align: center;">${btnTraduire}</div>
                 <div style="text-align: center;">${btnVoir}</div>
                 <div style="text-align: center;">${btnModifier}</div>
-                <div style="text-align: center;">${btnGenerer}</div>
                 <div style="text-align: center;">${btnTelecharger}</div>
                 <div style="text-align: center;">${btnConfirmer}</div>
             `;
@@ -2348,17 +2355,16 @@ async function openTranslationModal(idSousChap, docType, docTitre) {
                 <div style="margin-bottom: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; font-size: 0.9rem; color: #555; text-align: left;">
                     <i class="fas fa-file-alt"></i> <strong>Sous-chapitre :</strong> ${docTitre || idSousChap}
                 </div>
-                <div style="display: grid; grid-template-columns: 90px 1fr 1fr 1fr 1fr 1fr 1fr; gap: 8px; align-items: center; padding: 10px 0; text-align: left;">
+                <div style="display: grid; grid-template-columns: 90px 1fr 1fr 1fr 1fr 1fr; gap: 8px; align-items: center; padding: 10px 0; text-align: left;">
                     <div style="font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 8px; color: #444;">Langue</div>
                     <div style="font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 8px; text-align: center; color: #444;">Traduire</div>
                     <div style="font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 8px; text-align: center; color: #444;">Voir</div>
                     <div style="font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 8px; text-align: center; color: #444;">Modifier</div>
-                    <div style="font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 8px; text-align: center; color: #444;">Générer</div>
                     <div style="font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 8px; text-align: center; color: #444;">Télécharger</div>
                     <div style="font-weight: bold; border-bottom: 2px solid #eee; padding-bottom: 8px; text-align: center; color: #444;">Confirmer</div>
 
                     ${renderRow('en', enRes)}
-                    <div style="grid-column: span 7; border-bottom: 1px solid #eee; margin: 6px 0;"></div>
+                    <div style="grid-column: span 6; border-bottom: 1px solid #eee; margin: 6px 0;"></div>
                     ${renderRow('es', esRes)}
                 </div>
             `,
@@ -2389,11 +2395,30 @@ async function openTranslationModal(idSousChap, docType, docTitre) {
 }
 
 function lancerTraduction(idSousChap, lang, docType) {
+    docType = docType || 'cours';
     Swal.fire({
-        icon: 'info',
-        title: 'Bientôt disponible',
-        text: 'La fonctionnalité de traduction automatique est en cours de déploiement sur ce serveur.',
-        confirmButtonColor: '#3085d6'
+        title: 'Lancer la traduction ?',
+        text: `Traduire le ${docType} en ${lang.toUpperCase()} via IA (ChatGPT). Cela peut prendre quelques minutes.`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'Oui, traduire !',
+        cancelButtonText: 'Annuler'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const url = "<?= rtrim(base_url('Traduction/lancer'), '/'); ?>/"
+                        + idSousChap + "/" + docType + "/" + lang;
+            fetch(url)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        pollProgression(idSousChap, lang, docType);
+                    } else {
+                        Swal.fire('Erreur', data.message || 'Erreur inconnue', 'error');
+                    }
+                })
+                .catch(err => Swal.fire('Erreur', err.message, 'error'));
+        }
     });
 }
 
@@ -2570,52 +2595,202 @@ function saveCorrections(idSousChap, lang, docType, corrections) {
     });
 }
 
+/*
 function genererDocument(idSousChap, lang, docType) {
-    Swal.fire({
-        icon: 'info',
-        title: 'Bientôt disponible',
-        text: 'La génération de documents traduits sera disponible une fois le module activé.',
-        confirmButtonColor: '#3085d6'
-    });
+    docType = docType || 'cours';
+    Swal.fire({ title: 'Génération...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+    const url = "<?= rtrim(base_url('Traduction/generer'), '/'); ?>/"
+                + idSousChap + "/" + docType + "/" + lang;
+    fetch(url)
+        .then(r => r.json())
+        .then(data => {
+            if (data.status === 'success') {
+                Swal.fire('Succès', 'Document DOCX généré.', 'success')
+                     .then(() => openTranslationModal(idSousChap, docType));
+            } else {
+                Swal.fire('Erreur', data.message, 'error');
+            }
+        })
+        .catch(err => Swal.fire('Erreur', err.message, 'error'));
 }
+*/
 
 function confirmerTraduction(idSousChap, lang, docType) {
+    docType = docType || 'cours';
     Swal.fire({
-        icon: 'info',
-        title: 'Bientôt disponible',
-        text: 'La validation des traductions sera disponible prochainement.',
-        confirmButtonColor: '#3085d6'
+        title: 'Confirmer la traduction ?',
+        text: 'Le document traduit sera converti en HTML et disponible pour les utilisateurs.',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Confirmer',
+        cancelButtonText: 'Annuler'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({ title: 'Confirmation...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+            const url = "<?= rtrim(base_url('Traduction/confirmer'), '/'); ?>/"
+                        + idSousChap + "/" + docType + "/" + lang;
+            fetch(url)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        Swal.fire('Succès', data.message, 'success')
+                             .then(() => openTranslationModal(idSousChap, docType));
+                    } else {
+                        Swal.fire('Erreur', data.message, 'error');
+                    }
+                })
+                .catch(err => Swal.fire('Erreur', err.message, 'error'));
+        }
     });
 }
 
 function voirTraduction(idSousChap, lang, docType) {
-    Swal.fire({
-        icon: 'info',
-        title: 'Bientôt disponible',
-        text: 'La prévisualisation sera disponible après la première traduction.',
-        confirmButtonColor: '#3085d6'
-    });
+    docType = docType || 'cours';
+    Swal.fire({ title: 'Chargement...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+    const url = "<?= rtrim(base_url('Traduction/get_segments'), '/'); ?>/"
+                + idSousChap + "/" + docType + "/" + lang + "?v=" + new Date().getTime();
+    fetch(url).then(r => r.json()).then(res => {
+        if (res.status !== 'success') { Swal.fire('Erreur', res.message, 'error'); return; }
+
+        let html = '<div style="max-height:500px; overflow-y:auto; text-align:left;">';
+        res.segments.forEach(seg => {
+            const bgColor = seg.translation_status === 'SUCCESS' ? '#f0fff4' : '#fff8f0';
+            html += `
+                <div style="background:${bgColor}; border:1px solid #e2e8f0; padding:10px; margin-bottom:8px; border-radius:5px;">
+                    <div style="font-size:0.8em; color:#888; margin-bottom:4px;"><strong>Original :</strong></div>
+                    <div style="margin-bottom:6px;">${seg.source_text}</div>
+                    <div style="font-size:0.8em; color:#888; margin-bottom:4px;"><strong>Traduit (${lang.toUpperCase()}) :</strong></div>
+                    <div style="color:#1d3557; font-weight:500;">${seg.translated_text || '<em style="color:#ccc;">Non traduit</em>'}</div>
+                </div>`;
+        });
+        html += '</div>';
+
+        Swal.fire({
+            title: `Prévisualisation (${lang.toUpperCase()})`,
+            html: html,
+            width: '800px',
+            showCloseButton: true,
+            showConfirmButton: false
+        });
+    }).catch(err => Swal.fire('Erreur', err.message, 'error'));
 }
 
 // NOTE: Les fonctions voirErreursTraduction, confirmerTraduction, lancerTraduction, voirTraduction
 // sont définies plus haut avec leur implémentation complète AJAX. Les stubs ont été supprimés.
 
 function modifierTraduction(idSousChap, lang, docType) {
-    Swal.fire({
-        icon: 'info',
-        title: 'Bientôt disponible',
-        text: 'La modification directe des segments sera disponible prochainement.',
-        confirmButtonColor: '#3085d6'
-    });
+    docType = docType || 'cours';
+    Swal.fire({ title: 'Chargement des segments...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+    const url = "<?= rtrim(base_url('Traduction/get_segments'), '/'); ?>/" + idSousChap + "/" + docType + "/" + lang + "?v=" + new Date().getTime();
+    fetch(url).then(r => r.json()).then(res => {
+        if (res.status !== 'success') { Swal.fire('Erreur', res.message, 'error'); return; }
+
+        let html = `
+            <div id="correction-container" style="max-height:500px; overflow-y:auto; text-align:left; padding:10px;">
+                <p style="margin-bottom:15px; color:#555; background:#fff3cd; padding:10px; border-radius:4px; font-size:0.9em;">
+                    <i class="fas fa-info-circle"></i> Modifiez le texte traduit ci-dessous puis cliquez sur "Valider".
+                </p>
+        `;
+        
+        res.segments.forEach(seg => {
+            html += `
+                <div class="correction-item" style="border:1px solid #e2e8f0; padding:12px; margin-bottom:10px; border-radius:6px; background:#f8fafc;">
+                    <div style="font-size:0.8em; color:#64748b; margin-bottom:4px;"><strong>Source (FR) :</strong></div>
+                    <div style="margin-bottom:8px; font-size:0.95em;">${seg.source_text}</div>
+                    <div style="font-size:0.8em; color:#64748b; margin-bottom:4px;"><strong>Traduction (${lang.toUpperCase()}) :</strong></div>
+                    <textarea class="form-control correction-input" 
+                              data-id="${seg.metadata_id}" 
+                              style="width:100%; border:1px solid #cbd5e1; border-radius:4px; font-size:0.95em; min-height:60px; padding:8px;">${seg.translated_text || ''}</textarea>
+                </div>`;
+        });
+        html += '</div>';
+
+        Swal.fire({
+            title: `Modification (${lang.toUpperCase()})`,
+            html: html,
+            width: '850px',
+            showCancelButton: true,
+            confirmButtonText: '<i class="fas fa-save"></i> Valider',
+            cancelButtonText: 'Annuler',
+            preConfirm: () => {
+                const corrections = {};
+                document.querySelectorAll('.correction-input').forEach(el => {
+                    corrections[el.getAttribute('data-id')] = el.value;
+                });
+                return corrections;
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const debugData = { 
+                    request: { idSousChap, lang, docType, corrections: result.value },
+                    url: "<?= base_url('Traduction/save_corrections'); ?>"
+                };
+                console.log("DEBUG START:", debugData);
+                
+                Swal.fire({ title: 'Sauvegarde...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+                fetch(debugData.url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(debugData.request)
+                })
+                .then(r => r.text().then(text => {
+                    console.log("Raw Response:", text);
+                    try {
+                        return JSON.parse(text);
+                    } catch(e) {
+                        throw new Error("Réponse serveur non-JSON : " + text.substring(0, 200));
+                    }
+                }))
+                .then(data => {
+                    console.log("Parsed Response:", data);
+                    let debugInfo = `
+                        <div style="text-align:left; font-family:monospace; font-size:11px; background:#eee; padding:10px; border-radius:4px; max-height:200px; overflow:auto;">
+                            <strong>Statut:</strong> ${data.status}<br>
+                            <strong>Matches:</strong> ${data.matches}<br>
+                            <strong>Logs Serveur:</strong><br>
+                            ${(data.debug || []).join('<br>')}
+                        </div>`;
+
+                    if (data.status === 'success') {
+                        Swal.fire({
+                            title: 'Debug Sauvegarde',
+                            html: `<strong>Succès !</strong><br>${debugInfo}`,
+                            icon: 'success'
+                        }).then(() => openTranslationModal(idSousChap, docType));
+                    } else {
+                        Swal.fire({
+                            title: 'Debug Sauvegarde (Erreur)',
+                            html: `<strong>Erreur sur le serveur</strong><br>${debugInfo}`,
+                            icon: 'error'
+                        });
+                    }
+                })
+                .catch(err => {
+                    console.error("Fetch Error:", err);
+                    Swal.fire({
+                        title: 'Erreur Critique',
+                        html: `Impossible de contacter le serveur.<br>
+                               <div style="text-align:left; font-family:monospace; background:#fee; padding:10px; margin-top:10px;">
+                                 ${err.message}
+                               </div>`,
+                        icon: 'error'
+                    });
+                });
+            }
+        });
+    }).catch(err => Swal.fire('Erreur', err.message, 'error'));
 }
 
 function telechargerTraduction(idSousChap, lang, docType) {
-    Swal.fire({
-        icon: 'info',
-        title: 'Bientôt disponible',
-        text: 'Le téléchargement direct du document traduit sera disponible après activation du module.',
-        confirmButtonColor: '#3085d6'
-    });
+    docType = docType || 'cours';
+    const url = "<?= rtrim(base_url('Traduction/telecharger'), '/'); ?>/"
+                + idSousChap + "/" + docType + "/" + lang;
+    window.location.href = url;
 }
 
 function openLinkChapterModal(idChapitre, currentIdRappel, idLivre, idTheme, estAdmin) {

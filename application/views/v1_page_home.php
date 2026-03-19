@@ -2012,6 +2012,8 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 
 	</main>
 
+	<?php include_once('v1_google_translate.php'); ?>
+
 </body>
 
 </html>

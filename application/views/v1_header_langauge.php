@@ -14,7 +14,6 @@ $flag = isset($flags[$lang]) ? $flags[$lang] : '🌐';
 <div>
 	<ul class="navbar-nav mr-auto ul-margin-top" style="align-items: flex-start; margin-left: 20px;">
 
-
 		<!-- Dropdown pour la sélection de la langue -->
 		<li class="nav-item  nav-item-menu-li dropdown">
 			<a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -22,18 +21,26 @@ $flag = isset($flags[$lang]) ? $flags[$lang] : '🌐';
 			</a>
 			<div class="dropdown-menu" aria-labelledby="languageDropdown" style="top: 35px;">
 				<style>
-					.dropdown-menu{
-						left: -45px !important  ;
+					#languageDropdown + .dropdown-menu {
+						left: -45px !important;
+					}
+					.dropdown-item-autre {
+						border-top: 1px solid #e0e0e0;
+						margin-top: 4px;
+						padding-top: 8px !important;
 					}
 				</style>
-				<a class="dropdown-item" href="<?php echo base_url(); ?>login/switchLang/FR" style="color: #120e47;margin-left: 0px;">
+				<a class="dropdown-item" href="<?php echo base_url(); ?>login/switchLang/FR" style="color: #120e47;margin-left: 0px;" onclick="resetTranslate()">
 					🇫🇷 &nbsp;Français
 				</a>
-				<a class="dropdown-item" href="<?php echo base_url(); ?>login/switchLang/EN" style="color: #120e47;margin-left: 0px;">
+				<a class="dropdown-item" href="<?php echo base_url(); ?>login/switchLang/EN" style="color: #120e47;margin-left: 0px;" onclick="resetTranslate()">
 					🇬🇧 &nbsp;English
 				</a>
-				<a class="dropdown-item" href="<?php echo base_url(); ?>login/switchLang/ES" style="color: #120e47;margin-left: 0px;">
+				<a class="dropdown-item" href="<?php echo base_url(); ?>login/switchLang/ES" style="color: #120e47;margin-left: 0px;" onclick="resetTranslate()">
 					🇪🇸 &nbsp;Español
+				</a>
+				<a class="dropdown-item dropdown-item-autre" href="javascript:void(0)" style="color: #120e47;margin-left: 0px;" onclick="toggleGtBar()">
+					🌐 &nbsp;Autre...
 				</a>
 			</div>
 
@@ -41,4 +48,3 @@ $flag = isset($flags[$lang]) ? $flags[$lang] : '🌐';
 
 	</ul>
 </div>
-
