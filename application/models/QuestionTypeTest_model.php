@@ -21,7 +21,7 @@ class QuestionTypeTest_model extends CI_Model {
 		$this->db->from('_params');
 		$this->db->Where("Libelle_Params = 'VisibiliteCours' ");
 		$resParams 	= $this->db->get()->result_array();
-		if($resParams[0]["Value_Params"]< 100){
+		if(count($resParams) > 0 && $resParams[0]["Value_Params"]< 100){
 			$this->db->select('*');
 			$this->db->from($this->table);
 			$wrclause = ' 1=1 ';
@@ -38,7 +38,7 @@ class QuestionTypeTest_model extends CI_Model {
 		if($d_arr[1]<> ''){$wrclause = $wrclause." AND IDChapitre IN (".$d_arr[1].") ";}
 		//log_message('error' , "reeeeeeeeeeeeq>> ".$wrclause);
 		$this->db->where($wrclause);
-		if($resParams[0]["Value_Params"]< 100){$this->db->limit($limitRow);}
+		if(count($resParams) > 0 && $resParams[0]["Value_Params"]< 100){$this->db->limit($limitRow);}
         $i = 0;
      
         foreach ($this->column_search as $item) // loop column 

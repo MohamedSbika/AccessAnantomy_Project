@@ -13,7 +13,7 @@ include('header_steppes.php');
 
 	<div class="main">
 		<main class="content">
-			<div class="container-fluid">
+			<div class="container-fluid p-0">
 				<?php
 				include('header_nav.php');
 				?>

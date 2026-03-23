@@ -993,20 +993,13 @@ if (type_sel === 'qcm') {
 
                 console.log("🔹 Données du sous-chapitre :", data);
 
-                const currentLang = "<?php echo strtoupper($this->uri->segment(1)); ?>";
-                let targetFile = null;
-
-                if (currentLang !== 'FR' && data['FichierHTML_' + currentLang]) {
-                    targetFile = (version === 'essential')
-                        ? data['FichierHTML_' + currentLang]
-                        : (data['FichierHTML_Resume_' + currentLang] || data.FichierHTML_Resume);
-                } else {
-                    targetFile = (version === 'essential') ? data.FichierHTML : data.FichierHTML_Resume;
-                }
-
+                const targetFile = (version === 'essential') ? data.FichierHTML : data.FichierHTML_Resume;
+                
                 if (targetFile) {
-                    console.log("🔸 Redirection vers :", `${baseUrl}${currentLang}/PlatFormeConvert/${targetFile}`);
-                    window.location.href = `${baseUrl}${currentLang}/PlatFormeConvert/${targetFile}`;
+                    const lang = "<?php echo strtoupper($this->uri->segment(1)); ?>";
+                    const redirectUrl = `${baseUrl}${lang}/PlatFormeConvert/${targetFile}`;
+                    console.log("🔸 Redirection vers :", redirectUrl);
+                    window.location.href = redirectUrl;
                 } else {
                     Swal.fire({
                         icon: 'warning',

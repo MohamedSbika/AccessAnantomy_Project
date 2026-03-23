@@ -18,8 +18,8 @@ if (strlen($this->session->userdata('passTok')) == 200) {
     <style>
         body { margin: 0; padding-bottom: 30px; background-color: white; }
         #element { display: flex; flex-wrap: wrap; width: 100%; background-color: white; min-height: 100vh; }
-        .col-text { flex: 0 0 48%; max-width: 48%; margin-left: 2%; padding-top: 20px; }
-        .col-figures { flex: 0 0 48%; max-width: 48%; margin-right: 2%; }
+        .col-text { flex: 0 0 49%; max-width: 49%; margin-left: 1%; padding-top: 20px; }
+        .col-figures { flex: 0 0 49%; max-width: 49%; margin-left: 0%; margin-right: 1%; }
         @media (max-width: 768px) {
             .col-text, .col-figures { flex: 0 0 100%; max-width: 100%; margin: 0; }
         }
@@ -57,4 +57,9 @@ if (strlen($this->session->userdata('passTok')) == 200) {
 </script>
 </html>
 
-<?php } else { header('Location: ' . base_url() . $this->lang->line('siteLang') . 'login'); exit(); } ?>
+<?php
+}
+else {
+    header('Location: ' . base_url() . $this->lang->line('siteLang') . 'login');
+    exit();
+}?>

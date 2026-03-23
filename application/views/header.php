@@ -1,13 +1,11 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="author" content="BonGest">
-    <link href="<?php echo HTTP_CSS; ?>responsive.css" rel="stylesheet">
-    
   <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-GRLDWS8QBM"></script>
 <!-- jQuery -->
@@ -28,7 +26,7 @@
   gtag('config', 'G-GRLDWS8QBM');
 </script>
     <?php
-
+  
     if(isset($page)){
         $meta = '';
         $indx = '';
@@ -72,7 +70,6 @@
     <title>Access Anatomy</title>
 
     <link href="<?php echo HTTP_CSS; ?>app.css" rel="stylesheet">
-    <link href="<?php echo HTTP_CSS; ?>responsive.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="<?php echo HTTP_JS; ?>DataTables/datatables.css"/>
     <link rel="stylesheet" type="text/css" href="<?php echo HTTP_JS; ?>Zoom/zoomove.min.css"/>
 

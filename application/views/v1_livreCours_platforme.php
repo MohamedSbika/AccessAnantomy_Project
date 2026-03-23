@@ -35,8 +35,8 @@ if (strlen($this->session->userdata('passTok')) == 200) {
             .col-12.col-lg-6.col-xl-6 { width: 95% !important; margin-left: 2.5% !important; float: none !important; }
         }
         @media (min-width: 769px) {
-            .col-12.col-lg-6.col-xl-6:first-of-type { width: 45% !important; margin-left: 42% !important; }
-            .col-12.col-lg-6.col-xl-6:last-of-type { width: 48% !important; margin-left: 0.2% !important; }
+            .col-12.col-lg-6.col-xl-6:first-of-type { width: 50% !important; margin-left: 1% !important; }
+            .col-12.col-lg-6.col-xl-6:last-of-type { width: 50% !important; margin-left: 0% !important; }
         }
 
         /* Bloc Figures */

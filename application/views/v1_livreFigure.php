@@ -15,7 +15,6 @@
 		<link rel="stylesheet" type="text/css" href="<?php echo HTTP_JS; ?>DataTables/datatables.css"/>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 		<link href="<?php echo HTTP_CSS; ?>v1_app.css" rel="stylesheet">
-        <link href="<?php echo HTTP_CSS; ?>responsive.css" rel="stylesheet">
 
 		<style type="text/css">
 			body {
@@ -249,7 +248,7 @@
 			}
 
 			.dot.active {
-				background-color: #c5daef;
+				background-color: #c5daef; 
 			}
 		</style>
 	</head>

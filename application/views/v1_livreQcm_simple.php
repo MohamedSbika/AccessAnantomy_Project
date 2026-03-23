@@ -44,7 +44,7 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 		<div class="main" >
 			<?php include('v1_header_nav.php'); ?>
 			<main class="content">
-				<div class="container-fluid ">
+				<div class="container-fluid p-0">
 
 					<?php include('v1_racourci.php'); ?>
 

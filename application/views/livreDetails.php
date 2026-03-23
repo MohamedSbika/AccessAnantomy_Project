@@ -363,7 +363,7 @@
 
                         <div class="form-group">
                             <label>Fichier Rappel Anatomique (.docx)</label>
-                            <input type="file" class="form-control" id="rappelFichier" name="rappelFichier" accept=".docx" required>
+                            <input type="file" class="form-control" id="rappelFichier" name="rappelFichier" accept=".docx,.html,.htm" required>
                             <small class="form-text text-muted">Sélectionnez un fichier Word (.docx)</small>
                         </div>
 
@@ -651,6 +651,7 @@
         <button type="button"
                 class="btn btn-primary"
         onclick="window.open('https://iamedexia.com/admin/?token=<?= $jwt ?>', '_blank');">
+        <!-- http://localhost:3000/admin/?token si je teste localement -->
             <?= $this->lang->line('actionAjout'); ?> Chapitres
         </button>
     </div>
@@ -723,10 +724,9 @@
                                     foreach ($livres as $livre) {
                                         $optionsHtml .= "<optgroup label='" . htmlspecialchars($livre['Titre'], ENT_QUOTES) . "'>";
 
-                                        $chapitres = $this->db
-                                            ->where('IDLivre', $livre['IDLivre'])
-                                            ->get('_chapitre')
-                                            ->result_array();
+                                        $this->db->where('IDLivre', $livre['IDLivre']);
+                                        get_instance()->order_by_numeric_prefix('TitreChapitre');
+                                        $chapitres = $this->db->get('_chapitre')->result_array();
 
                                         if (count($chapitres) > 0) {
                                             foreach ($chapitres as $chapitre) {
@@ -790,12 +790,10 @@
                                     <option value="">-- Choisissez un chapitre --</option>
 
                                     <?php foreach ($livresFR as $livreFR):
-                                        $chapitresFR = $this->db
-                                            ->select('IDChapitre, TitreChapitre')
-                                            ->where('IDLivre', $livreFR['IDLivre'])
-                                            ->order_by('TitreChapitre', 'ASC')
-                                            ->get('_chapitre')
-                                            ->result_array();
+                                        $this->db->select('IDChapitre, TitreChapitre')
+                                            ->where('IDLivre', $livreFR['IDLivre']);
+                                        get_instance()->order_by_numeric_prefix('TitreChapitre');
+                                        $chapitresFR = $this->db->get('_chapitre')->result_array();
                                         if (count($chapitresFR) > 0):
                                     ?>
                                         <optgroup label="<?= htmlspecialchars($livreFR['Titre']); ?>">
@@ -818,12 +816,10 @@
                         if (in_array($category['multi_lingue'], ['EN', 'ES'])):
                             $optionsFRHtml = '<option value="">-- Choisissez une pathologie FR --</option>';
                             foreach ($livresFR as $livreFR) {
-                                $chapsFR2 = $this->db
-                                    ->select('IDChapitre, TitreChapitre')
-                                    ->where('IDLivre', $livreFR['IDLivre'])
-                                    ->order_by('TitreChapitre', 'ASC')
-                                    ->get('_chapitre')
-                                    ->result_array();
+                                $this->db->select('IDChapitre, TitreChapitre')
+                                    ->where('IDLivre', $livreFR['IDLivre']);
+                                get_instance()->order_by_numeric_prefix('TitreChapitre');
+                                $chapsFR2 = $this->db->get('_chapitre')->result_array();
                                 if (count($chapsFR2) > 0) {
                                     $optionsFRHtml .= '<optgroup label="' . htmlspecialchars($livreFR['Titre'], ENT_QUOTES) . '">';
                                     foreach ($chapsFR2 as $cFR) {
@@ -1010,7 +1006,7 @@
                                                                         <div class="dropdown-menu">
                                                                             <div class="row">
                                                                                 <div class="col-md-10">
-                                                                                    <input type="file" name="mFile[]" id="mFile" readonly class="btn btn-info btn-sm" accept=".docx">
+                                                                                    <input type="file" name="mFile[]" id="mFile" readonly class="btn btn-info btn-sm" accept=".docx,.html,.htm">
                                                                                     <input type="hidden" name="attach_file[]" id="attach_file" value="<?php print $value['IDChapitre']; ?>">
                                                                                 </div>
                                                                             </div>
@@ -1114,7 +1110,7 @@
                                                                             <div class="dropdown-menu">
                                                                                 <div class="row">
                                                                                     <div class="col-md-10">
-                                                                                        <input type="file" name="mFileResum[]" id="mFileResum" readonly class="btn btn-info btn-sm" accept=".docx">
+                                                                                        <input type="file" name="mFileResum[]" id="mFileResum" readonly class="btn btn-info btn-sm" accept=".docx,.html,.htm">
                                                                                         <input type="hidden" name="attach_fileResum[]" id="attach_fileResum" value="<?php print $value['IDChapitre']; ?>">
                                                                                     </div>
                                                                                 </div>
@@ -1211,7 +1207,7 @@
                                                                             <div class="dropdown-menu">
                                                                                 <div class="row">
                                                                                     <div class="col-md-10">
-                                                                                        <input type="file" name="mFileQCM[]" id="mFileQCM" readonly class="btn btn-info btn-sm" accept=".docx">
+                                                                                        <input type="file" name="mFileQCM[]" id="mFileQCM" readonly class="btn btn-info btn-sm" accept=".docx,.html,.htm">
                                                                                         <input type="hidden" name="attach_fileQCM[]" id="attach_fileQCM" value="<?php print $value['IDChapitre']; ?>">
                                                                                     </div>
                                                                                 </div>
@@ -1243,7 +1239,7 @@
                                                                         <div class="dropdown-menu">
                                                                             <div class="row">
                                                                                 <div class="col-md-10">
-                                                                                    <input type="file" name="mFileQCM_Fig_Ass[]" id="mFileQCM_Fig_Ass" readonly class="btn btn-info btn-sm" accept=".docx">
+                                                                                    <input type="file" name="mFileQCM_Fig_Ass[]" id="mFileQCM_Fig_Ass" readonly class="btn btn-info btn-sm" accept=".docx,.html,.htm">
                                                                                     <input type="hidden" name="attach_fileQCM_Fig_Ass[]" id="attach_fileQCM_Fig_Ass" value="<?php print $value['IDChapitre']; ?>">
                                                                                 </div>
                                                                             </div>
@@ -1305,7 +1301,7 @@
                                                                             <div class="dropdown-menu">
                                                                                 <div class="row">
                                                                                     <div class="col-md-10">
-                                                                                        <input type="file" name="mFileQCM[]" id="mFileQCM" readonly class="btn btn-info btn-sm" accept=".docx">
+                                                                                        <input type="file" name="mFileQCM[]" id="mFileQCM" readonly class="btn btn-info btn-sm" accept=".docx,.html,.htm">
                                                                                         <input type="hidden" name="attach_fileQCM[]" id="attach_fileQCM" value="<?php print $value['IDChapitre']; ?>">
                                                                                     </div>
                                                                                 </div>
@@ -1337,7 +1333,7 @@
                                                                         <div class="dropdown-menu">
                                                                             <div class="row">
                                                                                 <div class="col-md-10">
-                                                                                    <input type="file" name="mFileQCM_Fig_Ass[]" id="mFileQCM_Fig_Ass" readonly class="btn btn-info btn-sm" accept=".docx">
+                                                                                    <input type="file" name="mFileQCM_Fig_Ass[]" id="mFileQCM_Fig_Ass" readonly class="btn btn-info btn-sm" accept=".docx,.html,.htm">
                                                                                     <input type="hidden" name="attach_fileQCM_Fig_Ass[]" id="attach_fileQCM_Fig_Ass" value="<?php print $value['IDChapitre']; ?>">
                                                                                 </div>
                                                                             </div>
@@ -1399,7 +1395,7 @@
                                                                             <div class="dropdown-menu">
                                                                                 <div class="row">
                                                                                     <div class="col-md-10">
-                                                                                        <input type="file" name="mFileQCM[]" id="mFileQCM" readonly class="btn btn-info btn-sm" accept=".docx">
+                                                                                        <input type="file" name="mFileQCM[]" id="mFileQCM" readonly class="btn btn-info btn-sm" accept=".docx,.html,.htm">
                                                                                         <input type="hidden" name="attach_fileQCM[]" id="attach_fileQCM" value="<?php print $value['IDChapitre']; ?>">
                                                                                     </div>
                                                                                 </div>
@@ -1431,7 +1427,7 @@
                                                                         <div class="dropdown-menu">
                                                                             <div class="row">
                                                                                 <div class="col-md-10">
-                                                                                    <input type="file" name="mFileQCM_Fig_Ass[]" id="mFileQCM_Fig_Ass" readonly class="btn btn-info btn-sm" accept=".docx">
+                                                                                    <input type="file" name="mFileQCM_Fig_Ass[]" id="mFileQCM_Fig_Ass" readonly class="btn btn-info btn-sm" accept=".docx,.html,.htm">
                                                                                     <input type="hidden" name="attach_fileQCM_Fig_Ass[]" id="attach_fileQCM_Fig_Ass" value="<?php print $value['IDChapitre']; ?>">
                                                                                 </div>
                                                                             </div>
@@ -1493,7 +1489,7 @@
                                                                             <div class="dropdown-menu">
                                                                                 <div class="row">
                                                                                     <div class="col-md-10">
-                                                                                        <input type="file" name="mFileQROC[]" id="mFileQROC" readonly class="btn btn-info btn-sm" accept=".docx">
+                                                                                        <input type="file" name="mFileQROC[]" id="mFileQROC" readonly class="btn btn-info btn-sm" accept=".docx,.html,.htm">
                                                                                         <input type="hidden" name="attach_fileQROC[]" id="attach_fileQROC" value="<?php print $value['IDChapitre']; ?>">
                                                                                     </div>
                                                                                 </div>
@@ -1525,7 +1521,7 @@
                                                                         <div class="dropdown-menu">
                                                                             <div class="row">
                                                                                 <div class="col-md-10">
-                                                                                    <input type="file" name="mFileQROC_Fig_Ass[]" id="mFileQROC_Fig_Ass" readonly class="btn btn-info btn-sm" accept=".docx">
+                                                                                    <input type="file" name="mFileQROC_Fig_Ass[]" id="mFileQROC_Fig_Ass" readonly class="btn btn-info btn-sm" accept=".docx,.html,.htm">
                                                                                     <input type="hidden" name="attach_fileQROC_Fig_Ass[]" id="attach_fileQROC_Fig_Ass" value="<?php print $value['IDChapitre']; ?>">
                                                                                 </div>
                                                                             </div>
@@ -1808,14 +1804,14 @@ function togglePathoContainer(idChapitre) {
                                         </a>
                                         <div class="dropdown-menu p-3" style="min-width:18rem; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: none;">
                                             <div class="mb-3">
-                                                <label style="font-size: 0.75rem; font-weight: bold; color: #475569; margin-bottom: 8px; display: block; text-transform: uppercase;">Contenu (.docx)</label>
+                                                <label style="font-size: 0.75rem; font-weight: bold; color: #475569; margin-bottom: 8px; display: block; text-transform: uppercase;">Contenu (.docx, .html)</label>
                                                 <div class="d-flex gap-1">
                                                     <input type="file" id="mFile_${idEncoded}" class="form-control form-control-sm" style="font-size: 0.7rem;">
                                                     <button class="btn btn-primary btn-xs" onclick="set_SubChapCurs('${idEncoded}')" style="white-space:nowrap;">Valider</button>
                                                 </div>
                                             </div>
                                             <div class="mb-3">
-                                                <label style="font-size: 0.75rem; font-weight: bold; color: #475569; margin-bottom: 8px; display: block; text-transform: uppercase;">Résumé (.docx)</label>
+                                                <label style="font-size: 0.75rem; font-weight: bold; color: #475569; margin-bottom: 8px; display: block; text-transform: uppercase;">Résumé (.docx, .html)</label>
                                                 <div class="d-flex gap-1">
                                                     <input type="file" id="mFileResume_${idEncoded}" class="form-control form-control-sm" style="font-size: 0.7rem;">
                                                     <button class="btn btn-warning btn-xs" onclick="set_SubChapResume('${idEncoded}')" style="white-space:nowrap;">Valider</button>
@@ -1997,7 +1993,7 @@ let html = `
                                id="mFile_${idEncoded}"
                                name="mFile_${idEncoded}"
                                class="form-control form-control-sm mb-2"
-                               accept=".docx">
+                               accept=".docx,.html,.htm">
                         <input type="hidden"
                                name="attach_file_${idEncoded}"
                                value="${idEncoded}">
@@ -3786,10 +3782,11 @@ function saveRappelManuel() {
         return;
     }
 
-    if (!fichier.name.endsWith('.docx')) {
+    var ext = fichier.name.split(".").pop().toLowerCase();
+    if (!['docx', 'html', 'htm'].includes(ext)) {
         Swal.fire({
             title: 'Erreur',
-            text: 'Seuls les fichiers .docx sont acceptés',
+            text: 'Seuls les fichiers .docx, .html ou .htm sont acceptés',
             icon: 'error'
         });
         return;
@@ -4857,7 +4854,7 @@ function editSousChap(idEncoded) {
                     Swal.fire({
                         type: 'warning',
                         title: 'Aucun fichier sélectionné',
-                        text: 'Veuillez choisir un fichier .docx avant de continuer.'
+                        text: 'Veuillez choisir un fichier .docx, .html ou .htm avant de continuer.'
                     });
                     return;
                 }
@@ -4927,7 +4924,7 @@ function editSousChap(idEncoded) {
                     Swal.fire({
                         type: 'warning',
                         title: 'Aucun fichier sélectionné',
-                        text: 'Veuillez choisir un fichier .docx avant de continuer.'
+                        text: 'Veuillez choisir un fichier .docx, .html ou .htm avant de continuer.'
                     });
                     return;
                 }

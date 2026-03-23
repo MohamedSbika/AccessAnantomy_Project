@@ -217,12 +217,12 @@ if (strlen($this->session->userdata('passTok')) == 200) {
         }
         @media (min-width: 769px) {
             .col-12.col-lg-6.col-xl-6:first-of-type {
-                width: 45% !important;
-                margin-left: 30px !important;
+                width: 47% !important;
+                margin-left: 5% !important;
             }
             .col-12.col-lg-6.col-xl-6:last-of-type {
-                width: 45% !important;
-                margin-left: 2% !important;
+                width: 47% !important;
+                margin-left: 0% !important;
             }
         }
     </style>
@@ -236,7 +236,7 @@ if (strlen($this->session->userdata('passTok')) == 200) {
     <div id="element">
         <?php include('v1_racourci.php'); ?>
 
-<div class="col-12 col-lg-6 col-xl-6" style="float: left; width: 48%; margin-left: 3%;">
+<div class="col-12 col-lg-6 col-xl-6" style="float: left; width: 47%; margin-left: 5%;">
                 <div class="row">
                 <li class="breadcrumb-item">
                     &nbsp;&nbsp;
@@ -296,7 +296,7 @@ if (strlen($this->session->userdata('passTok')) == 200) {
             </div>
         </div>
 
-<div class="col-12 col-lg-6 col-xl-6" style="float: right; width: 48%; margin-right: 2%;">
+<div class="col-12 col-lg-6 col-xl-6" style="float: right; width: 47%; margin-right: 1%;">
             <?php include('v1_bloc_figures.php'); ?>
         </div>
     </div>

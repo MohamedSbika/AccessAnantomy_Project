@@ -35,7 +35,7 @@
 
         <div class="main" oncontextmenu="return false" onbeforeprint="return false" onselectstart="return false"  ondragstart="return false" >
             <main class="content">
-                <div class="container-fluid">
+                <div class="container-fluid p-0">
                     <?php
                     include('header_nav.php');
                     ?>
