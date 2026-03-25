@@ -21,14 +21,78 @@
         <button hidden name="btn_search" id="btn_search" onclick="highlightAll(this.value);">Find!</button>
     </div>
 
-    <div id="ifrm" hidden >
-        <?= htmlspecialchars_decode(str_replace("font-family: 'Symbol'","font-family: ''",$OneCurs));?>
-    </div>
+    <?php
+    // Determine if content is a full HTML document (contains <html> or <body> tags)
+    $decodedContent = htmlspecialchars_decode(str_replace("font-family: 'Symbol'","font-family: ''", $OneCurs));
+    $isFullHtml = (stripos($decodedContent, '<html') !== false || stripos($decodedContent, '<body') !== false || stripos($decodedContent, '<!DOCTYPE') !== false);
 
-    <div id="ifrmAff"  style="line-height: 1.6;">
+    if (isset($isExternalFile) && $isExternalFile): ?>
+        <!-- External file: use iframe with src -->
+        <div id="ifrmAff" style="line-height: 1.6;">
+            <iframe src="<?php echo $OneCurs; ?>" style="width:100%; height:calc(100vh - 200px); border:none;"></iframe>
+        </div>
+    <?php elseif ($isFullHtml): ?>
+        <!-- Full HTML document: sandbox in iframe to prevent style leaking -->
+        <div id="ifrmAff" style="line-height: 1.6;">
+            <?php
+            // Apply visibility truncation: split into child elements using a temporary DOM
+            $tempDoc = new DOMDocument();
+            @$tempDoc->loadHTML('<?xml encoding="utf-8" ?>' . $decodedContent, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+            $body = $tempDoc->getElementsByTagName('body')->item(0);
+            $totalChildren = 0;
+            $truncatedHtml = '';
+            if ($body) {
+                $totalChildren = $body->childNodes->length;
+                $showCount = intval(($totalChildren * $paramsCurs) / 100);
+                for ($ci = 0; $ci < $showCount && $ci < $totalChildren; $ci++) {
+                    $truncatedHtml .= $tempDoc->saveHTML($body->childNodes->item($ci));
+                }
+            } else {
+                // No body tag, treat as fragment
+                $totalChildren = $tempDoc->documentElement ? $tempDoc->documentElement->childNodes->length : 0;
+                $showCount = intval(($totalChildren * $paramsCurs) / 100);
+                for ($ci = 0; $ci < $showCount && $ci < $totalChildren; $ci++) {
+                    $truncatedHtml .= $tempDoc->saveHTML($tempDoc->documentElement->childNodes->item($ci));
+                }
+            }
+            // Extract any <style> tags from <head> to include in sandboxed iframe
+            $headStyles = '';
+            $headNode = $tempDoc->getElementsByTagName('head')->item(0);
+            if ($headNode) {
+                foreach ($headNode->childNodes as $hChild) {
+                    if ($hChild->nodeName === 'style' || $hChild->nodeName === 'link') {
+                        $headStyles .= $tempDoc->saveHTML($hChild);
+                    }
+                }
+            }
+            $iframeSrc = '<!DOCTYPE html><html><head><meta charset="utf-8">' . $headStyles .
+                '<style>body{padding:1em 2em;line-height:1.6;font-family:inherit;}</style></head><body>' .
+                $truncatedHtml . '</body></html>';
+            $iframeSrc = htmlspecialchars($iframeSrc, ENT_QUOTES, 'UTF-8');
+            ?>
+            <iframe srcdoc="<?php echo $iframeSrc; ?>" style="width:100%; height:calc(100vh - 200px); border:none;" sandbox="allow-same-origin allow-scripts"></iframe>
+        </div>
+    <?php else: ?>
+        <!-- DOCX-converted HTML fragment: render inline (original behavior) -->
+        <div id="ifrm" hidden>
+            <?php echo $decodedContent; ?>
+        </div>
+        <div id="ifrmAff" style="line-height: 1.6;"></div>
+        <script>
+            var iframess = document.getElementById("ifrm");
+            var c = iframess.children;
+            var txt = "";
+            var i;
+            var lengShow = (c.length * <?php print $paramsCurs; ?>) / 100;
+            for (i = 0; i < lengShow; i++) {
+                txt = txt + c[i].outerHTML;
+            }
+            document.getElementById("ifrmAff").innerHTML = txt;
+            document.getElementById("ifrm").remove();
+        </script>
+    <?php endif; ?>
 
-    </div>
-    <?php if((strlen($this->session->userdata('passTok'))==200) && ($this->session->userdata('EstAdmin') ==1)) { ?>
+    <?php if(strlen($this->session->userdata('passTok'))==200) { ?>
         <button style="width: 100%;color: red; font-size: 20px; text-align: left;"  name="btn_offre" id="btn_offre" class="btn-success">
             <?php echo $this->lang->line('abbonementInfo1'); ?> <?php print $paramsCurs; ?>% <?php echo $this->lang->line('abbonementInfo2'); ?><br>
         </button>
@@ -88,19 +152,6 @@ font-family: Inter, Helvetica Neue, Arial, -apple-system, BlinkMacSystemFont, Se
             </div>
         <?php  } ?>
     <?php  } ?>
-    <script>
-        var iframess = document.getElementById("ifrm")
-        var c = iframess.children;
-        var txt = "";
-        var i;
-        var lengShow = (c.length * <?php print $paramsCurs; ?> ) / 100;
-        for (i = 0; i < lengShow; i++) {
-            txt = txt + c[i].outerHTML ;
-        }
-        document.getElementById("ifrmAff").innerHTML = txt ;
-        document.getElementById("ifrm").remove()   ;
-
-    </script>
 
 	<script src="<?php echo HTTP_JS; ?>jquery-3.5.1.js"></script>
 <script type='text/javascript'>

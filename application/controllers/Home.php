@@ -626,6 +626,19 @@ class Home extends CI_Controller
                         $posFigHtm = strpos(strtoupper($typeCurs), '.HTM');
                         $posDB = strpos(strtoupper($one), '.DB');
                         $posPDF = strpos(strtoupper($one), '.PDF');
+
+                        // HTML priority: check if an HTML sibling exists in the same folder
+                        $htmlExists = false;
+                        $currentFolder = dirname($onpath);
+                        foreach ($file_paths as $siblingPath) {
+                            if (dirname($siblingPath) === $currentFolder && $siblingPath !== $onpath) {
+                                $siblingUpper = strtoupper($siblingPath);
+                                if (strpos($siblingUpper, '.HTML') !== false || strpos($siblingUpper, '.HTM') !== false) {
+                                    $htmlExists = true;
+                                    break;
+                                }
+                            }
+                        }
                         if ($posFigPng !== false || $posFigJpg !== false) {
                             $pathLiFig = str_replace("'", "&#039;", $pathLi);
 
@@ -668,7 +681,7 @@ class Home extends CI_Controller
                                 );
                                 $this->insert_dd('_page', $data_P);
                             }
-                            if ($posFigDoc !== false) {
+                            if ($posFigDoc !== false && !$htmlExists) {
 
                                 $docCvrt = utf8_encode($onpath);
                                 $docCvrt = iconv("UTF-8", "UTF-8//TRANSLIT", $docCvrt);
@@ -716,8 +729,23 @@ class Home extends CI_Controller
                         $posFigPng = strpos(strtoupper($typeCurs), '.PNG');
                         $posFigJpg = strpos(strtoupper($typeCurs), '.JPG');
                         $posFigDoc = strpos(strtoupper($typeCurs), '.DOC');
+                        $posFigHtml = strpos(strtoupper($typeCurs), '.HTML');
+                        $posFigHtm = strpos(strtoupper($typeCurs), '.HTM');
                         $posDB = strpos(strtoupper($one), '.DB');
                         $posPDF = strpos(strtoupper($one), '.PDF');
+
+                        // HTML priority: check if an HTML sibling exists in the same folder
+                        $htmlExists = false;
+                        $currentFolder = dirname($onpath);
+                        foreach ($file_paths as $siblingPath) {
+                            if (dirname($siblingPath) === $currentFolder && $siblingPath !== $onpath) {
+                                $siblingUpper = strtoupper($siblingPath);
+                                if (strpos($siblingUpper, '.HTML') !== false || strpos($siblingUpper, '.HTM') !== false) {
+                                    $htmlExists = true;
+                                    break;
+                                }
+                            }
+                        }
                         if ($posFigPng !== false || $posFigJpg !== false) {
                             $pathLiFig = str_replace("'", "&#039;", $pathLi);
 
@@ -750,7 +778,7 @@ class Home extends CI_Controller
                                 );
                                 $this->insert_dd('_page', $data_P);
                             }
-                            if ($posFigDoc !== false) {
+                            if ($posFigDoc !== false && !$htmlExists) {
                                 $docCvrt = HTTP_PLATFORM . $onpath; //'./uploads/Plateforme TRIAA Habib 2020/Platforme Accessanatomy/';
                                 $docCvrt = str_replace(" ", "%20", $docCvrt);
                                 //
@@ -3721,11 +3749,11 @@ loadingTask.promise.then(function(pdf) {
             $pat = base_url() . $this->lang->line('siteLang') . 'cursHTML/' . $IDPage . '/' . $indexSearch;
             // log_message('error', $pat);
             $html = " 
-					<iframe name='iframename' id='iframeID' onclick='alert(22222)' style='max-height: 46vw;background-color: white;overflow-y: scroll;height: calc(100vh - 12vh); width: 100%' 
+					<iframe name='iframename' id='iframeID' style='background-color: white; overflow-y: auto; width: calc(100% - 2px); height: calc(100vh - 80px); margin: 1px; border: none;' 
  						src='$pat'>
  					</iframe> ";
 
-            $typeResp = "<div  id='demo' >" . $html . "</div>";
+            $typeResp = "<div id='demo' style='width: calc(100% - 2px); height: calc(100vh - 80px); overflow: auto; margin: 1px;'>" . $html . "</div>";
         }
 
 
