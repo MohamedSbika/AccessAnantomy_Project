@@ -54,6 +54,7 @@ $route['translate_uri_dashes'] = TRUE;
 
 $route['default_controller'] = 'home';
 $route['forgot-password'] = "home/forgot_password";
+$route['debugEsCategory'] = "home/debugEsCategory";
 
 
 /*
@@ -74,13 +75,16 @@ $route['translate_uri_dashes'] = FALSE;
 
 $route['^FR/testFigure/(:any)']  = "home/getFigure/$1";
 $route['^EN/testFigure/(:any)']  = "home/getFigure/$1";
+$route['^ES/testFigure/(:any)']  = "home/getFigure/$1";
 
 $route['Videoupload/listVideos']  = "videoupload/listVideos";
 
-$route['^FR/listCalque/(:any)']  = "home/getListCalqueByChapitres/$1";	
-$route['^EN/listCalque/(:any)']  = "home/getListCalqueByChapitres/$1";	
-$route['^FR/listTest/(:any)']  = "home/getListTestByChapitres3/$1";	
+$route['^FR/listCalque/(:any)']  = "home/getListCalqueByChapitres/$1";
+$route['^EN/listCalque/(:any)']  = "home/getListCalqueByChapitres/$1";
+$route['^ES/listCalque/(:any)']  = "home/getListCalqueByChapitres/$1";
+$route['^FR/listTest/(:any)']  = "home/getListTestByChapitres3/$1";
 $route['^EN/listTest/(:any)']  = "home/getListTestByChapitres3/$1";
+$route['^ES/listTest/(:any)']  = "home/getListTestByChapitres3/$1";
 
 $route['^FR/switchPlatform/(:any)'] 		= "home/switchPlatform/$1";
 $route['^FR/login'] 					    = "home/login";

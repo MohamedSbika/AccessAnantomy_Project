@@ -2,7 +2,7 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-$lang['siteLang']	= 'FR/';
+$lang['siteLang']	= 'ES/';
 
 $lang['accueil'] 	= 'Accueil';
 $lang['chapitres'] 	= 'Chapitres';

@@ -907,44 +907,74 @@ include('header_steppes.php');
 
                     <div class="row covertures">
 
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             <div class="covertures-item">
                                 <?php if ($this->session->userdata('site_lang') == '' || $this->session->userdata('site_lang') == 'FR') { ?>
-                                    <a href="<?php echo base_url(); ?>FR/category/Anatomy-courses">
+                                    <a href="<?php echo base_url(); ?>FR/category/Cours-Anatomie">
                                         <img src="<?php echo HTTP_IMAGES_COUV; ?>COURS%20PA.jpg" style="width:100%;" class="image-couverture">
                                     </a>
+                                <?php } elseif ($this->session->userdata('site_lang') == 'ES') { ?>
+                                    <a href="<?php echo base_url(); ?>ES/category/Curso-Anatomia">
+                                        <img src="<?php echo base_url(); ?>assets/couverture_ES/PR_COURSES_ES.jpg" style="width:100%;" class="image-couverture">
+                                    </a>
                                 <?php } else { ?>
-                                    <a href="<?php echo base_url(); ?>FR/category/Anatomy-courses">
-                                        <img src="/assets/couvertures ENG/PRESENTATION_EN/COURSPA_EN.jpg" style="width:100%;" class="image-couverture">
+                                    <a href="<?php echo base_url(); ?>EN/category/Anatomy-courses">
+                                        <img src="<?php echo base_url(); ?>assets/couvertures ENG/PRESENTATION_EN/COURSPA_EN.jpg" style="width:100%;" class="image-couverture">
                                     </a>
                                 <?php } ?>
                             </div>
                         </div>
 
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             <div class="covertures-item">
                                 <?php if ($this->session->userdata('site_lang') == '' || $this->session->userdata('site_lang') == 'FR') { ?>
-                                    <a href="<?php echo base_url(); ?>FR/category/Atlas-of-Anatomy">
+                                    <a href="<?php echo base_url(); ?>FR/category/Atlas-Anatomie">
                                         <img src="<?php echo HTTP_IMAGES_COUV; ?>ATLAS%20PA.jpg" style="width:100%;" class="image-couverture">
                                     </a>
 
+                                <?php } elseif ($this->session->userdata('site_lang') == 'ES') { ?>
+                                    <a href="<?php echo base_url(); ?>ES/category/Atlas-Anatomia">
+                                        <img src="<?php echo base_url(); ?>assets/couverture_ES/PR_ATLAS_ES.jpg" style="width:100%;" class="image-couverture">
+                                    </a>
                                 <?php } else { ?>
-                                    <a href="<?php echo base_url(); ?>FR/category/Atlas-of-Anatomy">
-                                        <img src="/assets/couvertures ENG/PRESENTATION_EN/ATLAS_PA_EN.jpg" style="width:100%;" class="image-couverture">
+                                    <a href="<?php echo base_url(); ?>EN/category/Atlas-of-Anatomy">
+                                        <img src="<?php echo base_url(); ?>assets/couvertures ENG/PRESENTATION_EN/ATLAS_PA_EN.jpg" style="width:100%;" class="image-couverture">
                                     </a>
                                 <?php } ?>
                             </div>
                         </div>
 
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             <div class="covertures-item">
                                 <?php if ($this->session->userdata('site_lang') == '' || $this->session->userdata('site_lang') == 'FR') { ?>
                                     <a href="<?php echo base_url(); ?>FR/category/Embryologie">
                                         <img src="<?php echo HTTP_IMAGES_COUV; ?>EM%20PA.jpg" style="width:100%;" class="image-couverture">
                                     </a>
+                                <?php } elseif ($this->session->userdata('site_lang') == 'ES') { ?>
+                                    <a href="<?php echo base_url(); ?>ES/category/Embriologia">
+                                        <img src="<?php echo base_url(); ?>assets/couverture_ES/PR_EMBR_ES.jpg" style="width:100%;" class="image-couverture">
+                                    </a>
                                 <?php } else { ?>
-                                    <a href="<?php echo base_url(); ?>FR/category/Embryologie">
-                                        <img src="/assets/couvertures ENG/PRESENTATION_EN/EMBR_PA_EN–1.jpg" style="width:100%;" class="image-couverture">
+                                    <a href="<?php echo base_url(); ?>EN/category/Embryology">
+                                        <img src="<?php echo base_url(); ?>assets/couvertures ENG/PRESENTATION_EN/EMBR_PA_EN–1.jpg" style="width:100%;" class="image-couverture">
+                                    </a>
+                                <?php } ?>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <div class="covertures-item">
+                                <?php if ($this->session->userdata('site_lang') == '' || $this->session->userdata('site_lang') == 'FR') { ?>
+                                    <a href="<?php echo base_url(); ?>FR/category/Pathologie-FR">
+                                        <img src="<?php echo HTTP_IMAGES; ?>photos/pathologie_cov/PR_PATHO_FR.jpg" style="width:100%;" class="image-couverture">
+                                    </a>
+                                <?php } elseif ($this->session->userdata('site_lang') == 'ES') { ?>
+                                    <a href="<?php echo base_url(); ?>ES/category/Patologia-ES">
+                                        <img src="<?php echo base_url(); ?>assets/couverture_ES/PR_PATHO_ES.jpg" style="width:100%;" class="image-couverture">
+                                    </a>
+                                <?php } else { ?>
+                                    <a href="<?php echo base_url(); ?>EN/category/Pathology-EN">
+                                        <img src="/assets/img/photos/pathologie_cov/PR_PATHO_EN.jpg" style="width:100%;" class="image-couverture">
                                     </a>
                                 <?php } ?>
                             </div>

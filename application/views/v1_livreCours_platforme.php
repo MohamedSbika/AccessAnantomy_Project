@@ -50,11 +50,19 @@ if (strlen($this->session->userdata('passTok')) == 200) {
             overflow-y: auto; 
             max-height: 90vh; 
             padding: 20px; 
-            padding-left: 80px;
-            padding-right: 20px;
             background-color: white; 
             border-radius: 10px; 
             box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+            position: relative;
+        }
+
+        /* Si le contenu est une iframe, on ajuste l'affichage */
+        .bloc-cours iframe {
+            display: block;
+            width: 100%;
+            height: calc(100vh - 150px);
+            border: none;
+            border-radius: 8px;
         }
 
         /* Barre recherche */
@@ -470,4 +478,4 @@ document.addEventListener("DOMContentLoaded", function() {
     header('Location: ' . base_url() . $this->lang->line('siteLang') . 'login');
     exit();
     ?>
-<?php } ?>
+<?php } ?>

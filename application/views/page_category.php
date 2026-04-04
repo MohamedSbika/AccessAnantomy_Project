@@ -78,7 +78,22 @@ include('header_steppes.php');
         <main class="content">
 
             <?php foreach ($listCat2 as $value) { ?>
-                 <img style="width:100%!important;" src="<?php echo HTTP_IMAGES; ?><?=$value['Cats']['Couverture'];?>" alt="">
+                <?php
+                    $lang = $this->session->userdata('site_lang');
+                    $couv = $value['Cats']['Couverture'];
+                    if (stripos($couv, 'pathologie') !== false) {
+                        if ($lang == 'EN') $couv = 'photos/pathologie_cov/PR_PATHO_EN.jpg';
+                        elseif ($lang == 'ES') $couv = 'assets/couverture_ES/PR_PATHO_ES.jpg';
+                        else $couv = 'photos/pathologie_cov/PR_PATHO_FR.jpg';
+                    }
+                    
+                    if ($lang == 'ES') {
+                        if (stripos($value['Cats']['Libelle'], 'Curso') !== false) $couv = 'assets/couverture_ES/PR_COURSES_ES.jpg';
+                        elseif (stripos($value['Cats']['Libelle'], 'Atlas') !== false) $couv = 'assets/couverture_ES/PR_ATLAS_ES.jpg';
+                        elseif (stripos($value['Cats']['Libelle'], 'Embri') !== false) $couv = 'assets/couverture_ES/PR_EMBR_ES.jpg';
+                    }
+                ?>
+                 <img style="width:100%!important;" src="<?php echo (stripos($couv, 'assets/') !== false) ? base_url($couv) : HTTP_IMAGES . $couv; ?>" alt="">
             <?php } ?>
     
             <br>
@@ -134,7 +149,21 @@ include('header_steppes.php');
                                     <?php } ?>
                                 </div>
                                 <div class="containerSo">
-                                    <img class="card-img-top" src="<?php echo HTTP_IMAGES; ?><?=$value['Cats']['Couverture'];?>" alt="">
+                                    <?php
+                                        $couv2 = $value['Cats']['Couverture'];
+                                        $lang2 = $this->session->userdata('site_lang');
+                                        if (stripos($couv2, 'pathologie') !== false) {
+                                            if ($lang2 == 'EN') $couv2 = 'photos/pathologie_cov/PR_PATHO_EN.jpg';
+                                            elseif ($lang2 == 'ES') $couv2 = 'assets/couverture_ES/PR_PATHO_ES.jpg';
+                                            else $couv2 = 'photos/pathologie_cov/PR_PATHO_FR.jpg';
+                                        }
+                                        if ($lang2 == 'ES') {
+                                            if (stripos($value['Cats']['Libelle'], 'Curso') !== false) $couv2 = 'assets/couverture_ES/PR_COURSES_ES.jpg';
+                                            elseif (stripos($value['Cats']['Libelle'], 'Atlas') !== false) $couv2 = 'assets/couverture_ES/PR_ATLAS_ES.jpg';
+                                            elseif (stripos($value['Cats']['Libelle'], 'Embri') !== false) $couv2 = 'assets/couverture_ES/PR_EMBR_ES.jpg';
+                                        }
+                                    ?>
+                                    <img class="card-img-top" src="<?php echo (stripos($couv2, 'assets/') !== false) ? base_url($couv2) : HTTP_IMAGES . $couv2; ?>" alt="">
 
                                     <div class="text-block" style="top: -0px;">
                                         <div class="row" style="vertical-align: middle;">

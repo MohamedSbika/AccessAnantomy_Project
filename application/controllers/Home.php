@@ -55,6 +55,30 @@ class Home extends CI_Controller
         }
     }
 
+    public function patch_es_theme_urls()
+    {
+        $updates = [
+            33 => 'ES/category/Curso-Anatomia',
+            34 => 'ES/category/Atlas-Anatomia',
+            35 => 'ES/category/Embriologia',
+            36 => 'ES/category/Patologia-ES',
+        ];
+        $results = [];
+        foreach ($updates as $idTheme => $url) {
+            $this->db->where('IDTheme', $idTheme);
+            $this->db->update('_theme', ['url' => $url]);
+            $results[] = "Theme $idTheme => $url (affected: " . $this->db->affected_rows() . ")";
+        }
+
+        // Activate Pathologie ES (2599) in category page
+        $this->db->where('IDCategory', 2599);
+        $this->db->update('_category', ['EstActifAccueil' => 1]);
+        $results[] = "Category 2599 EstActifAccueil => 1 (affected: " . $this->db->affected_rows() . ")";
+
+        header('Content-Type: application/json');
+        echo json_encode(['status' => 'done', 'results' => $results], JSON_PRETTY_PRINT);
+    }
+
     public function switchPlatform($encrypted_url)
     {
         $decrypted_url = base64_decode(urldecode($encrypted_url));
@@ -96,7 +120,7 @@ class Home extends CI_Controller
 
         $docF = str_replace(" ", "%20", $docF);
         $objReader = \PhpOffice\PhpWord\IOFactory::createReader('Word2007');
-        $document = \PhpOffice\PhpWord\IOFactory::load('Resources/documents/test.docx');        //        $contents=   \PhpOffice\PhpWord\IOFactory::load($docF);
+        $document = \PhpOffice\PhpWord\IOFactory::load('Resources/documents/test.docx'); //        $contents=   \PhpOffice\PhpWord\IOFactory::load($docF);
 
         //$objWriter= \PhpOffice\PhpWord\IOFactory::createWriter($contents,'Word2007');
         //$objWriter->save("new.docx");
@@ -295,7 +319,7 @@ class Home extends CI_Controller
             //$this->setParamsAutoFromFloders();
             $arr['listCat'] = $this->getListCategory();
 
-            $arr['page'] = 'page_home';            //			$this->load->view('page_home', $arr);
+            $arr['page'] = 'page_home'; //			$this->load->view('page_home', $arr);
             $this->load->view($this->getTypePlatform() ? 'v1_page_home' : 'page_home', $arr);
         }
         else {
@@ -306,7 +330,7 @@ class Home extends CI_Controller
 
             //$arr['page'] = 'login';
             //$this->load->view('login', $arr);
-            $arr['page'] = 'page_home';            //			$this->load->view('page_home', $arr);
+            $arr['page'] = 'page_home'; //			$this->load->view('page_home', $arr);
             $this->load->view($this->getTypePlatform() ? 'v1_page_home' : 'page_home', $arr);
         }
     }
@@ -353,17 +377,17 @@ class Home extends CI_Controller
         exit;
     }
     public function setParamsAutoFromFloders_()
-    {        /*
-         $this->db->query("delete FROM `_category` WHERE IDCategory > 2 ;");
-         $this->db->query("TRUNCATE TABLE `_chapitre`;");
-         $this->db->query("TRUNCATE TABLE `_cours`;");
-         $this->db->query("TRUNCATE TABLE `_resume`;");
-         $this->db->query("TRUNCATE TABLE `_figure`;");
-         $this->db->query("TRUNCATE TABLE `_livre`;");
-         $this->db->query("TRUNCATE TABLE `_page`;");
-         $this->db->query("TRUNCATE TABLE `_publicite`;");
-         $this->db->query("TRUNCATE TABLE `_questiontype`;");
-         $this->db->query("TRUNCATE TABLE `_theme`;");         */
+    { /*
+  $this->db->query("delete FROM `_category` WHERE IDCategory > 2 ;");
+  $this->db->query("TRUNCATE TABLE `_chapitre`;");
+  $this->db->query("TRUNCATE TABLE `_cours`;");
+  $this->db->query("TRUNCATE TABLE `_resume`;");
+  $this->db->query("TRUNCATE TABLE `_figure`;");
+  $this->db->query("TRUNCATE TABLE `_livre`;");
+  $this->db->query("TRUNCATE TABLE `_page`;");
+  $this->db->query("TRUNCATE TABLE `_publicite`;");
+  $this->db->query("TRUNCATE TABLE `_questiontype`;");
+  $this->db->query("TRUNCATE TABLE `_theme`;");         */
         $this->load->helper('directory');
         $path_Dir = './' . UP_PLATFORM; //'./uploads/Plateforme TRIAA Habib 2020/Platforme Accessanatomy/';
         $map = directory_map($path_Dir);
@@ -504,14 +528,14 @@ class Home extends CI_Controller
                             $this->load->helper('file');
                             $Video = HTTP_PLATFORM . $pathLi;
                             $notChap = 3;
-                            $Video = str_replace(" ", "%20", $Video);                            /*							//$datasss = file_get_contents($Video);$myfile = fopen($Video, "r");$aa = read_file($Video);
-                             $myfile = fopen($Video,'r');
-                             $myCt = '';
-                             while(!feof($myfile)){
-                             $myCt= $myCt.fgets($myfile)."<br>" ;
-                             }
-                             $data_l = array('Description' => $myCt);
-                             fclose($myfile);                             */
+                            $Video = str_replace(" ", "%20", $Video); /*							//$datasss = file_get_contents($Video);$myfile = fopen($Video, "r");$aa = read_file($Video);
+  $myfile = fopen($Video,'r');
+  $myCt = '';
+  while(!feof($myfile)){
+  $myCt= $myCt.fgets($myfile)."<br>" ;
+  }
+  $data_l = array('Description' => $myCt);
+  fclose($myfile);                             */
                             $docCvrt = HTTP_PLATFORM . $onpath; //'./uploads/Plateforme TRIAA Habib 2020/Platforme Accessanatomy/';
                             $docCvrt = str_replace(" ", "%20", $docCvrt);
                             $descD = $this->convertDocHTML($docCvrt, $PathDocc, '', 0); //
@@ -1050,9 +1074,9 @@ class Home extends CI_Controller
             }
         }
 
-        $arr = array();        //		if(sizeof($file_paths) > 0) {
+        $arr = array(); //		if(sizeof($file_paths) > 0) {
 
-        $arr[] = array("id" => '1', "desc" => '');        //		}else{
+        $arr[] = array("id" => '1', "desc" => ''); //		}else{
 //			$arr[] = array("id" => '-1', "desc" => "Aucune données trouvées");
 //		}
         echo json_encode($arr);
@@ -1086,12 +1110,20 @@ class Home extends CI_Controller
         if ($lang == 'DE') {
             $this->session->set_userdata('site_lang_lib', 'German');
         }
+        if ($lang == 'ES') {
+            $this->session->set_userdata('site_lang_lib', 'Español');
+        }
 
         //header(base_url());
         redirect(base_url() . $this->lang->line('siteLang') . 'login');
     }
     public function setLang()
     {
+        // Detect language from URL prefix (FR/, EN/, ES/, DE/)
+        $uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+        if (preg_match('#/(FR|EN|ES|DE)/#', $uri, $matches)) {
+            $this->session->set_userdata('site_lang', $matches[1]);
+        }
 
         $lang = $this->session->userdata('site_lang');
 
@@ -1110,6 +1142,10 @@ class Home extends CI_Controller
         if ($lang == 'DE') {
             $this->session->set_userdata('site_lang_lib', 'German');
             $lang = 'DE';
+        }
+        if ($lang == 'ES') {
+            $this->session->set_userdata('site_lang_lib', 'Español');
+            $lang = 'ES';
         }
         $this->session->set_userdata('site_lang', $lang);
         $this->lang->load('content', $lang == '' ? 'FR' : $lang);
@@ -1133,7 +1169,7 @@ class Home extends CI_Controller
             $res = $this->db->get()->result_array();
 
             $arr['listActualites'] = $res;
-            $arr['page'] = 'login';            //			$this->load->view('page_home', $arr);
+            $arr['page'] = 'login'; //			$this->load->view('page_home', $arr);
             if ($this->session->userdata('EstAdmin') == 1) {
                 $this->load->view($this->getTypePlatform() ? 'v1_page_home' : 'page_home', $arr);
             }
@@ -1158,6 +1194,7 @@ class Home extends CI_Controller
 
             //log_message("error", json_encode($arr));
 
+
             
 //			$this->load->view('page_home', $arr);
             $this->load->view($this->getTypePlatform() ? 'v1_page_home' : 'v1_page_home', $arr);
@@ -1165,23 +1202,63 @@ class Home extends CI_Controller
 
     }
 
+    public function debugEsCategory()
+    {
+        header('Content-Type: application/json');
+        $themes = $this->db->query("SELECT IDTheme, IDCategory, LibelleTheme, url FROM _theme WHERE IDCategory IN (2596, 2597, 2598, 2599) ORDER BY IDCategory, IDTheme")->result_array();
+        $themesFR = $this->db->query("SELECT IDTheme, IDCategory, LibelleTheme, url FROM _theme WHERE IDCategory IN (3, 4, 5, 7) ORDER BY IDCategory, IDTheme")->result_array();
+        $books = $this->db->query("SELECT l.IDLivre, l.Titre, l.IDTheme, t.IDCategory FROM _livre l JOIN _theme t ON t.IDTheme = l.IDTheme WHERE t.IDCategory IN (2596, 2597, 2598, 2599) ORDER BY t.IDCategory, l.IDTheme, l.IDLivre")->result_array();
+        $booksEN = $this->db->query("SELECT l.IDLivre, l.Titre, l.IDTheme, t.IDCategory FROM _livre l JOIN _theme t ON t.IDTheme = l.IDTheme WHERE t.IDCategory IN (8, 9, 10, 11) ORDER BY t.IDCategory, l.IDTheme, l.IDLivre")->result_array();
+        $categories = $this->db->query("SELECT IDCategory, Libelle, Couverture, multi_lingue, ES_Description, OrdreCat, EstActifAccueil FROM _category WHERE IDCategory IN (2596, 2597, 2598, 2599) ORDER BY IDCategory")->result_array();
+        $categoriesFR = $this->db->query("SELECT IDCategory, Libelle, Couverture, multi_lingue, OrdreCat FROM _category WHERE IDCategory IN (3, 4, 5, 7) ORDER BY IDCategory")->result_array();
+        // Debug: simulate what pageCategory does for ES
+        $lang = $this->session->userdata('site_lang');
+        $requestUri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+        $json = json_decode(file_get_contents('./assets/urls.json'), true);
+        $langKey = $lang . '_id';
+        $testUrl = 'Curso-Anatomia';
+        $targetId = 0;
+        $objetURL = [];
+        for ($i = 0; $i < sizeof($json); $i++) {
+            if ($json[$i]['url'] == $testUrl) {
+                $targetId = isset($json[$i][$langKey]) ? $json[$i][$langKey] : (isset($json[$i]['FR_id']) ? $json[$i]['FR_id'] : 0);
+                if ($json[$i]['id'] == $targetId) $objetURL = $json[$i];
+            }
+        }
+        echo json_encode([
+            'session_lang' => $lang,
+            'request_uri' => $requestUri,
+            'langKey' => $langKey,
+            'targetId_for_Curso' => $targetId,
+            'objetURL' => $objetURL,
+            'es_categories' => $categories,
+            'fr_categories' => $categoriesFR,
+            'es_themes' => $themes,
+            'fr_themes' => $themesFR,
+            'es_books' => $books
+        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    }
+
     public function pageCategory($url)
     {
 
         $lang = $this->session->userdata('site_lang');
+
         $json = json_decode(file_get_contents('./assets/urls.json'), true);
         $isValide = false;
         $objetURL = [];
 
+        $langKey = $lang . '_id';
         for ($i = 0; $i < sizeof($json); $i++) {
             if ($json[$i]['url'] == $url) {
                 $isValide = true;
-                if ($json[$i]['id'] == $json[$i][$lang . '_id']) {
+                $targetId = isset($json[$i][$langKey]) ? $json[$i][$langKey] : (isset($json[$i]['FR_id']) ? $json[$i]['FR_id'] : 0);
+                if ($json[$i]['id'] == $targetId) {
                     $objetURL = $json[$i];
-                }
-                else {
+                } else {
                     for ($j = 0; $j < sizeof($json); $j++) {
-                        if ($json[$j]['id'] == $json[$i][$lang . '_id']) {
+                        $jLangId = isset($json[$j][$langKey]) ? $json[$j][$langKey] : (isset($json[$j]['FR_id']) ? $json[$j]['FR_id'] : 0);
+                        if ($json[$j]['id'] == $targetId && $json[$j]['id'] == $jLangId) {
                             redirect($lang . '/category/' . $json[$j]['url']);
                         }
                     }
@@ -1192,9 +1269,11 @@ class Home extends CI_Controller
 
         if ($isValide == false) {
             if ($lang == "EN") {
-                redirect('EN/category/' . $json[1]['url']);
-            }
-            else {                redirect('FR/category/' . $json[0]['url']);
+                redirect('EN/category/' . $json[4]['url']);
+            } elseif ($lang == "ES") {
+                redirect('ES/category/' . $json[8]['url']);
+            } else {
+                redirect('FR/category/' . $json[0]['url']);
             }
         }
 
@@ -1204,8 +1283,13 @@ class Home extends CI_Controller
             $arr['listCat'] = $this->getListCategory();
 
 
-            $arr['listCat2'] = $this->getListCategoryParametree($objetURL[$lang . '_id']);
+            if (!isset($objetURL[$lang . '_id']) && isset($objetURL['FR_id'])) {
+                $objetURL[$lang . '_id'] = $objetURL['FR_id'];
+            }
+            $targetIdCat = isset($objetURL[$lang . '_id']) ? $objetURL[$lang . '_id'] : 0;
+            $arr['listCat2'] = $this->getListCategoryParametree($targetIdCat);
             $arr['page'] = 'login';
+
 
             
 $arr['idCategorySelected'] = $objetURL['id'];
@@ -1217,11 +1301,14 @@ $arr['idCategorySelected'] = $objetURL['id'];
 
             //$this->setParamsAutoFromFloders();
             $arr['listCat'] = $this->getListCategory();
-            $arr['listCat2'] = $this->getListCategoryParametree($objetURL[$lang . '_id']);
+            if (!isset($objetURL[$lang . '_id']) && isset($objetURL['FR_id'])) {
+                $objetURL[$lang . '_id'] = $objetURL['FR_id'];
+            }
+            $targetIdCat = isset($objetURL[$lang . '_id']) ? $objetURL[$lang . '_id'] : 0;
+            $arr['listCat2'] = $this->getListCategoryParametree($targetIdCat);
 
             $arr['page'] = 'login';
             $arr['idCategorySelected'] = $objetURL['id'];
-            //  print_r($arr['listCat2']);
 
             $this->load->view('page_category', $arr);
         }
@@ -1383,7 +1470,8 @@ $arr['idCategorySelected'] = $objetURL['id'];
 
         log_message('debug', 'Réponse JSON: ' . json_encode($arr));
         echo json_encode($arr);
-        exit;    }
+        exit;
+    }
     public function compte_process()
     {
 
@@ -1487,12 +1575,13 @@ $arr['idCategorySelected'] = $objetURL['id'];
             echo json_encode([["id" => '-1', "desc" => "Erreur email: " . $this->email->print_debugger()]]);
         }
 
-        exit;    }
+        exit;
+    }
 
 
     public function settingFigures($IDChapitre)
     {
-        $selectDesc = '*';        //        $this->db->select($selectDesc);
+        $selectDesc = '*'; //        $this->db->select($selectDesc);
 //		$this->db->select('CAST(SUBSTRING_INDEX(titre, ".", 1) as SIGNED INTEGER ) AS ord,id,image,titre,textGauche,textDroite,IDChapitre,pathAudio');
         $this->db->select('CAST(SUBSTRING(titre, LOCATE(".", titre) + 1, LOCATE("-", titre) - LOCATE(".", titre) - 1) AS UNSIGNED) AS first_number,id,image,titre,textGauche,textDroite,IDChapitre,pathAudio');
         $this->db->from('figures');
@@ -1554,7 +1643,7 @@ $arr['idCategorySelected'] = $objetURL['id'];
 
         if (sizeof($arrayChapitres) === 0) {
             $arr['listCat'] = $this->getListCategory();
-            $arr['page'] = 'page_home';            //            $this->load->view('page_home', $arr);
+            $arr['page'] = 'page_home'; //            $this->load->view('page_home', $arr);
             $this->load->view($this->getTypePlatform() ? 'v1_page_home' : 'page_home', $arr);
             return;
         }
@@ -1597,7 +1686,7 @@ $arr['idCategorySelected'] = $objetURL['id'];
                     'image' => isset($figure->image) ? $figure->image : $figure['image'],
                     'pathAudio' => isset($figure->pathAudio) ? $figure->pathAudio : $figure['pathAudio'],
                     'idFigure' => isset($figure->id) ? $figure->id : $figure['id'],
-                ];                //				log_message('error',"*******>>>3333333333333333333333333333>>>>******" );
+                ]; //				log_message('error',"*******>>>3333333333333333333333333333>>>>******" );
 ////				log_message('error',$arrayTextGauche );
 //				log_message('error',"*******>>>44444444444444444444444444444>>>>******" );
                 // Increment the counter
@@ -1921,7 +2010,7 @@ $arr['idCategorySelected'] = $objetURL['id'];
     public function getArrayOfString($textGauche, $motFiltre)
     {
         //		log_message('error',"*******>>>111>>>>******".$textGauche);
-        $textGauche = $this->deleteDoubleEspace($textGauche);        //        log_message('error',"*******>>>222>>>>******".$textGauche);
+        $textGauche = $this->deleteDoubleEspace($textGauche); //        log_message('error',"*******>>>222>>>>******".$textGauche);
         $compteurGlobal = 1;
         $compter = 0;
 
@@ -1984,7 +2073,7 @@ $arr['idCategorySelected'] = $objetURL['id'];
     {
 
         //log_message('error',"*******>>>111>>>>******".$textGauche);
-        $textGauche = $this->deleteDoubleEspace($textGauche);        //        log_message('error',"*******>>>222>>>>******".$textGauche);
+        $textGauche = $this->deleteDoubleEspace($textGauche); //        log_message('error',"*******>>>222>>>>******".$textGauche);
         $compteurGlobal = 1;
         $compter = 0;
 
@@ -2184,7 +2273,7 @@ $arr['idCategorySelected'] = $objetURL['id'];
         $textDroite = $_POST["textDroite"];
         $nb_f = sizeof($f);
         //$bin_data_target    = base64_encode(file_get_contents( $f["mFile"]["tmp_name"] ));
-        $err_desc = '';        //print_r("--------------------------");print_r($f);
+        $err_desc = ''; //print_r("--------------------------");print_r($f);
 //print_r("--------------------------");print_r($nb_f);
 //		$arr_Res[] = array("id" => '-1', "desc" => $f) ;
 //
@@ -2372,7 +2461,7 @@ $arr['idCategorySelected'] = $objetURL['id'];
 
 
         $arr['widget'] = $this->recaptcha->getWidget();
-        $arr['script'] = $this->recaptcha->getScriptTag();        //        $this->load->view('pages-sign-up',$arr);
+        $arr['script'] = $this->recaptcha->getScriptTag(); //        $this->load->view('pages-sign-up',$arr);
         $this->load->view($this->getTypePlatform() ? 'v1_pages-sign-up' : 'pages-sign-up', $arr);
     }
     public function resetUp()
@@ -2384,7 +2473,7 @@ $arr['idCategorySelected'] = $objetURL['id'];
     {
 
         $this->db->select('*');
-        $this->db->from('users');        //		$this->db->where("");
+        $this->db->from('users'); //		$this->db->where("");
         $this->db->order_by("Nom", "Asc");
         $res = $this->db->get()->result_array();
         $arr['page'] = 'settingPaltform';
@@ -2719,6 +2808,17 @@ $arr['idCategorySelected'] = $objetURL['id'];
 
     }
 
+    private function isPathologieCategory($idCategory)
+    {
+        $this->db->select('Libelle, Couverture');
+        $this->db->from('_category');
+        $this->db->where('IDCategory', $idCategory);
+        $cat = $this->db->get()->row_array();
+        if (!$cat) return false;
+        return (isset($cat['Couverture']) && stripos($cat['Couverture'], 'pathologie') !== false)
+            || (isset($cat['Libelle']) && (stripos($cat['Libelle'], 'Pathologie') !== false || stripos($cat['Libelle'], 'Patologia') !== false || stripos($cat['Libelle'], 'Pathology') !== false));
+    }
+
     public function getListCategory()
     {
 
@@ -2854,11 +2954,12 @@ $arr['idCategorySelected'] = $objetURL['id'];
         $arr['OneBook'] = $resBook;
         $arr['ListPub'] = $resPub;
         $arr['page'] = 'livre';
-        $arr['listCat'] = $this->getListCategory();        //        $this->load->view('livre',$arr);
+        $arr['listCat'] = $this->getListCategory(); //        $this->load->view('livre',$arr);
         $this->load->view($this->getTypePlatform() ? 'v1_livre' : 'livre', $arr);
     }
 
-    public function livreDetails($id)    {
+    public function livreDetails($id)
+    {
         // 1️⃣ Clé secrète (même que dans Next.js)
         $secret = "MA_CLE_TRES_SECRETE_2025";
 
@@ -2893,7 +2994,12 @@ $arr['idCategorySelected'] = $objetURL['id'];
             $category[0]["EstActifTest"] = 1;
         }
 
-        $this->db->select('c.*, r.NbreResume as NbreResumeRappel, r.NbreCours as NbreCoursRappel, CAST(SUBSTRING_INDEX(c.titrechapitre, "-", 1) as SIGNED INTEGER) AS ord');        $this->db->from('_chapitre as c');        $this->db->join('_chapitre as r', 'r.IDChapitre = c.IdChapterRappel', 'left');        $this->db->where("c.IDLivre = '$id'");        $this->db->order_by("ord", "asc");        $resChap = $this->db->get()->result_array();
+        $this->db->select('c.*, r.NbreResume as NbreResumeRappel, r.NbreCours as NbreCoursRappel, CAST(SUBSTRING_INDEX(c.titrechapitre, "-", 1) as SIGNED INTEGER) AS ord');
+        $this->db->from('_chapitre as c');
+        $this->db->join('_chapitre as r', 'r.IDChapitre = c.IdChapterRappel', 'left');
+        $this->db->where("c.IDLivre = '$id'");
+        $this->db->order_by("ord", "asc");
+        $resChap = $this->db->get()->result_array();
 
         $this->db->select('SUM(NbreQcm) AS QcmNBR , SUM(NbreQroc) AS QrocNBR , SUM(NbreTest) AS test');
         $this->db->from('_chapitre');
@@ -2916,7 +3022,8 @@ $arr['idCategorySelected'] = $objetURL['id'];
         $this->load->view(
             $this->getTypePlatform() ? 'v1_livre' : 'livreDetails',
             $arr
-        );    }
+        );
+    }
 
     public function livreCours($id, $indxSearch = '')
     {
@@ -2986,9 +3093,16 @@ $arr['idCategorySelected'] = $objetURL['id'];
         $listFigures = $this->db->get()->result_array();
         $arr['listFig'] = $listFigures;
 
-        // ✅ PATCH : Toujours charger v1_livreCours (même si pas de pages)
-        // Les figures seront affichées dans tous les cas
-        $this->load->view($this->getTypePlatform() ? 'v1_livreCours' : 'livreCours', $arr);
+        // Detect pathologie category
+        $isPatho = in_array((int)$resChap[0]["IDTheme"], [20, 30, 31])
+            || $this->isPathologieCategory($resChap[0]["IDCategory"]);
+
+        if ($isPatho && $this->getTypePlatform()) {
+            $arr['isPathology'] = true;
+            $this->load->view('v1_livreCours_platforme', $arr);
+        } else {
+            $this->load->view($this->getTypePlatform() ? 'v1_livreCours' : 'livreCours', $arr);
+        }
 
     }
 
@@ -3071,7 +3185,8 @@ $arr['idCategorySelected'] = $objetURL['id'];
                 'success' => false,
                 'message' => 'Erreur lors de la récupération du contenu: ' . $e->getMessage()
             ]);
-        }    }
+        }
+    }
 
     // === FONCTION POUR RÉCUPÉRER LE FICHIER DU RAPPEL ANATOMIQUE MANUEL ===
     public function getRappelCoursFile()
@@ -3260,10 +3375,10 @@ $arr['idCategorySelected'] = $objetURL['id'];
         $this->db->order_by("TitreFigure", "asc");
         $listFigures = $this->db->get()->result_array();
         $arr['listFig'] = $listFigures;
-        if (count($listPages) > 0) {            //            $this->load->view('livreCours',$arr);
+        if (count($listPages) > 0) { //            $this->load->view('livreCours',$arr);
             $this->load->view($this->getTypePlatform() ? 'v1_livreCours' : 'livreCours', $arr);
         }
-        else {            //            $this->load->view('livreFigure',$arr);
+        else { //            $this->load->view('livreFigure',$arr);
             $this->load->view($this->getTypePlatform() ? 'v1_livreFigure' : 'livreFigure', $arr);
         }
 
@@ -3304,7 +3419,8 @@ $arr['idCategorySelected'] = $objetURL['id'];
         $arr['listCat'] = $this->getListCategory();
 
         // Check if it's a course (Anatomy) or pathology
-        $isPatho = in_array((int)$resChap[0]["IDTheme"], [20, 30, 31]);
+        $isPatho = in_array((int)$resChap[0]["IDTheme"], [20, 30, 31])
+            || $this->isPathologieCategory($resChap[0]["IDCategory"]);
 
         if (!$isPatho && count($resCurs) > 0) {
             // It's a course: try to load course content if available
@@ -3630,7 +3746,8 @@ $arr['idCategorySelected'] = $objetURL['id'];
         $this->load->view('listOffers', $arr);
 
     }
-    public function cursHTML($id, $indxSearch = '')    {
+    public function cursHTML($id, $indxSearch = '')
+    {
         $id_ = base64_decode($id);
 
         // Récupération du cours
@@ -3666,7 +3783,8 @@ $arr['idCategorySelected'] = $objetURL['id'];
         $arr['resOffers'] = $resOffers;
         $arr['indexSearch'] = $indxSearch;
 
-        $this->load->view('cursHTML', $arr);    }
+        $this->load->view('cursHTML', $arr);
+    }
 
 
     public function figHTML($id)
@@ -4689,7 +4807,7 @@ loadingTask.promise.then(function(pdf) {
         $d_arr = array();
 
         $typeQ = $_POST["typeQ"];
-        $idChap = $_POST["typeC"];        //print_r($typeQ);
+        $idChap = $_POST["typeC"]; //print_r($typeQ);
 //return false ;
         $d_arr[] = $typeQ;
         $d_arr[] = $idChap;
@@ -4907,7 +5025,7 @@ loadingTask.promise.then(function(pdf) {
         $idChap = $_POST["setChapID"];
         $props1 = $_POST["setInfP1-" . $IDQest];
         $props2 = $_POST["setInfP2-" . $IDQest];
-        $repons = $_POST["setInf-" . $IDQest];        //print_r($questTitle);
+        $repons = $_POST["setInf-" . $IDQest]; //print_r($questTitle);
 //return false;
         /*	if(empty($props1)){
          $repons = str_replace(';','; <br>',$repons);
@@ -5028,7 +5146,7 @@ loadingTask.promise.then(function(pdf) {
         $arr['resSearchQcm'] = $resSearchQcm;
         $arr['resSearchQroc'] = $resSearchQroc;
         $arr['page'] = 'searchIndex';
-        $arr['listCat'] = $this->getListCategory();        //		$this->load->view('searchIndex',$arr);
+        $arr['listCat'] = $this->getListCategory(); //		$this->load->view('searchIndex',$arr);
         $this->load->view($this->getTypePlatform() ? 'v1_searchIndex' : 'searchIndex', $arr);
     }
     public function searchIndexFull()
@@ -5042,7 +5160,7 @@ loadingTask.promise.then(function(pdf) {
             $this->db->join('_theme', '_livre.IDTheme = _theme.IDTheme');
             $this->db->join('_category', '_category.IDCategory= _theme.IDCategory');
             $this->db->Where(" multi_lingue='$currLang' AND _livre.Titre like '%$indexSearch%' or _livre.Description LIKE '%$indexSearch%' ");
-            $resSearchLiv = $this->db->get()->result_array();            //
+            $resSearchLiv = $this->db->get()->result_array(); //
             $this->db->select("*, SUBSTRING(TitreChapitre, (POSITION('$indexSearch' IN TitreChapitre)-100), 300) AS descr");
             $this->db->from(' _chapitre');
             $this->db->join('_livre', '_livre.IDLivre = _chapitre.IDLivre');
@@ -5610,7 +5728,7 @@ loadingTask.promise.then(function(pdf) {
         foreach ($OrdreCat as $key => $val) {
             $idTheme = $key;
             foreach ($val as $titleBook) {
-                if (trim($titleBook) != '') {                    //					print_r($titleBook);
+                if (trim($titleBook) != '') { //					print_r($titleBook);
 //					print_r('<br>');
                     $this->db->select('*');
                     $this->db->from('_livre');
@@ -5674,7 +5792,8 @@ loadingTask.promise.then(function(pdf) {
         $arr_Res[] = array("id" => '1', "desc" => $desc);
 
         echo json_encode($arr_Res);
-        exit;    }
+        exit;
+    }
     public function update_chapitre_associe()
     {
         header('Content-Type: application/json');
@@ -5702,7 +5821,8 @@ loadingTask.promise.then(function(pdf) {
         else {
             echo json_encode(['success' => false]);
         }
-        exit;    }
+        exit;
+    }
     public function update_pathologie_fr()
     {
         header('Content-Type: application/json');
@@ -5717,7 +5837,8 @@ loadingTask.promise.then(function(pdf) {
         else {
             echo json_encode(['success' => false, 'message' => 'ID Chapitre Anatomy invalide']);
         }
-        exit;    }
+        exit;
+    }
     /**
      * Centralized sorting method for extracting lists of chapters or subchapters
      * @param string $fieldName 
@@ -5785,7 +5906,8 @@ loadingTask.promise.then(function(pdf) {
                 'nbLivres' => count($livresAnat)
             ]
         ]);
-        exit;    }
+        exit;
+    }
     public function get_patho_fr_options()
     {
         header('Content-Type: application/json');
@@ -5818,7 +5940,8 @@ loadingTask.promise.then(function(pdf) {
         }
 
         echo json_encode(['success' => true, 'options' => $optionsHtml]);
-        exit;    }
+        exit;
+    }
 
     public function set_LivreBack()
     {
@@ -5851,7 +5974,7 @@ loadingTask.promise.then(function(pdf) {
         $listIDlivres = $_POST["attach_file"];
         $nb_f = sizeof($f);
         //$bin_data_target    = base64_encode(file_get_contents( $f["mFile"]["tmp_name"] ));
-        $err_desc = '';        //print_r("--------------------------");print_r($f);
+        $err_desc = ''; //print_r("--------------------------");print_r($f);
 //print_r("--------------------------");print_r($nb_f);
 //		$arr_Res[] = array("id" => '-1', "desc" => $f) ;
 //
@@ -5907,7 +6030,7 @@ loadingTask.promise.then(function(pdf) {
         $listIDlivres = $_POST["attach_file"];
         $nb_f = sizeof($f);
         //$bin_data_target    = base64_encode(file_get_contents( $f["mFile"]["tmp_name"] ));
-        $err_desc = '';        //print_r("--------------------------");print_r($f);
+        $err_desc = ''; //print_r("--------------------------");print_r($f);
 //print_r("--------------------------");print_r($nb_f);
 //		$arr_Res[] = array("id" => '-1', "desc" => $f) ;
 //
@@ -7067,7 +7190,8 @@ loadingTask.promise.then(function(pdf) {
         }
 
         echo json_encode($arr_Res);
-        exit;    }
+        exit;
+    }
 
     public function upload_Attach_Save_Curs_PDF()
     {
@@ -7348,7 +7472,8 @@ loadingTask.promise.then(function(pdf) {
         echo json_encode($arr_Res);
         exit;
     }
-    public function update_SousChapitre()    {
+    public function update_SousChapitre()
+    {
         // Récupération du corps JSON envoyé par AJAX
         $data = json_decode(file_get_contents('php://input'), true);
 
@@ -7386,7 +7511,8 @@ loadingTask.promise.then(function(pdf) {
         }
 
         echo json_encode($response);
-        exit;    }
+        exit;
+    }
 
     public function set_ItemBack()
     {
@@ -8245,7 +8371,7 @@ loadingTask.promise.then(function(pdf) {
         $listDIS = base64_decode($listDIS);
         $listProp1 = explode(";;", $listDIS);
         $listChaps = 0;
-        foreach ($listProp1 as $num => $onRes) {            //			log_message('error', "eeeeeeeeeeeeeee>>>>>".base64_decode($onRes));
+        foreach ($listProp1 as $num => $onRes) { //			log_message('error', "eeeeeeeeeeeeeee>>>>>".base64_decode($onRes));
 //			$number = rand(1, 20);
 //			if ($number % 2 == 0) {
 //				log_message('error', "PAIR>>>>>".$number);
@@ -8808,7 +8934,8 @@ loadingTask.promise.then(function(pdf) {
 //		// Return the social media links as JSON
 //		echo json_encode($socialLinks);
     }
-    public function set_LivSousChap()    {
+    public function set_LivSousChap()
+    {
         $inputJSON = file_get_contents('php://input');
         $data = json_decode($inputJSON, true);
 
@@ -8879,7 +9006,10 @@ loadingTask.promise.then(function(pdf) {
 
         $this->output->set_content_type('application/json');
         echo json_encode($arr_Res);
-        exit;    }    public function get_SousChapitres()    {
+        exit;
+    }
+    public function get_SousChapitres()
+    {
         $data = json_decode($this->input->raw_input_stream, true);
         $idChap = isset($data['idChap']) ? $data['idChap'] : null;
 
@@ -8922,7 +9052,8 @@ loadingTask.promise.then(function(pdf) {
             }
         }
 
-        echo json_encode($sousChaps);    }
+        echo json_encode($sousChaps);
+    }
 
 
     public function getPathologieByRappel()
@@ -9015,14 +9146,20 @@ loadingTask.promise.then(function(pdf) {
             return;
         }
 
-        // Mode Global : Afficher la liste des livres de pathologie (Thèmes 20, 30, 31)
-        // On s'assure que ces livres appartiennent à la langue actuelle via la catégorie
+        // Mode Global : Afficher la liste des livres de pathologie
+        // Cherche par thèmes connus OU par libellé de catégorie contenant Pathologie/Patologia/Pathology
         $this->db->select('_livre.IDLivre, _livre.Titre, CAST(SUBSTRING_INDEX(_livre.Titre, "-", 1) as SIGNED INTEGER) AS ord');
         $this->db->from('_livre');
         $this->db->join('_theme', '_theme.IDTheme = _livre.IDTheme');
         $this->db->join('_category', '_category.IDCategory = _theme.IDCategory');
-        $this->db->where_in('_livre.IDTheme', [20, 30, 31]);
         $this->db->where('_category.multi_lingue', $lang);
+        $this->db->group_start();
+        $this->db->where_in('_livre.IDTheme', [20, 30, 31]);
+        $this->db->or_like('_category.Libelle', 'Pathologie');
+        $this->db->or_like('_category.Libelle', 'Patologia');
+        $this->db->or_like('_category.Libelle', 'Pathology');
+        $this->db->or_like('_category.Couverture', 'pathologie');
+        $this->db->group_end();
         $this->db->order_by('ord', 'ASC');
         $this->db->order_by('_livre.Titre', 'ASC');
         $query = $this->db->get();
@@ -9076,7 +9213,10 @@ loadingTask.promise.then(function(pdf) {
         }
         else {
             echo json_encode([["id" => '0', "desc" => 'Erreur lors de la suppression ou sous-chapitre introuvable']]);
-        }    }    public function getContentChapter()    {
+        }
+    }
+    public function getContentChapter()
+    {
         $postData = json_decode(file_get_contents('php://input'), true);
 
         if (!isset($postData['idChap']) || empty($postData['idChap'])) {
@@ -9098,7 +9238,8 @@ loadingTask.promise.then(function(pdf) {
         $html = '<h2>' . htmlspecialchars($chapitre['TitreChapitre']) . '</h2>';
         $html .= '<div>' . ($chapitre['FichierHTML'] ?? 'Contenu vide') . '</div>';
 
-        echo $html;    }
+        echo $html;
+    }
 
     public function getContentSousChapitre()
     {
@@ -9150,7 +9291,8 @@ loadingTask.promise.then(function(pdf) {
             ]);
         }
     }
-    public function PlatFormeConvert($fichierHTML)    {
+    public function PlatFormeConvert($fichierHTML)
+    {
         $data = [];
 
         function console_log($msg)
@@ -9161,112 +9303,124 @@ loadingTask.promise.then(function(pdf) {
         $file_path = FCPATH . 'PlatFormeConvert/' . $fichierHTML;
 
         if (file_exists($file_path)) {
-            $data['CursShow'] = file_get_contents($file_path);
+            $rawContent = file_get_contents($file_path);
+            
+            // On vérifie si c'est un HTML complet (avec <html> ou <body>)
+            $isFullHtml = (stripos($rawContent, '<html') !== false || stripos($rawContent, '<body') !== false || stripos($rawContent, '<!DOCTYPE') !== false);
+            
+            if ($isFullHtml) {
+                // Nettoyage unicode / entités si nécessaire
+                $decodedContent = htmlspecialchars_decode(str_replace("font-family: 'Symbol'","font-family: ''", $rawContent));
+                
+                // On utilise DOMDocument pour extraire les styles et le corps proprement
+                $tempDoc = new DOMDocument();
+                // Suppression des erreurs de parsing HTML5
+                @$tempDoc->loadHTML('<?xml encoding="utf-8" ?>' . $decodedContent, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+                
+                // Extraction des styles du <head>
+                $headStyles = '';
+                $headNode = $tempDoc->getElementsByTagName('head')->item(0);
+                if ($headNode) {
+                    foreach ($headNode->childNodes as $hChild) {
+                        if ($hChild->nodeName === 'style' || $hChild->nodeName === 'link') {
+                            $headStyles .= $tempDoc->saveHTML($hChild);
+                        }
+                    }
+                }
+                
+                // Extraction du corps (sans troncature)
+                $body = $tempDoc->getElementsByTagName('body')->item(0);
+                $bodyHtml = '';
+                if ($body) {
+                    foreach ($body->childNodes as $childNode) {
+                        $bodyHtml .= $tempDoc->saveHTML($childNode);
+                    }
+                } else {
+                    $bodyHtml = $decodedContent;
+                }
+
+                // Construction de la source de l'iframe avec un style Premium
+                $iframeSrc = '<!DOCTYPE html><html><head><meta charset="utf-8">' .
+                    '<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">' .
+                    $headStyles .
+                    '<style>
+                        body { 
+                            padding: 40px 60px; 
+                            line-height: 1.8; 
+                            font-family: "Manrope", sans-serif; 
+                            background-color: white; 
+                            color: #1a202c; 
+                            font-size: 16px; 
+                            -webkit-font-smoothing: antialiased; 
+                        } 
+                        h1, h2, h3, h4 { color: #1d3557; margin-top: 1.5em; } 
+                        p { margin-bottom: 1.2em; text-align: justify; } 
+                        img { max-width: 100% !important; height: auto !important; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin: 25px 0; display: block; margin-left: auto; margin-right: auto; } 
+                        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+                        th, td { border: 1px solid #e2e8f0; padding: 12px; text-align: left; }
+                        th { background-color: #f8fafc; }
+                    </style></head><body>' .
+                    $bodyHtml .
+                    '</body></html>';
+                
+                $iframeSrcEscaped = htmlspecialchars($iframeSrc, ENT_QUOTES, 'UTF-8');
+                
+                $data['CursShow'] = '<iframe srcdoc="' . $iframeSrcEscaped . '" style="width:100%; height:calc(100vh - 120px); border:none; background: white;" sandbox="allow-same-origin allow-scripts"></iframe>';
+            } else {
+                $data['CursShow'] = $rawContent;
+            }
         }
         else {
-            $data['CursShow'] = '<p style="color:red;">Fichier non trouvé : ' . htmlspecialchars($fichierHTML) . '</p>';
+            $data['CursShow'] = '<p style="color:red; padding: 20px;">Fichier non trouvé : ' . htmlspecialchars($fichierHTML) . '</p>';
         }
 
-        // Chercher le sous-chapitre par le nom de fichier
-        // Supporte à la fois FichierHTML (_Sub.HTML) et FichierHTML_Resume (_SubResume.HTML)
+        // --- Recherche du contexte livre/chapitre pour le sidebar ---
         $this->db->select('IDSousChapitre, IDChapitre');
         $this->db->from('_souschapitre');
-
-        // Essayer d'abord avec FichierHTML (pattern classique)
         $this->db->where('FichierHTML', $fichierHTML);
         $sousChap = $this->db->get()->row_array();
 
-        // Si pas trouvé, essayer avec le pattern {ID}_Sub.HTML ou {ID}_SubResume.HTML
-        if (!$sousChap) {
-            // Extraire l'ID du fichier
-            if (preg_match('/^(\d+)_(Sub|SubResume)\.HTML$/i', $fichierHTML, $matches)) {
-                $idSousChap = $matches[1];
-                $this->db->select('IDSousChapitre, IDChapitre');
-                $this->db->from('_souschapitre');
-                $this->db->where('IDSousChapitre', $idSousChap);
-                $sousChap = $this->db->get()->row_array();
-            }
+        if (!$sousChap && preg_match('/^(\d+)_(Sub|SubResume)\.HTML$/i', $fichierHTML, $matches)) {
+            $idSousChap = $matches[1];
+            $this->db->select('IDSousChapitre, IDChapitre');
+            $this->db->from('_souschapitre');
+            $this->db->where('IDSousChapitre', $idSousChap);
+            $sousChap = $this->db->get()->row_array();
         }
 
-        if (!$sousChap) {
-            $data['listFig'] = [];
-        }
-        else {
+        if ($sousChap) {
             $idChapitre = $sousChap['IDChapitre'];
-
             $chapitre = $this->db->where('IDChapitre', $idChapitre)->get('_chapitre')->row_array();
-
-            if (!$chapitre) {
-                $data['listFig'] = [];
-            }
-            else {
+            if ($chapitre) {
                 $idChapitreRappel = $chapitre['IdChapterRappel'] ?? null;
-
-                if (!$idChapitreRappel) {
-                    $data['listFig'] = [];
-                }
-                else {
-                    $coursList = $this->db
-                        ->select('IDCours, TitreCours')
-                        ->from('_cours')
-                        ->where('IDChapitre', $idChapitreRappel)
-                        ->get()
-                        ->result_array();
-
-                    if (empty($coursList)) {
-                        $data['listFig'] = [];
-                    }
-                    else {
+                if ($idChapitreRappel) {
+                    $coursList = $this->db->select('IDCours')->from('_cours')->where('IDChapitre', $idChapitreRappel)->get()->result_array();
+                    if (!empty($coursList)) {
                         $coursIds = array_column($coursList, 'IDCours');
-
                         $this->db->select('IDFigure, TitreFigure, UrlFigure, encryptFigure, IDCours');
                         $this->db->from('_figure');
                         $this->db->where_in('IDCours', $coursIds);
-                        $this->db->limit(50); // LIMITE pour éviter l'épuisement mémoire
-                        $query = $this->db->get();
-                        $data['listFig'] = $query->result_array();
-
+                        $this->db->limit(50);
+                        $data['listFig'] = $this->db->get()->result_array();
                     }
                 }
+                $livre = $this->db->select('l.IDLivre, l.Titre, l.IDTheme')->from('_livre l')->join('_chapitre c', 'c.IDLivre = l.IDLivre', 'inner')->where('c.IDChapitre', $idChapitre)->get()->row_array();
+                if ($livre) {
+                    $data['OneBook'] = [$livre];
+                    $data['listChap'] = $this->db->select('IDChapitre, TitreChapitre, IdChapterRappel, NbreCours, NbreResume')->from('_chapitre')->where('IDLivre', $livre['IDLivre'])->order_by('IDChapitre', 'ASC')->get()->result_array();
+                }
             }
-        }
-        if (!empty($sousChap)) {
-            $livre = $this->db
-                ->select('l.IDLivre, l.Titre, l.IDTheme')
-                ->from('_livre l')
-                ->join('_chapitre c', 'c.IDLivre = l.IDLivre', 'inner')
-                ->where('c.IDChapitre', $sousChap['IDChapitre'])
-                ->get()
-                ->row_array();
-
-            if ($livre) {
-                $data['OneBook'] = [$livre];
-                $data['listChap'] = $this->db
-                    ->select('IDChapitre, TitreChapitre, IdChapterRappel, NbreCours, NbreResume')
-                    ->from('_chapitre')
-                    ->where('IDLivre', $livre['IDLivre'])
-                    ->order_by('IDChapitre', 'ASC')
-                    ->get()
-                    ->result_array();
-
-            }
-            else {
-                $data['OneBook'] = [];
-                $data['listChap'] = [];
-            }
-        }
-        else {
-            $data['OneBook'] = [];
-            $data['listChap'] = [];
         }
 
         $data['page'] = 'livreCours';
         $data['listCat'] = $this->getListCategory();
         $data['indexSearch'] = '';
+        $data['isPathology'] = true;
 
         $this->load->view('v1_livreCours_platforme', $data);
     }
-    public function getRappelResumeContent()    {
+    public function getRappelResumeContent()
+    {
         $postData = json_decode(file_get_contents('php://input'), true);
         $idChapterRappel = isset($postData['idChapterRappel']) ? $postData['idChapterRappel'] : null;
 
@@ -9333,8 +9487,10 @@ loadingTask.promise.then(function(pdf) {
             'success' => true,
             'content' => $bannerContent,
             'hasResume' => false
-        ]);    }
-    public function getRappelSousChapitreFile()    {
+        ]);
+    }
+    public function getRappelSousChapitreFile()
+    {
         $post = json_decode(file_get_contents("php://input"), true);
 
         if (!isset($post['idChapActuel']) || empty($post['idChapActuel'])) {
@@ -9393,7 +9549,8 @@ loadingTask.promise.then(function(pdf) {
             'file' => $sousChap['FichierHTML'],
             'idRappelSousChapitre' => $sousChap['IDSousChapitre'],
             'idChapterRappel' => $idChapterRappel
-        ]);    }
+        ]);
+    }
 
     // ========== RAPPEL ANATOMIQUE MANUEL ==========
     public function check_rappel_manuel()

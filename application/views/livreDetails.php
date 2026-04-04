@@ -877,7 +877,9 @@
                                         <thead>
                                         <tr>
                                             <?php
-                                            $estPathologieBook = in_array((int)$OneBook[0]["IDTheme"], [20, 30, 31]);
+                                            $estPathologieBook = in_array((int)$OneBook[0]["IDTheme"], [20, 30, 31])
+                                                || (isset($category['Couverture']) && stripos($category['Couverture'], 'pathologie') !== false)
+                                                || (isset($category['Libelle']) && (stripos($category['Libelle'], 'Pathologie') !== false || stripos($category['Libelle'], 'Patologia') !== false || stripos($category['Libelle'], 'Pathology') !== false));
                                             if ($estPathologieBook): ?>
                                                 <th width="5%" style="text-align: left;"></th>
                                                 <th width="30%" style="text-align: center;">Titre Chapitre</th>
@@ -919,7 +921,9 @@
                                         <tbody id="serChap">
                                         <form name="pageForm_Chap" id="pageForm_Chap" action="">
                                             <?php foreach ($listChap as $value) {
-                $estPathologie = in_array($value['IDLivre'], [20, 30, 31]) || in_array((int)$OneBook[0]["IDTheme"], [20, 30, 31]);
+                $estPathologie = in_array($value['IDLivre'], [20, 30, 31]) || in_array((int)$OneBook[0]["IDTheme"], [20, 30, 31])
+                    || (isset($category['Couverture']) && stripos($category['Couverture'], 'pathologie') !== false)
+                    || (isset($category['Libelle']) && (stripos($category['Libelle'], 'Pathologie') !== false || stripos($category['Libelle'], 'Patologia') !== false || stripos($category['Libelle'], 'Pathology') !== false));
             ?>
                 <tr>
                     <?php if (!$estPathologie): ?>
@@ -939,8 +943,7 @@
                 </a>
                 <?php if ((strlen($this->session->userdata('passTok')) == 200)
                         && ($this->session->userdata('EstAdmin') == 1)
-                        && (in_array($value['IDLivre'], [20, 30, 31])
-                            || in_array((int)$OneBook[0]["IDTheme"], [20, 30, 31]))) { ?>
+                        && $estPathologie) { ?>
                     <a href="#" onclick="openSousChapForm('<?php print $value['IDChapitre']; ?>', '<?php print $value['IDLivre']; ?>')" title="Ajouter Sous-Chapitre">
                         <i class="fa fa-plus"></i>
                     </a>
@@ -1712,6 +1715,10 @@
                                         </tbody>
 
 <script>
+window.estPathologieCategory = <?= (
+    (isset($category['Couverture']) && stripos($category['Couverture'], 'pathologie') !== false)
+    || (isset($category['Libelle']) && (stripos($category['Libelle'], 'Pathologie') !== false || stripos($category['Libelle'], 'Patologia') !== false || stripos($category['Libelle'], 'Pathology') !== false))
+) ? 'true' : 'false'; ?>;
 $(document).ready(function() {
     // L'ancien code .toggle-patho a été supprimé car nous utilisons maintenant togglePathoContainer() directement
 });
@@ -3593,7 +3600,8 @@ function checkAndDisplayRappel(idChapitre, idChapterRappelDefaut, idLivre, idThe
 
     // Vérifier si c'est un thème pathologique
     const estPathologie = (idLivre && [20, 30, 31].includes(parseInt(idLivre))) ||
-                          (idTheme && [20, 30, 31].includes(parseInt(idTheme)));
+                          (idTheme && [20, 30, 31].includes(parseInt(idTheme))) ||
+                          window.estPathologieCategory === true;
 
     $.ajax({
         url: "<?= base_url('home/check_rappel_manuel'); ?>",
