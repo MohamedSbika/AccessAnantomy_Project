@@ -49,8 +49,7 @@ class Home extends CI_Controller
             );
             $this->dbforge->add_column('_chapitre', $fields);
             echo "Colonne idpathologieFR ajoutée avec succès.";
-        }
-        else {
+        } else {
             echo "La colonne idpathologieFR existe déjà.";
         }
     }
@@ -321,8 +320,7 @@ class Home extends CI_Controller
 
             $arr['page'] = 'page_home'; //			$this->load->view('page_home', $arr);
             $this->load->view($this->getTypePlatform() ? 'v1_page_home' : 'page_home', $arr);
-        }
-        else {
+        } else {
 
             //$this->setParamsAutoFromFloders();
             $arr['listCat'] = $this->getListCategory();
@@ -359,8 +357,7 @@ class Home extends CI_Controller
         foreach ($map as $key => $file) {
             if (is_array($file)) {
                 $return = array_merge($return, $this->concatenate_filepaths($file, $prefix . '/' . $key . '/'));
-            }
-            else {
+            } else {
                 $return[] = $prefix . $file;
             }
         }
@@ -378,16 +375,16 @@ class Home extends CI_Controller
     }
     public function setParamsAutoFromFloders_()
     { /*
-  $this->db->query("delete FROM `_category` WHERE IDCategory > 2 ;");
-  $this->db->query("TRUNCATE TABLE `_chapitre`;");
-  $this->db->query("TRUNCATE TABLE `_cours`;");
-  $this->db->query("TRUNCATE TABLE `_resume`;");
-  $this->db->query("TRUNCATE TABLE `_figure`;");
-  $this->db->query("TRUNCATE TABLE `_livre`;");
-  $this->db->query("TRUNCATE TABLE `_page`;");
-  $this->db->query("TRUNCATE TABLE `_publicite`;");
-  $this->db->query("TRUNCATE TABLE `_questiontype`;");
-  $this->db->query("TRUNCATE TABLE `_theme`;");         */
+ $this->db->query("delete FROM `_category` WHERE IDCategory > 2 ;");
+ $this->db->query("TRUNCATE TABLE `_chapitre`;");
+ $this->db->query("TRUNCATE TABLE `_cours`;");
+ $this->db->query("TRUNCATE TABLE `_resume`;");
+ $this->db->query("TRUNCATE TABLE `_figure`;");
+ $this->db->query("TRUNCATE TABLE `_livre`;");
+ $this->db->query("TRUNCATE TABLE `_page`;");
+ $this->db->query("TRUNCATE TABLE `_publicite`;");
+ $this->db->query("TRUNCATE TABLE `_questiontype`;");
+ $this->db->query("TRUNCATE TABLE `_theme`;");         */
         $this->load->helper('directory');
         $path_Dir = './' . UP_PLATFORM; //'./uploads/Plateforme TRIAA Habib 2020/Platforme Accessanatomy/';
         $map = directory_map($path_Dir);
@@ -529,18 +526,18 @@ class Home extends CI_Controller
                             $Video = HTTP_PLATFORM . $pathLi;
                             $notChap = 3;
                             $Video = str_replace(" ", "%20", $Video); /*							//$datasss = file_get_contents($Video);$myfile = fopen($Video, "r");$aa = read_file($Video);
-  $myfile = fopen($Video,'r');
-  $myCt = '';
-  while(!feof($myfile)){
-  $myCt= $myCt.fgets($myfile)."<br>" ;
-  }
-  $data_l = array('Description' => $myCt);
-  fclose($myfile);                             */
+$myfile = fopen($Video,'r');
+$myCt = '';
+while(!feof($myfile)){
+$myCt= $myCt.fgets($myfile)."<br>" ;
+}
+$data_l = array('Description' => $myCt);
+fclose($myfile);                             */
                             $docCvrt = HTTP_PLATFORM . $onpath; //'./uploads/Plateforme TRIAA Habib 2020/Platforme Accessanatomy/';
                             $docCvrt = str_replace(" ", "%20", $docCvrt);
                             $descD = $this->convertDocHTML($docCvrt, $PathDocc, '', 0); //
                             $data_l = array('Description' => $descD);
-                        //print_r("******************************");
+                            //print_r("******************************");
                         }
 
                         if ($posDescHtml !== false || $posDescHtm !== false) {
@@ -575,7 +572,7 @@ class Home extends CI_Controller
                                 $this->insert_dd('_publicite', $data);
                             }
                             fclose($myfile);
-                        //print_r("******************************");
+                            //print_r("******************************");
                         }
                         //print_r($posDB.'<br>');
                         //if (($posCouv !== false) || ($posDesc !== false) || ($posVide !== false) ){
@@ -589,15 +586,14 @@ class Home extends CI_Controller
                                 'IDLivre' => $idLiv
                             );
                             $idChap = $this->insert_dd('_chapitre', $data);
-                        }
-                        else {
+                        } else {
                             if ($posDB == false) {
                                 $this->db->where('IDLivre', $idLiv);
                                 $this->db->update('_livre', $data_l);
                             }
 
                         }
-                    //}
+                        //}
 
 
                     }
@@ -889,12 +885,11 @@ class Home extends CI_Controller
                             $questAll = $this->getString($numBeg . "-", $this->lang->line('params_reponse'), $is_quest);
                             if (strpos($questAll, $this->lang->line('params_propos1')) !== false) {
 
-                                $quest = $this->getString($numBeg . "-", $this->lang->line('params_propos1'), (string)$is_quest);
-                                $proposition1 = $this->getString($this->lang->line('params_propos1'), $this->lang->line('params_propos2'), (string)$is_quest);
-                                $proposition2 = $this->getString($this->lang->line('params_propos2'), $this->lang->line('params_reponse'), (string)$is_quest);
-                            //print_r('**************************'.(string)$questAll.'----------------------------');
-                            }
-                            else {
+                                $quest = $this->getString($numBeg . "-", $this->lang->line('params_propos1'), (string) $is_quest);
+                                $proposition1 = $this->getString($this->lang->line('params_propos1'), $this->lang->line('params_propos2'), (string) $is_quest);
+                                $proposition2 = $this->getString($this->lang->line('params_propos2'), $this->lang->line('params_reponse'), (string) $is_quest);
+                                //print_r('**************************'.(string)$questAll.'----------------------------');
+                            } else {
                                 $quest = $this->getString($numBeg . "-", $this->lang->line('params_reponse'), $is_quest);
                             }
 
@@ -905,8 +900,7 @@ class Home extends CI_Controller
                                 if ($num > 0) {
                                     if ($proposition1 == '') {
                                         $resp = $resp . $onRes . '<br>';
-                                    }
-                                    else {
+                                    } else {
                                         $resp = $resp . $onRes . '&#10;';
                                     }
                                 }
@@ -954,8 +948,8 @@ class Home extends CI_Controller
                         }
 
 
-                    //fclose($myfile);
-                    //print_r("**********************************".'<br>');
+                        //fclose($myfile);
+                        //print_r("**********************************".'<br>');
                     }
                     if ($get_TypeCurs_cur == "QCM" || $get_TypeCurs_cur == "MCQ") {
                         $pathLi = str_replace("//", "/", utf8_encode($onpath));
@@ -1007,9 +1001,9 @@ class Home extends CI_Controller
                             //print_r('**************************'.strstr($is_quest,'Réponse').'----------------------------');
                             //$quest 	= $this->getString($numBeg."-","Réponse",$is_quest);Proposition : 1
 
-                            $quest = $this->getString($numBeg . "-", ":", (string)$is_quest); // question
-                            $repons_Key = $this->getString(":", "A-", (string)$is_quest); // reponse A;C;E
-                            $proposQcm = $this->getString("A-", "@@@@", (string)$is_quest . "@@@@"); // propositions
+                            $quest = $this->getString($numBeg . "-", ":", (string) $is_quest); // question
+                            $repons_Key = $this->getString(":", "A-", (string) $is_quest); // reponse A;C;E
+                            $proposQcm = $this->getString("A-", "@@@@", (string) $is_quest . "@@@@"); // propositions
                             //print_r('**************************'.$proposition2.'----------------------------<br>');
                             // BEGIN ici on traite les reponses !!!!!
 
@@ -1019,9 +1013,9 @@ class Home extends CI_Controller
                             //print_r(strip_tags($proposQcm,'<br>'));
                             $listPropos = explode("\r\n", $proposQcm);
 
-                            $lign_Resp = str_replace(" ", "-", (string)$repons_Key);
-                            $lign_Resp = str_replace(";", "-", (string)$lign_Resp);
-                            $lign_Resp = str_replace(":", "-", (string)$lign_Resp);
+                            $lign_Resp = str_replace(" ", "-", (string) $repons_Key);
+                            $lign_Resp = str_replace(";", "-", (string) $lign_Resp);
+                            $lign_Resp = str_replace(":", "-", (string) $lign_Resp);
                             $lign_Resp = "-" . $lign_Resp . "-";
 
                             $lign_Props = '';
@@ -1172,14 +1166,12 @@ class Home extends CI_Controller
             $arr['page'] = 'login'; //			$this->load->view('page_home', $arr);
             if ($this->session->userdata('EstAdmin') == 1) {
                 $this->load->view($this->getTypePlatform() ? 'v1_page_home' : 'page_home', $arr);
-            }
-            else {
+            } else {
                 $this->session->set_userdata('typePlatform', true);
                 $this->load->view($this->getTypePlatform() ? 'v1_page_home' : 'v1_page_home', $arr);
             }
 
-        }
-        else {
+        } else {
 
             //$this->setParamsAutoFromFloders();
             $arr['listCat'] = $this->getListCategory();
@@ -1195,8 +1187,8 @@ class Home extends CI_Controller
             //log_message("error", json_encode($arr));
 
 
-            
-//			$this->load->view('page_home', $arr);
+
+            //			$this->load->view('page_home', $arr);
             $this->load->view($this->getTypePlatform() ? 'v1_page_home' : 'v1_page_home', $arr);
         }
 
@@ -1222,7 +1214,8 @@ class Home extends CI_Controller
         for ($i = 0; $i < sizeof($json); $i++) {
             if ($json[$i]['url'] == $testUrl) {
                 $targetId = isset($json[$i][$langKey]) ? $json[$i][$langKey] : (isset($json[$i]['FR_id']) ? $json[$i]['FR_id'] : 0);
-                if ($json[$i]['id'] == $targetId) $objetURL = $json[$i];
+                if ($json[$i]['id'] == $targetId)
+                    $objetURL = $json[$i];
             }
         }
         echo json_encode([
@@ -1291,13 +1284,12 @@ class Home extends CI_Controller
             $arr['page'] = 'login';
 
 
-            
-$arr['idCategorySelected'] = $objetURL['id'];
+
+            $arr['idCategorySelected'] = $objetURL['id'];
             // print_r($arr['listCat2']);
 
             $this->load->view('page_category', $arr);
-        }
-        else {
+        } else {
 
             //$this->setParamsAutoFromFloders();
             $arr['listCat'] = $this->getListCategory();
@@ -1389,18 +1381,15 @@ $arr['idCategorySelected'] = $objetURL['id'];
                 //This is optional - but good when you're in a testing environment.
                 if (isset($sent)) {
                     $arr[] = array("id" => '1', "desc" => $this->email->print_debugger());
-                }
-                else {
+                } else {
                     $arr[] = array("id" => '-1', "desc" => 'It did not send. <br>' . $this->email->print_debugger());
                 }
 
-            }
-            else {
+            } else {
                 $arr[] = array("id" => '-1', "desc" => 'Email not found');
             }
 
-        }
-        else {
+        } else {
             $arr[] = array("id" => '-1', "desc" => 'Not valid Email : <br>' . $errMsg);
         }
 
@@ -1463,8 +1452,7 @@ $arr['idCategorySelected'] = $objetURL['id'];
                 log_message('debug', 'New Session ID: ' . $this->session->userdata('session_id'));
             }
             $arr[] = array("id" => '1', "desc" => '');
-        }
-        else {
+        } else {
             $arr[] = array("id" => '-1', "desc" => $this->lang->line('verif_log'));
         }
 
@@ -1570,8 +1558,7 @@ $arr['idCategorySelected'] = $objetURL['id'];
 
         if ($sent) {
             echo json_encode([["id" => '1', "desc" => "Compte créé avec succès."]]);
-        }
-        else {
+        } else {
             echo json_encode([["id" => '-1', "desc" => "Erreur email: " . $this->email->print_debugger()]]);
         }
 
@@ -1693,7 +1680,7 @@ $arr['idCategorySelected'] = $objetURL['id'];
                 $compteur++;
             }
 
-        //            for($j = 0; $j < sizeof($res); $j++){
+            //            for($j = 0; $j < sizeof($res); $j++){
 //                $textGauche = $res[$j]->textGauche;
 //                $textDroite = $res[$j]->textDroite;
 //                $arrayTextGauche = $this->getArrayOfString($textGauche, "\n");
@@ -1780,7 +1767,7 @@ $arr['idCategorySelected'] = $objetURL['id'];
                 // Increment the counter
                 $compteur++;
             }
-        //            for($j = 0; $j < sizeof($res); $j++){
+            //            for($j = 0; $j < sizeof($res); $j++){
 //                $textGauche = $res[$j]->textGauche;
 //                $textDroite = $res[$j]->textDroite;
 //                $arrayTextGauche = $this->getArrayOfString($textGauche, "\n");
@@ -1989,8 +1976,7 @@ $arr['idCategorySelected'] = $objetURL['id'];
             if ($pos1 !== null) {
                 $mot = substr($parametresUrl, $posInitial, $pos1);
                 $parametresUrl = substr($parametresUrl, $pos1 + 1);
-            }
-            else {
+            } else {
                 $mot = substr($parametresUrl, $posInitial);
                 $parametresUrl = "";
             }
@@ -2036,8 +2022,7 @@ $arr['idCategorySelected'] = $objetURL['id'];
                 // Extract word before the filter position
                 $mot = substr($textGauche, $posInitial, $pos1);
                 $textGauche = substr($textGauche, $pos1 + 1);
-            }
-            else {
+            } else {
                 // No more words found, take the remaining text
                 $mot = substr($textGauche, $posInitial);
                 $textGauche = ''; // No more text left
@@ -2091,8 +2076,7 @@ $arr['idCategorySelected'] = $objetURL['id'];
             if ($pos1 !== null) {
                 $mot = substr($textGauche, $posInitial, $pos1);
                 $textGauche = substr($textGauche, $pos1 + 1);
-            }
-            else {
+            } else {
                 $mot = substr($textGauche, $posInitial);
                 $textGauche = "";
             }
@@ -2153,8 +2137,7 @@ $arr['idCategorySelected'] = $objetURL['id'];
                 $newChaine[$compteur] = $chaine[$i];
                 $compteur++;
                 $isPrecedentEspace = true;
-            }
-            else if ($chaine[$i] !== " ") {
+            } else if ($chaine[$i] !== " ") {
                 $newChaine[$compteur] = $chaine[$i];
                 $compteur++;
                 $isPrecedentEspace = false;
@@ -2378,8 +2361,7 @@ $arr['idCategorySelected'] = $objetURL['id'];
                 $this->db->where("id = '" . $idFigure . "'");
                 $this->db->update('figures', $data);
 
-            }
-            else {
+            } else {
 
                 $data = ['titre' => $titre, 'textGauche' => $textGauche, 'textDroite' => $textDroite];
 
@@ -2677,18 +2659,15 @@ $arr['idCategorySelected'] = $objetURL['id'];
                     if (isset($sent)) {
                         print_r($this->email->print_debugger());
                         $arr[] = array("id" => '1', "desc" => $this->email->print_debugger());
-                    }
-                    else {
+                    } else {
                         $arr[] = array("id" => '-1', "desc" => 'It did not send. <br>' . $this->email->print_debugger());
                     }
 
-                }
-                else {
+                } else {
                     $arr[] = array("id" => '-1', "desc" => $this->lang->line('mail_msg_exist') . '<br>' . $user);
                 }
 
-            }
-            else {
+            } else {
                 $arr[] = array("id" => '-1', "desc" => $this->lang->line('mail_msg_ch') . '<br>' . $errMsg);
             }
 
@@ -2814,7 +2793,8 @@ $arr['idCategorySelected'] = $objetURL['id'];
         $this->db->from('_category');
         $this->db->where('IDCategory', $idCategory);
         $cat = $this->db->get()->row_array();
-        if (!$cat) return false;
+        if (!$cat)
+            return false;
         return (isset($cat['Couverture']) && stripos($cat['Couverture'], 'pathologie') !== false)
             || (isset($cat['Libelle']) && (stripos($cat['Libelle'], 'Pathologie') !== false || stripos($cat['Libelle'], 'Patologia') !== false || stripos($cat['Libelle'], 'Pathology') !== false));
     }
@@ -3068,8 +3048,7 @@ $arr['idCategorySelected'] = $objetURL['id'];
         // ✅ PATCH : Charger le contenu texte seulement si des pages existent
         if (count($listPages) > 0) {
             $arr['CursShow'] = $this->getCurs($listPages[0]['IDPage']);
-        }
-        else {
+        } else {
             $arr['CursShow'] = ''; // Pas de contenu texte → affichera seulement les figures
         }
 
@@ -3080,8 +3059,7 @@ $arr['idCategorySelected'] = $objetURL['id'];
 //        }
         if (count($listPages) > 0) {
             $this->db->select('encryptFigure, IDFigure, SUBSTRING_INDEX(TitreFigure, ".", 1) as TitreFigure, CAST(SUBSTRING(TitreFigure, 4) AS UNSIGNED) as ord');
-        }
-        else {
+        } else {
             $this->db->select('encryptFigure, IDFigure, SUBSTRING_INDEX(TitreFigure, ".", 1) as TitreFigure, CAST(SUBSTRING(TitreFigure, 4) AS UNSIGNED) as ord');
         }
 
@@ -3094,7 +3072,7 @@ $arr['idCategorySelected'] = $objetURL['id'];
         $arr['listFig'] = $listFigures;
 
         // Detect pathologie category
-        $isPatho = in_array((int)$resChap[0]["IDTheme"], [20, 30, 31])
+        $isPatho = in_array((int) $resChap[0]["IDTheme"], [20, 36, 31])
             || $this->isPathologieCategory($resChap[0]["IDCategory"]);
 
         if ($isPatho && $this->getTypePlatform()) {
@@ -3179,8 +3157,7 @@ $arr['idCategorySelected'] = $objetURL['id'];
                 'titre' => isset($resChap[0]['TitreChapitre']) ? $resChap[0]['TitreChapitre'] : 'Rappel Cours'
             ]);
 
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             echo json_encode([
                 'success' => false,
                 'message' => 'Erreur lors de la récupération du contenu: ' . $e->getMessage()
@@ -3219,8 +3196,7 @@ $arr['idCategorySelected'] = $objetURL['id'];
                 // Si le fichier en base est un .docx, convertir en .HTML
                 if (strtolower(pathinfo($fichierStocke, PATHINFO_EXTENSION)) === 'docx') {
                     $fichierHTML = str_replace('.docx', '.HTML', $fichierStocke);
-                }
-                else {
+                } else {
                     $fichierHTML = $fichierStocke;
                 }
 
@@ -3239,8 +3215,7 @@ $arr['idCategorySelected'] = $objetURL['id'];
                 'message' => 'Pas de fichier de rappel'
             ]);
 
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             echo json_encode([
                 'success' => false,
                 'message' => 'Erreur lors de la récupération du fichier: ' . $e->getMessage()
@@ -3284,8 +3259,7 @@ $arr['idCategorySelected'] = $objetURL['id'];
             if (strtolower(pathinfo($fichierStocke, PATHINFO_EXTENSION)) === 'docx') {
                 // Remplacer .docx par .HTML
                 $fichierHTML = str_replace('.docx', '.HTML', $fichierStocke);
-            }
-            else {
+            } else {
                 $fichierHTML = $fichierStocke;
             }
 
@@ -3313,8 +3287,7 @@ $arr['idCategorySelected'] = $objetURL['id'];
                 'titre' => 'Rappel Anatomique'
             ]);
 
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             echo json_encode([
                 'success' => false,
                 'message' => 'Erreur lors du chargement du rappel: ' . $e->getMessage()
@@ -3364,8 +3337,7 @@ $arr['idCategorySelected'] = $objetURL['id'];
 
         if (count($listPages) > 0) {
             $this->db->select('encryptFigure,IDFigure,SUBSTRING_INDEX(TitreFigure, ".", 1) as TitreFigure,CAST(SUBSTRING_INDEX(TitreFigure, "-", 1) as SIGNED INTEGER ) AS ord');
-        }
-        else {
+        } else {
             $this->db->select('encryptFigure,encryptFigure,IDFigure,SUBSTRING_INDEX(TitreFigure, ".", 1) as TitreFigure,CAST(SUBSTRING_INDEX(TitreFigure, "-", 1) as SIGNED INTEGER ) AS ord');
         }
 
@@ -3377,8 +3349,7 @@ $arr['idCategorySelected'] = $objetURL['id'];
         $arr['listFig'] = $listFigures;
         if (count($listPages) > 0) { //            $this->load->view('livreCours',$arr);
             $this->load->view($this->getTypePlatform() ? 'v1_livreCours' : 'livreCours', $arr);
-        }
-        else { //            $this->load->view('livreFigure',$arr);
+        } else { //            $this->load->view('livreFigure',$arr);
             $this->load->view($this->getTypePlatform() ? 'v1_livreFigure' : 'livreFigure', $arr);
         }
 
@@ -3419,7 +3390,7 @@ $arr['idCategorySelected'] = $objetURL['id'];
         $arr['listCat'] = $this->getListCategory();
 
         // Check if it's a course (Anatomy) or pathology
-        $isPatho = in_array((int)$resChap[0]["IDTheme"], [20, 30, 31])
+        $isPatho = in_array((int) $resChap[0]["IDTheme"], [20, 36, 31])
             || $this->isPathologieCategory($resChap[0]["IDCategory"]);
 
         if (!$isPatho && count($resCurs) > 0) {
@@ -3433,13 +3404,11 @@ $arr['idCategorySelected'] = $objetURL['id'];
             if (count($resPage) > 0) {
                 $arr['CursShow'] = $this->getCurs($resPage[0]['IDPage']);
                 $arr['showBannerFigures'] = false;
-            }
-            else {
+            } else {
                 $arr['showBannerFigures'] = true;
                 $arr['CursShow'] = $this->getFiguresContent($id);
             }
-        }
-        else {
+        } else {
             $arr['showBannerFigures'] = true;
             $arr['CursShow'] = $this->getFiguresContent($id);
         }
@@ -3578,8 +3547,7 @@ $arr['idCategorySelected'] = $objetURL['id'];
 
         if (count($listPages) > 0) {
             $this->db->select('encryptFigure, IDFigure, SUBSTRING_INDEX(TitreFigure, ".", 1) as TitreFigure, CAST(SUBSTRING(TitreFigure, 4) AS UNSIGNED) as ord');
-        }
-        else {
+        } else {
             $this->db->select('encryptFigure, IDFigure, SUBSTRING_INDEX(TitreFigure, ".", 1) as TitreFigure, CAST(SUBSTRING(TitreFigure, 4) AS UNSIGNED) as ord');
         }
         $this->db->from('_figure');
@@ -3596,8 +3564,7 @@ $arr['idCategorySelected'] = $objetURL['id'];
         if (count($listPages) > 0) {
             $arr['CursShow'] = $this->getCurs($listPages[0]['IDPage']);
             $this->load->view($this->getTypePlatform() ? 'v1_livreResume' : 'livreResume', $arr);
-        }
-        else {
+        } else {
             redirect($this->lang->line('siteLang') . 'livreFigures/' . $id);
         }
     }
@@ -3631,8 +3598,7 @@ $arr['idCategorySelected'] = $objetURL['id'];
 //        }
         if (count($listPages) > 0) {
             $this->db->select('encryptFigure, IDFigure, SUBSTRING_INDEX(TitreFigure, ".", 1) as TitreFigure, CAST(SUBSTRING(TitreFigure, 4) AS UNSIGNED) as ord');
-        }
-        else {
+        } else {
             $this->db->select('encryptFigure, IDFigure, SUBSTRING_INDEX(TitreFigure, ".", 1) as TitreFigure, CAST(SUBSTRING(TitreFigure, 4) AS UNSIGNED) as ord');
         }
 
@@ -3685,8 +3651,7 @@ $arr['idCategorySelected'] = $objetURL['id'];
 //        }
         if (count($listPages) > 0) {
             $this->db->select('encryptFigure, IDFigure, SUBSTRING_INDEX(TitreFigure, ".", 1) as TitreFigure, CAST(SUBSTRING(TitreFigure, 4) AS UNSIGNED) as ord');
-        }
-        else {
+        } else {
             $this->db->select('encryptFigure, IDFigure, SUBSTRING_INDEX(TitreFigure, ".", 1) as TitreFigure, CAST(SUBSTRING(TitreFigure, 4) AS UNSIGNED) as ord');
         }
 
@@ -3772,8 +3737,7 @@ $arr['idCategorySelected'] = $objetURL['id'];
         if (!empty($resCurs[0]["ContentFileUrl"])) {
             $arr['OneCurs'] = base_url() . $resCurs[0]["ContentFileUrl"];
             $arr['isExternalFile'] = true;
-        }
-        else {
+        } else {
             // fallback sur l'ancien champ encodé
             $arr['OneCurs'] = $resCurs[0]["ContentFileCrypt"];
             $arr['isExternalFile'] = false;
@@ -3859,8 +3823,7 @@ loadingTask.promise.then(function(pdf) {
   // PDF loading error
   console.error(reason);
 });</script>";
-        }
-        else {
+        } else {
             $indexSearch = '';
             $IDPage = base64_encode($id_);
             // log_message('error', $IDPage);
@@ -3949,8 +3912,7 @@ loadingTask.promise.then(function(pdf) {
   // PDF loading error
   console.error(reason);
 });</script>";
-            }
-            else {
+            } else {
                 $id_ = base64_encode($id);
                 $pat = base_url() . $this->lang->line('siteLang') . 'cursHTML/' . $id_ . '/' . $indexSearch;
                 $html = "<div style='width: calc(100% - 2px); height: calc(100vh - 10vh); overflow: auto; margin: 1px;' ><iframe name='iframename' id='iframeID' style='background-color: white;overflow-y: scroll;height: calc(100vh - 12vh); width: 100%'  src='$pat'></iframe></div>";
@@ -4163,8 +4125,7 @@ loadingTask.promise.then(function(pdf) {
   // PDF loading error
   console.error(reason);
 });</script>";
-            }
-            else {
+            } else {
                 $id_ = base64_encode($id);
                 $pat = base_url() . $this->lang->line('siteLang') . 'cursHTML/' . $id_ . '/' . $indexSearch;
                 $html = "<iframe name='iframename' id='iframeID' style='background-color: white;overflow-y: scroll;height: 35em; width: 100%'  src='$pat'   ></iframe>";
@@ -4243,8 +4204,7 @@ loadingTask.promise.then(function(pdf) {
         $resResum = $this->db->get()->result_array();
         if ($typeQ == 'Qroc') {
             $TitreQ = $resResum[0]["TitreQroc"];
-        }
-        else {
+        } else {
             $TitreQ = $resResum[0]["TitreQcm"];
         }
 
@@ -4277,8 +4237,7 @@ loadingTask.promise.then(function(pdf) {
 
                     if (empty($sort_row->schemas_associes)) {
                         $typeCh .= "<h3>" . $this->lang->line('essaie') . "</h3>";
-                    }
-                    else {
+                    } else {
                         $typeCh .= "
         <h3 style='width: 50%;float: inline-start;text-align: left;'>" . $this->lang->line('essaie') . "</h3>
         <div style='width: 50%;float: inline-end;text-align: left;'>
@@ -4302,8 +4261,7 @@ loadingTask.promise.then(function(pdf) {
 							<h3>" . $this->lang->line('reponse') . "</h3>
 						</div>	
 						<div style='relative: absolute;height: 0px;'><div style='height: auto;overflow: auto;border: 1px solid #ced4da; text-align: left;padding-left: 0.5em;max-height: 200px;' class='col-12 col-md-12 col-lg-12'>$respo</div></div> <div style='position: relative;height: 12em;' id='bt_resp' ><button id='btn_resp'  class='btn btn-primary' style='height: 100%;width: 100%;' onclick='myFunction()'>" . $this->lang->line('decouv_respons') . "</button></div></div></div>";
-                }
-                else {
+                } else {
                     $typeCh = "<div class='row'> <div class='col-12 col-md-6 col-lg-6'><div class='mb-2'><h3>" . $this->lang->line('proposition1') . "</h3></div>	<textarea  name='setInf-$id' id='setInf-$id' class='form-control' rows='5' style='resize:none;' >$proposition1</textarea> </div>";
                     $typeCh = $typeCh . "	<input type='hidden' name='setID[]' id='setID[]' value='$id'  />";
                     $typeCh = $typeCh . "<div class='col-12 col-md-6 col-lg-6' id='setResp' style='visibility:visible; '>
@@ -4333,8 +4291,7 @@ loadingTask.promise.then(function(pdf) {
                         $typeResp = "setInf-$id";
                         //$typeINDC = "<span id='indCT' class='fas fa-circle' style='float:right; color: green ; visibility: hidden'></span>";
                         $typeINDC = "<span id='indCT-$id'  style='float:right; color: green ; visibility: hidden ; font-weight: bold ; font-size: 0.8em;'>" . $this->lang->line('oui') . "</span>";
-                    }
-                    else {
+                    } else {
                         $typeResp = '';
                         //$typeINDC = "<span id='indCT' class='fas fa-circle' style='float:right; color: red ; visibility: hidden'></span>";
                         $typeINDC = "<span id='indCT-$id'  style='float:right; color: red ; visibility: hidden ; font-weight: bold ; font-size: 0.8em; '>" . $this->lang->line('non') . "</span>";
@@ -4354,8 +4311,7 @@ loadingTask.promise.then(function(pdf) {
             if ($TitreQ == '') {
                 $blocQ = "<div class='lead text-center mb-4' style='text-align:center;font-weight: bold;margin-bottom: 0.7rem !important;margin-top: 0.1em; font-size: 1.0em' >" . $name . "</div><h4 style='display: none' id='titleQ'></h4>";
 
-            }
-            else {
+            } else {
                 $blocQ = "<div class='lead text-center mb-4' style='display: none'><h4 style='color: green;' id='titleQ'>$TitreQ</h4></div>" . '<br>' . "<div class='lead text-center mb-4' style='text-align:center;font-weight: bold;margin-bottom: 0.7rem !important;margin-top: 0.1em; font-size: 1.0em'>" . $name . "</div>";
             }
             if ($typeQ == 'Qroc') {
@@ -4363,8 +4319,7 @@ loadingTask.promise.then(function(pdf) {
                 $blocStart = "<div class='lead text-center mb-2' ><div class='card text-center' style='margin-bottom: 0.5em;background-color: #f7f7f7;'><div class='card-body d-flex flex-column' style='padding: 0.1rem;'>";
 
                 $blocR = $blocStart . $typeCh . $blocEnd;
-            }
-            else {
+            } else {
                 $blocStart = "<div class='lead text-center mb-2' ><div class='card text-center' style='margin-bottom: 0.5em;'><div class='card-body d-flex flex-column'>";
 
                 //	$blocR 		= $blocStart."<div class='mb-4'><h3>Votre réponse</h3></div>".$typeCh."<div class='mb-3'><p class='text-primary'>T-primary c</p><button  class='btn btn-primary' onclick='myFunction()'>Voir solution</button></div>".$blocEnd;
@@ -4382,8 +4337,7 @@ loadingTask.promise.then(function(pdf) {
                 $sort_row->ResponseKey
             </p>
         </div>";
-                }
-                else {
+                } else {
                     // Cas avec schemas_associes : structure normale
                     $blocR .= "<div class='row' style='margin: 1px 0;'>
         <p style='padding-top: 3px; max-width: 60%; text-align: left; font-size: 0.8rem;'>
@@ -4448,8 +4402,7 @@ loadingTask.promise.then(function(pdf) {
             }
 
             $arr_Res[] = array("id" => '1', "desc" => '');
-        }
-        else {
+        } else {
             $arr_Res[] = array("id" => '-1', "desc" => $this->lang->line('supp_delErr'));
         }
 
@@ -4476,8 +4429,7 @@ loadingTask.promise.then(function(pdf) {
         $resResum = $this->db->get()->result_array();
         if ($typeQ == 'Qroc') {
             $TitreQ = $resResum[0]["TitreQroc"];
-        }
-        else {
+        } else {
             $TitreQ = $resResum[0]["TitreQcm"];
         }
 
@@ -4498,7 +4450,7 @@ loadingTask.promise.then(function(pdf) {
                 'schemas_associes' => ''
             );
             //print_r($list);
-            $list[] = (object)$d_arrVid;
+            $list[] = (object) $d_arrVid;
         }
 
 
@@ -4529,13 +4481,11 @@ loadingTask.promise.then(function(pdf) {
                     $typeCh = $typeCh . "	<input type='hidden' name='setID[]' id='setID[]' value='$id'  />";
                     if ($this->session->userdata('EstAdmin') == 0) {
                         $showBtnQroc = "<button  class='btn btn-primary' style='height: 100%;width: 100%;' onclick='myFunction()'>" . $this->lang->line('decouv_respons') . "</button>";
-                    }
-                    else {
+                    } else {
                         $showBtnQroc = "";
                     }
                     $typeCh = $typeCh . "<div class='col-12 col-md-6 col-lg-6' id='setResp' style='visibility:visible; '><div class='mb-2'><h3>" . $this->lang->line('reponse') . "</h3></div>	<div style='relative: absolute;height: 0px;'><div style='height: 17em;overflow: auto;border: 1px solid #ced4da; text-align: left;padding-left: 0.5em;' class='col-12 col-md-12 col-lg-12'>$respo</div></div> <div style='position: relative;height: 17em;' id='bt_resp' >$showBtnQroc</div></div></div>";
-                }
-                else {
+                } else {
                     $typeCh = "<div class='row'> <div class='col-12 col-md-6 col-lg-6'><div class='mb-2'><h3>" . $this->lang->line('proposition1') . "</h3></div>	<textarea  name='setInf-$id' id='setInf-$id' class='form-control' rows='5' style='resize:none;' >$proposition1</textarea> </div>";
                     $typeCh = $typeCh . "	<input type='hidden' name='setID[]' id='setID[]' value='$id'  />";
                     $typeCh = $typeCh . "<div class='col-12 col-md-6 col-lg-6' id='setResp' style='visibility:visible; '><div class='mb-2'><h3>" . $this->lang->line('proposition2') . "</h3></div>	<div><textarea  name='setInf-$id' id='setInf-$id' class='form-control' rows='5' style='resize:none;' >$proposition2</textarea></div> </div></div>";
@@ -4565,8 +4515,7 @@ loadingTask.promise.then(function(pdf) {
                         $ischecked = 'checked';
                         //$typeINDC = "<span id='indCT' class='fas fa-circle' style='float:right; color: green ; visibility: hidden'></span>";
                         $typeINDC = "<span id='indCT-$id'  style='float:right; color: green ; visibility: hidden ; font-weight: bold ; font-size: 0.99em;'>" . $this->lang->line('oui') . "</span>";
-                    }
-                    else {
+                    } else {
                         $typeResp = '';
                         $ischecked = '';
                         //$typeINDC = "<span id='indCT' class='fas fa-circle' style='float:right; color: red ; visibility: hidden'></span>";
@@ -4612,10 +4561,9 @@ loadingTask.promise.then(function(pdf) {
 									</a>" . $name . "
 								</div><h4 style='display: none' id='titleQ'></h4>";
 
-            //$blocMod	= $blocMod."";
-            //$blocMod	= $blocMod."";
-            }
-            else {
+                //$blocMod	= $blocMod."";
+                //$blocMod	= $blocMod."";
+            } else {
                 $blocQ = "<div class='lead text-center mb-4' style='display: none'>
 									<h4 style='color: green;' id='titleQ'>$TitreQ</h4>
 							   </div>" . '<br>' . "<div class='lead text-center mb-4' style='font-weight: bold;margin-bottom: 0.7rem !important;margin-top: 0.5em; font-size: 1.4em'>
@@ -4699,8 +4647,7 @@ loadingTask.promise.then(function(pdf) {
         if (isset($_POST["setChek_" . $IDQest])) {
             $list_setChek = $_POST["setChek_" . $IDQest];
             $ResponseQuestion = '@||@';
-        }
-        else {
+        } else {
             $ResponseQuestion = '';
         }
 
@@ -4736,8 +4683,7 @@ loadingTask.promise.then(function(pdf) {
         if ($IDQest > 0) {
             $this->db->Where("id", $IDQest);
             $this->db->update('_questiontype', $data_QR);
-        }
-        else {
+        } else {
             $this->db->Where("id", $IDQest);
             $this->insert_dd('_questiontype', $data_QR);
         }
@@ -4791,8 +4737,7 @@ loadingTask.promise.then(function(pdf) {
             }
 
             $arr_Res[] = array("id" => '1', "desc" => '');
-        }
-        else {
+        } else {
             $arr_Res[] = array("id" => '-1', "desc" => $this->lang->line('supp_delErr'));
         }
 
@@ -4818,8 +4763,7 @@ loadingTask.promise.then(function(pdf) {
         $resResum = $this->db->get()->result_array();
         if ($typeQ == 'QROC') {
             $TitreQ = $resResum[0]["TitreQroc"];
-        }
-        else {
+        } else {
             $TitreQ = $resResum[0]["TitreQcm"];
         }
 
@@ -4839,7 +4783,7 @@ loadingTask.promise.then(function(pdf) {
                 'proposition2' => ''
             );
             //print_r($list);
-            $list[] = (object)$d_arrVid;
+            $list[] = (object) $d_arrVid;
         }
 
 
@@ -4868,8 +4812,7 @@ loadingTask.promise.then(function(pdf) {
 
                 if ($proposition1 == '') {
                     $sel = explode("<br>", $respo);
-                }
-                else {
+                } else {
                     $sel = explode("&#10;", $respo);
                 }
 
@@ -4907,13 +4850,11 @@ loadingTask.promise.then(function(pdf) {
  										<input type='hidden' name='setID[]' id='setID[]' value='$id'  />";
                     if ($this->session->userdata('EstAdmin') == 0) {
                         $showBtnQroc = "<button  class='btn btn-primary' style='height: 100%;width: 100%;' onclick='myFunction()'>" . $this->lang->line('decouv_respons') . "</button>";
-                    }
-                    else {
+                    } else {
                         $showBtnQroc = "";
                     }
                     $typeCh = $typeCh . "<div class='col-12 col-md-6 col-lg-6' id='setResp' style='visibility:visible; '><div class='mb-2'><h3>" . $this->lang->line('reponse') . "</h3></div>	<div style='relative: absolute;height: 0px;'><div style='height: 17em;overflow: auto;border: 1px solid #ced4da; text-align: left;padding-left: 0.5em;' class='col-12 col-md-12 col-lg-12'>$respo</div></div> <div style='position: relative;height: 17em;' id='bt_resp' >$showBtnQroc</div></div></div>";
-                }
-                else {
+                } else {
                     $typeCh = "<div class='row'> <div class='col-12 col-md-6 col-lg-6'><div class='mb-2'><h3>" . $this->lang->line('proposition1') . "</h3></div>	<textarea  name='setInf-$id' id='setInf-$id' class='form-control' rows='8' style='resize:none;' >$proposition1</textarea> </div>";
                     $typeCh = $typeCh . " <input id='cmp_$id' type='hidden' value='" . count($sel) . "'/>
  										<input type='hidden' name='setID[]' id='setID[]' value='$id'  />";
@@ -4936,10 +4877,9 @@ loadingTask.promise.then(function(pdf) {
 									</a>" . $name . "
 								</div><h4 style='display: none' id='titleQ'></h4>";
 
-            //$blocMod	= $blocMod."";
-            //$blocMod	= $blocMod."";
-            }
-            else {
+                //$blocMod	= $blocMod."";
+                //$blocMod	= $blocMod."";
+            } else {
                 $blocQ = "<div class='lead text-center mb-4' style='display: none'>
 									<h4 style='color: green;' id='titleQ'>$TitreQ</h4>
 							   </div>" . '<br>' . "<div class='lead text-center mb-4' style='font-weight: bold;margin-bottom: 0.7rem !important;margin-top: 0.5em; font-size: 1.4em'>
@@ -4975,8 +4915,7 @@ loadingTask.promise.then(function(pdf) {
                 $blocStart = "<div class='lead text-center mb-2' ><div class='card text-center' style='margin-bottom: 0.5em;background-color: #f7f7f7;'><div class='card-body d-flex flex-column' style='padding: 0.1rem;'>";
 
                 $blocR = $blocStart . $typeCh . $blocEnd;
-            }
-            else {
+            } else {
                 $blocStart = "<div class='lead text-center mb-2' ><div class='card text-center' style='margin-bottom: 0.5em;'><div class='card-body d-flex flex-column'>";
 
                 //	$blocR 		= $blocStart."<div class='mb-4'><h3>Votre réponse</h3></div>".$typeCh."<div class='mb-3'><p class='text-primary'>T-primary c</p><button  class='btn btn-primary' onclick='myFunction()'>Voir solution</button></div>".$blocEnd;
@@ -5049,8 +4988,7 @@ loadingTask.promise.then(function(pdf) {
         if ($IDQest > 0) {
             $this->db->Where("id", $IDQest);
             $this->db->update('_questiontype', $data_QR);
-        }
-        else {
+        } else {
             $this->db->Where("id", $IDQest);
             $this->insert_dd('_questiontype', $data_QR);
         }
@@ -5126,8 +5064,7 @@ loadingTask.promise.then(function(pdf) {
             $this->db->like('_chapitre.indexKeysQroc', $indexSearch);
             $resSearchQroc = $this->db->get()->result_array();
 
-        }
-        else {
+        } else {
             $indexSearch = '';
             $resSearchLiv = array();
             $resSearchCh = array();
@@ -5207,8 +5144,7 @@ loadingTask.promise.then(function(pdf) {
             $this->db->Where("multi_lingue='$currLang' AND OperationType = 'QROC'  AND (name like '%$indexSearch%') ");
             $resSearchQroc = $this->db->get()->result_array();
 
-        }
-        else {
+        } else {
             $indexSearch = '';
             $resSearchLiv = array();
             $resSearchCh = array();
@@ -5390,8 +5326,7 @@ loadingTask.promise.then(function(pdf) {
         if (sizeof($res) > 0) {
 
             $arr[] = array("id" => '1', "desc" => $res);
-        }
-        else {
+        } else {
             $arr[] = array("id" => '-1', "desc" => "Aucune figure trouvée");
         }
         echo json_encode($arr);
@@ -5420,8 +5355,7 @@ loadingTask.promise.then(function(pdf) {
                     'tokenPass' => '',
                     'Bloque' => 1
                 );
-            }
-            else {
+            } else {
                 $this->load->helper('string');
                 $tokenPass = random_string('alnum', 200);
                 $data = array(
@@ -5436,8 +5370,7 @@ loadingTask.promise.then(function(pdf) {
 
 
             $arr[] = array("id" => '1', "desc" => '');
-        }
-        else {
+        } else {
             $arr[] = array("id" => '-1', "desc" => $this->lang->line('verif_log'));
         }
         echo json_encode($arr);
@@ -5459,8 +5392,7 @@ loadingTask.promise.then(function(pdf) {
 
             if ($res[0]["EstActifMenu"] == 0) {
                 $data = array('EstActifMenu' => 1);
-            }
-            else {
+            } else {
                 $data = array('EstActifMenu' => 0);
             }
             $log_id = $res[0]["IDCategory"];
@@ -5469,8 +5401,7 @@ loadingTask.promise.then(function(pdf) {
 
 
             $arr[] = array("id" => '1', "desc" => '');
-        }
-        else {
+        } else {
             $arr[] = array("id" => '-1', "desc" => $this->lang->line('verif_log'));
         }
         echo json_encode($arr);
@@ -5492,8 +5423,7 @@ loadingTask.promise.then(function(pdf) {
 
             if ($res[0]["EstActifAccueil"] == 0) {
                 $data = array('EstActifAccueil' => 1);
-            }
-            else {
+            } else {
                 $data = array('EstActifAccueil' => 0);
             }
             $log_id = $res[0]["IDCategory"];
@@ -5502,8 +5432,7 @@ loadingTask.promise.then(function(pdf) {
 
 
             $arr[] = array("id" => '1', "desc" => '');
-        }
-        else {
+        } else {
             $arr[] = array("id" => '-1', "desc" => $this->lang->line('verif_log'));
         }
         echo json_encode($arr);
@@ -5527,8 +5456,7 @@ loadingTask.promise.then(function(pdf) {
 
             if ($res[0][$champs] == 0) {
                 $data = array($champs => 1);
-            }
-            else {
+            } else {
                 $data = array($champs => 0);
             }
             $log_id = $res[0]["IDCategory"];
@@ -5537,8 +5465,7 @@ loadingTask.promise.then(function(pdf) {
 
 
             $arr[] = array("id" => '1', "desc" => '');
-        }
-        else {
+        } else {
             $arr[] = array("id" => '-1', "desc" => $this->lang->line('verif_log'));
         }
         echo json_encode($arr);
@@ -5565,8 +5492,7 @@ loadingTask.promise.then(function(pdf) {
             $this->db->update('_category', $data);
 
             $arr[] = array("id" => '1', "desc" => '');
-        }
-        else {
+        } else {
             $arr[] = array("id" => '-1', "desc" => $this->lang->line('verif_log'));
         }
         echo json_encode($arr);
@@ -5591,8 +5517,7 @@ loadingTask.promise.then(function(pdf) {
             $this->db->update('_theme', $data);
             //print_r($idUS);
             $arr[] = array("id" => '1', "desc" => '');
-        }
-        else {
+        } else {
             $arr[] = array("id" => '-1', "desc" => $this->lang->line('verif_log'));
         }
         echo json_encode($arr);
@@ -5623,8 +5548,7 @@ loadingTask.promise.then(function(pdf) {
 
         if ($row->num_rows() > 0) {
             $data = $this->membersTree($parent_key);
-        }
-        else {
+        } else {
             $data = ["id" => "0", "name" => "No Members presnt in list", "text" => "No Members is presnt in list", "nodes" => []];
         }
 
@@ -5703,13 +5627,11 @@ loadingTask.promise.then(function(pdf) {
                 $idItem = $this->insert_dd('_theme', $dataTheme);
 
                 $arr_Res[] = array("id" => '1', "desc" => $err_desc);
-            }
-            else {
+            } else {
                 $arr_Res[] = array("id" => '-1', "desc" => 'Existe Title');
             }
 
-        }
-        else {
+        } else {
             $arr_Res[] = array("id" => '-1', "desc" => "Empty Title ");
         }
 
@@ -5797,8 +5719,8 @@ loadingTask.promise.then(function(pdf) {
     public function update_chapitre_associe()
     {
         header('Content-Type: application/json');
-        $idChapitre = isset($_POST['idChapitre']) ? (int)$_POST['idChapitre'] : 0;
-        $nouveauIdRappel = isset($_POST['nouveauIdRappel']) ? (int)$_POST['nouveauIdRappel'] : 0;
+        $idChapitre = isset($_POST['idChapitre']) ? (int) $_POST['idChapitre'] : 0;
+        $nouveauIdRappel = isset($_POST['nouveauIdRappel']) ? (int) $_POST['nouveauIdRappel'] : 0;
 
         if ($idChapitre > 0 && $nouveauIdRappel > 0) {
             $this->db->where('IDChapitre', $idChapitre);
@@ -5817,8 +5739,7 @@ loadingTask.promise.then(function(pdf) {
                 'nbreCoursRappel' => $rappelChap['NbreCours'],
                 'nbreResumeRappel' => $rappelChap['NbreResume']
             ]);
-        }
-        else {
+        } else {
             echo json_encode(['success' => false]);
         }
         exit;
@@ -5826,15 +5747,14 @@ loadingTask.promise.then(function(pdf) {
     public function update_pathologie_fr()
     {
         header('Content-Type: application/json');
-        $idAnatomy = isset($_POST['idAnatomy']) ? (int)$_POST['idAnatomy'] : 0;
-        $idPathoFR = isset($_POST['idPathoFR']) ? (int)$_POST['idPathoFR'] : 0;
+        $idAnatomy = isset($_POST['idAnatomy']) ? (int) $_POST['idAnatomy'] : 0;
+        $idPathoFR = isset($_POST['idPathoFR']) ? (int) $_POST['idPathoFR'] : 0;
 
         if ($idAnatomy > 0) {
             $this->db->where('IDChapitre', $idAnatomy);
             $this->db->update('_chapitre', ['idpathologieFR' => ($idPathoFR > 0 ? $idPathoFR : null)]);
             echo json_encode(['success' => true, 'message' => 'Pathologie FR mise à jour']);
-        }
-        else {
+        } else {
             echo json_encode(['success' => false, 'message' => 'ID Chapitre Anatomy invalide']);
         }
         exit;
@@ -5853,12 +5773,12 @@ loadingTask.promise.then(function(pdf) {
     public function get_anatomy_chapters()
     {
         header('Content-Type: application/json');
-        $idLivre = isset($_POST['idLivre']) ? (int)$_POST['idLivre'] : 0;
-        $idTheme = isset($_POST['idTheme']) ? (int)$_POST['idTheme'] : 0;
+        $idLivre = isset($_POST['idLivre']) ? (int) $_POST['idLivre'] : 0;
+        $idTheme = isset($_POST['idTheme']) ? (int) $_POST['idTheme'] : 0;
 
         if (!$idTheme && $idLivre) {
             $livreRow = $this->db->select('IDTheme')->where('IDLivre', $idLivre)->get('_livre')->row_array();
-            $idTheme = $livreRow ? (int)$livreRow['IDTheme'] : 0;
+            $idTheme = $livreRow ? (int) $livreRow['IDTheme'] : 0;
         }
         $map = [
             20 => [1],
@@ -5869,8 +5789,7 @@ loadingTask.promise.then(function(pdf) {
 
         if (isset($map[$idTheme])) {
             $themesCibles = $map[$idTheme];
-        }
-        else {
+        } else {
             $themesCibles = [1, 21, 33];
         }
 
@@ -5888,7 +5807,7 @@ loadingTask.promise.then(function(pdf) {
             if (count($chapitres) > 0) {
                 $optionsHtml .= '<optgroup label="' . htmlspecialchars($livreAnat['Titre'], ENT_QUOTES) . '">';
                 foreach ($chapitres as $chap) {
-                    $optionsHtml .= '<option value="' . (int)$chap['IDChapitre'] . '">'
+                    $optionsHtml .= '<option value="' . (int) $chap['IDChapitre'] . '">'
                         . htmlspecialchars($chap['TitreChapitre'], ENT_QUOTES)
                         . '</option>';
                 }
@@ -5917,7 +5836,7 @@ loadingTask.promise.then(function(pdf) {
         $this->db->from('_livre');
         $this->db->join('_theme', '_theme.IDTheme = _livre.IDTheme');
         $this->db->join('_category', '_category.IDCategory = _theme.IDCategory');
-        $this->db->where_in('_livre.IDTheme', [20, 30, 31]);
+        $this->db->where_in('_livre.IDTheme', [20, 36, 31]);
         $this->db->where('_category.multi_lingue', $lang);
         $this->db->order_by('_livre.Titre', 'ASC');
         $resBooks = $this->db->get()->result_array();
@@ -5957,8 +5876,7 @@ loadingTask.promise.then(function(pdf) {
             $this->db->update('_livre', $data_l);
 
             $arr_Res[] = array("id" => '1', "desc" => $err_desc);
-        }
-        else {
+        } else {
             $arr_Res[] = array("id" => '-1', "desc" => "Empty Title ");
         }
 
@@ -6012,7 +5930,7 @@ loadingTask.promise.then(function(pdf) {
 
                 unlink($pathCouv);
 
-            //$err_desc = $err_desc.' ********** '.$listIDlivres[$key].'<br>';
+                //$err_desc = $err_desc.' ********** '.$listIDlivres[$key].'<br>';
 
             }
         }
@@ -6068,7 +5986,7 @@ loadingTask.promise.then(function(pdf) {
 
                 unlink($pathCouv);
 
-            //$err_desc = $err_desc.' ********** '.$listIDlivres[$key].'<br>';
+                //$err_desc = $err_desc.' ********** '.$listIDlivres[$key].'<br>';
 
             }
         }
@@ -6111,8 +6029,7 @@ loadingTask.promise.then(function(pdf) {
 
                 if ($extension === 'html' || $extension === 'htm') {
                     copy($fileDocx, FCPATH . 'PlatFormeConvert/' . $listIDlivres[$key] . "_Desc.HTML");
-                }
-                else {
+                } else {
                     require_once APPPATH . "/third_party/wordToPh/vendor/autoload.php";
                     //$this->load->library('MyWorldDoc');
 
@@ -6143,8 +6060,8 @@ loadingTask.promise.then(function(pdf) {
 
                 unlink(FCPATH . 'PlatFormeConvert/' . $listIDlivres[$key] . "_Desc.HTML");
 
-            ///
-            //$err_desc = $err_desc.' ********** '.$content.'<br>';
+                ///
+                //$err_desc = $err_desc.' ********** '.$content.'<br>';
 
             }
         }
@@ -6174,8 +6091,7 @@ loadingTask.promise.then(function(pdf) {
             );
             $this->insert_dd('_publicite', $data);
             $arr_Res[] = array("id" => '1', "desc" => $err_desc);
-        }
-        else {
+        } else {
             $arr_Res[] = array("id" => '-1', "desc" => "Echec lors de l'insertion de l'URL : " . $Url);
         }
 
@@ -6203,9 +6119,8 @@ loadingTask.promise.then(function(pdf) {
                 $res = $this->db->get()->result_array();
                 if (count($res) > 0) {
                     $idCurs = $res[0]["IDCours"];
-                //$this->db->query("delete FROM `_figure` WHERE IDCours = '$idCurs' ;");
-                }
-                else {
+                    //$this->db->query("delete FROM `_figure` WHERE IDCours = '$idCurs' ;");
+                } else {
                     $data = array(
                         'TitreCours' => '',
                         'UrlCours' => '',
@@ -6292,9 +6207,8 @@ loadingTask.promise.then(function(pdf) {
                 $res = $this->db->get()->result_array();
                 if (count($res) > 0) {
                     $idCurs = $res[0]["IDCours"];
-                //$this->db->query("delete FROM `_figure` WHERE IDCours = '$idCurs' ;");
-                }
-                else {
+                    //$this->db->query("delete FROM `_figure` WHERE IDCours = '$idCurs' ;");
+                } else {
                     $data = array(
                         'TitreCours' => '',
                         'UrlCours' => '',
@@ -6351,22 +6265,21 @@ loadingTask.promise.then(function(pdf) {
                         if (count($resF) > 0) {
                             $this->db->where("IDFigure", $resF[0]["IDFigure"]);
                             $this->db->update('_figure', $data_l);
-                        }
-                        else {
+                        } else {
                             $idFig = $this->insert_dd('_figure', $data_l);
                             $listNewFig = $listNewFig . ',' . $idFig;
                         }
                         unlink($pathCouv);
                     }
                 }
-            /*
-             if($idCurs > 0 && $listNewFig!=''){
-             $listNewFig = ','.$listNewFig;
-             $listNewFig = str_replace(",,","",$listNewFig);
-             $listNewFig = '('.$listNewFig.')';
-             $this->db->query("delete FROM `_figure` WHERE IDCours = '$idCurs' AND IDFigure NOT IN ".$listNewFig);
-             }
-             */
+                /*
+                 if($idCurs > 0 && $listNewFig!=''){
+                 $listNewFig = ','.$listNewFig;
+                 $listNewFig = str_replace(",,","",$listNewFig);
+                 $listNewFig = '('.$listNewFig.')';
+                 $this->db->query("delete FROM `_figure` WHERE IDCours = '$idCurs' AND IDFigure NOT IN ".$listNewFig);
+                 }
+                 */
             }
 
         }
@@ -6397,9 +6310,8 @@ loadingTask.promise.then(function(pdf) {
                 $res = $this->db->get()->result_array();
                 if (count($res) > 0) {
                     $idCurs = $res[0]["IDResume"];
-                //$this->db->query("delete FROM `_figure` WHERE IDCours = '$idCurs' ;");
-                }
-                else {
+                    //$this->db->query("delete FROM `_figure` WHERE IDCours = '$idCurs' ;");
+                } else {
                     $data = array(
                         'TitreResume' => '',
                         'UrlResume' => '',
@@ -6489,9 +6401,8 @@ loadingTask.promise.then(function(pdf) {
                 $res = $this->db->get()->result_array();
                 if (count($res) > 0) {
                     $idRsm = $res[0]["IDResume"];
-                //$this->db->query("delete FROM `_figure` WHERE IDResume = '$idRsm' ;");
-                }
-                else {
+                    //$this->db->query("delete FROM `_figure` WHERE IDResume = '$idRsm' ;");
+                } else {
                     $data = array(
                         'TitreResume' => '',
                         'UrlResume' => '',
@@ -6548,22 +6459,21 @@ loadingTask.promise.then(function(pdf) {
                         if (count($resF) > 0) {
                             $this->db->where("IDFigure", $resF[0]["IDFigure"]);
                             $this->db->update('_figure', $data_l);
-                        }
-                        else {
+                        } else {
                             $idFig = $this->insert_dd('_figure', $data_l);
                             $listNewFig = $listNewFig . ',' . $idFig;
                         }
                         unlink($pathCouv);
                     }
                 }
-            /*
-             if($idRsm > 0 && $listNewFig!=''){
-             $listNewFig = ','.$listNewFig;
-             $listNewFig = str_replace(",,","",$listNewFig);
-             $listNewFig = '('.$listNewFig.')';
-             $this->db->query("delete FROM `_figure` WHERE IDResume = '$idRsm' AND IDFigure NOT IN ".$listNewFig);
-             }
-             */
+                /*
+                 if($idRsm > 0 && $listNewFig!=''){
+                 $listNewFig = ','.$listNewFig;
+                 $listNewFig = str_replace(",,","",$listNewFig);
+                 $listNewFig = '('.$listNewFig.')';
+                 $this->db->query("delete FROM `_figure` WHERE IDResume = '$idRsm' AND IDFigure NOT IN ".$listNewFig);
+                 }
+                 */
             }
 
         }
@@ -6639,9 +6549,9 @@ loadingTask.promise.then(function(pdf) {
                     //print_r('**************************'.strstr($is_quest,'Réponse').'----------------------------');
                     //$quest 	= $this->getString($numBeg."-","Réponse",$is_quest);Proposition : 1
 
-                    $quest = $this->getString($numBeg . "-", ":", (string)$is_quest); // question
-                    $repons_Key = $this->getString(":", "A-", (string)$is_quest); // reponse A;C;E
-                    $proposQcm = $this->getString("A-", "@@@@", (string)$is_quest . "@@@@"); // propositions
+                    $quest = $this->getString($numBeg . "-", ":", (string) $is_quest); // question
+                    $repons_Key = $this->getString(":", "A-", (string) $is_quest); // reponse A;C;E
+                    $proposQcm = $this->getString("A-", "@@@@", (string) $is_quest . "@@@@"); // propositions
                     //print_r('**************************'.$proposition2.'----------------------------<br>');
                     // BEGIN ici on traite les reponses !!!!!
 
@@ -6651,9 +6561,9 @@ loadingTask.promise.then(function(pdf) {
                     //print_r(strip_tags($proposQcm,'<br>'));
                     $listPropos = explode("\r\n", $proposQcm);
 
-                    $lign_Resp = str_replace(" ", "-", (string)$repons_Key);
-                    $lign_Resp = str_replace(";", "-", (string)$lign_Resp);
-                    $lign_Resp = str_replace(":", "-", (string)$lign_Resp);
+                    $lign_Resp = str_replace(" ", "-", (string) $repons_Key);
+                    $lign_Resp = str_replace(";", "-", (string) $lign_Resp);
+                    $lign_Resp = str_replace(":", "-", (string) $lign_Resp);
                     $lign_Resp = "-" . $lign_Resp . "-";
 
                     $lign_Props = '';
@@ -6701,10 +6611,10 @@ loadingTask.promise.then(function(pdf) {
                     $this->db->update('_chapitre', $data_Chap);
 
                 }
-            //				unlink(FCPATH.'PlatFormeConvert/'.$listIDlivres[$key]."_Qcm.HTML");
+                //				unlink(FCPATH.'PlatFormeConvert/'.$listIDlivres[$key]."_Qcm.HTML");
 
-            ///
-            //$err_desc = $err_desc.' ********** '.$content.'<br>';
+                ///
+                //$err_desc = $err_desc.' ********** '.$content.'<br>';
 
             }
         }
@@ -6781,12 +6691,11 @@ loadingTask.promise.then(function(pdf) {
                     $questAll = $this->getString($numBeg . "-", $this->lang->line('params_reponse'), $is_quest);
                     if (strpos($questAll, $this->lang->line('params_propos1')) !== false) {
 
-                        $quest = $this->getString($numBeg . "-", $this->lang->line('params_propos1'), (string)$is_quest);
-                        $proposition1 = $this->getString($this->lang->line('params_propos1'), $this->lang->line('params_propos2'), (string)$is_quest);
-                        $proposition2 = $this->getString($this->lang->line('params_propos2'), $this->lang->line('params_reponse'), (string)$is_quest);
-                    //print_r('**************************'.(string)$questAll.'----------------------------');
-                    }
-                    else {
+                        $quest = $this->getString($numBeg . "-", $this->lang->line('params_propos1'), (string) $is_quest);
+                        $proposition1 = $this->getString($this->lang->line('params_propos1'), $this->lang->line('params_propos2'), (string) $is_quest);
+                        $proposition2 = $this->getString($this->lang->line('params_propos2'), $this->lang->line('params_reponse'), (string) $is_quest);
+                        //print_r('**************************'.(string)$questAll.'----------------------------');
+                    } else {
                         $quest = $this->getString($numBeg . "-", $this->lang->line('params_reponse'), $is_quest);
                     }
 
@@ -6797,8 +6706,7 @@ loadingTask.promise.then(function(pdf) {
                         if ($num > 0) {
                             if ($proposition1 == '') {
                                 $resp = $resp . $onRes . '<br>';
-                            }
-                            else {
+                            } else {
                                 $resp = $resp . $onRes . '&#10;';
                             }
                         }
@@ -6846,10 +6754,10 @@ loadingTask.promise.then(function(pdf) {
                     $this->db->update('_chapitre', $data_Chap);
 
                 }
-            //				unlink(FCPATH.'PlatFormeConvert/'.$listIDlivres[$key]."_Qcm.HTML");
+                //				unlink(FCPATH.'PlatFormeConvert/'.$listIDlivres[$key]."_Qcm.HTML");
 
-            ///
-            //$err_desc = $err_desc.' ********** '.$content.'<br>';
+                ///
+                //$err_desc = $err_desc.' ********** '.$content.'<br>';
 
             }
         }
@@ -6893,8 +6801,7 @@ loadingTask.promise.then(function(pdf) {
 
                 if ($extension === 'html' || $extension === 'htm') {
                     copy($fileDocx, FCPATH . 'PlatFormeConvert/' . $idChap . "_Resum.HTML");
-                }
-                else {
+                } else {
                     require_once APPPATH . "/third_party/wordToPh/vendor/autoload.php";
                     //$this->load->library('MyWorldDoc');
 
@@ -6925,8 +6832,7 @@ loadingTask.promise.then(function(pdf) {
                     if (count($res) > 0) {
                         $idCurs = $res[0]["IDResume"];
                         $this->db->query("delete FROM `_page` WHERE IDResume = '$idCurs' ;");
-                    }
-                    else {
+                    } else {
                         $data = array(
                             'TitreResume' => '',
                             'UrlResume' => '',
@@ -6948,8 +6854,8 @@ loadingTask.promise.then(function(pdf) {
                     $this->db->where('IDChapitre', $idChap);
                     $this->db->update('_chapitre', $data_Chap);
 
-                //unlink(FCPATH.$OutPages.$pageNo.'.pdf');
-                /////// END : VERIFY IF THE COURSE ESXIT or not ///////
+                    //unlink(FCPATH.$OutPages.$pageNo.'.pdf');
+                    /////// END : VERIFY IF THE COURSE ESXIT or not ///////
 
 
                 }
@@ -7000,8 +6906,7 @@ loadingTask.promise.then(function(pdf) {
 
                 if ($extension === 'html' || $extension === 'htm') {
                     copy($fileDocx, FCPATH . 'PlatFormeConvert/' . $idChap . "_Curs.HTML");
-                }
-                else {
+                } else {
                     require_once APPPATH . "/third_party/wordToPh/vendor/autoload.php";
                     //$this->load->library('MyWorldDoc');
 
@@ -7032,8 +6937,7 @@ loadingTask.promise.then(function(pdf) {
                     if (count($res) > 0) {
                         $idCurs = $res[0]["IDCours"];
                         $this->db->query("delete FROM `_page` WHERE IDCours = '$idCurs' ;");
-                    }
-                    else {
+                    } else {
                         $data = array(
                             'TitreCours' => '',
                             'UrlCours' => '',
@@ -7055,8 +6959,8 @@ loadingTask.promise.then(function(pdf) {
                     $this->db->where('IDChapitre', $idChap);
                     $this->db->update('_chapitre', $data_Chap);
 
-                //unlink(FCPATH.$OutPages.$pageNo.'.pdf');
-                /////// END : VERIFY IF THE COURSE ESXIT or not ///////
+                    //unlink(FCPATH.$OutPages.$pageNo.'.pdf');
+                    /////// END : VERIFY IF THE COURSE ESXIT or not ///////
 
 
                 }
@@ -7114,8 +7018,7 @@ loadingTask.promise.then(function(pdf) {
                         if (!copy($file_nameTmp, $originalDocxPath)) {
                             log_message('error', 'upload_Attach_Save_SubChap: impossible de copier vers ' . $originalDocxPath);
                         }
-                    }
-                    else {
+                    } else {
                         require_once APPPATH . "third_party/wordToPh/vendor/autoload.php";
 
                         $objReader = \PhpOffice\PhpWord\IOFactory::createReader('Word2007');
@@ -7126,7 +7029,7 @@ loadingTask.promise.then(function(pdf) {
                         $renderLibrary = "tcpdf";
                         $renderLibraryPath = APPPATH . "third_party/wordToPh/" . $renderLibrary;
                         if (!\PhpOffice\PhpWord\Settings::setPdfRenderer($rendername, $renderLibraryPath)) {
-                        // Ignorer si pas utilisé
+                            // Ignorer si pas utilisé
                         }
 
                         // ==========================================
@@ -7169,8 +7072,7 @@ loadingTask.promise.then(function(pdf) {
                         ];
                         $this->db->where('IDSousChapitre', $idSubChap);
                         $this->db->update('_souschapitre', $dataUpdate);
-                    }
-                    else {
+                    } else {
                         // Création
                         $dataInsert = [
                             'IDSousChapitre' => $idSubChap,
@@ -7183,8 +7085,7 @@ loadingTask.promise.then(function(pdf) {
             }
 
             $arr_Res[] = ["id" => '1', "desc" => $err_desc];
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             log_message('error', 'upload_Attach_Save_SubChap: ' . $e->getMessage());
             $arr_Res[] = ["id" => '0', "desc" => "Erreur: " . $e->getMessage()];
         }
@@ -7240,7 +7141,7 @@ loadingTask.promise.then(function(pdf) {
                 $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($contents, 'PDF');
                 $objWriter->save(FCPATH . 'PlatFormeConvert/' . $idChap . "_Curs.pdf");
 
-            //unlink(FCPATH.'PlatFormeConvert/'.$idChap."_Curs.docx");
+                //unlink(FCPATH.'PlatFormeConvert/'.$idChap."_Curs.docx");
 
             }
         }
@@ -7274,8 +7175,7 @@ loadingTask.promise.then(function(pdf) {
                 if (count($res) > 0) {
                     $idCurs = $res[0]["IDCours"];
                     $this->db->query("delete FROM `_page` WHERE IDCours = '$idCurs' ;");
-                }
-                else {
+                } else {
                     $data = array(
                         'TitreCours' => '',
                         'UrlCours' => '',
@@ -7324,7 +7224,7 @@ loadingTask.promise.then(function(pdf) {
 
                 }
 
-            //unlink(FCPATH.'PlatFormeConvert/'.$idChap."_Curs.pdf");
+                //unlink(FCPATH.'PlatFormeConvert/'.$idChap."_Curs.pdf");
 
             }
         }
@@ -7393,8 +7293,7 @@ loadingTask.promise.then(function(pdf) {
             $this->db->query("delete FROM `_livre` WHERE IDLivre = '$id_' ;");
 
             $arr_Res[] = array("id" => '1', "desc" => '');
-        }
-        else {
+        } else {
             $arr_Res[] = array("id" => '-1', "desc" => $this->lang->line('supp_delErr'));
         }
 
@@ -7438,8 +7337,7 @@ loadingTask.promise.then(function(pdf) {
             $this->db->query("delete FROM `_chapitre` 	WHERE IDChapitre = '$idch' ;");
 
             $arr_Res[] = array("id" => '1', "desc" => '');
-        }
-        else {
+        } else {
             $arr_Res[] = array("id" => '-1', "desc" => $this->lang->line('supp_delErr'));
         }
 
@@ -7500,13 +7398,11 @@ loadingTask.promise.then(function(pdf) {
             if ($updated) {
                 $response['success'] = true;
                 $response['message'] = 'Sous-chapitre mis à jour avec succès.';
-            }
-            else {
+            } else {
                 $response['message'] = 'La mise à jour a échoué.';
             }
 
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             $response['message'] = 'Erreur SQL : ' . $e->getMessage();
         }
 
@@ -7713,8 +7609,7 @@ loadingTask.promise.then(function(pdf) {
             $this->db->update('_questiontype', $data_l);
 
             $arr_Res[] = array("id" => '1', "desc" => '');
-        }
-        else {
+        } else {
             $arr_Res[] = array("id" => '-1', "desc" => $this->lang->line('supp_delErr'));
         }
 
@@ -7735,8 +7630,7 @@ loadingTask.promise.then(function(pdf) {
             $this->db->update('_questiontype', $data_l);
 
             $arr_Res[] = array("id" => '1', "desc" => '');
-        }
-        else {
+        } else {
             $arr_Res[] = array("id" => '-1', "desc" => $this->lang->line('supp_delErr'));
         }
 
@@ -7768,8 +7662,7 @@ loadingTask.promise.then(function(pdf) {
             $this->db->update('_chapitre', $data_l);
 
             $arr_Res[] = array("id" => '1', "desc" => '');
-        }
-        else {
+        } else {
             $arr_Res[] = array("id" => '-1', "desc" => $this->lang->line('supp_delErr'));
         }
 
@@ -7800,8 +7693,7 @@ loadingTask.promise.then(function(pdf) {
             $this->db->update('_chapitre', $data_l);
 
             $arr_Res[] = array("id" => '1', "desc" => '');
-        }
-        else {
+        } else {
             $arr_Res[] = array("id" => '-1', "desc" => $this->lang->line('supp_delErr'));
         }
 
@@ -7823,8 +7715,7 @@ loadingTask.promise.then(function(pdf) {
             $this->db->update('_chapitre', $data_l);
 
             $arr_Res[] = array("id" => '1', "desc" => '');
-        }
-        else {
+        } else {
             $arr_Res[] = array("id" => '-1', "desc" => $this->lang->line('supp_delErr'));
         }
 
@@ -7846,8 +7737,7 @@ loadingTask.promise.then(function(pdf) {
             $this->db->update('_chapitre', $data_l);
 
             $arr_Res[] = array("id" => '1', "desc" => '');
-        }
-        else {
+        } else {
             $arr_Res[] = array("id" => '-1', "desc" => $this->lang->line('supp_delErr'));
         }
 
@@ -7900,7 +7790,7 @@ loadingTask.promise.then(function(pdf) {
 
                         $this->db->query("delete FROM `_cours` WHERE IDCours = '$idCurs' ;");
                     }
-                //print_r(count($resF)."------".count($resP)."-----".$ChapID);
+                    //print_r(count($resF)."------".count($resP)."-----".$ChapID);
                 }
 
                 if ($idResm > 0) {
@@ -7931,14 +7821,13 @@ loadingTask.promise.then(function(pdf) {
 
                         $this->db->query("delete FROM `_resume` WHERE IDResume = '$idResm' ;");
                     }
-                //print_r(count($resF)."------".count($resP)."-----".$ChapID);
+                    //print_r(count($resF)."------".count($resP)."-----".$ChapID);
                 }
 
             }
 
             $arr_Res[] = array("id" => '1', "desc" => '');
-        }
-        else {
+        } else {
             $arr_Res[] = array("id" => '-1', "desc" => $this->lang->line('supp_delErr'));
         }
 
@@ -7973,13 +7862,11 @@ loadingTask.promise.then(function(pdf) {
                 }
                 $arr_Res[] = array("id" => '1', "desc" => '');
 
-            }
-            else {
+            } else {
                 $arr_Res[] = array("id" => '-1', "desc" => 'Chapter not found');
             }
 
-        }
-        else {
+        } else {
             $arr_Res[] = array("id" => '-1', "desc" => $this->lang->line('supp_delErr'));
         }
 
@@ -8014,13 +7901,11 @@ loadingTask.promise.then(function(pdf) {
                 }
                 $arr_Res[] = array("id" => '1', "desc" => '');
 
-            }
-            else {
+            } else {
                 $arr_Res[] = array("id" => '-1', "desc" => 'Chapter not found');
             }
 
-        }
-        else {
+        } else {
             $arr_Res[] = array("id" => '-1', "desc" => $this->lang->line('supp_delErr'));
         }
 
@@ -8063,8 +7948,7 @@ loadingTask.promise.then(function(pdf) {
             $this->db->where('IDChapitre', $idCh);
             $this->db->update('_chapitre', $data_Chap);
             $arr_Res[] = array("id" => '1', "desc" => $desc);
-        }
-        else {
+        } else {
             $arr_Res[] = array("id" => '-1', "desc" => $desc);
         }
 
@@ -8094,8 +7978,7 @@ loadingTask.promise.then(function(pdf) {
             $this->db->where('IDLivre', $idB);
             $this->db->update('_livre', $data_Book);
             $arr_Res[] = array("id" => '1', "desc" => $desc);
-        }
-        else {
+        } else {
             $arr_Res[] = array("id" => '-1', "desc" => $desc);
         }
 
@@ -8172,8 +8055,7 @@ loadingTask.promise.then(function(pdf) {
                 if (count($res) > 0) {
                     $idCurs = $res[0]["IDCours"];
                     $this->db->query("delete FROM `_page` WHERE IDCours = '$idCurs' ;");
-                }
-                else {
+                } else {
                     $data = array(
                         'TitreCours' => '',
                         'UrlCours' => '',
@@ -8213,13 +8095,13 @@ loadingTask.promise.then(function(pdf) {
 
                     $this->insert_dd('_page', $data_P);
 
-                //unlink(FCPATH.$OutPages.$pageNo.'.pdf');
+                    //unlink(FCPATH.$OutPages.$pageNo.'.pdf');
 
                 }
 
                 unlink(FCPATH . 'PlatFormeConvert/' . "teddddddddst.pdf");
 
-            //$err_desc = $err_desc.' ********** '.$content.'<br>';
+                //$err_desc = $err_desc.' ********** '.$content.'<br>';
 
             }
         }
@@ -8267,15 +8149,13 @@ loadingTask.promise.then(function(pdf) {
                         '/',
                         substr($_SERVER['SCRIPT_FILENAME'], 0, 0 - strlen($_SERVER['PHP_SELF']))
                     );
-                }
-                elseif (isset($_SERVER['PATH_TRANSLATED'])) {
+                } elseif (isset($_SERVER['PATH_TRANSLATED'])) {
                     $_SERVER['DOCUMENT_ROOT'] = str_replace(
                         '\\',
                         '/',
                         substr(str_replace('\\\\', '\\', $_SERVER['PATH_TRANSLATED']), 0, 0 - strlen($_SERVER['PHP_SELF']))
                     );
-                }
-                else {
+                } else {
                     // define here your DOCUMENT_ROOT path if the previous fails (e.g. '/var/www')
                     $_SERVER['DOCUMENT_ROOT'] = '/var/www';
                 }
@@ -8333,8 +8213,7 @@ loadingTask.promise.then(function(pdf) {
         $desc = ''; //$newTitre;
         if (!isset($_POST["bookID"]) || !isset($_POST["listIDsTest"])) {
             $arr_Res[] = array("id" => '-1', "desc" => $this->lang->line('testPopErr'));
-        }
-        else {
+        } else {
             $IDLivr = base64_decode($_POST["bookID"]);
             $OrdreChap = $_POST["listIDsTest"];
             $typeImp = base64_encode($_POST["typeQCM"]);
@@ -8345,8 +8224,8 @@ loadingTask.promise.then(function(pdf) {
             foreach ($OrdreChap as $key => $titleChap) {
                 if (trim($titleChap) != '') {
                     $listIDS = $listIDS . ";;" . $titleChap;
-                //print_r(base64_decode($titleChap));
-                //print_r('<br>');
+                    //print_r(base64_decode($titleChap));
+                    //print_r('<br>');
 
                 }
             }
@@ -8409,12 +8288,10 @@ loadingTask.promise.then(function(pdf) {
         if (count($resResum) > 0) {
             if ($typeQ == 'Qroc') {
                 $TitreQ = $resResum[0]["TitreQroc"];
-            }
-            else {
+            } else {
                 $TitreQ = $resResum[0]["TitreQcm"];
             }
-        }
-        else {
+        } else {
             $TitreQ = "";
         }
         /*
@@ -8470,8 +8347,7 @@ loadingTask.promise.then(function(pdf) {
                 $oldNBR = substr($name, 0, strpos($name, "-"));
                 if (strpos($name, "-") !== false) {
                     $name = str_replace("$oldNBR-", "$cuntCMP- ", $name);
-                }
-                else {
+                } else {
                     $name = $cuntCMP . "- " . $name;
                 }
 
@@ -8491,8 +8367,7 @@ loadingTask.promise.then(function(pdf) {
 </textarea> </div>";
                         $typeCh = $typeCh . "	<input type='hidden' name='setID[]' id='setID[]' value='$id'  />";
                         $typeCh = $typeCh . "<div class='col-12 col-md-6 col-lg-6' id='setResp' style='visibility:visible; '><div class='mb-2'><h3>" . $this->lang->line('reponse') . "</h3></div>	<div style='relative: absolute;height: 0px;'><div style='height: 17em;overflow: auto;border: 1px solid #ced4da; text-align: left;padding-left: 0.5em;' class='col-12 col-md-12 col-lg-12'>$respo</div></div> <div style='position: relative;height: 17em;' id='setKeyResp' ><button  class='btn btn-primary' style='height: 100%;width: 100%;' ><i class='fa fa-eye-slash'></i></button></div></div></div>";
-                    }
-                    else {
+                    } else {
                         $typeCh = "<div class='row'> <div class='col-12 col-md-6 col-lg-6'><div class='mb-2'><h3>" . $this->lang->line('proposition1') . "</h3></div>	<textarea  name='setInf-$id' id='setInf-$id' class='form-control' rows='8' style='resize:none;' >$proposition1</textarea> </div>";
                         $typeCh = $typeCh . "	<input type='hidden' name='setID[]' id='setID[]' value='$id'  />";
                         $typeCh = $typeCh . "<div class='col-12 col-md-6 col-lg-6' id='setResp' style='visibility:visible; '><div class='mb-2'><h3>" . $this->lang->line('proposition2') . "</h3></div>	<div><textarea  name='setInf-$id' id='setInf-$id' class='form-control' rows='8' style='resize:none;' >$proposition2</textarea></div> </div></div>";
@@ -8519,8 +8394,7 @@ loadingTask.promise.then(function(pdf) {
                             $typeINDC = "<span id='indCT'  style='float:right; color: green ; visibility: hidden ; font-weight: bold ; font-size: 0.99em;'>" . $this->lang->line('oui') . "</span>";
                             $typeCh = $typeCh . "	<input type='checkbox' name='setValTEST' id='setValTEST_$id' value='true' data-setTST='true' style='transform: scale(0.7);' class='form-check-input'/>";
 
-                        }
-                        else {
+                        } else {
                             $typeResp = '';
                             //$typeINDC = "<span id='indCT' class='fas fa-circle' style='float:right; color: red ; visibility: hidden'></span>";
                             $typeINDC = "<span id='indCT'  style='float:right; color: red ; visibility: hidden ; font-weight: bold ; font-size: 0.99em; '>" . $this->lang->line('non') . "</span>";
@@ -8541,8 +8415,7 @@ loadingTask.promise.then(function(pdf) {
                 if ($TitreQ == '') {
                     $blocQ = "<div id='quest_' data-quest='$id' class='lead text-center mb-4' style='font-weight: bold;margin-bottom: 0.7rem !important;margin-top: 0.5em; font-size: 1.4em' >" . $name . "</div><h4 style='display: none' id='titleQ'></h4>";
 
-                }
-                else {
+                } else {
                     $blocQ = "<div id='quest_' data-quest='$id' class='lead text-center mb-4' style='display: none'><h4 style='color: green;' id='titleQ'>$TitreQ</h4></div>" . '<br>' . "<div class='lead text-center mb-4' style='font-weight: bold;margin-bottom: 0.7rem !important;margin-top: 0.5em; font-size: 1.4em'>" . $name . "</div>";
                 }
                 if ($typeQ == 'Qroc') {
@@ -8550,19 +8423,16 @@ loadingTask.promise.then(function(pdf) {
                     $blocStart = "<div class='lead text-center mb-2' ><div class='card text-center' style='margin-bottom: 0.5em;background-color: #f7f7f7;'><div class='card-body d-flex flex-column' style='padding: 0.1rem;'>";
                     if ($cuntCMP == $cmpt) {
                         $blocR = $blocStart . $typeCh . $blocEnd . "<div class='mb-1' style='text-align: center;padding-top: 1em;'><p id='setKeyResp' class='text-primary' style='display: inline; visibility: hidden'><i style='color: red'>Solution :</i> $sort_row->ResponseKey</p><button  style='display: inline;' class='btn btn-primary' onclick='myFunction($id)'>" . $this->lang->line('voir_respons') . "</button></div>" . $blocEnd;
-                    }
-                    else {
+                    } else {
                         $blocR = $blocStart . $typeCh . $blocEnd;
                     }
-                }
-                else {
+                } else {
                     $blocStart = "<div class='lead text-center mb-2' ><div class='card text-center' style='margin-bottom: 0.5em;'><div class='card-body d-flex flex-column'>";
 
                     //	$blocR 		= $blocStart."<div class='mb-4'><h3>Votre réponse</h3></div>".$typeCh."<div class='mb-3'><p class='text-primary'>T-primary c</p><button  class='btn btn-primary' onclick='myFunction()'>Voir solution</button></div>".$blocEnd;
                     if ($cuntCMP == $cmpt) {
                         $blocR = $blocStart . $typeCh . "<div class='mb-1' style='padding-top: 1em;'><p id='setKeyResp' class='text-primary' style='display: inline; visibility: hidden'><i style='color: red'>Solution :</i> $sort_row->ResponseKey</p><br><br><button  style='display: inline;' class='btn btn-primary' onclick='myFunction($id)'>" . $this->lang->line('voir_respons') . "</button></div>" . $blocEnd;
-                    }
-                    else {
+                    } else {
                         $blocR = $blocStart . $typeCh . "<div class='mb-1' style='padding-top: 1em;'><i  style='display: inline;'>" . "</i><p id='setKeyResp' class='text-primary' style='display: inline; visibility: hidden'><i style='color: red'>Solution :</i> $sort_row->ResponseKey</p></div>" . $blocEnd;
                     }
                 }
@@ -8619,8 +8489,7 @@ loadingTask.promise.then(function(pdf) {
 
         if (!isset($_POST["bookID"]) || !isset($_POST["listIDsTest"])) {
             $arr_Res[] = array("id" => '-1', "desc" => $this->lang->line('testPopErr'));
-        }
-        else {
+        } else {
             $IDLivr = base64_decode($_POST["bookID"]);
             $OrdreChap = $_POST["listIDsTest"];
             //print_r($OrdreCat);
@@ -8630,8 +8499,8 @@ loadingTask.promise.then(function(pdf) {
             foreach ($OrdreChap as $key => $titleChap) {
                 if (trim($titleChap) != '') {
                     $listIDS = $listIDS . "." . $titleChap;
-                //print_r(base64_decode($titleChap));
-                //print_r('<br>');
+                    //print_r(base64_decode($titleChap));
+                    //print_r('<br>');
 
                 }
             }
@@ -8649,8 +8518,7 @@ loadingTask.promise.then(function(pdf) {
         $desc = ''; //$newTitre;
         if (!isset($_POST["bookID"]) || !isset($_POST["listIDsTest"])) {
             $arr_Res[] = array("id" => '-1', "desc" => $this->lang->line('testPopErr'));
-        }
-        else {
+        } else {
             $IDLivr = base64_decode($_POST["bookID"]);
             $OrdreChap = $_POST["listIDsTest"];
             $typeImp = base64_encode($_POST["typeQCM"]);
@@ -8661,8 +8529,8 @@ loadingTask.promise.then(function(pdf) {
             foreach ($OrdreChap as $key => $titleChap) {
                 if (trim($titleChap) != '') {
                     $listIDS = $listIDS . ";;" . $titleChap;
-                //print_r(base64_decode($titleChap));
-                //print_r('<br>');
+                    //print_r(base64_decode($titleChap));
+                    //print_r('<br>');
 
                 }
             }
@@ -8776,18 +8644,15 @@ loadingTask.promise.then(function(pdf) {
 
                 if (isset($sent)) {
                     $arr[] = array("id" => '1', "desc" => $this->email->print_debugger());
-                }
-                else {
+                } else {
                     $arr[] = array("id" => '-1', "desc" => 'It did not send. <br>' . $this->email->print_debugger());
                 }
 
-            }
-            else {
+            } else {
                 $arr[] = array("id" => '-1', "desc" => "PARAMS NOT FOUND >>> " . '<br>');
             }
 
-        }
-        else {
+        } else {
             $arr[] = array("id" => '-1', "desc" => $this->lang->line('mail_msg_ch') . '<br>' . $errMsg);
         }
 
@@ -8878,18 +8743,15 @@ loadingTask.promise.then(function(pdf) {
 
                 if (isset($sent)) {
                     $arr[] = array("id" => '1', "desc" => $this->email->print_debugger());
-                }
-                else {
+                } else {
                     $arr[] = array("id" => '-1', "desc" => 'It did not send. <br>' . $this->email->print_debugger());
                 }
 
-            }
-            else {
+            } else {
                 $arr[] = array("id" => '-1', "desc" => "PARAMS NOT FOUND >>> " . '<br>');
             }
 
-        }
-        else {
+        } else {
             $arr[] = array("id" => '-1', "desc" => $this->lang->line('mail_msg_ch') . '<br>' . $errMsg);
         }
 
@@ -8917,7 +8779,7 @@ loadingTask.promise.then(function(pdf) {
 
     public function get_social_linksJSON()
     {
-    //		// Query the database for all parameters where 'Libelle_Params' starts with 'social_'
+        //		// Query the database for all parameters where 'Libelle_Params' starts with 'social_'
 //		$this->db->select('Libelle_Params, Value_Params'); // Assuming 'Value_Params' holds the URLs
 //		$this->db->from('_params');
 //		$this->db->like('Libelle_Params', 'social_'); // Select all entries where Libelle_Params starts with 'social_'
@@ -8949,8 +8811,7 @@ loadingTask.promise.then(function(pdf) {
         foreach ($OrdreChap as $chap) {
             if (isset($chap['idChap'])) {
                 $idChap = $chap['idChap'];
-            }
-            else {
+            } else {
                 $titreChap = trim($chap['titreChap'] ?? '');
                 if ($titreChap === '')
                     continue;
@@ -8963,8 +8824,7 @@ loadingTask.promise.then(function(pdf) {
 
                 if (!empty($resC)) {
                     $idChap = $resC[0]['IDChapitre'];
-                }
-                else {
+                } else {
                     $dataChap = [
                         'TitreChapitre' => $titreChap,
                         'IDLivre' => $IDLivr
@@ -9082,8 +8942,7 @@ loadingTask.promise.then(function(pdf) {
                 $this->db->where('p.IDChapitre', $idPathoFR);
                 $query = $this->db->get();
                 $pathoChaps = $query->result_array();
-            }
-            else {
+            } else {
                 // Mode contextuel (Chapitre) : Trouver les chapitres de pathologie liés à ce cours d'anatomie
                 $this->db->select('p.IDChapitre, p.TitreChapitre, p.IdChapterRappel, p.IDLivre, r.NbreResume as NbreResumeRappel');
                 $this->db->from('_chapitre as p');
@@ -9092,8 +8951,7 @@ loadingTask.promise.then(function(pdf) {
                 $query = $this->db->get();
                 $pathoChaps = $query->result_array();
             }
-        }
-        else {
+        } else {
             // Mode Livre (Affichage primaire) : Trouver les pathologies liées aux chapitres de ce livre d'anatomie
             $idLivreAnatomy = isset($data['idLivre']) ? $data['idLivre'] : null;
             if ($idLivreAnatomy) {
@@ -9154,7 +9012,7 @@ loadingTask.promise.then(function(pdf) {
         $this->db->join('_category', '_category.IDCategory = _theme.IDCategory');
         $this->db->where('_category.multi_lingue', $lang);
         $this->db->group_start();
-        $this->db->where_in('_livre.IDTheme', [20, 30, 31]);
+        $this->db->where_in('_livre.IDTheme', [20, 36, 31]);
         $this->db->or_like('_category.Libelle', 'Pathologie');
         $this->db->or_like('_category.Libelle', 'Patologia');
         $this->db->or_like('_category.Libelle', 'Pathology');
@@ -9167,8 +9025,7 @@ loadingTask.promise.then(function(pdf) {
 
         if (!empty($pathoBooks)) {
             echo json_encode(['success' => true, 'type' => 'books', 'pathoBooks' => $pathoBooks]);
-        }
-        else {
+        } else {
             // Secours si les thèmes sont vides pour cette langue, on cherche par libellé "Pathologie"
             $this->db->select('_livre.IDLivre, _livre.Titre, CAST(SUBSTRING_INDEX(_livre.Titre, "-", 1) as SIGNED INTEGER) AS ord');
             $this->db->from('_livre');
@@ -9183,8 +9040,7 @@ loadingTask.promise.then(function(pdf) {
 
             if (!empty($pathoBooks)) {
                 echo json_encode(['success' => true, 'type' => 'books', 'pathoBooks' => $pathoBooks]);
-            }
-            else {
+            } else {
                 echo json_encode(['success' => false, 'message' => 'Aucune pathologie disponible pour cette langue (' . $lang . ')']);
             }
         }
@@ -9210,8 +9066,7 @@ loadingTask.promise.then(function(pdf) {
 
         if ($deleted && $this->db->affected_rows() > 0) {
             echo json_encode([["id" => '1', "desc" => $this->lang->line('supp_souschap_succes')]]);
-        }
-        else {
+        } else {
             echo json_encode([["id" => '0', "desc" => 'Erreur lors de la suppression ou sous-chapitre introuvable']]);
         }
     }
@@ -9283,8 +9138,7 @@ loadingTask.promise.then(function(pdf) {
             }
 
             echo json_encode($response);
-        }
-        else {
+        } else {
             echo json_encode([
                 'status' => 'error',
                 'message' => 'Sous-chapitre non trouvé'
@@ -9304,19 +9158,19 @@ loadingTask.promise.then(function(pdf) {
 
         if (file_exists($file_path)) {
             $rawContent = file_get_contents($file_path);
-            
+
             // On vérifie si c'est un HTML complet (avec <html> ou <body>)
             $isFullHtml = (stripos($rawContent, '<html') !== false || stripos($rawContent, '<body') !== false || stripos($rawContent, '<!DOCTYPE') !== false);
-            
+
             if ($isFullHtml) {
                 // Nettoyage unicode / entités si nécessaire
-                $decodedContent = htmlspecialchars_decode(str_replace("font-family: 'Symbol'","font-family: ''", $rawContent));
-                
+                $decodedContent = htmlspecialchars_decode(str_replace("font-family: 'Symbol'", "font-family: ''", $rawContent));
+
                 // On utilise DOMDocument pour extraire les styles et le corps proprement
                 $tempDoc = new DOMDocument();
                 // Suppression des erreurs de parsing HTML5
                 @$tempDoc->loadHTML('<?xml encoding="utf-8" ?>' . $decodedContent, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-                
+
                 // Extraction des styles du <head>
                 $headStyles = '';
                 $headNode = $tempDoc->getElementsByTagName('head')->item(0);
@@ -9327,7 +9181,7 @@ loadingTask.promise.then(function(pdf) {
                         }
                     }
                 }
-                
+
                 // Extraction du corps (sans troncature)
                 $body = $tempDoc->getElementsByTagName('body')->item(0);
                 $bodyHtml = '';
@@ -9362,15 +9216,14 @@ loadingTask.promise.then(function(pdf) {
                     </style></head><body>' .
                     $bodyHtml .
                     '</body></html>';
-                
+
                 $iframeSrcEscaped = htmlspecialchars($iframeSrc, ENT_QUOTES, 'UTF-8');
-                
+
                 $data['CursShow'] = '<iframe srcdoc="' . $iframeSrcEscaped . '" style="width:100%; height:calc(100vh - 120px); border:none; background: white;" sandbox="allow-same-origin allow-scripts"></iframe>';
             } else {
                 $data['CursShow'] = $rawContent;
             }
-        }
-        else {
+        } else {
             $data['CursShow'] = '<p style="color:red; padding: 20px;">Fichier non trouvé : ' . htmlspecialchars($fichierHTML) . '</p>';
         }
 
@@ -9447,7 +9300,7 @@ loadingTask.promise.then(function(pdf) {
         }
 
         // Vérifier s'il y a un résumé
-        if (isset($chapitre['NbreResume']) && (int)$chapitre['NbreResume'] > 0) {
+        if (isset($chapitre['NbreResume']) && (int) $chapitre['NbreResume'] > 0) {
             // Récupérer le fichier de résumé
             $this->db->select('FichierHTML');
             $this->db->from('_resume');
@@ -9573,8 +9426,7 @@ loadingTask.promise.then(function(pdf) {
 
         if (count($result) > 0) {
             echo json_encode(['exists' => true, 'data' => $result[0]]);
-        }
-        else {
+        } else {
             echo json_encode(['exists' => false, 'data' => null]);
         }
         exit;
@@ -9689,8 +9541,7 @@ loadingTask.promise.then(function(pdf) {
 
                 $arr_Res[] = array("id" => '1', "desc" => 'Rappel mis à jour avec succès');
 
-            }
-            else {
+            } else {
                 log_message('debug', '=== INSERTION d\'un nouveau rappel ===');
 
                 // Insérer
@@ -9709,15 +9560,13 @@ loadingTask.promise.then(function(pdf) {
                 if ($insertId > 0) {
                     log_message('debug', '✅ Rappel inséré avec succès - ID: ' . $insertId);
                     $arr_Res[] = array("id" => '1', "desc" => 'Rappel ajouté avec succès');
-                }
-                else {
+                } else {
                     log_message('error', '❌ Échec de l\'insertion');
                     $arr_Res[] = array("id" => '-1', "desc" => 'Erreur insertion BD');
                 }
             }
 
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             log_message('error', 'Exception: ' . $e->getMessage());
             $arr_Res[] = array("id" => '-1', "desc" => 'Erreur: ' . $e->getMessage());
         }
@@ -9765,8 +9614,7 @@ loadingTask.promise.then(function(pdf) {
             $this->db->where('IDChapitre', $idChapitre);
             $this->db->delete('_rappel_anatomique');
             echo json_encode(['id' => '1', 'desc' => 'Rappel supprimé avec succès']);
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             echo json_encode(['id' => '-1', 'desc' => 'Erreur: ' . $e->getMessage()]);
         }
         exit;
@@ -9844,13 +9692,11 @@ loadingTask.promise.then(function(pdf) {
 
             if ($this->db->insert_id() > 0) {
                 $arr_Res[] = array("id" => '1', "desc" => 'Image ajoutée avec succès');
-            }
-            else {
+            } else {
                 $arr_Res[] = array("id" => '-1', "desc" => 'Erreur lors de l\'ajout de l\'image');
             }
 
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             log_message('error', 'Erreur saveRappelImage: ' . $e->getMessage());
             $arr_Res[] = array("id" => '-1', "desc" => 'Erreur: ' . $e->getMessage());
         }
@@ -9879,8 +9725,7 @@ loadingTask.promise.then(function(pdf) {
 
             echo json_encode(array('success' => true, 'data' => $images));
 
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             log_message('error', 'Erreur getRappelImages: ' . $e->getMessage());
             echo json_encode(array('success' => false, 'message' => 'Erreur: ' . $e->getMessage()));
         }
@@ -9904,13 +9749,11 @@ loadingTask.promise.then(function(pdf) {
 
             if ($this->db->affected_rows() > 0) {
                 echo json_encode(array('success' => true, 'message' => 'Image supprimée avec succès'));
-            }
-            else {
+            } else {
                 echo json_encode(array('success' => false, 'message' => 'Image non trouvée'));
             }
 
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             log_message('error', 'Erreur deleteRappelImage: ' . $e->getMessage());
             echo json_encode(array('success' => false, 'message' => 'Erreur: ' . $e->getMessage()));
         }

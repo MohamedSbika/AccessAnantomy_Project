@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Juridika.tn — Équipe & Assistante</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0F1E35;--navy-mid:#1B2F50;--navy-soft:#243A60;
+  --gold:#C4973A;--gold-lt:#F7EDD8;--gold-mid:#E8D4A8;--gold-dk:#8A6520;
+  --off-white:#FAFAF8;--surface:#FFFFFF;--surface-2:#F4F6FA;
+  --border:#E5E9F0;--border-dark:#CBD2DE;
+  --text-primary:#0F1E35;--text-secondary:#5A6479;--text-muted:#9BA4B4;
+  --green:#1B6B41;--green-lt:#EAF5EE;
+  --red:#B03030;--red-lt:#FDF0F0;
+  --amber:#B07030;--amber-lt:#FDF5EC;
+  --blue:#1A4A8A;--blue-lt:#EEF3FA;
+  --sidebar-w:240px;--topbar-h:64px;
+  --radius:10px;--radius-sm:6px;--radius-lg:16px;
+  --shadow:0 4px 20px rgba(15,30,53,.09);
+  --shadow-lg:0 12px 48px rgba(15,30,53,.14);
+  --t:all .22s cubic-bezier(.4,0,.2,1);
+}
+body{font-family:"DM Sans",sans-serif;background:var(--off-white);color:var(--text-primary);display:flex;min-height:100vh;font-size:14px}
+
+/* ── SIDEBAR (simplified, matching main dashboard) ── */
+.sidebar{width:var(--sidebar-w);background:var(--navy);min-height:100vh;position:fixed;top:0;left:0;display:flex;flex-direction:column;z-index:100;border-right:1px solid rgba(255,255,255,.06)}
+.sidebar-logo{padding:20px 20px 16px;border-bottom:1px solid rgba(255,255,255,.07)}
+.logo-wordmark{font-family:"Cormorant Garamond",serif;font-size:1.4rem;font-weight:700;color:#fff;letter-spacing:.02em}
+.logo-wordmark span{color:var(--gold)}
+.lawyer-card{display:flex;align-items:center;gap:10px;margin:12px;padding:12px;background:rgba(255,255,255,.06);border-radius:var(--radius);border:1px solid rgba(255,255,255,.08)}
+.lawyer-avatar{width:36px;height:36px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;color:var(--navy);flex-shrink:0}
+.lawyer-name{font-size:13px;font-weight:500;color:#fff}
+.lawyer-tier{font-size:10px;color:var(--gold);margin-top:2px;display:flex;align-items:center;gap:4px}
+.tier-dot{width:6px;height:6px;border-radius:50%;background:var(--gold)}
+.nav-section{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);padding:14px 18px 6px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 16px;margin:2px 10px;border-radius:var(--radius-sm);cursor:pointer;color:rgba(255,255,255,.55);font-size:13px;transition:var(--t)}
+.nav-item:hover{background:rgba(255,255,255,.07);color:#fff}
+.nav-item.active{background:rgba(196,151,58,.18);color:var(--gold);font-weight:500}
+.nav-icon{width:18px;text-align:center;font-size:15px}
+
+/* ── MAIN ── */
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column}
+.topbar{height:var(--topbar-h);background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:50}
+.topbar-title{display:flex;align-items:center;gap:10px}
+.page-icon{font-size:1.2rem}
+.topbar h2{font-family:"Cormorant Garamond",serif;font-size:1.25rem;font-weight:600;color:var(--text-primary)}
+.topbar-sub{font-size:12px;color:var(--text-muted);margin-left:6px}
+.cabinet-badge{display:inline-flex;align-items:center;gap:5px;background:var(--gold-lt);color:var(--gold-dk);font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;border:1px solid var(--gold-mid)}
+.content{padding:28px;flex:1}
+
+/* ── CARDS ── */
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.section-title{font-family:"Cormorant Garamond",serif;font-size:1.1rem;font-weight:600;color:var(--text-primary)}
+.section-sub{font-size:12px;color:var(--text-muted);margin-top:3px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow);overflow:hidden;margin-bottom:24px}
+.card-head{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.card-title{font-size:14px;font-weight:500;color:var(--text-primary);display:flex;align-items:center;gap:8px}
+.card-body{padding:22px}
+
+/* ── EMPTY STATE ── */
+.empty-state{display:flex;flex-direction:column;align-items:center;padding:48px 24px;text-align:center}
+.empty-icon{font-size:48px;margin-bottom:16px;opacity:.6}
+.empty-title{font-size:15px;font-weight:500;color:var(--text-secondary);margin-bottom:8px}
+.empty-sub{font-size:13px;color:var(--text-muted);max-width:320px;line-height:1.6;margin-bottom:24px}
+
+/* ── ASSISTANT CARD (when active) ── */
+.assistant-card{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:start;padding:20px 22px;border-bottom:1px solid var(--border)}
+.assistant-card:last-child{border-bottom:none}
+.asst-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#1B2F50,#243A60);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:15px;color:var(--gold);flex-shrink:0;border:2px solid var(--gold-lt)}
+.asst-info{display:flex;align-items:flex-start;gap:14px}
+.asst-name{font-size:15px;font-weight:500;color:var(--text-primary)}
+.asst-email{font-size:12px;color:var(--text-muted);margin-top:3px}
+.asst-status{display:flex;align-items:center;gap:6px;margin-top:6px}
+.status-dot{width:7px;height:7px;border-radius:50%}
+.status-dot.active{background:var(--green)}
+.status-dot.pending{background:var(--amber)}
+.status-label{font-size:11px;font-weight:500}
+.status-label.active{color:var(--green)}
+.status-label.pending{color:var(--amber)}
+.asst-since{font-size:11px;color:var(--text-muted);margin-left:8px}
+
+/* ── PERMISSIONS GRID ── */
+.perms-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.perm-item{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--surface-2);border-radius:var(--radius-sm);font-size:12px}
+.perm-icon{font-size:14px;width:20px;text-align:center;flex-shrink:0}
+.perm-label{color:var(--text-secondary);flex:1}
+.perm-toggle{width:34px;height:18px;background:var(--green);border-radius:9px;position:relative;cursor:pointer;transition:var(--t);flex-shrink:0;border:none;outline:none}
+.perm-toggle::after{content:"";position:absolute;width:14px;height:14px;background:#fff;border-radius:50%;top:2px;right:2px;transition:var(--t)}
+.perm-toggle.off{background:var(--border-dark)}
+.perm-toggle.off::after{right:unset;left:2px}
+
+/* ── BLOCKED PERMS ── */
+.blocked-perms{margin-top:16px;padding:12px 14px;background:var(--red-lt);border-radius:var(--radius-sm);border:1px solid #ECC8C8}
+.blocked-title{font-size:11px;font-weight:600;color:var(--red);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.blocked-list{display:flex;flex-direction:column;gap:5px}
+.blocked-item{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text-secondary)}
+.blocked-item::before{content:"✕";color:var(--red);font-size:10px;font-weight:700;width:14px;flex-shrink:0}
+
+/* ── INVITE FLOW ── */
+.invite-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.step-card{background:var(--surface-2);border-radius:var(--radius);padding:16px;text-align:center;border:1px solid var(--border);position:relative}
+.step-card.active-step{background:var(--blue-lt);border-color:var(--blue)}
+.step-card.done-step{background:var(--green-lt);border-color:var(--green)}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--text-muted);color:#fff;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+.step-card.active-step .step-num{background:var(--blue)}
+.step-card.done-step .step-num{background:var(--green)}
+.step-label{font-size:12px;font-weight:500;color:var(--text-secondary)}
+.step-card.active-step .step-label{color:var(--blue)}
+.step-card.done-step .step-label{color:var(--green)}
+.step-sub{font-size:10px;color:var(--text-muted);margin-top:4px;line-height:1.4}
+.step-arrow{position:absolute;right:-8px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:12px;z-index:1}
+
+/* ── FORM ── */
+.form-group{margin-bottom:16px}
+.form-label{display:block;font-size:12px;font-weight:500;color:var(--text-secondary);margin-bottom:6px}
+.form-label .required{color:var(--red);margin-left:3px}
+.form-input{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:"DM Sans",sans-serif;color:var(--text-primary);background:var(--surface);transition:var(--t);outline:none}
+.form-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(196,151,58,.08)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-hint{font-size:11px;color:var(--text-muted);margin-top:5px;line-height:1.4}
+
+/* ── ACCESS CHECKLIST ── */
+.access-section{margin-bottom:20px}
+.access-title{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.access-title.allowed{color:var(--green)}
+.access-title.blocked{color:var(--red)}
+.access-items{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.access-item{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:var(--radius-sm);font-size:12px;border:1px solid}
+.access-item.allowed{background:var(--green-lt);border-color:#B8DECA;color:var(--green)}
+.access-item.blocked{background:var(--red-lt);border-color:#ECC8C8;color:var(--red)}
+.access-item-icon{font-size:13px;flex-shrink:0}
+
+/* ── BUTTONS ── */
+.btn{padding:9px 18px;border-radius:var(--radius-sm);border:1.5px solid;font-size:13px;font-weight:500;cursor:pointer;transition:var(--t);font-family:"DM Sans",sans-serif;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+.btn-primary:hover{background:var(--navy-mid);border-color:var(--navy-mid)}
+.btn-gold{background:var(--gold);color:#fff;border-color:var(--gold)}
+.btn-gold:hover{background:var(--gold-dk);border-color:var(--gold-dk)}
+.btn-outline{background:transparent;color:var(--text-secondary);border-color:var(--border)}
+.btn-outline:hover{background:var(--surface-2);border-color:var(--border-dark)}
+.btn-danger{background:transparent;color:var(--red);border-color:var(--red-lt)}
+.btn-danger:hover{background:var(--red-lt)}
+.btn-sm{padding:6px 12px;font-size:12px}
+
+/* ── ACTIVITY LOG ── */
+.activity-list{display:flex;flex-direction:column;gap:0}
+.activity-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.activity-item:last-child{border-bottom:none}
+.act-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;margin-top:2px}
+.act-dot.rdv{background:var(--blue-lt);color:var(--blue)}
+.act-dot.msg{background:var(--green-lt);color:var(--green)}
+.act-dot.cancel{background:var(--red-lt);color:var(--red)}
+.act-body{flex:1}
+.act-text{font-size:13px;color:var(--text-primary);line-height:1.4}
+.act-meta{font-size:11px;color:var(--text-muted);margin-top:3px;display:flex;align-items:center;gap:8px}
+.act-time{font-family:"DM Mono",monospace}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(15,30,53,.5);z-index:500;display:none;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
+.modal-overlay.open{display:flex}
+.modal-box{background:var(--surface);border-radius:var(--radius-lg);width:540px;max-width:94vw;box-shadow:var(--shadow-lg);overflow:hidden;animation:modalIn .22s ease}
+@keyframes modalIn{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+.modal-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-family:"Cormorant Garamond",serif;font-size:1.1rem;font-weight:600;color:var(--text-primary)}
+.modal-close{width:28px;height:28px;border:none;background:var(--surface-2);border-radius:50%;cursor:pointer;font-size:14px;color:var(--text-muted);display:flex;align-items:center;justify-content:center;transition:var(--t)}
+.modal-close:hover{background:var(--border);color:var(--text-primary)}
+.modal-body{padding:24px}
+.modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;background:var(--surface-2)}
+
+/* ── ALERT BOX ── */
+.alert{padding:12px 16px;border-radius:var(--radius-sm);display:flex;align-items:flex-start;gap:10px;font-size:13px;margin-bottom:16px;line-height:1.5}
+.alert.info{background:var(--blue-lt);color:var(--blue);border:1px solid #B5D4F4}
+.alert.warning{background:var(--amber-lt);color:var(--amber);border:1px solid #FAC775}
+.alert.success{background:var(--green-lt);color:var(--green);border:1px solid #B8DECA}
+.alert-icon{font-size:15px;flex-shrink:0;margin-top:1px}
+
+/* ── TABS ── */
+.tabs{display:flex;border-bottom:2px solid var(--border);margin-bottom:24px}
+.tab{padding:10px 18px;font-size:13px;font-weight:500;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:var(--t)}
+.tab:hover{color:var(--text-secondary)}
+.tab.active{color:var(--gold-dk);border-bottom-color:var(--gold)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* ── ONAT GUARD NOTICE ── */
+.onat-guard{background:var(--navy);color:#fff;border-radius:var(--radius);padding:14px 18px;display:flex;align-items:flex-start;gap:12px;margin-bottom:20px}
+.onat-guard-icon{font-size:20px;flex-shrink:0;margin-top:1px}
+.onat-guard-text{font-size:12px;line-height:1.6}
+.onat-guard-title{font-weight:600;color:var(--gold);margin-bottom:4px;font-size:13px}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-wordmark">Juridika<span>.tn</span></div>
+  </div>
+  <div class="lawyer-card">
+    <div class="lawyer-avatar">SA</div>
+    <div>
+      <div class="lawyer-name">Mᵉ Sana Ben Amor</div>
+      <div class="lawyer-tier"><span class="tier-dot"></span>Cabinet</div>
+    </div>
+  </div>
+  <div class="nav-section">Principal</div>
+  <div class="nav-item" onclick=""><span class="nav-icon">🏠</span> Accueil</div>
+  <div class="nav-item" onclick=""><span class="nav-icon">📅</span> Agenda</div>
+  <div class="nav-item" onclick=""><span class="nav-icon">⚖️</span> Rendez-vous</div>
+  <div class="nav-item" onclick=""><span class="nav-icon">👤</span> Clients</div>
+  <div class="nav-section">Cabinet</div>
+  <div class="nav-item" onclick=""><span class="nav-icon">📊</span> Statistiques</div>
+  <div class="nav-item" onclick=""><span class="nav-icon">🔗</span> Réseau Pro</div>
+  <div class="nav-item active" onclick=""><span class="nav-icon">👥</span> Mon équipe</div>
+  <div class="nav-item" onclick=""><span class="nav-icon">⚙️</span> Paramètres</div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <div class="topbar-title">
+      <span class="page-icon">👥</span>
+      <h2>Mon équipe</h2>
+      <span class="topbar-sub">Gestion de l'assistante et des accès</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <span class="cabinet-badge">✦ Cabinet</span>
+      <button class="btn btn-gold btn-sm" onclick="openInviteModal()">+ Inviter une assistante</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ONAT GUARD NOTICE -->
+    <div class="onat-guard">
+      <div class="onat-guard-icon">⚖️</div>
+      <div class="onat-guard-text">
+        <div class="onat-guard-title">Règle ONAT — Accès professionnel</div>
+        Conformément au Code de déontologie de l'Ordre National des Avocats, l'assistante ne peut pas accéder au compte principal de l'avocat. Son accès est techniquement isolé et limité aux fonctions administratives définies ci-dessous. Elle ne peut pas modifier votre profil ONAT ni consulter vos informations financières.
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab(this,'active')">Équipe active</div>
+      <div class="tab" onclick="switchTab(this,'access')">Droits d'accès</div>
+      <div class="tab" onclick="switchTab(this,'activity')">Journal d'activité</div>
+      <div class="tab" onclick="switchTab(this,'invite')">Inviter</div>
+    </div>
+
+    <!-- TAB: ÉQUIPE ACTIVE -->
+    <div class="tab-content active" id="tab-active">
+
+      <!-- Assistant card: ACTIVE state -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">👤 Assistante du cabinet</div>
+          <span style="font-size:12px;color:var(--text-muted)">1 poste · Tier Cabinet requis</span>
+        </div>
+
+        <!-- Active assistant -->
+        <div class="assistant-card">
+          <div class="asst-info">
+            <div class="asst-avatar">LM</div>
+            <div>
+              <div class="asst-name">Leila Mansouri</div>
+              <div class="asst-email">l.mansouri@cabinet-benamor.tn</div>
+              <div class="asst-status">
+                <span class="status-dot active"></span>
+                <span class="status-label active">Accès actif</span>
+                <span class="asst-since">· depuis le 10 mars 2026</span>
+              </div>
+              <div class="perms-grid">
+                <div class="perm-item">
+                  <span class="perm-icon">📅</span>
+                  <span class="perm-label">Agenda & disponibilités</span>
+                  <button class="perm-toggle" onclick="togglePerm(this)" title="Activer/désactiver"></button>
+                </div>
+                <div class="perm-item">
+                  <span class="perm-icon">⚖️</span>
+                  <span class="perm-label">Gérer les rendez-vous</span>
+                  <button class="perm-toggle" onclick="togglePerm(this)"></button>
+                </div>
+                <div class="perm-item">
+                  <span class="perm-icon">💬</span>
+                  <span class="perm-label">Messagerie clients</span>
+                  <button class="perm-toggle" onclick="togglePerm(this)"></button>
+                </div>
+                <div class="perm-item">
+                  <span class="perm-icon">👤</span>
+                  <span class="perm-label">Coordonnées clients</span>
+                  <button class="perm-toggle" onclick="togglePerm(this)"></button>
+                </div>
+              </div>
+              <div class="blocked-perms">
+                <div class="blocked-title">🔒 Accès bloqués — non modifiables</div>
+                <div class="blocked-list">
+                  <div class="blocked-item">Statistiques et revenus du cabinet</div>
+                  <div class="blocked-item">Profil ONAT et documents de vérification</div>
+                  <div class="blocked-item">Abonnement et facturation Juridika.tn</div>
+                  <div class="blocked-item">Dossiers juridiques et notes confidentielles</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;padding-top:4px">
+            <button class="btn btn-outline btn-sm" onclick="openActivityLog()">📋 Activité</button>
+            <button class="btn btn-outline btn-sm">✉ Renvoyer invitation</button>
+            <button class="btn btn-danger btn-sm" onclick="confirmRevoke()">Révoquer l'accès</button>
+          </div>
+        </div>
+
+        <!-- Pending invitation (example) -->
+        <div class="assistant-card" style="opacity:.8">
+          <div class="asst-info">
+            <div class="asst-avatar" style="background:rgba(176,112,48,.15);color:var(--amber);border-color:var(--amber-lt)">HA</div>
+            <div>
+              <div class="asst-name">Hana Ayari <span style="font-size:11px;color:var(--text-muted);font-weight:400">(invitation en attente)</span></div>
+              <div class="asst-email">h.ayari@gmail.com</div>
+              <div class="asst-status">
+                <span class="status-dot pending"></span>
+                <span class="status-label pending">Invitation envoyée</span>
+                <span class="asst-since">· il y a 2 jours · expire dans 5 jours</span>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start;padding-top:4px">
+            <button class="btn btn-outline btn-sm">✉ Renvoyer</button>
+            <button class="btn btn-danger btn-sm">Annuler</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TAB: DROITS D'ACCÈS -->
+    <div class="tab-content" id="tab-access">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">🔐 Matrice des droits d'accès</div>
+          <span style="font-size:12px;color:var(--text-muted)">Conforme ONAT · non modifiable pour les éléments bloqués</span>
+        </div>
+        <div class="card-body">
+          <div class="alert info">
+            <span class="alert-icon">ℹ</span>
+            <span>Les droits verts peuvent être activés ou désactivés par l'avocat à tout moment. Les droits rouges sont techniquement bloqués et ne peuvent jamais être accordés à une assistante, conformément au Code de déontologie de l'ONAT.</span>
+          </div>
+
+          <div class="access-section">
+            <div class="access-title allowed">✓ Droits activables</div>
+            <div class="access-items">
+              <div class="access-item allowed"><span class="access-item-icon">📅</span>Consulter et modifier l'agenda</div>
+              <div class="access-item allowed"><span class="access-item-icon">⚖️</span>Confirmer / annuler / reporter un RDV</div>
+              <div class="access-item allowed"><span class="access-item-icon">💬</span>Répondre aux messages clients</div>
+              <div class="access-item allowed"><span class="access-item-icon">👤</span>Voir les coordonnées clients (nom, email, tél)</div>
+              <div class="access-item allowed"><span class="access-item-icon">🔔</span>Envoyer les rappels de confirmation</div>
+              <div class="access-item allowed"><span class="access-item-icon">📋</span>Voir le statut des rendez-vous (passé / à venir)</div>
+            </div>
+          </div>
+
+          <div class="access-section">
+            <div class="access-title blocked">✕ Droits bloqués — ONAT</div>
+            <div class="access-items">
+              <div class="access-item blocked"><span class="access-item-icon">📊</span>Statistiques et revenus</div>
+              <div class="access-item blocked"><span class="access-item-icon">🪪</span>Profil ONAT et documents</div>
+              <div class="access-item blocked"><span class="access-item-icon">💳</span>Abonnement et facturation</div>
+              <div class="access-item blocked"><span class="access-item-icon">📁</span>Dossiers et notes juridiques</div>
+              <div class="access-item blocked"><span class="access-item-icon">🔗</span>Réseau Pro (confrères)</div>
+              <div class="access-item blocked"><span class="access-item-icon">🔑</span>Modifier le mot de passe principal</div>
+            </div>
+          </div>
+
+          <div class="alert warning">
+            <span class="alert-icon">⚠</span>
+            <span><strong>Traçabilité :</strong> Toutes les actions de l'assistante sont enregistrées dans le journal d'activité. L'avocat peut consulter l'historique complet à tout moment depuis l'onglet "Journal d'activité".</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: JOURNAL D'ACTIVITÉ -->
+    <div class="tab-content" id="tab-activity">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">📋 Journal des actions — Leila Mansouri</div>
+          <select style="font-size:12px;padding:5px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-secondary);background:var(--surface)">
+            <option>7 derniers jours</option>
+            <option>30 derniers jours</option>
+            <option>Tout l'historique</option>
+          </select>
+        </div>
+        <div class="card-body">
+          <div class="activity-list">
+            <div class="activity-item">
+              <div class="act-dot rdv">📅</div>
+              <div class="act-body">
+                <div class="act-text">RDV confirmé avec <strong>Mme. Rim Ferchichi</strong> — Lundi 18 mars à 10h00</div>
+                <div class="act-meta"><span class="act-time">Aujourd'hui 09:14</span><span>· Confirmation par email envoyée</span></div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="act-dot msg">💬</div>
+              <div class="act-body">
+                <div class="act-text">Message répondu à <strong>M. Karim Bouchoucha</strong> — Demande de report de consultation</div>
+                <div class="act-meta"><span class="act-time">Hier 15:32</span><span>· Nouveau créneau proposé : Mercredi 19 mars</span></div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="act-dot cancel">❌</div>
+              <div class="act-body">
+                <div class="act-text">RDV annulé — <strong>M. Ahmed Slama</strong> · Vendredi 14 mars 14h00</div>
+                <div class="act-meta"><span class="act-time">15 mars, 11:05</span><span>· Annulation à la demande du client · Email envoyé</span></div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="act-dot rdv">📅</div>
+              <div class="act-body">
+                <div class="act-text">Créneau ajouté à l'agenda — Mercredi 19 mars 09h00–12h00</div>
+                <div class="act-meta"><span class="act-time">14 mars, 17:20</span></div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="act-dot msg">💬</div>
+              <div class="act-body">
+                <div class="act-text">Message répondu à <strong>Mme. Sonia Gharbi</strong> — Confirmation de prise en charge</div>
+                <div class="act-meta"><span class="act-time">13 mars, 10:48</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: INVITER -->
+    <div class="tab-content" id="tab-invite">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">✉ Inviter une assistante</div>
+        </div>
+        <div class="card-body">
+
+          <!-- Steps indicator -->
+          <div class="invite-steps">
+            <div class="step-card done-step">
+              <div class="step-num">✓</div>
+              <div class="step-label">Coordonnées</div>
+              <div class="step-sub">Nom et email</div>
+              <span class="step-arrow">›</span>
+            </div>
+            <div class="step-card active-step">
+              <div class="step-num">2</div>
+              <div class="step-label">Droits d'accès</div>
+              <div class="step-sub">Choisir les permissions</div>
+              <span class="step-arrow">›</span>
+            </div>
+            <div class="step-card">
+              <div class="step-num">3</div>
+              <div class="step-label">Confirmation</div>
+              <div class="step-sub">Récap + envoi email</div>
+              <span class="step-arrow">›</span>
+            </div>
+            <div class="step-card">
+              <div class="step-num">4</div>
+              <div class="step-label">Invitation reçue</div>
+              <div class="step-sub">Elle active son compte</div>
+            </div>
+          </div>
+
+          <div class="alert info">
+            <span class="alert-icon">ℹ</span>
+            <span>L'assistante recevra un email d'invitation avec un lien sécurisé valable <strong>7 jours</strong>. Elle créera son propre mot de passe. Son accès est entièrement séparé de votre compte principal.</span>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Prénom <span class="required">*</span></label>
+              <input class="form-input" type="text" placeholder="Prénom de votre assistante" value="Leila">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Nom <span class="required">*</span></label>
+              <input class="form-input" type="text" placeholder="Nom de famille" value="Mansouri">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Adresse email professionnelle <span class="required">*</span></label>
+            <input class="form-input" type="email" placeholder="email@cabinet.tn" value="l.mansouri@cabinet-benamor.tn">
+            <div class="form-hint">Un lien d'activation sécurisé sera envoyé à cette adresse. L'assistante n'a pas besoin d'avoir un compte Juridika.tn existant.</div>
+          </div>
+
+          <div style="margin:20px 0 14px;font-size:13px;font-weight:500;color:var(--text-secondary)">Droits d'accès à accorder</div>
+          <div class="access-items" style="margin-bottom:14px">
+            <label class="access-item allowed" style="cursor:pointer;user-select:none">
+              <input type="checkbox" checked style="accent-color:var(--green);width:14px;height:14px">
+              <span class="access-item-icon">📅</span>Agenda & disponibilités
+            </label>
+            <label class="access-item allowed" style="cursor:pointer;user-select:none">
+              <input type="checkbox" checked style="accent-color:var(--green);width:14px;height:14px">
+              <span class="access-item-icon">⚖️</span>Gérer les rendez-vous
+            </label>
+            <label class="access-item allowed" style="cursor:pointer;user-select:none">
+              <input type="checkbox" style="accent-color:var(--green);width:14px;height:14px">
+              <span class="access-item-icon">💬</span>Messagerie clients
+            </label>
+            <label class="access-item allowed" style="cursor:pointer;user-select:none">
+              <input type="checkbox" style="accent-color:var(--green);width:14px;height:14px">
+              <span class="access-item-icon">👤</span>Coordonnées clients
+            </label>
+          </div>
+
+          <div class="alert warning">
+            <span class="alert-icon">⚠</span>
+            <span>L'assistante n'aura jamais accès à vos statistiques financières, votre profil ONAT, votre abonnement, ni vos dossiers — quelles que soient les cases cochées ci-dessus.</span>
+          </div>
+
+          <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px">
+            <button class="btn btn-outline">Annuler</button>
+            <button class="btn btn-gold" onclick="sendInvite()">✉ Envoyer l'invitation</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- REVOKE MODAL -->
+<div class="modal-overlay" id="revokeModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">Révoquer l'accès</div>
+      <button class="modal-close" onclick="document.getElementById('revokeModal').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="alert warning">
+        <span class="alert-icon">⚠</span>
+        <span>Vous êtes sur le point de révoquer l'accès de <strong>Leila Mansouri</strong>. Cette action est immédiate et irréversible. Elle sera déconnectée de toutes ses sessions en cours.</span>
+      </div>
+      <p style="font-size:13px;color:var(--text-secondary);line-height:1.6">Son journal d'activité sera conservé dans votre compte pour référence. Vous pourrez l'inviter à nouveau ultérieurement si nécessaire.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="document.getElementById('revokeModal').classList.remove('open')">Annuler</button>
+      <button class="btn btn-danger" onclick="revokeAccess()">Révoquer l'accès</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS TOAST -->
+<div id="toast" style="position:fixed;bottom:24px;right:24px;background:var(--navy);color:#fff;padding:12px 18px;border-radius:var(--radius);box-shadow:var(--shadow-lg);font-size:13px;display:none;align-items:center;gap:8px;z-index:999;border-left:3px solid var(--gold)">
+  <span id="toast-msg"></span>
+</div>
+
+<script>
+function switchTab(el, id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-' + id).classList.add('active');
+}
+function togglePerm(btn) {
+  btn.classList.toggle('off');
+  showToast(btn.classList.contains('off') ? 'Permission désactivée' : 'Permission activée');
+}
+function openInviteModal() {
+  switchTab(document.querySelectorAll('.tab')[3], 'invite');
+}
+function openActivityLog() {
+  switchTab(document.querySelectorAll('.tab')[2], 'activity');
+}
+function confirmRevoke() {
+  document.getElementById('revokeModal').classList.add('open');
+}
+function revokeAccess() {
+  document.getElementById('revokeModal').classList.remove('open');
+  showToast('Accès révoqué — Leila Mansouri déconnectée');
+}
+function sendInvite() {
+  showToast('✉ Invitation envoyée à l.mansouri@cabinet-benamor.tn');
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.style.display = 'flex';
+  setTimeout(() => { t.style.display = 'none'; }, 3000);
+}
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if(e.target === m) m.classList.remove('open'); });
+});
+</script>
+</body>
+</html>

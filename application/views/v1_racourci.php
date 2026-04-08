@@ -4,364 +4,375 @@ $themeId = 0;
 $categoryId = 0;
 
 if (isset($OneBook) && is_array($OneBook) && !empty($OneBook) && isset($OneBook[0])) {
-    $bookId = isset($OneBook[0]['IDLivre']) ? (int)$OneBook[0]['IDLivre'] : 0;
-    $themeId = isset($OneBook[0]['IDTheme']) ? (int)$OneBook[0]['IDTheme'] : 0;
-    $categoryId = isset($OneBook[0]['IDCategory']) ? (int)$OneBook[0]['IDCategory'] : 0;
+    $bookId = isset($OneBook[0]['IDLivre']) ? (int) $OneBook[0]['IDLivre'] : 0;
+    $themeId = isset($OneBook[0]['IDTheme']) ? (int) $OneBook[0]['IDTheme'] : 0;
+    $categoryId = isset($OneBook[0]['IDCategory']) ? (int) $OneBook[0]['IDCategory'] : 0;
 }
-if (in_array($bookId, [20, 30, 31]) || in_array((int)$OneBook[0]["IDTheme"], [20, 30, 31])) {
-	include('v1_racourci_pathologie.php');
-} 
-elseif (in_array($bookId, [70, 71]) || in_array((int)$OneBook[0]["IDCategory"], [4, 9])) {
-	include('v1_racourci_atlas.php');
-} 
-else { ?>
+if (in_array($bookId, [20, 36, 31]) || in_array((int) $OneBook[0]["IDTheme"], [20, 36, 31])) {
+    include('v1_racourci_pathologie.php');
+} elseif (in_array($bookId, [70, 71]) || in_array((int) $OneBook[0]["IDCategory"], [4, 9])) {
+    include('v1_racourci_atlas.php');
+} else { ?>
 
-	<style>
-		.sidebar-racc {
-			position: fixed;
-			width: 75px;
-			padding: 15px 5px;
-			border-radius: 10px;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			overflow: hidden;
-			z-index: 1000;
-			top:110px;
-			left: 5px;
-			font-size: 13px;
-			background: #eaebec94;
-		}
-		.sidebar-racc.collapsed {
-			width: 75px;
-			padding: 8px 5px;
-			opacity: 0.9;
-		}
-		.sidebar-racc.collapsed .chapter-item,
-		.sidebar-racc.collapsed .chapter-header {
-			display: none;
-		}
-		.sidebar-racc.collapsed .carreaux {
-			font-size: 12px;
-			text-align: center;
-		}
-		.carreaux {
-			border-radius: 10px;
-			width: 50px;
-			height: 50px;
-			background-color: #fff;
-			padding: 10px;
-			font-size: 0.9em;
-			text-align: center;
-			color: #1d3557;
-			cursor: pointer;
-			transition: background-color 0.3s ease;
-			display: flex;
-			flex-direction: column;
-			justify-content: center;
-			align-items: center;
-		}
-		.carreaux i {
-			font-size: 21px; 
-		}
-		.carreaux.selected, .carreaux:hover {
-			background-color: #7387b8;
-		}
+    <style>
+        .sidebar-racc {
+            position: fixed;
+            width: 75px;
+            padding: 15px 5px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+            z-index: 1000;
+            top: 110px;
+            left: 5px;
+            font-size: 13px;
+            background: #eaebec94;
+        }
 
-		.toggle-btn {
-			position: relative;
-			transform: translateX(-50%);
-			background: linear-gradient(135deg, #1d3557, #457b9d);
-			color: white;
-			border: none;
-			cursor: pointer;
-			font-weight: bold;
-			font-size: 14px;
-			align-items: center;
-			gap: 8px;
-			transition: all 0.3s ease;
-			box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-			border-radius: 10px;
-			width: 60px;
-			height: 40px;
-			padding-bottom: 20px;
-			display: flex;
-			flex-direction: column;
-			justify-content: center;
-		}
-		.toggle-btn:hover {
-			background: linear-gradient(135deg, #457b9d, #1d3557);
-			transform: translateX(-50%) scale(1.05);
-		}
-		.toggle-btn:active {
-			transform: translateX(-50%) scale(0.95);
-		}
-		.toggle-btn .arrow {
-			font-size: 18px;
-			transition: transform 0.3s ease;
-		}
-		.sidebar-racc.collapsed .toggle-btn .arrow {
-			transform: rotate(0deg);
-		}
-		.sidebar-racc:not(.collapsed) .toggle-btn .arrow {
-			transform: rotate(180deg);
-		}
-		.title_carr{
-			font-weight: bolder;
-		}
+        .sidebar-racc.collapsed {
+            width: 75px;
+            padding: 8px 5px;
+            opacity: 0.9;
+        }
 
-		.toggle_bloc {
-			display: flex;
-			width: 100%;
-			transition: justify-content 0.3s ease;
-		}
+        .sidebar-racc.collapsed .chapter-item,
+        .sidebar-racc.collapsed .chapter-header {
+            display: none;
+        }
 
-		.toggle_bloc.left {
-			justify-content: flex-start;
-		}
+        .sidebar-racc.collapsed .carreaux {
+            font-size: 12px;
+            text-align: center;
+        }
 
-		.toggle_bloc.right {
-			justify-content: flex-end;
-		}
+        .carreaux {
+            border-radius: 10px;
+            width: 50px;
+            height: 50px;
+            background-color: #fff;
+            padding: 10px;
+            font-size: 0.9em;
+            text-align: center;
+            color: #1d3557;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
 
-		.toggle_bloc.left .toggle-btn {
-			transform: none;
-		}
+        .carreaux i {
+            font-size: 21px;
+        }
 
-		.toggle_bloc.right .toggle-btn {
-			left: auto;
-			transform: none;
-		}
+        .carreaux.selected,
+        .carreaux:hover {
+            background-color: #7387b8;
+        }
 
-		/******************************************/
+        .toggle-btn {
+            position: relative;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #1d3557, #457b9d);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            width: 60px;
+            height: 40px;
+            padding-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
 
-		.tooltip-chapitre {
-			position: fixed;
-			width: 30%;
-			background: rgb(255, 255, 255);
-			border: 1px solid #274668;
-			border-radius: 10px;
-			box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-			padding: 12px;
-			z-index: 3000;
-			overflow-y: auto;
-			backdrop-filter: blur(6px);
-			transition: opacity 0.3s ease;
-			top: 110px;
-		}
+        .toggle-btn:hover {
+            background: linear-gradient(135deg, #457b9d, #1d3557);
+            transform: translateX(-50%) scale(1.05);
+        }
 
-		.tooltip-chapitre .chapter-header {
-			font-weight: bold;
-			margin-bottom: 10px;
-			background: #1d3557;
-			color: white;
-			font-size: 15px;
-			border-radius: 10px 10px 10px 10px;
-			text-align: center;
-		}
+        .toggle-btn:active {
+            transform: translateX(-50%) scale(0.95);
+        }
 
-		.tooltip-chapitre .chapter-list {
-			list-style: none;
-			padding: 0;
-			margin: 0;
-			max-height: 100%;
-		}
+        .toggle-btn .arrow {
+            font-size: 18px;
+            transition: transform 0.3s ease;
+        }
 
-		.tooltip-chapitre .chapter-item {
-			padding: 8px 10px;
-			font-size: 13px;
-			border-bottom: 1px solid #cccccc4f;
-			cursor: pointer;
-			transition: background 0.2s;
-			color: #2c2c2c;
-			text-align: left;
-		}
+        .sidebar-racc.collapsed .toggle-btn .arrow {
+            transform: rotate(0deg);
+        }
 
-		.tooltip-chapitre .chapter-item:hover {
-			background-color: #f2f4f8;
-		}
+        .sidebar-racc:not(.collapsed) .toggle-btn .arrow {
+            transform: rotate(180deg);
+        }
 
+        .title_carr {
+            font-weight: bolder;
+        }
 
+        .toggle_bloc {
+            display: flex;
+            width: 100%;
+            transition: justify-content 0.3s ease;
+        }
 
-    .sous-chapitre-item {
-        padding: 8px 15px;
-        font-size: 12px;
-        color: #555;
-        cursor: pointer;
-        border-left: 3px solid #457b9d;
-        margin: 3px 10px;
-        background-color: white;
-        border-radius: 3px;
-        transition: all 0.2s;
-        text-align: left;
-    }
+        .toggle_bloc.left {
+            justify-content: flex-start;
+        }
 
-    .sous-chapitre-item:hover {
-        background-color: #e3f2fd;
-        border-left-color: #1d3557;
-        color: #1d3557;
-        transform: translateX(3px);
-    }
+        .toggle_bloc.right {
+            justify-content: flex-end;
+        }
 
-    .pathologies-accordion {
-        margin: 5px 0;
-        background-color: transparent;
-        border-radius: 5px;
-        overflow: hidden;
-    }
+        .toggle_bloc.left .toggle-btn {
+            transform: none;
+        }
 
-    .pathologies-header {
-        padding: 10px 15px;
-        font-size: 13px;
-        font-weight: bold;
-        color: #1d3557;
-        background-color: #f8f9fa;
-        cursor: pointer;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 1px solid #cccccc4f;
-        transition: all 0.2s;
-    }
+        .toggle_bloc.right .toggle-btn {
+            left: auto;
+            transform: none;
+        }
 
-    .pathologies-header:hover {
-        background-color: #f2f4f8;
-    }
+        /******************************************/
 
-    .pathologies-header .accordion-arrow {
-        font-size: 14px;
-        transition: transform 0.3s ease;
-        color: #1d3557;
-    }
+        .tooltip-chapitre {
+            position: fixed;
+            width: 30%;
+            background: rgb(255, 255, 255);
+            border: 1px solid #274668;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            padding: 12px;
+            z-index: 3000;
+            overflow-y: auto;
+            backdrop-filter: blur(6px);
+            transition: opacity 0.3s ease;
+            top: 110px;
+        }
 
-    .pathologies-header .accordion-arrow.expanded {
-        transform: rotate(90deg);
-    }
+        .tooltip-chapitre .chapter-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+            background: #1d3557;
+            color: white;
+            font-size: 15px;
+            border-radius: 10px 10px 10px 10px;
+            text-align: center;
+        }
 
-    .pathologies-content {
-        max-height: 0;
-        overflow-y: hidden;
-        transition: max-height 0.4s ease, opacity 0.3s ease;
-        opacity: 0;
-    }
+        .tooltip-chapitre .chapter-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            max-height: 100%;
+        }
 
-    .pathologies-content.expanded {
-        max-height: 280px;
-        overflow-y: auto;
-        opacity: 1;
-    }
+        .tooltip-chapitre .chapter-item {
+            padding: 8px 10px;
+            font-size: 13px;
+            border-bottom: 1px solid #cccccc4f;
+            cursor: pointer;
+            transition: background 0.2s;
+            color: #2c2c2c;
+            text-align: left;
+        }
 
-    /* Styles pour les versions de pathologies */
-    .patho-version-container {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-        margin-top: 5px;
-        padding-left: 10px;
-        border-left: 1px dashed #cbd5e1;
-    }
-
-    .patho-version-link {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 5px 10px;
-        font-size: 11px;
-        border-radius: 4px;
-        transition: all 0.2s;
-        text-decoration: none !important;
-    }
-
-    .patho-version-link.essential {
-        color: #1d4ed8;
-        background-color: #eff6ff;
-        border: 1px solid #dbeafe;
-    }
-
-    .patho-version-link.essential:hover {
-        background-color: #dbeafe;
-        transform: translateX(2px);
-    }
-
-    .patho-version-link.integral {
-        color: #9a3412;
-        background-color: #fff7ed;
-        border: 1px solid #ffedd5;
-    }
-
-    .patho-version-link.integral:hover {
-        background-color: #ffedd5;
-        transform: translateX(2px);
-    }
-
-    .patho-version-link i {
-        font-size: 10px;
-    }
-
-    .patho-item-title {
-        font-weight: 600;
-        color: #334155;
-        font-size: 12px;
-        margin-bottom: 5px;
-        display: block;
-    }
-</style>
-
-	<div id="listChapTooltip" class="tooltip-chapitre" style="display: none;">
-		<div class="chapter-header">
-			<?php
-			$curs_id = $this->session->userdata('curs_id');
-			echo !empty($curs_id)
-				? $this->lang->line('sidebar_choisir_cours')
-				: $this->lang->line('sidebar_aucun_cours');
-			?>
-		</div>
-		<div id="difficultyBox" style="display:none; padding:10px 5px 15px;">
-</div>
+        .tooltip-chapitre .chapter-item:hover {
+            background-color: #f2f4f8;
+        }
 
 
-		<ul class="chapter-list" id="chapterListTooltip">
-			<?php foreach ($listChap as $value) {
-				$selected = ($curs_id === "curs_" . $value['IDChapitre']) ? 'selected' : '';
-				?>
-				<li class="chapter-item <?= $selected; ?>"
-					id="curs_<?= $value['IDChapitre']; ?>"
-					data-id="<?= $value['IDChapitre']; ?>"
-					data-id-rappel="<?= $value['IdChapterRappel'] ?? '' ?>"
-					data-curs="<?= $value['NbreCours']; ?>"
-					data-resum="<?= $value['NbreResume']; ?>"
-					data-resum-rappel="<?= $value['NbreResumeRappel'] ?? 0; ?>"
-					onclick="selectUniqueChapter(this)">
-					<div class="chapter-number"></div>
-					<div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-						<div><?= htmlspecialchars($value['TitreChapitre']); ?></div>
-						<span class="patho-arrow" style="display: none;">▶</span>
-					</div>
-					<ul class="sous-chapitres-list" id="sous-chap-<?= $value['IDChapitre']; ?>" style="display: none; list-style: none; padding-left: 20px; margin-top: 5px;">
-					</ul>
-				</li>
-			<?php } ?>
-		</ul>
-	</div>
 
-	<div class="sidebar-racc collapsed" id="sidebar-racc">
-		<div class="toggle_bloc left" style="display: none">
-			<button class="toggle-btn" onclick="toggleSidebar()">
-            <span class="s_plan_retour" style="display: block; width: 100%; text-align: center;padding-top: 30px;height: 35px;">
-                <?php echo $this->lang->line('sidebar_plan'); ?>
-            </span>
-				<span class="arrow" style="display: block; width: 100%; text-align: center;height: 20px;padding-bottom: 33px;">&#8594;</span>
-			</button>
-		</div>
+        .sous-chapitre-item {
+            padding: 8px 15px;
+            font-size: 12px;
+            color: #555;
+            cursor: pointer;
+            border-left: 3px solid #457b9d;
+            margin: 3px 10px;
+            background-color: white;
+            border-radius: 3px;
+            transition: all 0.2s;
+            text-align: left;
+        }
 
-		<div style="display: flex;justify-content: space-between; align-items: flex-start; width: 100%;">
-			<div id="listRacc">
-				<div style="display: grid; flex-wrap: wrap; gap: 10px; justify-content: center;">
-               		<span class="carreaux" style="background-color: #657379;color: white;" id="fullscreen_btn" onclick="toggleFullscreen(this)">
-                    <div><?php echo $this->lang->line('sidebar_agrandir'); ?></div>
-                    <i class="fas fa-expand" id="fullscreen-icon"></i>
+        .sous-chapitre-item:hover {
+            background-color: #e3f2fd;
+            border-left-color: #1d3557;
+            color: #1d3557;
+            transform: translateX(3px);
+        }
+
+        .pathologies-accordion {
+            margin: 5px 0;
+            background-color: transparent;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .pathologies-header {
+            padding: 10px 15px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #1d3557;
+            background-color: #f8f9fa;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #cccccc4f;
+            transition: all 0.2s;
+        }
+
+        .pathologies-header:hover {
+            background-color: #f2f4f8;
+        }
+
+        .pathologies-header .accordion-arrow {
+            font-size: 14px;
+            transition: transform 0.3s ease;
+            color: #1d3557;
+        }
+
+        .pathologies-header .accordion-arrow.expanded {
+            transform: rotate(90deg);
+        }
+
+        .pathologies-content {
+            max-height: 0;
+            overflow-y: hidden;
+            transition: max-height 0.4s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        .pathologies-content.expanded {
+            max-height: 280px;
+            overflow-y: auto;
+            opacity: 1;
+        }
+
+        /* Styles pour les versions de pathologies */
+        .patho-version-container {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-top: 5px;
+            padding-left: 10px;
+            border-left: 1px dashed #cbd5e1;
+        }
+
+        .patho-version-link {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 10px;
+            font-size: 11px;
+            border-radius: 4px;
+            transition: all 0.2s;
+            text-decoration: none !important;
+        }
+
+        .patho-version-link.essential {
+            color: #1d4ed8;
+            background-color: #eff6ff;
+            border: 1px solid #dbeafe;
+        }
+
+        .patho-version-link.essential:hover {
+            background-color: #dbeafe;
+            transform: translateX(2px);
+        }
+
+        .patho-version-link.integral {
+            color: #9a3412;
+            background-color: #fff7ed;
+            border: 1px solid #ffedd5;
+        }
+
+        .patho-version-link.integral:hover {
+            background-color: #ffedd5;
+            transform: translateX(2px);
+        }
+
+        .patho-version-link i {
+            font-size: 10px;
+        }
+
+        .patho-item-title {
+            font-weight: 600;
+            color: #334155;
+            font-size: 12px;
+            margin-bottom: 5px;
+            display: block;
+        }
+    </style>
+
+    <div id="listChapTooltip" class="tooltip-chapitre" style="display: none;">
+        <div class="chapter-header">
+            <?php
+            $curs_id = $this->session->userdata('curs_id');
+            echo !empty($curs_id)
+                ? $this->lang->line('sidebar_choisir_cours')
+                : $this->lang->line('sidebar_aucun_cours');
+            ?>
+        </div>
+        <div id="difficultyBox" style="display:none; padding:10px 5px 15px;">
+        </div>
+
+
+        <ul class="chapter-list" id="chapterListTooltip">
+            <?php foreach ($listChap as $value) {
+                $selected = ($curs_id === "curs_" . $value['IDChapitre']) ? 'selected' : '';
+                ?>
+                <li class="chapter-item <?= $selected; ?>" id="curs_<?= $value['IDChapitre']; ?>"
+                    data-id="<?= $value['IDChapitre']; ?>" data-id-rappel="<?= $value['IdChapterRappel'] ?? '' ?>"
+                    data-curs="<?= $value['NbreCours']; ?>" data-resum="<?= $value['NbreResume']; ?>"
+                    data-resum-rappel="<?= $value['NbreResumeRappel'] ?? 0; ?>" onclick="selectUniqueChapter(this)">
+                    <div class="chapter-number"></div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                        <div><?= htmlspecialchars($value['TitreChapitre']); ?></div>
+                        <span class="patho-arrow" style="display: none;">▶</span>
+                    </div>
+                    <ul class="sous-chapitres-list" id="sous-chap-<?= $value['IDChapitre']; ?>"
+                        style="display: none; list-style: none; padding-left: 20px; margin-top: 5px;">
+                    </ul>
+                </li>
+            <?php } ?>
+        </ul>
+    </div>
+
+    <div class="sidebar-racc collapsed" id="sidebar-racc">
+        <div class="toggle_bloc left" style="display: none">
+            <button class="toggle-btn" onclick="toggleSidebar()">
+                <span class="s_plan_retour"
+                    style="display: block; width: 100%; text-align: center;padding-top: 30px;height: 35px;">
+                    <?php echo $this->lang->line('sidebar_plan'); ?>
                 </span>
-					<script>
+                <span class="arrow"
+                    style="display: block; width: 100%; text-align: center;height: 20px;padding-bottom: 33px;">&#8594;</span>
+            </button>
+        </div>
+
+        <div style="display: flex;justify-content: space-between; align-items: flex-start; width: 100%;">
+            <div id="listRacc">
+                <div style="display: grid; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                    <span class="carreaux" style="background-color: #657379;color: white;" id="fullscreen_btn"
+                        onclick="toggleFullscreen(this)">
+                        <div><?php echo $this->lang->line('sidebar_agrandir'); ?></div>
+                        <i class="fas fa-expand" id="fullscreen-icon"></i>
+                    </span>
+                    <script>
                         function toggleFullscreen(element) {
                             const icon = document.getElementById("fullscreen-icon");
                             const text = element.querySelector("div");
@@ -372,56 +383,63 @@ else { ?>
                                 text.innerHTML = "<?php echo $this->lang->line('sidebar_reduire'); ?>";
                                 document.exitFullscreen();
                                 icon.classList.replace("fa-compress", "fa-expand");
-                                text.innerHTML = "<?php echo $this->lang->line('sidebar_agrandir'); ?>"; 
+                                text.innerHTML = "<?php echo $this->lang->line('sidebar_agrandir'); ?>";
                             }
                         }
-					</script>
+                    </script>
 
-					<span class="carreaux" style="background-color: #1E88E5;color: white" onclick="selectUniqueCarreau(this,'theme')">
-                    <div class="title_carr"><?php echo $this->lang->line('sidebar_cours'); ?></div>
-                    <i class="fas fa-headphones-alt"></i>
-                </span>
-					<span class="carreaux" style="background-color: #00ACC1;color: white" onclick="selectUniqueCarreau(this,'qcm')">
-                    <div class="title_carr"><?php echo $this->lang->line('sidebar_qcm'); ?></div>
-                    <i class="fa fa-play-circle"></i>
-                </span>
-					<span class="carreaux" style="background-color: #43A047;color: white" onclick="selectUniqueCarreau(this,'qroc')">
-                    <div class="title_carr"><?php echo $this->lang->line('sidebar_qroc'); ?></div>
-                    <i class="fa fa-play-circle"></i>
-                </span>
-					<span class="carreaux" style="background-color: #FB8C00;color: white" onclick="document.getElementById('modalTestQCM').style.display = 'flex';">
-					<div class="title_carr"><?php echo $this->lang->line('testQCM'); ?></div>
-				</span>
-				<span class="carreaux" style="background-color: #E77845;color: white" onclick="document.getElementById('modalTestQROC').style.display = 'flex';">
-					<div class="title_carr"><?php echo $this->lang->line('testQROC'); ?></div>
-				</span>
-				<?php if (in_array($page, ['livreCours', 'livreResume', 'livreQcm', 'livreQroc'])) { ?>
-					<span class="carreaux" style="background-color: #A27561;color: white" onclick="document.getElementById('customModal_Mode_Lecture').style.display = 'flex';">
-						<div class="title_carr">Mode lecture</div>
-					</span>
-				<?php } ?>
-                <span class="carreaux" style="background-color: #FF3264;color: white" onclick="selectUniqueCarreau(this,'pathologie')">
-                    <div class="title_carr"><?php echo $this->lang->line('sidebar_pathologie_anatomie'); ?></div>
-                    <!--<i class="fa fa-virus"></i>-->
-                </span>
-				</div>
-			</div>
+                    <span class="carreaux" style="background-color: #1E88E5;color: white"
+                        onclick="selectUniqueCarreau(this,'theme')">
+                        <div class="title_carr"><?php echo $this->lang->line('sidebar_cours'); ?></div>
+                        <i class="fas fa-headphones-alt"></i>
+                    </span>
+                    <span class="carreaux" style="background-color: #00ACC1;color: white"
+                        onclick="selectUniqueCarreau(this,'qcm')">
+                        <div class="title_carr"><?php echo $this->lang->line('sidebar_qcm'); ?></div>
+                        <i class="fa fa-play-circle"></i>
+                    </span>
+                    <span class="carreaux" style="background-color: #43A047;color: white"
+                        onclick="selectUniqueCarreau(this,'qroc')">
+                        <div class="title_carr"><?php echo $this->lang->line('sidebar_qroc'); ?></div>
+                        <i class="fa fa-play-circle"></i>
+                    </span>
+                    <span class="carreaux" style="background-color: #FB8C00;color: white"
+                        onclick="document.getElementById('modalTestQCM').style.display = 'flex';">
+                        <div class="title_carr"><?php echo $this->lang->line('testQCM'); ?></div>
+                    </span>
+                    <span class="carreaux" style="background-color: #E77845;color: white"
+                        onclick="document.getElementById('modalTestQROC').style.display = 'flex';">
+                        <div class="title_carr"><?php echo $this->lang->line('testQROC'); ?></div>
+                    </span>
+                    <?php if (in_array($page, ['livreCours', 'livreResume', 'livreQcm', 'livreQroc'])) { ?>
+                        <span class="carreaux" style="background-color: #A27561;color: white"
+                            onclick="document.getElementById('customModal_Mode_Lecture').style.display = 'flex';">
+                            <div class="title_carr">Mode lecture</div>
+                        </span>
+                    <?php } ?>
+                    <span class="carreaux" style="background-color: #FF3264;color: white"
+                        onclick="selectUniqueCarreau(this,'pathologie')">
+                        <div class="title_carr"><?php echo $this->lang->line('sidebar_pathologie_anatomie'); ?></div>
+                        <!--<i class="fa fa-virus"></i>-->
+                    </span>
+                </div>
+            </div>
 
 
-		</div>
-	</div>
+        </div>
+    </div>
 
-	<?php include('v1_modal_test_qcm.php'); ?>
+    <?php include('v1_modal_test_qcm.php'); ?>
 
-	<?php include('v1_modal_test_qroc.php'); ?>
+    <?php include('v1_modal_test_qroc.php'); ?>
 
-	<script>
+    <script>
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar-racc');
-            const btn 			= document.querySelector('.toggle-btn');
-            const arrow 		= btn.querySelector('.arrow');
+            const btn = document.querySelector('.toggle-btn');
+            const arrow = btn.querySelector('.arrow');
             const s_plan_retour = btn.querySelector('.s_plan_retour');
-            const toggleBloc 	= document.querySelector('.toggle_bloc');
+            const toggleBloc = document.querySelector('.toggle_bloc');
 
             sidebar.classList.toggle('collapsed');
 
@@ -431,14 +449,14 @@ else { ?>
                 s_plan_retour.innerHTML = "<?php echo $this->lang->line('sidebar_plan'); ?>";
 
                 toggleBloc.classList.remove('right');
-                toggleBloc.classList.add('left'); 
+                toggleBloc.classList.add('left');
             } else {
                 arrow.style.transform = "rotate(180deg)";
 
                 s_plan_retour.innerHTML = "<?php echo $this->lang->line('sidebar_retour'); ?>";
 
                 toggleBloc.classList.remove('left');
-                toggleBloc.classList.add('right'); 
+                toggleBloc.classList.add('right');
             }
 
         }
@@ -500,21 +518,21 @@ else { ?>
         }
 
         function goFullscreen() {
-            var elem = document.documentElement;  
+            var elem = document.documentElement;
 
             // Vérifier si l'API Fullscreen est disponible et activer le plein écran
             if (elem.requestFullscreen) {
                 elem.requestFullscreen();
-            } else if (elem.mozRequestFullScreen) { 
+            } else if (elem.mozRequestFullScreen) {
                 elem.mozRequestFullScreen();
-            } else if (elem.webkitRequestFullscreen) { 
+            } else if (elem.webkitRequestFullscreen) {
                 elem.webkitRequestFullscreen();
             } else if (elem.msRequestFullscreen) {
                 elem.msRequestFullscreen();
             }
         }
 
-       /********************************/
+        /********************************/
 
         window.selectedType = null;
         window.selectedCarreauElement = null;
@@ -528,7 +546,7 @@ else { ?>
             window.selectedCarreauElement = element;
 
             window.selectedType = type_sel;
-			const diffBox = document.getElementById("difficultyBox");
+            const diffBox = document.getElementById("difficultyBox");
 
             let selectedChapter = document.querySelector('.chapter-item.selected');
             let idChapitreSession = "<?php echo $this->session->userdata('curs_id'); ?>".replace(/^curs_/, "");
@@ -536,10 +554,10 @@ else { ?>
             let currentIdChap = (idChap_select != null) ? idChap_select : idChapitreSession;
 
 
-if (type_sel === 'qcm') {
-    diffBox.style.display = "block";
+            if (type_sel === 'qcm') {
+                diffBox.style.display = "block";
 
-    diffBox.innerHTML = `
+                diffBox.innerHTML = `
         <h4 style="margin-bottom:10px; font-weight:bold; text-align:center; color:#1d3557;">
             Sélectionner le niveau de difficulté
         </h4>
@@ -582,22 +600,22 @@ if (type_sel === 'qcm') {
         </div>
     `;
 
-    // Gestion des clics sur les labels — suppression du blocage pour permettre le switch
-    diffBox.querySelectorAll(".diff-label").forEach(label => {
-        label.addEventListener("click", function (e) {
-            // Le switch se fait désormais normalement
-        });
-    });
+                // Gestion des clics sur les labels — suppression du blocage pour permettre le switch
+                diffBox.querySelectorAll(".diff-label").forEach(label => {
+                    label.addEventListener("click", function (e) {
+                        // Le switch se fait désormais normalement
+                    });
+                });
 
-} else if (type_sel === 'pathologie') {
+            } else if (type_sel === 'pathologie') {
                 if (currentIdChap) {
                     loadFeaturedPatho(currentIdChap, diffBox);
                 } else {
                     loadFeaturedPatho(0, diffBox);
                 }
             } else {
-    diffBox.style.display = "none";
-}
+                diffBox.style.display = "none";
+            }
 
             const sidebar = document.getElementById("sidebar-racc");
             const tooltip = document.getElementById("listChapTooltip");
@@ -605,8 +623,8 @@ if (type_sel === 'qcm') {
             const sidebarRect = sidebar.getBoundingClientRect();
             tooltip.style.top = `${sidebarRect.top}px`;
             tooltip.style.left = `${sidebarRect.right + 10}px`;
-            tooltip.style.minHeight ='50%'; 
-            tooltip.style.maxHeight ='80%'; 
+            tooltip.style.minHeight = '50%';
+            tooltip.style.maxHeight = '80%';
             tooltip.style.display = 'block';
 
             document.querySelectorAll('.carreaux').forEach(carreau => carreau.classList.remove('selected'));
@@ -648,22 +666,22 @@ if (type_sel === 'qcm') {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             })
-            .then(r => r.json())
-            .then(data => {
-                if (data.success) {
-                    const lang = "<?php echo strtoupper($this->uri->segment(1)); ?>";
-                    const baseUrl = "<?php echo base_url(); ?>";
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        const lang = "<?php echo strtoupper($this->uri->segment(1)); ?>";
+                        const baseUrl = "<?php echo base_url(); ?>";
 
-                    let html = `<div style="background-color: #1d3557; color: white; padding: 8px; text-align: center; font-weight: bold; border-radius: 5px 5px 0 0; margin-bottom: 5px; font-size: 14px;">
+                        let html = `<div style="background-color: #1d3557; color: white; padding: 8px; text-align: center; font-weight: bold; border-radius: 5px 5px 0 0; margin-bottom: 5px; font-size: 14px;">
                                     <?php echo $this->lang->line('sidebar_pathologie_anatomie'); ?>
                                 </div>`;
-                    
-                    html += `<ul class="patho-menu-list" style="list-style:none; padding:0; margin:0; border: 1px solid #ddd; border-top: none; border-radius: 0 0 5px 5px; overflow: hidden; background: white;">`;
-                    
-                    if (data.type === 'books') {
-                        // Affichage de la liste des livres (Menu Global)
-                        data.pathoBooks.forEach((book, index) => {
-                            html += `
+
+                        html += `<ul class="patho-menu-list" style="list-style:none; padding:0; margin:0; border: 1px solid #ddd; border-top: none; border-radius: 0 0 5px 5px; overflow: hidden; background: white;">`;
+
+                        if (data.type === 'books') {
+                            // Affichage de la liste des livres (Menu Global)
+                            data.pathoBooks.forEach((book, index) => {
+                                html += `
                                 <li class="patho-chapter-item" style="border-bottom: 1px solid #eee;">
                                     <div class="patho-chapter-header" 
                                          onclick="window.location.href='${baseUrl}${lang}/livre/${book.IDLivre}'"
@@ -672,17 +690,17 @@ if (type_sel === 'qcm') {
                                         <span style="font-size: 11px; color: #ccc;">➜</span>
                                     </div>
                                 </li>`;
-                        });
-                    } else {
-                        // Affichage contextuel par chapitres (Menu Cours)
-                        data.pathoChapters.forEach((chap, index) => {
-                            const isExpanded = (idChapitre != 0 && index === 0);
-                            const displayStyle = isExpanded ? 'display: block;' : 'display: none;';
-                            const arrowStyle = isExpanded ? 'transform: rotate(90deg);' : '';
-                            const headerStyle = isExpanded ? 'background: #f1f4f9;' : '';
+                            });
+                        } else {
+                            // Affichage contextuel par chapitres (Menu Cours)
+                            data.pathoChapters.forEach((chap, index) => {
+                                const isExpanded = (idChapitre != 0 && index === 0);
+                                const displayStyle = isExpanded ? 'display: block;' : 'display: none;';
+                                const arrowStyle = isExpanded ? 'transform: rotate(90deg);' : '';
+                                const headerStyle = isExpanded ? 'background: #f1f4f9;' : '';
 
-                            // 1. Anatomie cours complet - Utilise chap.IdChapterRappel
-                            html += `
+                                // 1. Anatomie cours complet - Utilise chap.IdChapterRappel
+                                html += `
                                 <li class="patho-chapter-item">
                                     <div class="patho-chapter-header" onclick="toggleFeaturedPathoAccordion(this)" 
                                          style="display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; border-bottom: 1px solid #eee; cursor: pointer; font-size: 13px; color: #333; transition: background 0.2s; ${headerStyle}">
@@ -695,17 +713,17 @@ if (type_sel === 'qcm') {
                                             Anatomie - Cours fondamental complet
                                         </li>`;
 
-                            // 2. Anatomie version intégrale - Vérifie si le résumé existe
-                            html += `
+                                // 2. Anatomie version intégrale - Vérifie si le résumé existe
+                                html += `
                                 <li class="sous-chapitre-item" style="font-weight:bold; color:#457b9d; background-color:#e8f4f8; border-left: 3px solid #457b9d;"
                                     onclick="redirectToAnatomyResume('${chap.IdChapterRappel}', '${chap.NbreResumeRappel}', event)">
                                     Anatomie - synthèse structurée
                                 </li>`;
 
-                            // 3. Liste des pathologies réelles
-                            if (chap.sousChaps && chap.sousChaps.length > 0) {
-                                chap.sousChaps.forEach(sc => {
-                                    html += `
+                                // 3. Liste des pathologies réelles
+                                if (chap.sousChaps && chap.sousChaps.length > 0) {
+                                    chap.sousChaps.forEach(sc => {
+                                        html += `
                                         <li style="padding: 10px 15px; border-bottom: 1px solid #f1f5f9; list-style:none;">
                                             <span class="patho-item-title">${sc.TitreSousChapitre || 'Sans titre'}</span>
                                             <div class="patho-version-container">
@@ -721,38 +739,38 @@ if (type_sel === 'qcm') {
                                                 </a>
                                             </div>
                                         </li>`;
-                                });
-                            } else {
-                                html += `<li style="padding: 10px 20px; font-style: italic; font-size: 12px; color: #888;">Aucune pathologie</li>`;
-                            }
-                            html += `</ul></li>`;
-                        });
+                                    });
+                                } else {
+                                    html += `<li style="padding: 10px 20px; font-style: italic; font-size: 12px; color: #888;">Aucune pathologie</li>`;
+                                }
+                                html += `</ul></li>`;
+                            });
+                        }
+
+                        html += `</ul>`;
+                        container.innerHTML = html;
+                    } else {
+                        container.innerHTML = `<div style="padding:15px; color:#d62828; text-align:center; font-weight:bold;">${data.message || 'Aucune pathologie liée'}</div>`;
                     }
-                    
-                    html += `</ul>`;
-                    container.innerHTML = html;
-                } else {
-                    container.innerHTML = `<div style="padding:15px; color:#d62828; text-align:center; font-weight:bold;">${data.message || 'Aucune pathologie liée'}</div>`;
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                container.innerHTML = `<div style="padding:15px; color:#d62828; text-align:center;">Erreur de chargement.</div>`;
-            });
+                })
+                .catch(err => {
+                    console.error(err);
+                    container.innerHTML = `<div style="padding:15px; color:#d62828; text-align:center;">Erreur de chargement.</div>`;
+                });
         }
 
         function toggleFeaturedPathoAccordion(header) {
             const content = header.nextElementSibling;
             const arrow = header.querySelector('.patho-arrow-feat');
             const isOpen = content.style.display === 'block';
-            
+
             // Fermer les autres chapitres dans le même menu
             header.parentElement.parentElement.querySelectorAll('.patho-sous-chap-list').forEach(list => {
                 list.style.display = 'none';
                 list.previousElementSibling.querySelector('.patho-arrow-feat').style.transform = 'rotate(0deg)';
                 list.previousElementSibling.style.background = 'white';
             });
-            
+
             if (!isOpen) {
                 content.style.display = 'block';
                 arrow.style.transform = 'rotate(90deg)';
@@ -847,31 +865,31 @@ if (type_sel === 'qcm') {
             } else {
                 sousChapList.style.display = 'block';
                 arrow.style.transform = 'rotate(90deg)';
-                
+
                 if (sousChapList.innerHTML.trim() === "") {
                     sousChapList.innerHTML = '<li class="loading-sous-chapitres" style="padding: 10px; font-style: italic;">Chargement...</li>';
-                    
+
                     fetch("<?php echo base_url(); ?>home/getPathologieByRappel", {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ idChap: idChapitre })
                     })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success && data.type === 'chapters' && data.pathoChapters.length > 0) {
-                            const firstPathoChap = data.pathoChapters[0];
-                            // On passe l'ID d'anatomie (idChapitre) ET l'ID de pathologie (firstPathoChap.IDChapitre) et nbreResume
-                            afficherSousChapitresPatho(sousChapList, firstPathoChap.sousChaps, firstPathoChap.IDChapitre, idChapitre, firstPathoChap.NbreResumeRappel);
-                        } else if (data.success && data.type === 'books') {
-                             sousChapList.innerHTML = `<li class="sous-chapitre-item" onclick="window.location.href='<?php echo base_url(); ?><?php echo strtoupper($this->uri->segment(1)); ?>/livre/${data.pathoBooks[0].IDLivre}'">Voir pathologies</li>`;
-                        } else {
-                            sousChapList.innerHTML = `<li class="sous-chapitre-item" style="color: #d62828;">${data.message || 'Aucune pathologie liée'}</li>`;
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Erreur:', error);
-                        sousChapList.innerHTML = '<li class="sous-chapitre-item">Erreur de chargement</li>';
-                    });
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success && data.type === 'chapters' && data.pathoChapters.length > 0) {
+                                const firstPathoChap = data.pathoChapters[0];
+                                // On passe l'ID d'anatomie (idChapitre) ET l'ID de pathologie (firstPathoChap.IDChapitre) et nbreResume
+                                afficherSousChapitresPatho(sousChapList, firstPathoChap.sousChaps, firstPathoChap.IDChapitre, idChapitre, firstPathoChap.NbreResumeRappel);
+                            } else if (data.success && data.type === 'books') {
+                                sousChapList.innerHTML = `<li class="sous-chapitre-item" onclick="window.location.href='<?php echo base_url(); ?><?php echo strtoupper($this->uri->segment(1)); ?>/livre/${data.pathoBooks[0].IDLivre}'">Voir pathologies</li>`;
+                            } else {
+                                sousChapList.innerHTML = `<li class="sous-chapitre-item" style="color: #d62828;">${data.message || 'Aucune pathologie liée'}</li>`;
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Erreur:', error);
+                            sousChapList.innerHTML = '<li class="sous-chapitre-item">Erreur de chargement</li>';
+                        });
                 }
             }
         }
@@ -879,7 +897,7 @@ if (type_sel === 'qcm') {
         function afficherSousChapitresPatho(container, sousChaps, idChapitre, idAnatomy = null, nbreResume = '0') {
             let html = '';
             let finalIdAnatomy = idAnatomy || idChapitre;
-            
+
             const lang = '<?php echo strtoupper($this->uri->segment(1)); ?>';
             const baseUrl = '<?php echo base_url(); ?>';
 
@@ -952,7 +970,7 @@ if (type_sel === 'qcm') {
             event.stopPropagation();
             const content = headerElement.nextElementSibling;
             const arrow = headerElement.querySelector('.accordion-arrow');
-            
+
             content.classList.toggle('expanded');
             arrow.classList.toggle('expanded');
         }
@@ -972,50 +990,50 @@ if (type_sel === 'qcm') {
             if (!hasContent) {
                 const tooltip = document.getElementById("listChapTooltip");
                 if (tooltip) tooltip.style.display = 'none';
-                
+
                 window.location.href = `${baseUrl}${lang}/livreFigures/${idChapRappel}`;
                 return;
             }
-            
-            
+
+
             fetch(`${baseUrl}home/getContentSousChapitre`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ idChap: idChap, idSousChap: idSousChap })
             })
-            .then(response => {
-                if (!response.ok) throw new Error('Erreur réseau: ' + response.status);
-                return response.json();
-            })
-            .then(data => {
-                const tooltip = document.getElementById("listChapTooltip");
-                if (tooltip) tooltip.style.display = 'none';
+                .then(response => {
+                    if (!response.ok) throw new Error('Erreur réseau: ' + response.status);
+                    return response.json();
+                })
+                .then(data => {
+                    const tooltip = document.getElementById("listChapTooltip");
+                    if (tooltip) tooltip.style.display = 'none';
 
-                console.log("🔹 Données du sous-chapitre :", data);
+                    console.log("🔹 Données du sous-chapitre :", data);
 
-                const targetFile = (version === 'essential') ? data.FichierHTML : data.FichierHTML_Resume;
-                
-                if (targetFile) {
-                    const lang = "<?php echo strtoupper($this->uri->segment(1)); ?>";
-                    const redirectUrl = `${baseUrl}${lang}/PlatFormeConvert/${targetFile}`;
-                    console.log("🔸 Redirection vers :", redirectUrl);
-                    window.location.href = redirectUrl;
-                } else {
+                    const targetFile = (version === 'essential') ? data.FichierHTML : data.FichierHTML_Resume;
+
+                    if (targetFile) {
+                        const lang = "<?php echo strtoupper($this->uri->segment(1)); ?>";
+                        const redirectUrl = `${baseUrl}${lang}/PlatFormeConvert/${targetFile}`;
+                        console.log("🔸 Redirection vers :", redirectUrl);
+                        window.location.href = redirectUrl;
+                    } else {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Contenu indisponible',
+                            text: `La ${version === 'essential' ? 'version essentielle' : 'version intégrale'} de cette pathologie n'est pas disponible.`
+                        });
+                    }
+                })
+                .catch(err => {
+                    console.error('❌ Erreur lors de la récupération du sous-chapitre:', err);
                     Swal.fire({
-                        icon: 'warning',
-                        title: 'Contenu indisponible',
-                        text: `La ${version === 'essential' ? 'version essentielle' : 'version intégrale'} de cette pathologie n'est pas disponible.`
+                        icon: 'error',
+                        title: 'Erreur de chargement',
+                        text: 'Impossible de charger le contenu du sous-chapitre.'
                     });
-                }
-            })
-            .catch(err => {
-                console.error('❌ Erreur lors de la récupération du sous-chapitre:', err);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Erreur de chargement',
-                    text: 'Impossible de charger le contenu du sous-chapitre.'
                 });
-            });
         }
 
 
@@ -1060,39 +1078,39 @@ if (type_sel === 'qcm') {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ idChapterRappel })
             })
-            .then(r => r.json())
-            .then(data => {
-                if (data.success && data.content) {
-                    coursContainer.innerHTML = data.content;
-                    coursContainer.scrollTop = 0;
-                    // Restaurer les figures originales dans la barre latérale
-                    if (typeof restaurerFiguresOriginales === 'function') {
-                        restaurerFiguresOriginales();
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success && data.content) {
+                        coursContainer.innerHTML = data.content;
+                        coursContainer.scrollTop = 0;
+                        // Restaurer les figures originales dans la barre latérale
+                        if (typeof restaurerFiguresOriginales === 'function') {
+                            restaurerFiguresOriginales();
+                        }
+                    } else {
+                        coursContainer.innerHTML = originalContent;
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Erreur',
+                            text: 'Impossible de charger le rappel anatomique.'
+                        });
                     }
-                } else {
+                })
+                .catch(err => {
+                    console.error(err);
                     coursContainer.innerHTML = originalContent;
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
                         text: 'Impossible de charger le rappel anatomique.'
                     });
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                coursContainer.innerHTML = originalContent;
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Erreur',
-                    text: 'Impossible de charger le rappel anatomique.'
                 });
-            });
         }
 
         // Chargement du résumé d'anatomie avec vérification
         function redirectToAnatomyResume(idChapitre, nbreResume, event) {
             if (event) event.stopPropagation();
-            
+
             if (!idChapitre || idChapitre === '0' || idChapitre === '') {
                 Swal.fire({
                     icon: 'info',
@@ -1109,7 +1127,7 @@ if (type_sel === 'qcm') {
             // CAS 1 : On est dans la page PlatFormeConvert (avec bloc-cours) - Chargement AJAX
             if (coursContainer) {
                 const originalContent = coursContainer.innerHTML;
-                
+
                 coursContainer.innerHTML = `
                     <div style="text-align:center; padding:50px;">
                         <i class="fas fa-spinner fa-spin" style="font-size:40px; color:#1d3557;"></i>
@@ -1122,41 +1140,41 @@ if (type_sel === 'qcm') {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ idChapterRappel: idChapitre })
                 })
-                .then(r => r.json())
-                .then(data => {
-                    if (data.success && data.content) {
-                        coursContainer.innerHTML = data.content;
-                        coursContainer.scrollTop = 0;
-                        
-                        // Message de confirmation
-                        if (data.hasResume) {
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.success && data.content) {
+                            coursContainer.innerHTML = data.content;
+                            coursContainer.scrollTop = 0;
+
+                            // Message de confirmation
+                            if (data.hasResume) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Synthèse chargée',
+                                    text: 'La synthèse structurée a été chargée avec succès.',
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                });
+                            }
+                        } else {
+                            coursContainer.innerHTML = originalContent;
                             Swal.fire({
-                                icon: 'success',
-                                title: 'Synthèse chargée',
-                                text: 'La synthèse structurée a été chargée avec succès.',
-                                timer: 2000,
-                                showConfirmButton: false
+                                icon: 'error',
+                                title: 'Erreur',
+                                text: data.message || 'Impossible de charger le résumé.'
                             });
                         }
-                    } else {
+                    })
+                    .catch(err => {
+                        console.error('Erreur:', err);
                         coursContainer.innerHTML = originalContent;
                         Swal.fire({
                             icon: 'error',
                             title: 'Erreur',
-                            text: data.message || 'Impossible de charger le résumé.'
+                            text: 'Impossible de charger le résumé.'
                         });
-                    }
-                })
-                .catch(err => {
-                    console.error('Erreur:', err);
-                    coursContainer.innerHTML = originalContent;
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Erreur',
-                        text: 'Impossible de charger le résumé.'
                     });
-                });
-                
+
                 return;
             }
 
@@ -1178,20 +1196,19 @@ if (type_sel === 'qcm') {
         });
 
 
-	</script>
-	<script>
+    </script>
+    <script>
         function updateScroll() {
             document.documentElement.style.setProperty('--scroll-y', window.scrollY + 'px');
         }
         window.addEventListener('scroll', updateScroll);
-	</script>
+    </script>
 
-	<?php
+    <?php
 }
 ?>
 
-<div id="difficultyPopup"
-     style="
+<div id="difficultyPopup" style="
         display:none;
         position:fixed;
         top:30%;
@@ -1211,13 +1228,13 @@ if (type_sel === 'qcm') {
 </div>
 
 <script>
-function showDifficultyPopup(text) {
-    const popup = document.getElementById("difficultyPopup");
-    popup.innerHTML = text;
-    popup.style.display = "block";
+    function showDifficultyPopup(text) {
+        const popup = document.getElementById("difficultyPopup");
+        popup.innerHTML = text;
+        popup.style.display = "block";
 
-    setTimeout(() => {
-        popup.style.display = "none";
-    }, 1500);
-}
+        setTimeout(() => {
+            popup.style.display = "none";
+        }, 1500);
+    }
 </script>

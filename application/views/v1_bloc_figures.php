@@ -337,8 +337,11 @@
 		<div id="figures-scroll-container" class="scroll-container">
 
 			<?php
+			if (!isset($listFig) || empty($listFig)) : ?>
+				<p class="text-center text-muted" style="padding: 10px; font-size: 0.9rem;">Aucune figure disponible pour ce cours.</p>
+			<?php else :
 			$counter = -1;
-			$firstFig = !empty($listFig) ? $listFig[0] : null;
+			$firstFig = $listFig[0];
 			foreach ($listFig as $value) {
 				// Determine the width based on the number of images
 				$imageWidth = '60px';//count($listFig) > 3 ? '80%' : '40%'; // Set width to 80% if more than 2 images, otherwise 30%
@@ -359,6 +362,7 @@
 				echo '</div>';
 				$counter++;
 			}
+			endif;
 			?>
 
 		</div>
