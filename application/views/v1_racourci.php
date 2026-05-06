@@ -2,15 +2,36 @@
 $bookId = 0;
 $themeId = 0;
 $categoryId = 0;
+$catLibelle = '';
 
 if (isset($OneBook) && is_array($OneBook) && !empty($OneBook) && isset($OneBook[0])) {
     $bookId = isset($OneBook[0]['IDLivre']) ? (int) $OneBook[0]['IDLivre'] : 0;
     $themeId = isset($OneBook[0]['IDTheme']) ? (int) $OneBook[0]['IDTheme'] : 0;
     $categoryId = isset($OneBook[0]['IDCategory']) ? (int) $OneBook[0]['IDCategory'] : 0;
+    $catLibelle = isset($OneBook[0]['Libelle']) ? $OneBook[0]['Libelle'] : '';
 }
-if (in_array($bookId, [20, 36, 31]) || in_array((int) $OneBook[0]["IDTheme"], [20, 36, 31])) {
+// Fallback to $category (set by livreDetails controller)
+if (empty($catLibelle) && isset($category) && is_array($category) && isset($category['Libelle'])) {
+    $catLibelle = $category['Libelle'];
+}
+
+// Atlas categories: FR=4, EN=9, ES=2597, RU=2701, TR=2801, PT=2901
+$atlasCategories = [4, 9, 2597, 2701, 2801, 2901];
+// Pathology categories: FR=7, EN=11, ES=2599, RU=2703, TR=2803, PT=2903
+$pathoCategories = [7, 11, 2599, 2703, 2803, 2903];
+
+$isPathology = in_array($bookId, [20, 36, 31])
+    || in_array((int) $OneBook[0]["IDTheme"], [20, 36, 31])
+    || in_array($categoryId, $pathoCategories)
+    || (stripos($catLibelle, 'Pathologie') !== false || stripos($catLibelle, 'Patologia') !== false || stripos($catLibelle, 'Pathology') !== false || stripos($catLibelle, 'Патология') !== false || stripos($catLibelle, 'Patoloji') !== false);
+
+$isAtlas = in_array($bookId, [70, 71])
+    || in_array($categoryId, $atlasCategories)
+    || (stripos($catLibelle, 'Atlas') !== false || stripos($catLibelle, 'Атлас') !== false);
+
+if ($isPathology) {
     include('v1_racourci_pathologie.php');
-} elseif (in_array($bookId, [70, 71]) || in_array((int) $OneBook[0]["IDCategory"], [4, 9])) {
+} elseif ($isAtlas) {
     include('v1_racourci_atlas.php');
 } else { ?>
 

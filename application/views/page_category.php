@@ -84,13 +84,31 @@ include('header_steppes.php');
                     if (stripos($couv, 'pathologie') !== false) {
                         if ($lang == 'EN') $couv = 'photos/pathologie_cov/PR_PATHO_EN.jpg';
                         elseif ($lang == 'ES') $couv = 'assets/couverture_ES/PR_PATHO_ES.jpg';
+                        elseif ($lang == 'RU') $couv = 'assets/couverture_RU/PR_PATHO_RU.jpg';
+                        elseif ($lang == 'TR') $couv = 'assets/couverture_TR/PR_PATHO_TR.jpg';
+                        elseif ($lang == 'PT') $couv = 'assets/couverture_PT/PR_PATHO_PT.jpg';
                         else $couv = 'photos/pathologie_cov/PR_PATHO_FR.jpg';
                     }
-                    
+
                     if ($lang == 'ES') {
                         if (stripos($value['Cats']['Libelle'], 'Curso') !== false) $couv = 'assets/couverture_ES/PR_COURSES_ES.jpg';
                         elseif (stripos($value['Cats']['Libelle'], 'Atlas') !== false) $couv = 'assets/couverture_ES/PR_ATLAS_ES.jpg';
                         elseif (stripos($value['Cats']['Libelle'], 'Embri') !== false) $couv = 'assets/couverture_ES/PR_EMBR_ES.jpg';
+                    }
+                    if ($lang == 'RU') {
+                        if (stripos($value['Cats']['Libelle'], 'Курс') !== false || stripos($value['Cats']['Libelle'], 'Cours') !== false || stripos($value['Cats']['Libelle'], 'Anatomy-courses') !== false || stripos($value['Cats']['Libelle'], 'Kursy') !== false) $couv = 'assets/couverture_RU/PR_COURSES_RU.jpg';
+                        elseif (stripos($value['Cats']['Libelle'], 'Atlas') !== false) $couv = 'assets/couverture_RU/PR_ATLAS_RU.jpg';
+                        elseif (stripos($value['Cats']['Libelle'], 'Embr') !== false) $couv = 'assets/couverture_RU/PR_EMBR_RU.jpg';
+                    }
+                    if ($lang == 'TR') {
+                        if (stripos($value['Cats']['Libelle'], 'Dersleri') !== false || stripos($value['Cats']['Libelle'], 'Cours') !== false || stripos($value['Cats']['Libelle'], 'Anatomi-Dersleri') !== false) $couv = 'assets/couverture_TR/PR_COURSES_TR.jpg';
+                        elseif (stripos($value['Cats']['Libelle'], 'Atlas') !== false) $couv = 'assets/couverture_TR/PR_ATLAS_TR.jpg';
+                        elseif (stripos($value['Cats']['Libelle'], 'Embr') !== false || stripos($value['Cats']['Libelle'], 'Embri') !== false) $couv = 'assets/couverture_TR/PR_EMBR_TR.jpg';
+                    }
+                    if ($lang == 'PT') {
+                        if (stripos($value['Cats']['Libelle'], 'Cursos') !== false || stripos($value['Cats']['Libelle'], 'Curso') !== false || stripos($value['Cats']['Libelle'], 'Cours') !== false) $couv = 'assets/couverture_PT/PR_COURSES_PT.jpg';
+                        elseif (stripos($value['Cats']['Libelle'], 'Atlas') !== false) $couv = 'assets/couverture_PT/PR_ATLAS_PT.jpg';
+                        elseif (stripos($value['Cats']['Libelle'], 'Embri') !== false || stripos($value['Cats']['Libelle'], 'Embr') !== false) $couv = 'assets/couverture_PT/PR_EMBR_PT.jpg';
                     }
                 ?>
                  <img style="width:100%!important;" src="<?php echo (stripos($couv, 'assets/') !== false) ? base_url($couv) : HTTP_IMAGES . $couv; ?>" alt="">
@@ -155,12 +173,30 @@ include('header_steppes.php');
                                         if (stripos($couv2, 'pathologie') !== false) {
                                             if ($lang2 == 'EN') $couv2 = 'photos/pathologie_cov/PR_PATHO_EN.jpg';
                                             elseif ($lang2 == 'ES') $couv2 = 'assets/couverture_ES/PR_PATHO_ES.jpg';
+                                            elseif ($lang2 == 'RU') $couv2 = 'assets/couverture_RU/PR_PATHO_RU.jpg';
+                                            elseif ($lang2 == 'TR') $couv2 = 'assets/couverture_TR/PR_PATHO_TR.jpg';
+                                            elseif ($lang2 == 'PT') $couv2 = 'assets/couverture_PT/PR_PATHO_PT.jpg';
                                             else $couv2 = 'photos/pathologie_cov/PR_PATHO_FR.jpg';
                                         }
                                         if ($lang2 == 'ES') {
                                             if (stripos($value['Cats']['Libelle'], 'Curso') !== false) $couv2 = 'assets/couverture_ES/PR_COURSES_ES.jpg';
                                             elseif (stripos($value['Cats']['Libelle'], 'Atlas') !== false) $couv2 = 'assets/couverture_ES/PR_ATLAS_ES.jpg';
                                             elseif (stripos($value['Cats']['Libelle'], 'Embri') !== false) $couv2 = 'assets/couverture_ES/PR_EMBR_ES.jpg';
+                                        }
+                                        if ($lang2 == 'RU') {
+                                            if (stripos($value['Cats']['Libelle'], 'Курс') !== false || stripos($value['Cats']['Libelle'], 'Cours') !== false || stripos($value['Cats']['Libelle'], 'Anatomy-courses') !== false || stripos($value['Cats']['Libelle'], 'Kursy') !== false) $couv2 = 'assets/couverture_RU/PR_COURSES_RU.jpg';
+                                            elseif (stripos($value['Cats']['Libelle'], 'Atlas') !== false) $couv2 = 'assets/couverture_RU/PR_ATLAS_RU.jpg';
+                                            elseif (stripos($value['Cats']['Libelle'], 'Embr') !== false) $couv2 = 'assets/couverture_RU/PR_EMBR_RU.jpg';
+                                        }
+                                        if ($lang2 == 'TR') {
+                                            if (stripos($value['Cats']['Libelle'], 'Dersleri') !== false || stripos($value['Cats']['Libelle'], 'Cours') !== false || stripos($value['Cats']['Libelle'], 'Anatomi-Dersleri') !== false) $couv2 = 'assets/couverture_TR/PR_COURSES_TR.jpg';
+                                            elseif (stripos($value['Cats']['Libelle'], 'Atlas') !== false) $couv2 = 'assets/couverture_TR/PR_ATLAS_TR.jpg';
+                                            elseif (stripos($value['Cats']['Libelle'], 'Embr') !== false || stripos($value['Cats']['Libelle'], 'Embri') !== false) $couv2 = 'assets/couverture_TR/PR_EMBR_TR.jpg';
+                                        }
+                                        if ($lang2 == 'PT') {
+                                            if (stripos($value['Cats']['Libelle'], 'Cursos') !== false || stripos($value['Cats']['Libelle'], 'Curso') !== false || stripos($value['Cats']['Libelle'], 'Cours') !== false) $couv2 = 'assets/couverture_PT/PR_COURSES_PT.jpg';
+                                            elseif (stripos($value['Cats']['Libelle'], 'Atlas') !== false) $couv2 = 'assets/couverture_PT/PR_ATLAS_PT.jpg';
+                                            elseif (stripos($value['Cats']['Libelle'], 'Embri') !== false || stripos($value['Cats']['Libelle'], 'Embr') !== false) $couv2 = 'assets/couverture_PT/PR_EMBR_PT.jpg';
                                         }
                                     ?>
                                     <img class="card-img-top" src="<?php echo (stripos($couv2, 'assets/') !== false) ? base_url($couv2) : HTTP_IMAGES . $couv2; ?>" alt="">

@@ -211,7 +211,8 @@
 		</ol>
 
 		<?php
-		if (in_array((int)$OneBook[0]["IDLivre"], [70, 71]) || in_array((int)$OneBook[0]["IDCategory"], [4, 9])) {
+		// Atlas categories: FR=4, EN=9, ES=2597, RU=2701, TR=2801, PT=2901
+		if (in_array((int)$OneBook[0]["IDLivre"], [70, 71]) || in_array((int)$OneBook[0]["IDCategory"], [4, 9, 2597, 2701, 2801, 2901])) {
 			// Code si la condition est vraie
 		} else {
 			if ($page != 'livre') {  // Vérification de la condition pour $page

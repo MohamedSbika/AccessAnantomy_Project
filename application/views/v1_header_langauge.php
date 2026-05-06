@@ -6,7 +6,10 @@ $lang = $this->session->userdata('site_lang') ?: 'FR';
 $flags = [
 	'FR' => '🇫🇷',
 	'EN' => '🇬🇧',
-	'ES' => '🇪🇸'
+	'ES' => '🇪🇸',
+	'RU' => '🇷🇺',
+	'TR' => '🇹🇷',
+	'PT' => '🇵🇹'
 ];
 
 $flag = isset($flags[$lang]) ? $flags[$lang] : '🌐';
@@ -38,6 +41,15 @@ $flag = isset($flags[$lang]) ? $flags[$lang] : '🌐';
 				</a>
 				<a class="dropdown-item" href="<?php echo base_url(); ?>login/switchLang/ES" style="color: #120e47;margin-left: 0px;" onclick="resetTranslate()">
 					🇪🇸 &nbsp;Español
+				</a>
+				<a class="dropdown-item" href="<?php echo base_url(); ?>login/switchLang/RU" style="color: #120e47;margin-left: 0px;" onclick="resetTranslate()">
+					🇷🇺 &nbsp;Русский
+				</a>
+				<a class="dropdown-item" href="<?php echo base_url(); ?>login/switchLang/TR" style="color: #120e47;margin-left: 0px;" onclick="resetTranslate()">
+					🇹🇷 &nbsp;Türkçe
+				</a>
+				<a class="dropdown-item" href="<?php echo base_url(); ?>login/switchLang/PT" style="color: #120e47;margin-left: 0px;" onclick="resetTranslate()">
+					🇵🇹 &nbsp;Português
 				</a>
 				<a class="dropdown-item dropdown-item-autre" href="javascript:void(0)" style="color: #120e47;margin-left: 0px;" onclick="toggleGtBar()">
 					🌐 &nbsp;Autre...

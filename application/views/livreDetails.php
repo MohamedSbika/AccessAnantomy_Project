@@ -830,7 +830,7 @@
                                                                     // SECTION : Pathologie référente en français
                                                                     // Visible UNIQUEMENT si la langue du livre est EN ou ES
                                                                     // ====================================================
-                                                                    if (in_array($category['multi_lingue'], ['EN', 'ES'])):
+                                                                    if (in_array($category['multi_lingue'], ['EN', 'ES', 'RU', 'TR', 'PT'])):
                                                                         $livresFR = $this->db
                                                                             ->select('l.IDLivre, l.Titre')
                                                                             ->from('_livre l')
@@ -878,7 +878,7 @@
 
                                                                     <?php
                                                                     // Générer les options FR pour le modal JS (seulement si EN ou ES)
-                                                                    if (in_array($category['multi_lingue'], ['EN', 'ES'])):
+                                                                    if (in_array($category['multi_lingue'], ['EN', 'ES', 'RU', 'TR', 'PT'])):
                                                                         $optionsFRHtml = '<option value="">-- Choisissez une pathologie FR --</option>';
                                                                         foreach ($livresFR as $livreFR) {
                                                                             $this->db->select('IDChapitre, TitreChapitre')
@@ -896,7 +896,7 @@
                                                                     endif;
                                                                     ?>
 
-                                                                    <?php if (in_array($category['multi_lingue'], ['EN', 'ES'])): ?>
+                                                                    <?php if (in_array($category['multi_lingue'], ['EN', 'ES', 'RU', 'TR', 'PT'])): ?>
                                                                         <script>
                                                                             window.pathologieFROptions = <?= json_encode($optionsFRHtml ?? ''); ?>;
                                                                             window.bookIsMultiLingue = true;
@@ -951,7 +951,7 @@
                                                     <?php
                                                     $estPathologieBook = in_array((int) $OneBook[0]["IDTheme"], [20, 36, 31])
                                                         || (isset($category['Couverture']) && stripos($category['Couverture'], 'pathologie') !== false)
-                                                        || (isset($category['Libelle']) && (stripos($category['Libelle'], 'Pathologie') !== false || stripos($category['Libelle'], 'Patologia') !== false || stripos($category['Libelle'], 'Pathology') !== false));
+                                                        || (isset($category['Libelle']) && (stripos($category['Libelle'], 'Pathologie') !== false || stripos($category['Libelle'], 'Patologia') !== false || stripos($category['Libelle'], 'Pathology') !== false || stripos($category['Libelle'], 'Патология') !== false || stripos($category['Libelle'], 'Patoloji') !== false));
                                                     if ($estPathologieBook): ?>
                                                         <th width="5%" style="text-align: left;"></th>
                                                         <th width="30%" style="text-align: center;">Titre Chapitre</th>
@@ -1000,7 +1000,7 @@
                                                     <?php foreach ($listChap as $value) {
                                                         $estPathologie = in_array($value['IDLivre'], [20, 36, 31]) || in_array((int) $OneBook[0]["IDTheme"], [20, 36, 31])
                                                             || (isset($category['Couverture']) && stripos($category['Couverture'], 'pathologie') !== false)
-                                                            || (isset($category['Libelle']) && (stripos($category['Libelle'], 'Pathologie') !== false || stripos($category['Libelle'], 'Patologia') !== false || stripos($category['Libelle'], 'Pathology') !== false));
+                                                            || (isset($category['Libelle']) && (stripos($category['Libelle'], 'Pathologie') !== false || stripos($category['Libelle'], 'Patologia') !== false || stripos($category['Libelle'], 'Pathology') !== false || stripos($category['Libelle'], 'Патология') !== false || stripos($category['Libelle'], 'Patoloji') !== false));
                                                         ?>
                                                         <tr>
                                                             <?php if (!$estPathologie): ?>
@@ -2173,7 +2173,7 @@
                                                                                 <i class="fas fa-link"
                                                                                     style="color:#3085d6; margin-left:5px;"></i>
                                                                             </a>
-                                                                            <?php if (in_array($category['multi_lingue'], ['EN', 'ES'])): ?>
+                                                                            <?php if (in_array($category['multi_lingue'], ['EN', 'ES', 'RU', 'TR', 'PT'])): ?>
                                                                                 <a href="#"
                                                                                     onclick="openPathoFRModal(<?php print $value['IDChapitre']; ?>, '<?php print $value['idpathologieFR'] ?? ''; ?>')"
                                                                                     title="Modifier la pathologie référente (FR)">
@@ -2265,7 +2265,7 @@
                                             <script>
                                                 window.estPathologieCategory = <?= (
                                                     (isset($category['Couverture']) && stripos($category['Couverture'], 'pathologie') !== false)
-                                                    || (isset($category['Libelle']) && (stripos($category['Libelle'], 'Pathologie') !== false || stripos($category['Libelle'], 'Patologia') !== false || stripos($category['Libelle'], 'Pathology') !== false))
+                                                    || (isset($category['Libelle']) && (stripos($category['Libelle'], 'Pathologie') !== false || stripos($category['Libelle'], 'Patologia') !== false || stripos($category['Libelle'], 'Pathology') !== false || stripos($category['Libelle'], 'Патология') !== false || stripos($category['Libelle'], 'Patoloji') !== false))
                                                 ) ? 'true' : 'false'; ?>;
                                                 $(document).ready(function () {
                                                     // L'ancien code .toggle-patho a été supprimé car nous utilisons maintenant togglePathoContainer() directement

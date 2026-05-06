@@ -917,6 +917,18 @@ include('header_steppes.php');
                                     <a href="<?php echo base_url(); ?>ES/category/Curso-Anatomia">
                                         <img src="<?php echo base_url(); ?>assets/couverture_ES/PR_COURSES_ES.jpg" style="width:100%;" class="image-couverture">
                                     </a>
+                                <?php } elseif ($this->session->userdata('site_lang') == 'RU') { ?>
+                                    <a href="<?php echo base_url(); ?>RU/category/Kursy-Anatomii">
+                                        <img src="<?php echo base_url(); ?>assets/couverture_RU/PR_COURSES_RU.jpg" style="width:100%;" class="image-couverture">
+                                    </a>
+                                <?php } elseif ($this->session->userdata('site_lang') == 'TR') { ?>
+                                    <a href="<?php echo base_url(); ?>TR/category/Anatomi-Dersleri">
+                                        <img src="<?php echo base_url(); ?>assets/couverture_TR/PR_COURSES_TR.jpg" style="width:100%;" class="image-couverture">
+                                    </a>
+                                <?php } elseif ($this->session->userdata('site_lang') == 'PT') { ?>
+                                    <a href="<?php echo base_url(); ?>PT/category/Curso-Anatomia-PT">
+                                        <img src="<?php echo base_url(); ?>assets/couverture_PT/PR_COURSES_PT.jpg" style="width:100%;" class="image-couverture">
+                                    </a>
                                 <?php } else { ?>
                                     <a href="<?php echo base_url(); ?>EN/category/Anatomy-courses">
                                         <img src="<?php echo base_url(); ?>assets/couvertures ENG/PRESENTATION_EN/COURSPA_EN.jpg" style="width:100%;" class="image-couverture">
@@ -936,6 +948,18 @@ include('header_steppes.php');
                                     <a href="<?php echo base_url(); ?>ES/category/Atlas-Anatomia">
                                         <img src="<?php echo base_url(); ?>assets/couverture_ES/PR_ATLAS_ES.jpg" style="width:100%;" class="image-couverture">
                                     </a>
+                                <?php } elseif ($this->session->userdata('site_lang') == 'RU') { ?>
+                                    <a href="<?php echo base_url(); ?>RU/category/Atlas-Anatomii">
+                                        <img src="<?php echo base_url(); ?>assets/couverture_RU/PR_ATLAS_RU.jpg" style="width:100%;" class="image-couverture">
+                                    </a>
+                                <?php } elseif ($this->session->userdata('site_lang') == 'TR') { ?>
+                                    <a href="<?php echo base_url(); ?>TR/category/Anatomi-Atlasi">
+                                        <img src="<?php echo base_url(); ?>assets/couverture_TR/PR_ATLAS_TR.jpg" style="width:100%;" class="image-couverture">
+                                    </a>
+                                <?php } elseif ($this->session->userdata('site_lang') == 'PT') { ?>
+                                    <a href="<?php echo base_url(); ?>PT/category/Atlas-Anatomia-PT">
+                                        <img src="<?php echo base_url(); ?>assets/couverture_PT/PR_ATLAS_PT.jpg" style="width:100%;" class="image-couverture">
+                                    </a>
                                 <?php } else { ?>
                                     <a href="<?php echo base_url(); ?>EN/category/Atlas-of-Anatomy">
                                         <img src="<?php echo base_url(); ?>assets/couvertures ENG/PRESENTATION_EN/ATLAS_PA_EN.jpg" style="width:100%;" class="image-couverture">
@@ -954,6 +978,18 @@ include('header_steppes.php');
                                     <a href="<?php echo base_url(); ?>ES/category/Embriologia">
                                         <img src="<?php echo base_url(); ?>assets/couverture_ES/PR_EMBR_ES.jpg" style="width:100%;" class="image-couverture">
                                     </a>
+                                <?php } elseif ($this->session->userdata('site_lang') == 'RU') { ?>
+                                    <a href="<?php echo base_url(); ?>RU/category/Embriologiya">
+                                        <img src="<?php echo base_url(); ?>assets/couverture_RU/PR_EMBR_RU.jpg" style="width:100%;" class="image-couverture">
+                                    </a>
+                                <?php } elseif ($this->session->userdata('site_lang') == 'TR') { ?>
+                                    <a href="<?php echo base_url(); ?>TR/category/Embriyoloji">
+                                        <img src="<?php echo base_url(); ?>assets/couverture_TR/PR_EMBR_TR.jpg" style="width:100%;" class="image-couverture">
+                                    </a>
+                                <?php } elseif ($this->session->userdata('site_lang') == 'PT') { ?>
+                                    <a href="<?php echo base_url(); ?>PT/category/Embriologia-PT">
+                                        <img src="<?php echo base_url(); ?>assets/couverture_PT/PR_EMBR_PT.jpg" style="width:100%;" class="image-couverture">
+                                    </a>
                                 <?php } else { ?>
                                     <a href="<?php echo base_url(); ?>EN/category/Embryology">
                                         <img src="<?php echo base_url(); ?>assets/couvertures ENG/PRESENTATION_EN/EMBR_PA_EN–1.jpg" style="width:100%;" class="image-couverture">
@@ -971,6 +1007,18 @@ include('header_steppes.php');
                                 <?php } elseif ($this->session->userdata('site_lang') == 'ES') { ?>
                                     <a href="<?php echo base_url(); ?>ES/category/Patologia-ES">
                                         <img src="<?php echo base_url(); ?>assets/couverture_ES/PR_PATHO_ES.jpg" style="width:100%;" class="image-couverture">
+                                    </a>
+                                <?php } elseif ($this->session->userdata('site_lang') == 'RU') { ?>
+                                    <a href="<?php echo base_url(); ?>RU/category/Patologiya-RU">
+                                        <img src="<?php echo base_url(); ?>assets/couverture_RU/PR_PATHO_RU.jpg" style="width:100%;" class="image-couverture">
+                                    </a>
+                                <?php } elseif ($this->session->userdata('site_lang') == 'TR') { ?>
+                                    <a href="<?php echo base_url(); ?>TR/category/Patoloji-TR">
+                                        <img src="<?php echo base_url(); ?>assets/couverture_TR/PR_PATHO_TR.jpg" style="width:100%;" class="image-couverture">
+                                    </a>
+                                <?php } elseif ($this->session->userdata('site_lang') == 'PT') { ?>
+                                    <a href="<?php echo base_url(); ?>PT/category/Patologia-PT">
+                                        <img src="<?php echo base_url(); ?>assets/couverture_PT/PR_PATHO_PT.jpg" style="width:100%;" class="image-couverture">
                                     </a>
                                 <?php } else { ?>
                                     <a href="<?php echo base_url(); ?>EN/category/Pathology-EN">
@@ -1157,6 +1205,12 @@ include('header_steppes.php');
                                         $compteur++; ?>-
                                         <?php if ($this->session->userdata('site_lang') == '' || $this->session->userdata('site_lang') == 'FR') { ?>
                                             <span> <?= $value['FR_title']; ?> </span>
+                                        <?php } elseif ($this->session->userdata('site_lang') == 'RU' && !empty($value['RU_title'])) { ?>
+                                            <span> <?= $value['RU_title']; ?> </span>
+                                        <?php } elseif ($this->session->userdata('site_lang') == 'TR' && !empty($value['TR_title'])) { ?>
+                                            <span> <?= $value['TR_title']; ?> </span>
+                                        <?php } elseif ($this->session->userdata('site_lang') == 'PT' && !empty($value['PT_title'])) { ?>
+                                            <span> <?= $value['PT_title']; ?> </span>
                                         <?php } else { ?>
                                             <span> <?= $value['EN_title']; ?> </span>
                                         <?php } ?>

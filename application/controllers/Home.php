@@ -1107,15 +1107,24 @@ fclose($myfile);                             */
         if ($lang == 'ES') {
             $this->session->set_userdata('site_lang_lib', 'Español');
         }
+        if ($lang == 'RU') {
+            $this->session->set_userdata('site_lang_lib', 'Русский');
+        }
+        if ($lang == 'TR') {
+            $this->session->set_userdata('site_lang_lib', 'Türkçe');
+        }
+        if ($lang == 'PT') {
+            $this->session->set_userdata('site_lang_lib', 'Português');
+        }
 
         //header(base_url());
         redirect(base_url() . $this->lang->line('siteLang') . 'login');
     }
     public function setLang()
     {
-        // Detect language from URL prefix (FR/, EN/, ES/, DE/)
+        // Detect language from URL prefix (FR/, EN/, ES/, DE/, RU/, TR/, PT/)
         $uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
-        if (preg_match('#/(FR|EN|ES|DE)/#', $uri, $matches)) {
+        if (preg_match('#/(FR|EN|ES|DE|RU|TR|PT)/#', $uri, $matches)) {
             $this->session->set_userdata('site_lang', $matches[1]);
         }
 
@@ -1140,6 +1149,18 @@ fclose($myfile);                             */
         if ($lang == 'ES') {
             $this->session->set_userdata('site_lang_lib', 'Español');
             $lang = 'ES';
+        }
+        if ($lang == 'RU') {
+            $this->session->set_userdata('site_lang_lib', 'Русский');
+            $lang = 'RU';
+        }
+        if ($lang == 'TR') {
+            $this->session->set_userdata('site_lang_lib', 'Türkçe');
+            $lang = 'TR';
+        }
+        if ($lang == 'PT') {
+            $this->session->set_userdata('site_lang_lib', 'Português');
+            $lang = 'PT';
         }
         $this->session->set_userdata('site_lang', $lang);
         $this->lang->load('content', $lang == '' ? 'FR' : $lang);
@@ -1265,6 +1286,12 @@ fclose($myfile);                             */
                 redirect('EN/category/' . $json[4]['url']);
             } elseif ($lang == "ES") {
                 redirect('ES/category/' . $json[8]['url']);
+            } elseif ($lang == "RU") {
+                redirect('RU/category/' . $json[12]['url']);
+            } elseif ($lang == "TR") {
+                redirect('TR/category/' . $json[16]['url']);
+            } elseif ($lang == "PT") {
+                redirect('PT/category/' . $json[20]['url']);
             } else {
                 redirect('FR/category/' . $json[0]['url']);
             }
@@ -2726,7 +2753,13 @@ fclose($myfile);                             */
 
         $titleEN = $_POST["EN_title"];
 
-        $data = ['FR_title' => $titleFR, 'EN_title' => $titleEN];
+        $titleRU = isset($_POST["RU_title"]) ? $_POST["RU_title"] : '';
+
+        $titleTR = isset($_POST["TR_title"]) ? $_POST["TR_title"] : '';
+
+        $titlePT = isset($_POST["PT_title"]) ? $_POST["PT_title"] : '';
+
+        $data = ['FR_title' => $titleFR, 'EN_title' => $titleEN, 'RU_title' => $titleRU, 'TR_title' => $titleTR, 'PT_title' => $titlePT];
         $this->insert_dd("actualites", $data);
         //increment nbrTest
 
@@ -2749,7 +2782,13 @@ fclose($myfile);                             */
 
         $titleEN = $_POST["EN_title"];
 
-        $data = ['FR_title' => $titleFR, 'EN_title' => $titleEN];
+        $titleRU = isset($_POST["RU_title"]) ? $_POST["RU_title"] : '';
+
+        $titleTR = isset($_POST["TR_title"]) ? $_POST["TR_title"] : '';
+
+        $titlePT = isset($_POST["PT_title"]) ? $_POST["PT_title"] : '';
+
+        $data = ['FR_title' => $titleFR, 'EN_title' => $titleEN, 'RU_title' => $titleRU, 'TR_title' => $titleTR, 'PT_title' => $titlePT];
 
         $this->db->where("id = '" . $id . "'");
         $this->db->update('actualites', $data);
@@ -2796,7 +2835,13 @@ fclose($myfile);                             */
         if (!$cat)
             return false;
         return (isset($cat['Couverture']) && stripos($cat['Couverture'], 'pathologie') !== false)
-            || (isset($cat['Libelle']) && (stripos($cat['Libelle'], 'Pathologie') !== false || stripos($cat['Libelle'], 'Patologia') !== false || stripos($cat['Libelle'], 'Pathology') !== false));
+            || (isset($cat['Libelle']) && (
+                stripos($cat['Libelle'], 'Pathologie') !== false
+                || stripos($cat['Libelle'], 'Patologia') !== false
+                || stripos($cat['Libelle'], 'Pathology') !== false
+                || stripos($cat['Libelle'], 'Патология') !== false
+                || stripos($cat['Libelle'], 'Patoloji') !== false
+            ));
     }
 
     public function getListCategory()
@@ -2913,9 +2958,11 @@ fclose($myfile);                             */
     {
         $this->session->set_userdata('curs_id', '');
 
-        $this->db->select('*');
-        $this->db->from('_livre , _theme');
-        $this->db->Where("IDLivre = '$id' AND _theme.IDTheme = _livre.IDTheme");
+        $this->db->select('_livre.*, _theme.*, _category.Libelle AS Libelle, _category.multi_lingue AS multi_lingue, _category.Couverture AS CouvertureCat');
+        $this->db->from('_livre');
+        $this->db->join('_theme', '_theme.IDTheme = _livre.IDTheme');
+        $this->db->join('_category', '_category.IDCategory = _theme.IDCategory');
+        $this->db->where("_livre.IDLivre = '$id'");
         $resBook = $this->db->get()->result_array();
 
         $this->db->select('*');
@@ -9016,6 +9063,8 @@ loadingTask.promise.then(function(pdf) {
         $this->db->or_like('_category.Libelle', 'Pathologie');
         $this->db->or_like('_category.Libelle', 'Patologia');
         $this->db->or_like('_category.Libelle', 'Pathology');
+        $this->db->or_like('_category.Libelle', 'Патология');
+        $this->db->or_like('_category.Libelle', 'Patoloji');
         $this->db->or_like('_category.Couverture', 'pathologie');
         $this->db->group_end();
         $this->db->order_by('ord', 'ASC');
@@ -9032,7 +9081,13 @@ loadingTask.promise.then(function(pdf) {
             $this->db->join('_theme', '_theme.IDTheme = _livre.IDTheme');
             $this->db->join('_category', '_category.IDCategory = _theme.IDCategory');
             $this->db->where('_category.multi_lingue', $lang);
+            $this->db->group_start();
             $this->db->like('_category.Libelle', 'Pathologie');
+            $this->db->or_like('_category.Libelle', 'Patologia');
+            $this->db->or_like('_category.Libelle', 'Pathology');
+            $this->db->or_like('_category.Libelle', 'Патология');
+            $this->db->or_like('_category.Libelle', 'Patoloji');
+            $this->db->group_end();
             $this->db->order_by('ord', 'ASC');
             $this->db->order_by('_livre.Titre', 'ASC');
             $query = $this->db->get();

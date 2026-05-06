@@ -143,6 +143,15 @@
                         <a style="padding:0px 2px;" class="dropdown-item" href="<?php echo base_url(); ?>login/switchLang/ES">
                             <span class="align-middle">Español</span>
                         </a>
+                        <a style="padding:0px 2px;" class="dropdown-item" href="<?php echo base_url(); ?>login/switchLang/RU">
+                            <span class="align-middle">Русский</span>
+                        </a>
+                        <a style="padding:0px 2px;" class="dropdown-item" href="<?php echo base_url(); ?>login/switchLang/TR">
+                            <span class="align-middle">Türkçe</span>
+                        </a>
+                        <a style="padding:0px 2px;" class="dropdown-item" href="<?php echo base_url(); ?>login/switchLang/PT">
+                            <span class="align-middle">Português</span>
+                        </a>
                     </div>
                 </li>
 	

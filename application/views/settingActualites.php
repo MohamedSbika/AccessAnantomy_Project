@@ -37,6 +37,9 @@
                                                     <th style="text-align: left;">#ID</th>
                                                     <th style="text-align: left;">FR Titre</th>
                                                     <th style="text-align: left;">EN Titre</th>
+                                                    <th style="text-align: left;">RU Titre</th>
+                                                    <th style="text-align: left;">TR Titre</th>
+                                                    <th style="text-align: left;">PT Titre</th>
                                                     <th style="text-align: left;"><?php echo $this->lang->line('paramsAction'); ?></th>
 
                                                 </tr>
@@ -53,6 +56,15 @@
                                                             </td>
                                                             <td style="text-align: left;">
                                                                 <?= $value['EN_title']; ?>
+                                                            </td>
+                                                            <td style="text-align: left;">
+                                                                <?= isset($value['RU_title']) ? $value['RU_title'] : ''; ?>
+                                                            </td>
+                                                            <td style="text-align: left;">
+                                                                <?= isset($value['TR_title']) ? $value['TR_title'] : ''; ?>
+                                                            </td>
+                                                            <td style="text-align: left;">
+                                                                <?= isset($value['PT_title']) ? $value['PT_title'] : ''; ?>
                                                             </td>
                                                             <td style="text-align: left;">
                                                                 <div class="dropdown" style="">
