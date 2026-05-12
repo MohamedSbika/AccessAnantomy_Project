@@ -15,19 +15,19 @@ if (empty($catLibelle) && isset($category) && is_array($category) && isset($cate
     $catLibelle = $category['Libelle'];
 }
 
-// Atlas categories: FR=4, EN=9, ES=2597, RU=2701, TR=2801, PT=2901
-$atlasCategories = [4, 9, 2597, 2701, 2801, 2901];
-// Pathology categories: FR=7, EN=11, ES=2599, RU=2703, TR=2803, PT=2903
-$pathoCategories = [7, 11, 2599, 2703, 2803, 2903];
+// Atlas categories: FR=4, EN=9, ES=2597, RU=2701, TR=2801, PT=2901, IT=3001, DE=3101, PL=3201, JA=3301, KO=3401
+$atlasCategories = [4, 9, 2597, 2701, 2801, 2901, 3001, 3101, 3201, 3301, 3401];
+// Pathology categories: FR=7, EN=11, ES=2599, RU=2703, TR=2803, PT=2903, IT=3003, DE=3103, PL=3203, JA=3303, KO=3403
+$pathoCategories = [7, 11, 2599, 2703, 2803, 2903, 3003, 3103, 3203, 3303, 3403];
 
 $isPathology = in_array($bookId, [20, 36, 31])
     || in_array((int) $OneBook[0]["IDTheme"], [20, 36, 31])
     || in_array($categoryId, $pathoCategories)
-    || (stripos($catLibelle, 'Pathologie') !== false || stripos($catLibelle, 'Patologia') !== false || stripos($catLibelle, 'Pathology') !== false || stripos($catLibelle, 'Патология') !== false || stripos($catLibelle, 'Patoloji') !== false);
+    || (stripos($catLibelle, 'Pathologie') !== false || stripos($catLibelle, 'Patologia') !== false || stripos($catLibelle, 'Pathology') !== false || stripos($catLibelle, 'Патология') !== false || stripos($catLibelle, 'Patoloji') !== false || stripos($catLibelle, '病理学') !== false || stripos($catLibelle, '병리학') !== false);
 
 $isAtlas = in_array($bookId, [70, 71])
     || in_array($categoryId, $atlasCategories)
-    || (stripos($catLibelle, 'Atlas') !== false || stripos($catLibelle, 'Атлас') !== false);
+    || (stripos($catLibelle, 'Atlas') !== false || stripos($catLibelle, 'Атлас') !== false || stripos($catLibelle, 'Atlante') !== false || stripos($catLibelle, 'アトラス') !== false || stripos($catLibelle, '아틀라스') !== false);
 
 if ($isPathology) {
     include('v1_racourci_pathologie.php');

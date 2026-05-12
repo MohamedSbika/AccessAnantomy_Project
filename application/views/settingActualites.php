@@ -40,6 +40,11 @@
                                                     <th style="text-align: left;">RU Titre</th>
                                                     <th style="text-align: left;">TR Titre</th>
                                                     <th style="text-align: left;">PT Titre</th>
+                                                    <th style="text-align: left;">IT Titre</th>
+                                                    <th style="text-align: left;">DE Titre</th>
+                                                    <th style="text-align: left;">PL Titre</th>
+                                                    <th style="text-align: left;">JA Titre</th>
+                                                    <th style="text-align: left;">KO Titre</th>
                                                     <th style="text-align: left;"><?php echo $this->lang->line('paramsAction'); ?></th>
 
                                                 </tr>
@@ -65,6 +70,21 @@
                                                             </td>
                                                             <td style="text-align: left;">
                                                                 <?= isset($value['PT_title']) ? $value['PT_title'] : ''; ?>
+                                                            </td>
+                                                            <td style="text-align: left;">
+                                                                <?= isset($value['IT_title']) ? $value['IT_title'] : ''; ?>
+                                                            </td>
+                                                            <td style="text-align: left;">
+                                                                <?= isset($value['DE_title']) ? $value['DE_title'] : ''; ?>
+                                                            </td>
+                                                            <td style="text-align: left;">
+                                                                <?= isset($value['PL_title']) ? $value['PL_title'] : ''; ?>
+                                                            </td>
+                                                            <td style="text-align: left;">
+                                                                <?= isset($value['JA_title']) ? $value['JA_title'] : ''; ?>
+                                                            </td>
+                                                            <td style="text-align: left;">
+                                                                <?= isset($value['KO_title']) ? $value['KO_title'] : ''; ?>
                                                             </td>
                                                             <td style="text-align: left;">
                                                                 <div class="dropdown" style="">

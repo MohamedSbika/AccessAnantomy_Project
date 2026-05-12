@@ -9,7 +9,12 @@ $flags = [
 	'ES' => '🇪🇸',
 	'RU' => '🇷🇺',
 	'TR' => '🇹🇷',
-	'PT' => '🇵🇹'
+	'PT' => '🇵🇹',
+	'IT' => '🇮🇹',
+	'DE' => '🇩🇪',
+	'PL' => '🇵🇱',
+	'JA' => '🇯🇵',
+	'KO' => '🇰🇷'
 ];
 
 $flag = isset($flags[$lang]) ? $flags[$lang] : '🌐';
@@ -50,6 +55,21 @@ $flag = isset($flags[$lang]) ? $flags[$lang] : '🌐';
 				</a>
 				<a class="dropdown-item" href="<?php echo base_url(); ?>login/switchLang/PT" style="color: #120e47;margin-left: 0px;" onclick="resetTranslate()">
 					🇵🇹 &nbsp;Português
+				</a>
+				<a class="dropdown-item" href="<?php echo base_url(); ?>login/switchLang/IT" style="color: #120e47;margin-left: 0px;" onclick="resetTranslate()">
+					🇮🇹 &nbsp;Italiano
+				</a>
+				<a class="dropdown-item" href="<?php echo base_url(); ?>login/switchLang/DE" style="color: #120e47;margin-left: 0px;" onclick="resetTranslate()">
+					🇩🇪 &nbsp;Deutsch
+				</a>
+				<a class="dropdown-item" href="<?php echo base_url(); ?>login/switchLang/PL" style="color: #120e47;margin-left: 0px;" onclick="resetTranslate()">
+					🇵🇱 &nbsp;Polski
+				</a>
+				<a class="dropdown-item" href="<?php echo base_url(); ?>login/switchLang/JA" style="color: #120e47;margin-left: 0px;" onclick="resetTranslate()">
+					🇯🇵 &nbsp;日本語
+				</a>
+				<a class="dropdown-item" href="<?php echo base_url(); ?>login/switchLang/KO" style="color: #120e47;margin-left: 0px;" onclick="resetTranslate()">
+					🇰🇷 &nbsp;한국어
 				</a>
 				<a class="dropdown-item dropdown-item-autre" href="javascript:void(0)" style="color: #120e47;margin-left: 0px;" onclick="toggleGtBar()">
 					🌐 &nbsp;Autre...

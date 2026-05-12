@@ -7,7 +7,12 @@
         "ES_id": 2596,
         "RU_id": 2700,
         "TR_id": 2800,
-        "PT_id": 2900
+        "PT_id": 2900,
+        "IT_id": 3000,
+        "DE_id": 3100,
+        "PL_id": 3200,
+        "JA_id": 3300,
+        "KO_id": 3400
     },
     {
         "url": "Atlas-Anatomie",
@@ -17,7 +22,12 @@
         "ES_id": 2597,
         "RU_id": 2701,
         "TR_id": 2801,
-        "PT_id": 2901
+        "PT_id": 2901,
+        "IT_id": 3001,
+        "DE_id": 3101,
+        "PL_id": 3201,
+        "JA_id": 3301,
+        "KO_id": 3401
     },
     {
         "url": "Embryologie",
@@ -27,7 +37,12 @@
         "ES_id": 2598,
         "RU_id": 2702,
         "TR_id": 2802,
-        "PT_id": 2902
+        "PT_id": 2902,
+        "IT_id": 3002,
+        "DE_id": 3102,
+        "PL_id": 3202,
+        "JA_id": 3302,
+        "KO_id": 3402
     },
     {
         "url": "Pathologie-FR",
@@ -37,7 +52,12 @@
         "ES_id": 2599,
         "RU_id": 2703,
         "TR_id": 2803,
-        "PT_id": 2903
+        "PT_id": 2903,
+        "IT_id": 3003,
+        "DE_id": 3103,
+        "PL_id": 3203,
+        "JA_id": 3303,
+        "KO_id": 3403
     },
     {
         "url": "Anatomy-courses",
@@ -47,7 +67,12 @@
         "ES_id": 2596,
         "RU_id": 2700,
         "TR_id": 2800,
-        "PT_id": 2900
+        "PT_id": 2900,
+        "IT_id": 3000,
+        "DE_id": 3100,
+        "PL_id": 3200,
+        "JA_id": 3300,
+        "KO_id": 3400
     },
     {
         "url": "Atlas-of-Anatomy",
@@ -57,7 +82,12 @@
         "ES_id": 2597,
         "RU_id": 2701,
         "TR_id": 2801,
-        "PT_id": 2901
+        "PT_id": 2901,
+        "IT_id": 3001,
+        "DE_id": 3101,
+        "PL_id": 3201,
+        "JA_id": 3301,
+        "KO_id": 3401
     },
     {
         "url": "Embryology",
@@ -67,7 +97,12 @@
         "ES_id": 2598,
         "RU_id": 2702,
         "TR_id": 2802,
-        "PT_id": 2902
+        "PT_id": 2902,
+        "IT_id": 3002,
+        "DE_id": 3102,
+        "PL_id": 3202,
+        "JA_id": 3302,
+        "KO_id": 3402
     },
     {
         "url": "Pathology-EN",
@@ -77,7 +112,12 @@
         "ES_id": 2599,
         "RU_id": 2703,
         "TR_id": 2803,
-        "PT_id": 2903
+        "PT_id": 2903,
+        "IT_id": 3003,
+        "DE_id": 3103,
+        "PL_id": 3203,
+        "JA_id": 3303,
+        "KO_id": 3403
     },
     {
         "url": "Curso-Anatomia",
@@ -87,7 +127,12 @@
         "ES_id": 2596,
         "RU_id": 2700,
         "TR_id": 2800,
-        "PT_id": 2900
+        "PT_id": 2900,
+        "IT_id": 3000,
+        "DE_id": 3100,
+        "PL_id": 3200,
+        "JA_id": 3300,
+        "KO_id": 3400
     },
     {
         "url": "Atlas-Anatomia",
@@ -97,7 +142,12 @@
         "ES_id": 2597,
         "RU_id": 2701,
         "TR_id": 2801,
-        "PT_id": 2901
+        "PT_id": 2901,
+        "IT_id": 3001,
+        "DE_id": 3101,
+        "PL_id": 3201,
+        "JA_id": 3301,
+        "KO_id": 3401
     },
     {
         "url": "Embriologia",
@@ -107,7 +157,12 @@
         "ES_id": 2598,
         "RU_id": 2702,
         "TR_id": 2802,
-        "PT_id": 2902
+        "PT_id": 2902,
+        "IT_id": 3002,
+        "DE_id": 3102,
+        "PL_id": 3202,
+        "JA_id": 3302,
+        "KO_id": 3402
     },
     {
         "url": "Patologia-ES",
@@ -117,7 +172,12 @@
         "ES_id": 2599,
         "RU_id": 2703,
         "TR_id": 2803,
-        "PT_id": 2903
+        "PT_id": 2903,
+        "IT_id": 3003,
+        "DE_id": 3103,
+        "PL_id": 3203,
+        "JA_id": 3303,
+        "KO_id": 3403
     },
     {
         "url": "Kursy-Anatomii",
@@ -127,7 +187,12 @@
         "ES_id": 2596,
         "RU_id": 2700,
         "TR_id": 2800,
-        "PT_id": 2900
+        "PT_id": 2900,
+        "IT_id": 3000,
+        "DE_id": 3100,
+        "PL_id": 3200,
+        "JA_id": 3300,
+        "KO_id": 3400
     },
     {
         "url": "Atlas-Anatomii",
@@ -137,7 +202,12 @@
         "ES_id": 2597,
         "RU_id": 2701,
         "TR_id": 2801,
-        "PT_id": 2901
+        "PT_id": 2901,
+        "IT_id": 3001,
+        "DE_id": 3101,
+        "PL_id": 3201,
+        "JA_id": 3301,
+        "KO_id": 3401
     },
     {
         "url": "Embriologiya",
@@ -147,7 +217,12 @@
         "ES_id": 2598,
         "RU_id": 2702,
         "TR_id": 2802,
-        "PT_id": 2902
+        "PT_id": 2902,
+        "IT_id": 3002,
+        "DE_id": 3102,
+        "PL_id": 3202,
+        "JA_id": 3302,
+        "KO_id": 3402
     },
     {
         "url": "Patologiya-RU",
@@ -157,7 +232,12 @@
         "ES_id": 2599,
         "RU_id": 2703,
         "TR_id": 2803,
-        "PT_id": 2903
+        "PT_id": 2903,
+        "IT_id": 3003,
+        "DE_id": 3103,
+        "PL_id": 3203,
+        "JA_id": 3303,
+        "KO_id": 3403
     },
     {
         "url": "Anatomi-Dersleri",
@@ -167,7 +247,12 @@
         "ES_id": 2596,
         "RU_id": 2700,
         "TR_id": 2800,
-        "PT_id": 2900
+        "PT_id": 2900,
+        "IT_id": 3000,
+        "DE_id": 3100,
+        "PL_id": 3200,
+        "JA_id": 3300,
+        "KO_id": 3400
     },
     {
         "url": "Anatomi-Atlasi",
@@ -177,7 +262,12 @@
         "ES_id": 2597,
         "RU_id": 2701,
         "TR_id": 2801,
-        "PT_id": 2901
+        "PT_id": 2901,
+        "IT_id": 3001,
+        "DE_id": 3101,
+        "PL_id": 3201,
+        "JA_id": 3301,
+        "KO_id": 3401
     },
     {
         "url": "Embriyoloji",
@@ -187,7 +277,12 @@
         "ES_id": 2598,
         "RU_id": 2702,
         "TR_id": 2802,
-        "PT_id": 2902
+        "PT_id": 2902,
+        "IT_id": 3002,
+        "DE_id": 3102,
+        "PL_id": 3202,
+        "JA_id": 3302,
+        "KO_id": 3402
     },
     {
         "url": "Patoloji-TR",
@@ -197,7 +292,12 @@
         "ES_id": 2599,
         "RU_id": 2703,
         "TR_id": 2803,
-        "PT_id": 2903
+        "PT_id": 2903,
+        "IT_id": 3003,
+        "DE_id": 3103,
+        "PL_id": 3203,
+        "JA_id": 3303,
+        "KO_id": 3403
     },
     {
         "url": "Curso-Anatomia-PT",
@@ -207,7 +307,12 @@
         "ES_id": 2596,
         "RU_id": 2700,
         "TR_id": 2800,
-        "PT_id": 2900
+        "PT_id": 2900,
+        "IT_id": 3000,
+        "DE_id": 3100,
+        "PL_id": 3200,
+        "JA_id": 3300,
+        "KO_id": 3400
     },
     {
         "url": "Atlas-Anatomia-PT",
@@ -217,7 +322,12 @@
         "ES_id": 2597,
         "RU_id": 2701,
         "TR_id": 2801,
-        "PT_id": 2901
+        "PT_id": 2901,
+        "IT_id": 3001,
+        "DE_id": 3101,
+        "PL_id": 3201,
+        "JA_id": 3301,
+        "KO_id": 3401
     },
     {
         "url": "Embriologia-PT",
@@ -227,7 +337,12 @@
         "ES_id": 2598,
         "RU_id": 2702,
         "TR_id": 2802,
-        "PT_id": 2902
+        "PT_id": 2902,
+        "IT_id": 3002,
+        "DE_id": 3102,
+        "PL_id": 3202,
+        "JA_id": 3302,
+        "KO_id": 3402
     },
     {
         "url": "Patologia-PT",
@@ -237,6 +352,311 @@
         "ES_id": 2599,
         "RU_id": 2703,
         "TR_id": 2803,
-        "PT_id": 2903
+        "PT_id": 2903,
+        "IT_id": 3003,
+        "DE_id": 3103,
+        "PL_id": 3203,
+        "JA_id": 3303,
+        "KO_id": 3403
+    },
+    {
+        "url": "Corso-Anatomia-IT",
+        "id": 3000,
+        "FR_id": 3,
+        "EN_id": 8,
+        "ES_id": 2596,
+        "RU_id": 2700,
+        "TR_id": 2800,
+        "PT_id": 2900,
+        "IT_id": 3000,
+        "DE_id": 3100,
+        "PL_id": 3200,
+        "JA_id": 3300,
+        "KO_id": 3400
+    },
+    {
+        "url": "Atlante-Anatomia-IT",
+        "id": 3001,
+        "FR_id": 4,
+        "EN_id": 9,
+        "ES_id": 2597,
+        "RU_id": 2701,
+        "TR_id": 2801,
+        "PT_id": 2901,
+        "IT_id": 3001,
+        "DE_id": 3101,
+        "PL_id": 3201,
+        "JA_id": 3301,
+        "KO_id": 3401
+    },
+    {
+        "url": "Embriologia-IT",
+        "id": 3002,
+        "FR_id": 5,
+        "EN_id": 10,
+        "ES_id": 2598,
+        "RU_id": 2702,
+        "TR_id": 2802,
+        "PT_id": 2902,
+        "IT_id": 3002,
+        "DE_id": 3102,
+        "PL_id": 3202,
+        "JA_id": 3302,
+        "KO_id": 3402
+    },
+    {
+        "url": "Patologia-IT",
+        "id": 3003,
+        "FR_id": 7,
+        "EN_id": 11,
+        "ES_id": 2599,
+        "RU_id": 2703,
+        "TR_id": 2803,
+        "PT_id": 2903,
+        "IT_id": 3003,
+        "DE_id": 3103,
+        "PL_id": 3203,
+        "JA_id": 3303,
+        "KO_id": 3403
+    },
+    {
+        "url": "Anatomie-Kurse-DE",
+        "id": 3100,
+        "FR_id": 3,
+        "EN_id": 8,
+        "ES_id": 2596,
+        "RU_id": 2700,
+        "TR_id": 2800,
+        "PT_id": 2900,
+        "IT_id": 3000,
+        "DE_id": 3100,
+        "PL_id": 3200,
+        "JA_id": 3300,
+        "KO_id": 3400
+    },
+    {
+        "url": "Anatomie-Atlas-DE",
+        "id": 3101,
+        "FR_id": 4,
+        "EN_id": 9,
+        "ES_id": 2597,
+        "RU_id": 2701,
+        "TR_id": 2801,
+        "PT_id": 2901,
+        "IT_id": 3001,
+        "DE_id": 3101,
+        "PL_id": 3201,
+        "JA_id": 3301,
+        "KO_id": 3401
+    },
+    {
+        "url": "Embryologie-DE",
+        "id": 3102,
+        "FR_id": 5,
+        "EN_id": 10,
+        "ES_id": 2598,
+        "RU_id": 2702,
+        "TR_id": 2802,
+        "PT_id": 2902,
+        "IT_id": 3002,
+        "DE_id": 3102,
+        "PL_id": 3202,
+        "JA_id": 3302,
+        "KO_id": 3402
+    },
+    {
+        "url": "Pathologie-DE",
+        "id": 3103,
+        "FR_id": 7,
+        "EN_id": 11,
+        "ES_id": 2599,
+        "RU_id": 2703,
+        "TR_id": 2803,
+        "PT_id": 2903,
+        "IT_id": 3003,
+        "DE_id": 3103,
+        "PL_id": 3203,
+        "JA_id": 3303,
+        "KO_id": 3403
+    },
+    {
+        "url": "Kurs-Anatomii-PL",
+        "id": 3200,
+        "FR_id": 3,
+        "EN_id": 8,
+        "ES_id": 2596,
+        "RU_id": 2700,
+        "TR_id": 2800,
+        "PT_id": 2900,
+        "IT_id": 3000,
+        "DE_id": 3100,
+        "PL_id": 3200,
+        "JA_id": 3300,
+        "KO_id": 3400
+    },
+    {
+        "url": "Atlas-Anatomii-PL",
+        "id": 3201,
+        "FR_id": 4,
+        "EN_id": 9,
+        "ES_id": 2597,
+        "RU_id": 2701,
+        "TR_id": 2801,
+        "PT_id": 2901,
+        "IT_id": 3001,
+        "DE_id": 3101,
+        "PL_id": 3201,
+        "JA_id": 3301,
+        "KO_id": 3401
+    },
+    {
+        "url": "Embriologia-PL",
+        "id": 3202,
+        "FR_id": 5,
+        "EN_id": 10,
+        "ES_id": 2598,
+        "RU_id": 2702,
+        "TR_id": 2802,
+        "PT_id": 2902,
+        "IT_id": 3002,
+        "DE_id": 3102,
+        "PL_id": 3202,
+        "JA_id": 3302,
+        "KO_id": 3402
+    },
+    {
+        "url": "Patologia-PL",
+        "id": 3203,
+        "FR_id": 7,
+        "EN_id": 11,
+        "ES_id": 2599,
+        "RU_id": 2703,
+        "TR_id": 2803,
+        "PT_id": 2903,
+        "IT_id": 3003,
+        "DE_id": 3103,
+        "PL_id": 3203,
+        "JA_id": 3303,
+        "KO_id": 3403
+    },
+    {
+        "url": "Kaibogaku-Course-JA",
+        "id": 3300,
+        "FR_id": 3,
+        "EN_id": 8,
+        "ES_id": 2596,
+        "RU_id": 2700,
+        "TR_id": 2800,
+        "PT_id": 2900,
+        "IT_id": 3000,
+        "DE_id": 3100,
+        "PL_id": 3200,
+        "JA_id": 3300,
+        "KO_id": 3400
+    },
+    {
+        "url": "Kaibogaku-Atlas-JA",
+        "id": 3301,
+        "FR_id": 4,
+        "EN_id": 9,
+        "ES_id": 2597,
+        "RU_id": 2701,
+        "TR_id": 2801,
+        "PT_id": 2901,
+        "IT_id": 3001,
+        "DE_id": 3101,
+        "PL_id": 3201,
+        "JA_id": 3301,
+        "KO_id": 3401
+    },
+    {
+        "url": "Hasseigaku-JA",
+        "id": 3302,
+        "FR_id": 5,
+        "EN_id": 10,
+        "ES_id": 2598,
+        "RU_id": 2702,
+        "TR_id": 2802,
+        "PT_id": 2902,
+        "IT_id": 3002,
+        "DE_id": 3102,
+        "PL_id": 3202,
+        "JA_id": 3302,
+        "KO_id": 3402
+    },
+    {
+        "url": "Byori-JA",
+        "id": 3303,
+        "FR_id": 7,
+        "EN_id": 11,
+        "ES_id": 2599,
+        "RU_id": 2703,
+        "TR_id": 2803,
+        "PT_id": 2903,
+        "IT_id": 3003,
+        "DE_id": 3103,
+        "PL_id": 3203,
+        "JA_id": 3303,
+        "KO_id": 3403
+    },
+    {
+        "url": "Haebuhak-Course-KO",
+        "id": 3400,
+        "FR_id": 3,
+        "EN_id": 8,
+        "ES_id": 2596,
+        "RU_id": 2700,
+        "TR_id": 2800,
+        "PT_id": 2900,
+        "IT_id": 3000,
+        "DE_id": 3100,
+        "PL_id": 3200,
+        "JA_id": 3300,
+        "KO_id": 3400
+    },
+    {
+        "url": "Haebuhak-Atlas-KO",
+        "id": 3401,
+        "FR_id": 4,
+        "EN_id": 9,
+        "ES_id": 2597,
+        "RU_id": 2701,
+        "TR_id": 2801,
+        "PT_id": 2901,
+        "IT_id": 3001,
+        "DE_id": 3101,
+        "PL_id": 3201,
+        "JA_id": 3301,
+        "KO_id": 3401
+    },
+    {
+        "url": "Balsaenghak-KO",
+        "id": 3402,
+        "FR_id": 5,
+        "EN_id": 10,
+        "ES_id": 2598,
+        "RU_id": 2702,
+        "TR_id": 2802,
+        "PT_id": 2902,
+        "IT_id": 3002,
+        "DE_id": 3102,
+        "PL_id": 3202,
+        "JA_id": 3302,
+        "KO_id": 3402
+    },
+    {
+        "url": "Byongri-KO",
+        "id": 3403,
+        "FR_id": 7,
+        "EN_id": 11,
+        "ES_id": 2599,
+        "RU_id": 2703,
+        "TR_id": 2803,
+        "PT_id": 2903,
+        "IT_id": 3003,
+        "DE_id": 3103,
+        "PL_id": 3203,
+        "JA_id": 3303,
+        "KO_id": 3403
     }
 ]

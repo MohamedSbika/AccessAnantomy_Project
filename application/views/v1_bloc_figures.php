@@ -374,8 +374,8 @@ if (isset($OneBook) && !empty($OneBook) && is_array($OneBook) && isset($OneBook[
     $idLivre = isset($OneBook[0]["IDLivre"]) ? (int)$OneBook[0]["IDLivre"] : 0;
     $idTheme = isset($OneBook[0]["IDTheme"]) ? (int)$OneBook[0]["IDTheme"] : 0;
     
-    // Atlas themes: FR=16, EN=27, ES=34, RU=42, TR=46, PT=50
-    if (in_array($idLivre, [70, 71]) || in_array($idTheme, [16, 27, 34, 42, 46, 50])) {
+    // Atlas themes: FR=16, EN=27, ES=34, RU=42, TR=46, PT=50, IT=54, DE=58, PL=62, JA=66, KO=70 (verify after running setup_ko_database.sql)
+    if (in_array($idLivre, [70, 71]) || in_array($idTheme, [16, 27, 34, 42, 46, 50, 54, 58, 62, 66, 70])) {
         $showScroll = true;
     } else {
         $showScroll = false;

@@ -830,7 +830,7 @@
                                                                     // SECTION : Pathologie référente en français
                                                                     // Visible UNIQUEMENT si la langue du livre est EN ou ES
                                                                     // ====================================================
-                                                                    if (in_array($category['multi_lingue'], ['EN', 'ES', 'RU', 'TR', 'PT'])):
+                                                                    if (in_array($category['multi_lingue'], ['EN', 'ES', 'RU', 'TR', 'PT', 'IT', 'DE', 'PL', 'JA', 'KO'])):
                                                                         $livresFR = $this->db
                                                                             ->select('l.IDLivre, l.Titre')
                                                                             ->from('_livre l')
@@ -878,7 +878,7 @@
 
                                                                     <?php
                                                                     // Générer les options FR pour le modal JS (seulement si EN ou ES)
-                                                                    if (in_array($category['multi_lingue'], ['EN', 'ES', 'RU', 'TR', 'PT'])):
+                                                                    if (in_array($category['multi_lingue'], ['EN', 'ES', 'RU', 'TR', 'PT', 'IT', 'DE', 'PL', 'JA', 'KO'])):
                                                                         $optionsFRHtml = '<option value="">-- Choisissez une pathologie FR --</option>';
                                                                         foreach ($livresFR as $livreFR) {
                                                                             $this->db->select('IDChapitre, TitreChapitre')
@@ -896,7 +896,7 @@
                                                                     endif;
                                                                     ?>
 
-                                                                    <?php if (in_array($category['multi_lingue'], ['EN', 'ES', 'RU', 'TR', 'PT'])): ?>
+                                                                    <?php if (in_array($category['multi_lingue'], ['EN', 'ES', 'RU', 'TR', 'PT', 'IT', 'DE', 'PL', 'JA', 'KO'])): ?>
                                                                         <script>
                                                                             window.pathologieFROptions = <?= json_encode($optionsFRHtml ?? ''); ?>;
                                                                             window.bookIsMultiLingue = true;
@@ -2173,7 +2173,7 @@
                                                                                 <i class="fas fa-link"
                                                                                     style="color:#3085d6; margin-left:5px;"></i>
                                                                             </a>
-                                                                            <?php if (in_array($category['multi_lingue'], ['EN', 'ES', 'RU', 'TR', 'PT'])): ?>
+                                                                            <?php if (in_array($category['multi_lingue'], ['EN', 'ES', 'RU', 'TR', 'PT', 'IT', 'DE', 'PL', 'JA', 'KO'])): ?>
                                                                                 <a href="#"
                                                                                     onclick="openPathoFRModal(<?php print $value['IDChapitre']; ?>, '<?php print $value['idpathologieFR'] ?? ''; ?>')"
                                                                                     title="Modifier la pathologie référente (FR)">

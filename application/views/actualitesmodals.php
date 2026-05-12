@@ -60,6 +60,41 @@
                                     </div>
                                 </div>
 
+                                <div class="col-sm-12">
+                                    <div class="mb-2">
+                                        <label class="form-label label-modal-login">Titre_IT</label>
+                                        <textarea rows="2" cols="33" class="form-control form-control-lg input-modal-login" type="text" name="IT_title" placeholder="" style="font-size: 0.8rem;min-height: calc(1px);padding: 0.2rem 0.2rem;"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <div class="mb-2">
+                                        <label class="form-label label-modal-login">Titre_DE</label>
+                                        <textarea rows="2" cols="33" class="form-control form-control-lg input-modal-login" type="text" name="DE_title" placeholder="" style="font-size: 0.8rem;min-height: calc(1px);padding: 0.2rem 0.2rem;"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <div class="mb-2">
+                                        <label class="form-label label-modal-login">Titre_PL</label>
+                                        <textarea rows="2" cols="33" class="form-control form-control-lg input-modal-login" type="text" name="PL_title" placeholder="" style="font-size: 0.8rem;min-height: calc(1px);padding: 0.2rem 0.2rem;"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <div class="mb-2">
+                                        <label class="form-label label-modal-login">Titre_JA</label>
+                                        <textarea rows="2" cols="33" class="form-control form-control-lg input-modal-login" type="text" name="JA_title" placeholder="" style="font-size: 0.8rem;min-height: calc(1px);padding: 0.2rem 0.2rem;"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <div class="mb-2">
+                                        <label class="form-label label-modal-login">Titre_KO</label>
+                                        <textarea rows="2" cols="33" class="form-control form-control-lg input-modal-login" type="text" name="KO_title" placeholder="" style="font-size: 0.8rem;min-height: calc(1px);padding: 0.2rem 0.2rem;"></textarea>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
 
@@ -121,6 +156,41 @@
                                         <div class="mb-2">
                                             <label class="form-label label-modal-login">Titre_PT</label>
                                             <textarea rows="2" cols="33" class="form-control form-control-lg input-modal-login" type="text" name="PT_title" placeholder="" style="font-size: 0.8rem;min-height: calc(1px);padding: 0.2rem 0.2rem;"><?= isset($value['PT_title']) ? $value['PT_title'] : ''; ?></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-12">
+                                        <div class="mb-2">
+                                            <label class="form-label label-modal-login">Titre_IT</label>
+                                            <textarea rows="2" cols="33" class="form-control form-control-lg input-modal-login" type="text" name="IT_title" placeholder="" style="font-size: 0.8rem;min-height: calc(1px);padding: 0.2rem 0.2rem;"><?= isset($value['IT_title']) ? $value['IT_title'] : ''; ?></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-12">
+                                        <div class="mb-2">
+                                            <label class="form-label label-modal-login">Titre_DE</label>
+                                            <textarea rows="2" cols="33" class="form-control form-control-lg input-modal-login" type="text" name="DE_title" placeholder="" style="font-size: 0.8rem;min-height: calc(1px);padding: 0.2rem 0.2rem;"><?= isset($value['DE_title']) ? $value['DE_title'] : ''; ?></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-12">
+                                        <div class="mb-2">
+                                            <label class="form-label label-modal-login">Titre_PL</label>
+                                            <textarea rows="2" cols="33" class="form-control form-control-lg input-modal-login" type="text" name="PL_title" placeholder="" style="font-size: 0.8rem;min-height: calc(1px);padding: 0.2rem 0.2rem;"><?= isset($value['PL_title']) ? $value['PL_title'] : ''; ?></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-12">
+                                        <div class="mb-2">
+                                            <label class="form-label label-modal-login">Titre_JA</label>
+                                            <textarea rows="2" cols="33" class="form-control form-control-lg input-modal-login" type="text" name="JA_title" placeholder="" style="font-size: 0.8rem;min-height: calc(1px);padding: 0.2rem 0.2rem;"><?= isset($value['JA_title']) ? $value['JA_title'] : ''; ?></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-12">
+                                        <div class="mb-2">
+                                            <label class="form-label label-modal-login">Titre_KO</label>
+                                            <textarea rows="2" cols="33" class="form-control form-control-lg input-modal-login" type="text" name="KO_title" placeholder="" style="font-size: 0.8rem;min-height: calc(1px);padding: 0.2rem 0.2rem;"><?= isset($value['KO_title']) ? $value['KO_title'] : ''; ?></textarea>
                                         </div>
                                     </div>
 

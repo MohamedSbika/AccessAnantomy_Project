@@ -1102,7 +1102,7 @@ fclose($myfile);                             */
             $this->session->set_userdata('site_lang_lib', 'English');
         }
         if ($lang == 'DE') {
-            $this->session->set_userdata('site_lang_lib', 'German');
+            $this->session->set_userdata('site_lang_lib', 'Deutsch');
         }
         if ($lang == 'ES') {
             $this->session->set_userdata('site_lang_lib', 'Español');
@@ -1116,6 +1116,18 @@ fclose($myfile);                             */
         if ($lang == 'PT') {
             $this->session->set_userdata('site_lang_lib', 'Português');
         }
+        if ($lang == 'IT') {
+            $this->session->set_userdata('site_lang_lib', 'Italiano');
+        }
+        if ($lang == 'PL') {
+            $this->session->set_userdata('site_lang_lib', 'Polski');
+        }
+        if ($lang == 'JA') {
+            $this->session->set_userdata('site_lang_lib', '日本語');
+        }
+        if ($lang == 'KO') {
+            $this->session->set_userdata('site_lang_lib', '한국어');
+        }
 
         //header(base_url());
         redirect(base_url() . $this->lang->line('siteLang') . 'login');
@@ -1124,7 +1136,7 @@ fclose($myfile);                             */
     {
         // Detect language from URL prefix (FR/, EN/, ES/, DE/, RU/, TR/, PT/)
         $uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
-        if (preg_match('#/(FR|EN|ES|DE|RU|TR|PT)/#', $uri, $matches)) {
+        if (preg_match('#/(FR|EN|ES|DE|RU|TR|PT|IT|PL|JA|KO)/#', $uri, $matches)) {
             $this->session->set_userdata('site_lang', $matches[1]);
         }
 
@@ -1143,7 +1155,7 @@ fclose($myfile);                             */
             $lang = 'EN';
         }
         if ($lang == 'DE') {
-            $this->session->set_userdata('site_lang_lib', 'German');
+            $this->session->set_userdata('site_lang_lib', 'Deutsch');
             $lang = 'DE';
         }
         if ($lang == 'ES') {
@@ -1161,6 +1173,22 @@ fclose($myfile);                             */
         if ($lang == 'PT') {
             $this->session->set_userdata('site_lang_lib', 'Português');
             $lang = 'PT';
+        }
+        if ($lang == 'IT') {
+            $this->session->set_userdata('site_lang_lib', 'Italiano');
+            $lang = 'IT';
+        }
+        if ($lang == 'PL') {
+            $this->session->set_userdata('site_lang_lib', 'Polski');
+            $lang = 'PL';
+        }
+        if ($lang == 'JA') {
+            $this->session->set_userdata('site_lang_lib', '日本語');
+            $lang = 'JA';
+        }
+        if ($lang == 'KO') {
+            $this->session->set_userdata('site_lang_lib', '한국어');
+            $lang = 'KO';
         }
         $this->session->set_userdata('site_lang', $lang);
         $this->lang->load('content', $lang == '' ? 'FR' : $lang);
@@ -1292,6 +1320,16 @@ fclose($myfile);                             */
                 redirect('TR/category/' . $json[16]['url']);
             } elseif ($lang == "PT") {
                 redirect('PT/category/' . $json[20]['url']);
+            } elseif ($lang == "IT") {
+                redirect('IT/category/' . $json[24]['url']);
+            } elseif ($lang == "DE") {
+                redirect('DE/category/' . $json[28]['url']);
+            } elseif ($lang == "PL") {
+                redirect('PL/category/' . $json[32]['url']);
+            } elseif ($lang == "JA") {
+                redirect('JA/category/' . $json[36]['url']);
+            } elseif ($lang == "KO") {
+                redirect('KO/category/' . $json[40]['url']);
             } else {
                 redirect('FR/category/' . $json[0]['url']);
             }
@@ -2759,7 +2797,17 @@ fclose($myfile);                             */
 
         $titlePT = isset($_POST["PT_title"]) ? $_POST["PT_title"] : '';
 
-        $data = ['FR_title' => $titleFR, 'EN_title' => $titleEN, 'RU_title' => $titleRU, 'TR_title' => $titleTR, 'PT_title' => $titlePT];
+        $titleIT = isset($_POST["IT_title"]) ? $_POST["IT_title"] : '';
+
+        $titleDE = isset($_POST["DE_title"]) ? $_POST["DE_title"] : '';
+
+        $titlePL = isset($_POST["PL_title"]) ? $_POST["PL_title"] : '';
+
+        $titleJA = isset($_POST["JA_title"]) ? $_POST["JA_title"] : '';
+
+        $titleKO = isset($_POST["KO_title"]) ? $_POST["KO_title"] : '';
+
+        $data = ['FR_title' => $titleFR, 'EN_title' => $titleEN, 'RU_title' => $titleRU, 'TR_title' => $titleTR, 'PT_title' => $titlePT, 'IT_title' => $titleIT, 'DE_title' => $titleDE, 'PL_title' => $titlePL, 'JA_title' => $titleJA, 'KO_title' => $titleKO];
         $this->insert_dd("actualites", $data);
         //increment nbrTest
 
@@ -2788,7 +2836,17 @@ fclose($myfile);                             */
 
         $titlePT = isset($_POST["PT_title"]) ? $_POST["PT_title"] : '';
 
-        $data = ['FR_title' => $titleFR, 'EN_title' => $titleEN, 'RU_title' => $titleRU, 'TR_title' => $titleTR, 'PT_title' => $titlePT];
+        $titleIT = isset($_POST["IT_title"]) ? $_POST["IT_title"] : '';
+
+        $titleDE = isset($_POST["DE_title"]) ? $_POST["DE_title"] : '';
+
+        $titlePL = isset($_POST["PL_title"]) ? $_POST["PL_title"] : '';
+
+        $titleJA = isset($_POST["JA_title"]) ? $_POST["JA_title"] : '';
+
+        $titleKO = isset($_POST["KO_title"]) ? $_POST["KO_title"] : '';
+
+        $data = ['FR_title' => $titleFR, 'EN_title' => $titleEN, 'RU_title' => $titleRU, 'TR_title' => $titleTR, 'PT_title' => $titlePT, 'IT_title' => $titleIT, 'DE_title' => $titleDE, 'PL_title' => $titlePL, 'JA_title' => $titleJA, 'KO_title' => $titleKO];
 
         $this->db->where("id = '" . $id . "'");
         $this->db->update('actualites', $data);
@@ -2841,6 +2899,8 @@ fclose($myfile);                             */
                 || stripos($cat['Libelle'], 'Pathology') !== false
                 || stripos($cat['Libelle'], 'Патология') !== false
                 || stripos($cat['Libelle'], 'Patoloji') !== false
+                || stripos($cat['Libelle'], '病理学') !== false
+                || stripos($cat['Libelle'], '병리학') !== false
             ));
     }
 
@@ -9065,6 +9125,8 @@ loadingTask.promise.then(function(pdf) {
         $this->db->or_like('_category.Libelle', 'Pathology');
         $this->db->or_like('_category.Libelle', 'Патология');
         $this->db->or_like('_category.Libelle', 'Patoloji');
+        $this->db->or_like('_category.Libelle', '病理学');
+        $this->db->or_like('_category.Libelle', '병리학');
         $this->db->or_like('_category.Couverture', 'pathologie');
         $this->db->group_end();
         $this->db->order_by('ord', 'ASC');

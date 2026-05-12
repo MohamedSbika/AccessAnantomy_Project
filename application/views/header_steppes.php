@@ -131,27 +131,36 @@
 
 		    <div class="language-user-navbar"  style="justify-content: space-between;">
 
-			    <li class="nav-item dropdown  button-language" style="display:flex; flex-direction:row; flex-wrap:nowrap;">
-				    <img  src="<?php echo HTTP_IMAGES; ?>photos/language-icon.png" class="rounded-circle mr-1" alt="Avatar" width="40" data-toggle="dropdown" style="display:block; margin-top:auto; margin-bottom:auto; width:45px;">
-                    <div style="padding-top:2px;">
-			    		<a style="padding:0px 2px;" class="dropdown-item" href="<?php echo base_url(); ?>login/switchLang/FR">
-            				<span class="align-middle">Français</span>
-            			</a>
-					    <a style="padding:0px 2px;" class="dropdown-item" href="<?php echo base_url(); ?>login/switchLang/EN">
-            				<span class="align-middle">English</span>
-            			</a>
-                        <a style="padding:0px 2px;" class="dropdown-item" href="<?php echo base_url(); ?>login/switchLang/ES">
-                            <span class="align-middle">Español</span>
-                        </a>
-                        <a style="padding:0px 2px;" class="dropdown-item" href="<?php echo base_url(); ?>login/switchLang/RU">
-                            <span class="align-middle">Русский</span>
-                        </a>
-                        <a style="padding:0px 2px;" class="dropdown-item" href="<?php echo base_url(); ?>login/switchLang/TR">
-                            <span class="align-middle">Türkçe</span>
-                        </a>
-                        <a style="padding:0px 2px;" class="dropdown-item" href="<?php echo base_url(); ?>login/switchLang/PT">
-                            <span class="align-middle">Português</span>
-                        </a>
+				    <?php
+                    // Admin language switcher — data-driven collapsible dropdown.
+                    // To add a new language: append one entry below. Order = display order.
+                    $adminLangs = [
+                        "FR" => ["flag" => "🇫🇷", "name" => "Français"],
+                        "EN" => ["flag" => "🇬🇧", "name" => "English"],
+                        "ES" => ["flag" => "🇪🇸", "name" => "Español"],
+                        "RU" => ["flag" => "🇷🇺", "name" => "Русский"],
+                        "TR" => ["flag" => "🇹🇷", "name" => "Türkçe"],
+                        "PT" => ["flag" => "🇵🇹", "name" => "Português"],
+                        "IT" => ["flag" => "🇮🇹", "name" => "Italiano"],
+                        "DE" => ["flag" => "🇩🇪", "name" => "Deutsch"],
+                        "PL" => ["flag" => "🇵🇱", "name" => "Polski"],
+                        "JA" => ["flag" => "🇯🇵", "name" => "日本語"],
+                        "KO" => ["flag" => "🇰🇷", "name" => "한국어"],
+                    ];
+                    $currentLang = $this->session->userdata("site_lang") ?: "FR";
+                    $currentFlag = isset($adminLangs[$currentLang]) ? $adminLangs[$currentLang]["flag"] : "🌐";
+                ?>
+                <li class="nav-item dropdown button-language" style="display:flex; flex-direction:row; flex-wrap:nowrap;">
+                    <a class="nav-link dropdown-toggle" href="#" id="adminLanguageDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding: 0; display: flex; align-items: center;">
+                        <img src="<?php echo HTTP_IMAGES; ?>photos/language-icon.png" class="rounded-circle mr-1" alt="Language" width="40" style="margin-top:auto; margin-bottom:auto; width:45px;">
+                        <span style="font-size: 1.4rem; line-height: 1; margin-left: 4px;"><?= $currentFlag; ?></span>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="adminLanguageDropdown">
+                        <?php foreach ($adminLangs as $code => $info): ?>
+                            <a class="dropdown-item" href="<?php echo base_url(); ?>login/switchLang/<?= $code; ?>" style="padding: 0.25rem 1rem;">
+                                <?= $info["flag"]; ?> &nbsp;<span class="align-middle"><?= $info["name"]; ?></span>
+                            </a>
+                        <?php endforeach; ?>
                     </div>
                 </li>
 	
