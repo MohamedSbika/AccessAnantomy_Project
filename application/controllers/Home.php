@@ -3563,11 +3563,37 @@ fclose($myfile);                             */
         $this->db->order_by("IDFigure", "asc");
         $listFigures = $this->db->get()->result_array();
 
-        // Get list of chapters for sidebar
+        $this->db->select('CAST(SUBSTRING_INDEX(titre, ".", 1) as SIGNED INTEGER ) AS ord,id,image,titre,textGauche,textDroite,IDChapitre,pathAudio');
+        $this->db->from('figures');
+        $this->db->where("IDChapitre = " . (int)$id);
+        $this->db->order_by("ord", "DESC");
+        $resFig = $this->db->get()->result_array();
+
+        $arrayFigures = [];
+        $compteur = 0;
+        foreach ($resFig as $figure) {
+            $textGauche = isset($figure['textGauche']) ? $figure['textGauche'] : '';
+            $textDroite = isset($figure['textDroite']) ? $figure['textDroite'] : '';
+
+            $arrayTextGauche = $this->getArrayOfString($textGauche, "\n");
+            $arrayTextDroite = $this->getArrayOfString($textDroite, "\n");
+
+            $arrayFigures[$compteur] = [
+                'textGauche' => $arrayTextGauche,
+                'textDroite' => $arrayTextDroite,
+                'titre'      => $figure['titre'],
+                'image'      => $figure['image'],
+                'pathAudio'  => $figure['pathAudio'],
+                'idFigure'   => $figure['id'],
+            ];
+            $compteur++;
+        }
+
         $idLivr = $resChap[0]["IDLivre"];
         $listChap = $this->listChaptCours($idLivr);
 
         $arr['listFig'] = $listFigures;
+        $arr['arrayFigures'] = $arrayFigures;
         $arr['OneBook'] = $resChap;
         $arr['listChap'] = $listChap;
         $arr['listCat'] = $this->getListCategory();
