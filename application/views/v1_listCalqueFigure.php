@@ -276,6 +276,7 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
 
 							<div class="row">
 								<div class="col-sm-4" style="margin-top: 20px; display: flex;justify-content: center; align-items: center;text-align: end; gap: 40px;">
+									<a class="btn-info btn_app" href="<?php echo base_url() . $this->lang->line('siteLang') . 'figuresOnly/' . $idFigure; ?>" style="text-decoration: none;">AD</a>
 									<button class="btn-info btn_app restoreNormalMode" id="btnAscensionPedagogique"><?php echo $this->lang->line('sidebar_ap_tooltip'); ?></button>
 								</div>
 

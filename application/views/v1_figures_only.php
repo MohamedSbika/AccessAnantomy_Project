@@ -162,6 +162,30 @@
 			font-size: 16px;
 		}
 
+		/* Nav button — exact match with /listCalque .btn_app */
+		.btn_app {
+			border-radius: 10px;
+			padding: 10px;
+			font-size: 0.9em;
+			text-align: center;
+			cursor: pointer;
+			transition: background-color 0.3s ease;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			border: 2px solid #182540;
+			height: 35px;
+			background-color: #182540;
+			color: white !important;
+			font-weight: bold;
+		}
+
+		.btn_app:hover, .btn_app.active {
+			background-color: #2d5e51ff !important;
+			border-color: #2d5e51ff !important;
+		}
+
 		.row {
 			display: flex;
 			flex-wrap: wrap;
@@ -170,6 +194,7 @@
 		}
 
 		.col-sm-3 { flex: 0 0 25%; max-width: 25%; padding: 0 15px; }
+		.col-sm-4 { flex: 0 0 33.333%; max-width: 33.333%; padding: 0 15px; }
 		.col-sm-6 { flex: 0 0 50%; max-width: 50%; padding: 0 15px; }
 		.col-sm-12 { flex: 0 0 100%; max-width: 100%; padding: 0 15px; }
 
@@ -208,6 +233,12 @@
 							?>
 						</div>
 					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-sm-4" style="margin-top: 20px; display: flex; justify-content: center; align-items: center; text-align: end; gap: 40px;">
+					<a class="btn-info btn_app" href="<?php echo base_url() . $this->lang->line('siteLang') . 'listCalque/' . $OneBook[0]['IDChapitre']; ?>" style="text-decoration: none;">AG</a>
 				</div>
 			</div>
 

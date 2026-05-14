@@ -343,6 +343,7 @@ $lang['sidebar_ad'] = "A.D";
 $lang['sidebar_ad_tooltip'] = "Apprendimento diretto";
 $lang['sidebar_ap'] = "A.P";
 $lang['sidebar_ap_tooltip'] = "Ascesa pedagogica";
+$lang['sidebar_atlas'] = "Atlante";
 $lang['sidebar_as'] = "A.S";
 $lang['sidebar_as_tooltip'] = "Lettura sincronizzata";
 $lang['sidebar_test'] = "Test";

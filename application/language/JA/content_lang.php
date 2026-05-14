@@ -343,6 +343,7 @@ $lang['sidebar_ad'] = "A.D";
 $lang['sidebar_ad_tooltip'] = "直接学習";
 $lang['sidebar_ap'] = "A.P";
 $lang['sidebar_ap_tooltip'] = "教育的進歩";
+$lang['sidebar_atlas'] = "アトラス";
 $lang['sidebar_as'] = "A.S";
 $lang['sidebar_as_tooltip'] = "同期読書";
 $lang['sidebar_test'] = "テスト";

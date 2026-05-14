@@ -363,12 +363,18 @@
                     }
 				</script>
 
+				<?php if (false): // AD + AG remplacés par le bouton unique "Atlas" — gardés en commentaire ?>
 				<span class="carreaux"  style="background-color: #1E88E5;color: white" onclick="selectUniqueCarreau(this,'e_a')" title="<?php echo $this->lang->line('sidebar_ad_tooltip'); ?>">
                     <div class="title_carr"><?php echo $this->lang->line('sidebar_ad'); ?></div>
                     <i class="fa fa-play-circle"></i>
                 </span>
 				<span class="carreaux"  style="background-color: #43A047;color: white" onclick="selectUniqueCarreau(this,'calque')" title="<?php echo $this->lang->line('sidebar_ap_tooltip'); ?>">
                     <div class="title_carr">AG</div>
+                    <i class="fa fa-play-circle"></i>
+                </span>
+				<?php endif; ?>
+				<span class="carreaux"  style="background-color: #1E88E5;color: white" onclick="selectUniqueCarreau(this,'calque')" title="<?php echo $this->lang->line('sidebar_atlas'); ?>">
+                    <div class="title_carr"><?php echo $this->lang->line('sidebar_atlas'); ?></div>
                     <i class="fa fa-play-circle"></i>
                 </span>
 				<span class="carreaux" style="background-color: #FB8C00;color: white;" onclick="document.getElementById('modalTestCALQUE').style.display = 'flex';" title="<?php echo $this->lang->line('sidebar_test_tooltip'); ?>">

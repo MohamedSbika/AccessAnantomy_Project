@@ -349,6 +349,7 @@ $lang['sidebar_ad'] = "П.О";
 $lang['sidebar_ad_tooltip'] = "Прямое обучение";
 $lang['sidebar_ap'] = "У.П";
 $lang['sidebar_ap_tooltip'] = "Учебный подъём";
+$lang['sidebar_atlas'] = "Атлас";
 $lang['sidebar_as'] = "С.Ч";
 $lang['sidebar_as_tooltip'] = "Синхронизированное чтение";
 $lang['sidebar_test'] = "Тест";

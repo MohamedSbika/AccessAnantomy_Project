@@ -343,6 +343,7 @@ $lang['sidebar_ad'] = "A.D";
 $lang['sidebar_ad_tooltip'] = "직접 학습";
 $lang['sidebar_ap'] = "A.P";
 $lang['sidebar_ap_tooltip'] = "교육적 발전";
+$lang['sidebar_atlas'] = "아틀라스";
 $lang['sidebar_as'] = "A.S";
 $lang['sidebar_as_tooltip'] = "동기화 읽기";
 $lang['sidebar_test'] = "테스트";

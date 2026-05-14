@@ -311,6 +311,7 @@ $lang['sidebar_ad'] = "A.D";
 $lang['sidebar_ad_tooltip'] = "Aprendizaje directo";
 $lang['sidebar_ap'] = "A.P";
 $lang['sidebar_ap_tooltip'] = "Ascenso pedagógico";
+$lang['sidebar_atlas'] = "Atlas";
 $lang['sidebar_as'] = "A.S";
 $lang['sidebar_as_tooltip'] = "Lectura sincronizada";
 $lang['sidebar_test'] = "Prueba";

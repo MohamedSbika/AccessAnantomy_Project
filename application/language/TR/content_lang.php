@@ -343,6 +343,7 @@ $lang['sidebar_ad'] = "D.Ö";
 $lang['sidebar_ad_tooltip'] = "Doğrudan Öğrenme";
 $lang['sidebar_ap'] = "P.Y";
 $lang['sidebar_ap_tooltip'] = "Pedagojik Yükseliş";
+$lang['sidebar_atlas'] = "Atlas";
 $lang['sidebar_as'] = "S.O";
 $lang['sidebar_as_tooltip'] = "Senkronize okuma";
 $lang['sidebar_test'] = "Test";
