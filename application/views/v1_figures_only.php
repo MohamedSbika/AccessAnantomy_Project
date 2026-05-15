@@ -253,9 +253,11 @@
 						<div class="col-sm-3 legend-column">
 							<?php
 							foreach ($figure['textGauche'] as $itemBlock) {
-								foreach ($itemBlock as $item) { ?>
+								foreach ($itemBlock as $item) {
+									$badgeNum = preg_match('/^\s*(\d+)\s*-/', $item['mot'], $m) ? $m[1] : $item['numero'];
+									?>
 									<div class="legend-item">
-										<span class="rond"><?= $item['numero']; ?></span>
+										<span class="rond"><?= $badgeNum; ?></span>
 										<p class="legend-text"><?= $item['mot']; ?></p>
 									</div>
 								<?php }
@@ -269,9 +271,11 @@
 						<div class="col-sm-3 legend-column">
 							<?php
 							foreach ($figure['textDroite'] as $itemBlock) {
-								foreach ($itemBlock as $item) { ?>
+								foreach ($itemBlock as $item) {
+									$badgeNum = preg_match('/^\s*(\d+)\s*-/', $item['mot'], $m) ? $m[1] : $item['numero'];
+									?>
 									<div class="legend-item">
-										<span class="rond"><?= $item['numero']; ?></span>
+										<span class="rond"><?= $badgeNum; ?></span>
 										<p class="legend-text"><?= $item['mot']; ?></p>
 									</div>
 								<?php }
