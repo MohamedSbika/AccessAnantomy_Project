@@ -220,6 +220,23 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
 						background-color: #2d5e51ff !important;
 						border-color: #2d5e51ff !important;
 					}
+
+					.ad-legend-item {
+						display: flex;
+						align-items: center;
+						padding: 6px 0;
+						margin-top: 1px;
+						margin-right: 2px;
+						margin-left: 1px;
+					}
+
+					.ad-legend-text {
+						color: #182540;
+						font-size: 14px;
+						margin: 0;
+						padding-left: 8px;
+						white-space: normal;
+					}
 				</style>
 				<meta name="viewport" content="width=device-width, initial-scale=1">
 				<style>
@@ -276,7 +293,7 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
 
 							<div class="row">
 								<div class="col-sm-4" style="margin-top: 20px; display: flex;justify-content: center; align-items: center;text-align: end; gap: 40px;">
-									<a class="btn-info btn_app" href="<?php echo base_url() . $this->lang->line('siteLang') . 'figuresOnly/' . $idFigure; ?>" style="text-decoration: none;">AD</a>
+									<button class="btn-info btn_app adMode" type="button">AD</button>
 									<button class="btn-info btn_app restoreNormalMode" id="btnAscensionPedagogique"><?php echo $this->lang->line('sidebar_ap_tooltip'); ?></button>
 								</div>
 
@@ -308,7 +325,7 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
 									$compteurReponse = 0;
 									foreach ($figure['textGauche'] as $itemBlock) { ?>
 
-										<div class="row" style="margin-top:10px; position:relative; padding-left:1px;">
+										<div class="row legend-group-row" style="margin-top:10px; position:relative; padding-left:1px;">
 											<hr>
 											<button style="padding:0px; right:0px; position:absolute; width:100%; height:100%;" class="btn btn-success btn-corriger btn-gauche" id="btn-corriger-<?php echo $compteurFigure; ?>" onclick="afficheReponseBlock(event,true)">
 												<?php echo $this->lang->line('decouv_respons'); ?>
@@ -318,8 +335,9 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
 												$compteur = 0;
 												foreach ($itemBlock as $item) {
 													$compteurEssai++;
-													$compteur++; ?>
-													<div class="row" style="margin-top:1px;margin-right: 2px;margin-left: 1px;">
+													$compteur++;
+													$badgeNum = preg_match('/^\s*(\d+)\s*-/', $item['mot'], $m) ? $m[1] : (isset($item['numero']) ? $item['numero'] : $compteurEssai); ?>
+													<div class="row legend-row-test" style="margin-top:1px;margin-right: 2px;margin-left: 1px;">
 
 														<div class="col-6 text_saisie_gauche" style="display: none;width: auto;">
 
@@ -343,7 +361,23 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
 
 										</div>
 
-									<?php } ?>
+									<?php }
+
+									// AD mode: render all left-side legends as one continuous flat block
+									$adCounterL = 0;
+									?>
+									<div class="ad-legend-block ad-legend-block-left" style="display:none;">
+										<?php foreach ($figure['textGauche'] as $itemBlock) {
+											foreach ($itemBlock as $item) {
+												$adCounterL++;
+												$adBadgeL = preg_match('/^\s*(\d+)\s*-/', $item['mot'], $mL) ? $mL[1] : (isset($item['numero']) ? $item['numero'] : $adCounterL); ?>
+												<div class="ad-legend-item">
+													<span class="rond"><?= $adBadgeL; ?></span>
+													<p class="ad-legend-text"><?= $item['mot']; ?></p>
+												</div>
+											<?php }
+										} ?>
+									</div>
 								</div>
 								<div class="col-sm-6" style="position:relative; padding-top:10px;padding-right: 10px;">
 									<img style="display:block;margin:auto; max-width:100%;border-left:2px solid #d0d2d4; border-right:2px solid #d0d2d4;" src="data:image/png;base64,<?php print $figure['image'] ?> "></img>
@@ -351,7 +385,7 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
 								<div class="col-sm-3" style="padding-right: 30px;">
 									<?php
 									foreach ($figure['textDroite'] as $itemBlock) { ?>
-										<div class="row" style="margin-top:10px; position:relative;padding-left: 25px;">
+										<div class="row legend-group-row" style="margin-top:10px; position:relative;padding-left: 25px;">
 											<hr>
 
 											<button style="padding:0px; left:0px; position:absolute; width:100%; height:100%;" class="btn btn-success btn-corriger btn-droite" onclick="afficheReponseBlock(event,true)"> <?php echo $this->lang->line('decouv_respons'); ?> </button>
@@ -361,8 +395,9 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
 												$compteur = 0;
 												foreach ($itemBlock as $item) {
 													$compteurEssai++;
-													$compteur++; ?>
-													<div class="row" style="margin-top:1px; padding-right:0px;">
+													$compteur++;
+													$badgeNum = preg_match('/^\s*(\d+)\s*-/', $item['mot'], $m) ? $m[1] : (isset($item['numero']) ? $item['numero'] : $compteurEssai); ?>
+													<div class="row legend-row-test" style="margin-top:1px; padding-right:0px;">
 
 														<div class="col-6 text_response" style="width: auto;">
 															<p><?= $item['mot']; ?></p>
@@ -385,7 +420,23 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
 
 										</div>
 
-									<?php } ?>
+									<?php }
+
+									// AD mode: render all right-side legends as one continuous flat block
+									$adCounterR = 0;
+									?>
+									<div class="ad-legend-block ad-legend-block-right" style="display:none;">
+										<?php foreach ($figure['textDroite'] as $itemBlock) {
+											foreach ($itemBlock as $item) {
+												$adCounterR++;
+												$adBadgeR = preg_match('/^\s*(\d+)\s*-/', $item['mot'], $mR) ? $mR[1] : (isset($item['numero']) ? $item['numero'] : $adCounterR); ?>
+												<div class="ad-legend-item">
+													<span class="rond"><?= $adBadgeR; ?></span>
+													<p class="ad-legend-text"><?= $item['mot']; ?></p>
+												</div>
+											<?php }
+										} ?>
+									</div>
 								</div>
 
 							</div>
@@ -467,6 +518,46 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
             }, 5000); // Masque après 3 secondes
         }
 
+        // Function to switch to AD mode (legends-only view, same page)
+        var adButtons = document.querySelectorAll('.adMode');
+        adButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                // Manage active states
+                document.querySelectorAll('.btn_app').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                // Hide the existing grouped legend rows (with hr separators and overlay buttons)
+                var legendGroupRows = document.getElementsByClassName('legend-group-row');
+                for (let row of legendGroupRows) {
+                    row.style.display = 'none';
+                }
+
+                // Hide title textarea
+                var correctionButtonsTT = document.getElementsByClassName('text_titre');
+                for (let j = 0; j < correctionButtonsTT.length; j++) {
+                    correctionButtonsTT[j].style.display = 'none';
+                }
+
+                // Hide the btn-titre overlay so only the green title text shows
+                var correctionButtonsT = document.getElementsByClassName('btn-titre');
+                for (let btn of correctionButtonsT) {
+                    btn.style.display = 'none';
+                }
+
+                // Show bloc_titre (figure title)
+                var correctionButtonsBT = document.getElementsByClassName('bloc_titre');
+                for (let btn of correctionButtonsBT) {
+                    btn.style.display = 'flex';
+                }
+
+                // Show AD-mode flat legend blocks (one per side per figure)
+                var adBlocks = document.getElementsByClassName('ad-legend-block');
+                for (let div of adBlocks) {
+                    div.style.display = 'block';
+                }
+            });
+        });
+
         // Function to restore normal mode (Ascension pédagogique)
         var restoreButtons = document.querySelectorAll('.restoreNormalMode');
         restoreButtons.forEach(function(button) {
@@ -474,6 +565,18 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
                 // Manage active states
                 document.querySelectorAll('.btn_app').forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
+
+                // Hide AD-mode flat legend blocks
+                var adBlocks = document.getElementsByClassName('ad-legend-block');
+                for (let div of adBlocks) {
+                    div.style.display = 'none';
+                }
+
+                // Restore the grouped legend rows
+                var legendGroupRows = document.getElementsByClassName('legend-group-row');
+                for (let row of legendGroupRows) {
+                    row.style.display = '';
+                }
 
                 // Hide text input fields
                 var text_saisie_gauche = document.getElementsByClassName('text_saisie_gauche');
@@ -557,6 +660,18 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
 				document.querySelectorAll('.btn_app').forEach(b => b.classList.remove('active'));
 				this.classList.add('active');
 
+                // Hide AD-mode flat legend blocks
+                var adBlocks = document.getElementsByClassName('ad-legend-block');
+                for (let div of adBlocks) {
+                    div.style.display = 'none';
+                }
+
+                // Restore the grouped legend rows
+                var legendGroupRows = document.getElementsByClassName('legend-group-row');
+                for (let row of legendGroupRows) {
+                    row.style.display = '';
+                }
+
                 var text_saisie_gauche = document.getElementsByClassName('text_saisie_gauche');
                 for (let sais of text_saisie_gauche) {
                     sais.style.display = 'flex';
@@ -638,6 +753,18 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
             var beginTestButton = document.querySelector('.beginTest');
             if (beginTestButton) {
                 beginTestButton.classList.add('active');
+            }
+
+            // Hide AD-mode flat legend blocks
+            var adBlocks = document.getElementsByClassName('ad-legend-block');
+            for (let div of adBlocks) {
+                div.style.display = 'none';
+            }
+
+            // Restore the grouped legend rows
+            var legendGroupRows = document.getElementsByClassName('legend-group-row');
+            for (let row of legendGroupRows) {
+                row.style.display = '';
             }
 
             // Toujours activer le mode test lors du changement de figure
