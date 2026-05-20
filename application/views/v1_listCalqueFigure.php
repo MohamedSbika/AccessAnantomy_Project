@@ -176,7 +176,6 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
 						display: inline-flex;          /* Utiliser flexbox pour un meilleur alignement */
 						align-items: center;           /* Aligner verticalement l'icône et le texte */
 						justify-content: center;       /* Centrer horizontalement */
-						width: 40px;                   /* Largeur du cercle */
 						height: 40px;                  /* Hauteur du cercle */
 						background-color: #0077b5;     /* Couleur de fond (à personnaliser) */
 						color: white;                  /* Couleur du texte */
@@ -184,6 +183,9 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
 						text-align: center;            /* Centrer le texte horizontalement */
 						font-size: 14px;               /* Taille du texte */
 						min-width: 40px;
+						padding: 0 10px;               /* Laisser respirer le texte (ex: "Fig-") */
+						white-space: nowrap;
+						box-sizing: border-box;
 					}
 
 					.rond i {
@@ -405,7 +407,7 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
 
 														<div class="col-6" style="padding-left: inherit;width: 100%;">
 
-															<div style="display: none; fex-direction:raw; flex-wrap:nowrap;padding-bottom: 5px;" class="textGauche textGaucheCoteDroite">
+															<div style="display: none; flex-direction: row; flex-wrap: nowrap; padding-bottom: 5px;" class="textGauche textGaucheCoteDroite">
 															<span class="rond" data-title="<?= $item['mot']; ?>" onclick="showToast(this)">
         														<i class="fas fa-eye"></i> <?= $compteurEssai; ?>
     														</span>
@@ -446,8 +448,8 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
 									<div class="row" style="margin-right: 0rem; margin-left: 1rem;">
 										<div class="col-12" style="position:relative; padding-left:0px; padding-right:0px; margin-bottom:5px;">
 
-											<div style="display: none; fex-direction:raw; flex-wrap:nowrap;padding-bottom: 5px;" class="textGauche textGaucheCoteDroite">
-											<span class="rond" style="min-width: 46px" data-title="<?= $figure['titre']; ?>" onclick="showToast(this)">
+											<div style="display: none; flex-direction: row; flex-wrap: nowrap; padding-bottom: 5px;" class="textGauche textGaucheCoteDroite">
+											<span class="rond" data-title="<?= $figure['titre']; ?>" onclick="showToast(this)">
         									<i class="fas fa-eye"></i> Fig-
     									</span>
 												<textarea rows="1" cols="33" class="form-control form-control-lg text_titre"
@@ -463,6 +465,16 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
 											<button style="padding:0px; float:right; position:absolute; width:100%; height:100%;" class="btn btn-success btn-corriger btn-titre" onclick="afficheReponseBlock(event,true)"> <?php echo $this->lang->line('decouv_respons'); ?> </button>
 
 											<span style="color:green;"><?= $figure['titre']; ?></span>
+										</div>
+
+										<?php
+										$figBadge = preg_match('/^\s*Fig\s*\.?\s*(\d+)/i', $figure['titre'], $mF) ? $mF[1] : 'Fig';
+										?>
+										<div class="col-12 ad-figure-title" style="display:none; padding-left:0px; padding-right:0px;">
+											<div class="ad-legend-item">
+												<span class="rond"><?= $figBadge; ?></span>
+												<p class="ad-legend-text" style="color:black; font-weight:bold;"><?= $figure['titre']; ?></p>
+											</div>
 										</div>
 									</div>
 								</div>
@@ -544,15 +556,27 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
                     btn.style.display = 'none';
                 }
 
-                // Show bloc_titre (figure title)
+                // Hide the original bloc_titre (replaced in AD mode by ad-figure-title)
                 var correctionButtonsBT = document.getElementsByClassName('bloc_titre');
                 for (let btn of correctionButtonsBT) {
-                    btn.style.display = 'flex';
+                    btn.style.display = 'none';
+                }
+
+                // Hide the Fig- badge / textarea row in AD mode
+                var textGaucheDrDivs = document.getElementsByClassName('textGaucheCoteDroite');
+                for (let div of textGaucheDrDivs) {
+                    div.style.display = 'none';
                 }
 
                 // Show AD-mode flat legend blocks (one per side per figure)
                 var adBlocks = document.getElementsByClassName('ad-legend-block');
                 for (let div of adBlocks) {
+                    div.style.display = 'block';
+                }
+
+                // Show AD-mode figure title (harmonized with .ad-legend-item)
+                var adFigTitles = document.getElementsByClassName('ad-figure-title');
+                for (let div of adFigTitles) {
                     div.style.display = 'block';
                 }
             });
@@ -569,6 +593,12 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
                 // Hide AD-mode flat legend blocks
                 var adBlocks = document.getElementsByClassName('ad-legend-block');
                 for (let div of adBlocks) {
+                    div.style.display = 'none';
+                }
+
+                // Hide AD-mode figure title
+                var adFigTitles = document.getElementsByClassName('ad-figure-title');
+                for (let div of adFigTitles) {
                     div.style.display = 'none';
                 }
 
@@ -666,6 +696,12 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
                     div.style.display = 'none';
                 }
 
+                // Hide AD-mode figure title
+                var adFigTitles = document.getElementsByClassName('ad-figure-title');
+                for (let div of adFigTitles) {
+                    div.style.display = 'none';
+                }
+
                 // Restore the grouped legend rows
                 var legendGroupRows = document.getElementsByClassName('legend-group-row');
                 for (let row of legendGroupRows) {
@@ -758,6 +794,12 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
             // Hide AD-mode flat legend blocks
             var adBlocks = document.getElementsByClassName('ad-legend-block');
             for (let div of adBlocks) {
+                div.style.display = 'none';
+            }
+
+            // Hide AD-mode figure title
+            var adFigTitles = document.getElementsByClassName('ad-figure-title');
+            for (let div of adFigTitles) {
                 div.style.display = 'none';
             }
 
