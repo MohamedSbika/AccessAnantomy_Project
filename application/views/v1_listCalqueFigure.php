@@ -223,6 +223,54 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
 						border-color: #2d5e51ff !important;
 					}
 
+					/* Les deux contrôles (liste déroulante à gauche, bouton "Test" à droite) :
+					   leur largeur est calculée en JS pour s'aligner sur le libellé le plus long ("Légende complète"),
+					   tout en restant responsive (max-width: 100%). */
+					.beginTest {
+						box-sizing: border-box;
+					}
+
+					/* Liste déroulante de mode (AD / Ascension pédagogique) : reprend le style des boutons .btn_app */
+					.modeSelect {
+						display: inline-block;
+						box-sizing: border-box;
+						flex-direction: row;
+						height: 35px;
+						max-width: 100%;
+						padding: 0 6px;
+						-webkit-appearance: menulist;
+						-moz-appearance: menulist;
+						appearance: menulist;
+						text-align: left;
+						text-align-last: center;
+						overflow: hidden;
+						text-overflow: ellipsis;
+						white-space: nowrap;
+					}
+
+					.modeSelect option {
+						background-color: #ffffff;
+						color: #182540;
+						font-weight: bold;
+						padding: 8px 12px;
+						line-height: 1.6;
+					}
+
+					/* Option survolée / sélectionnée : reprend le vert d'accent des boutons .btn_app */
+					.modeSelect option:hover,
+					.modeSelect option:checked,
+					.modeSelect option:focus {
+						background-color: #2d5e51ff;
+						color: #ffffff;
+						box-shadow: 0 0 10px 100px #2d5e51ff inset; /* force la couleur de fond sur certains navigateurs */
+					}
+
+					.modeSelect option.modeSelectPlaceholder {
+						color: #8a93a6;
+						font-style: italic;
+						font-weight: normal;
+					}
+
 					.ad-legend-item {
 						display: flex;
 						align-items: center;
@@ -295,8 +343,14 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
 
 							<div class="row">
 								<div class="col-sm-4" style="margin-top: 20px; display: flex;justify-content: center; align-items: center;text-align: end; gap: 40px;">
-									<button class="btn-info btn_app adMode" type="button">AD</button>
-									<button class="btn-info btn_app restoreNormalMode" id="btnAscensionPedagogique"><?php echo $this->lang->line('sidebar_ap_tooltip'); ?></button>
+									<select class="btn_app modeSelect">
+										<option value="" class="modeSelectPlaceholder" disabled hidden><?php echo $this->lang->line('legend_complete'); ?></option>
+										<option value="ad" selected><?php echo $this->lang->line('legend_complete'); ?></option>
+										<option value="ap"><?php echo $this->lang->line('legend_progressive'); ?></option>
+									</select>
+									<!-- Boutons conservés (cachés) : la liste déroulante ci-dessus déclenche exactement le même comportement -->
+									<button class="btn-info btn_app adMode" type="button" style="display:none;">AD</button>
+									<button class="btn-info btn_app restoreNormalMode" id="btnAscensionPedagogique" style="display:none;"><?php echo $this->lang->line('sidebar_ap_tooltip'); ?></button>
 								</div>
 
 
@@ -316,7 +370,7 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
 								</div>
 
 								<div class="col-sm-4" style="margin-top:20px; display:flex; justify-content:center; align-items:center;">
-									<button class="btn-info btn_app beginTest active"><?php echo $this->lang->line('test_legendes'); ?></button>
+									<button class="btn-info btn_app beginTest"><?php echo $this->lang->line('legend_test'); ?></button>
 								</div>
 
 							</div>
@@ -690,6 +744,9 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
 				document.querySelectorAll('.btn_app').forEach(b => b.classList.remove('active'));
 				this.classList.add('active');
 
+                // Reprise du mode "Légende active" : la liste déroulante revient sur l'invite
+                resetModeSelects();
+
                 // Hide AD-mode flat legend blocks
                 var adBlocks = document.getElementsByClassName('ad-legend-block');
                 for (let div of adBlocks) {
@@ -758,6 +815,65 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
             });
         });
 
+        // Liste déroulante "AD / Ascension pédagogique" : déclenche le même comportement que les anciens boutons (cachés)
+        var modeSelects = document.querySelectorAll('.modeSelect');
+        modeSelects.forEach(function(select) {
+            select.addEventListener('change', function() {
+                var row = this.closest('.row');
+                if (!row) return;
+                if (this.value === 'ad') {
+                    var adBtn = row.querySelector('.adMode');
+                    if (adBtn) adBtn.click();
+                } else if (this.value === 'ap') {
+                    var apBtn = row.querySelector('.restoreNormalMode');
+                    if (apBtn) apBtn.click();
+                } else {
+                    return;
+                }
+                // Le bouton caché récupère la classe .active ; on l'applique aussi à la liste
+                // déroulante pour qu'elle s'affiche en vert comme le bouton de droite quand un mode est choisi
+                this.classList.add('active');
+            });
+        });
+
+        // Remet les listes déroulantes sur le libellé d'invite (utilisé quand le mode "Test" reprend la main)
+        function resetModeSelects() {
+            document.querySelectorAll('.modeSelect').forEach(function(s) { s.selectedIndex = 0; });
+        }
+
+        // Mode par défaut : "Légende complète" (ancien AD). Active le mode, affiche le libellé dans la
+        // liste déroulante et la passe en vert, comme un choix sélectionné.
+        function activateLegendComplete() {
+            var adBtn = document.querySelector('.adMode');
+            if (adBtn) adBtn.click(); // applique le mode "Légende complète" et gère les classes .active
+            document.querySelectorAll('.modeSelect').forEach(function(s) {
+                s.value = 'ad';
+                s.classList.add('active');
+            });
+        }
+
+        // Aligne la largeur des deux contrôles (liste déroulante + bouton "Test") sur le libellé le plus long
+        function sizeModeControls() {
+            var select = document.querySelector('.modeSelect');
+            if (!select) return;
+            var cs = window.getComputedStyle(select);
+            var canvas = sizeModeControls._canvas || (sizeModeControls._canvas = document.createElement('canvas'));
+            var ctx = canvas.getContext('2d');
+            ctx.font = cs.fontWeight + ' ' + cs.fontSize + ' ' + cs.fontFamily;
+            var maxText = 0;
+            select.querySelectorAll('option').forEach(function(o) {
+                var w = ctx.measureText(o.textContent).width;
+                if (w > maxText) maxText = w;
+            });
+            var target = Math.ceil(maxText) + 48; // padding + flèche de la liste + bordures + marge
+            document.querySelectorAll('.modeSelect, .beginTest').forEach(function(el) {
+                el.style.width = target + 'px';
+                el.style.maxWidth = '100%';
+            });
+        }
+        window.addEventListener('load', sizeModeControls);
+        window.addEventListener('resize', sizeModeControls);
+
 
         var afficheFigure = function(position) {
 
@@ -784,76 +900,8 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
                 }
             }
 
-            // Toujours réactiver le bouton "Légende active" lors du changement de figure
-            document.querySelectorAll('.btn_app').forEach(b => b.classList.remove('active'));
-            var beginTestButton = document.querySelector('.beginTest');
-            if (beginTestButton) {
-                beginTestButton.classList.add('active');
-            }
-
-            // Hide AD-mode flat legend blocks
-            var adBlocks = document.getElementsByClassName('ad-legend-block');
-            for (let div of adBlocks) {
-                div.style.display = 'none';
-            }
-
-            // Hide AD-mode figure title
-            var adFigTitles = document.getElementsByClassName('ad-figure-title');
-            for (let div of adFigTitles) {
-                div.style.display = 'none';
-            }
-
-            // Restore the grouped legend rows
-            var legendGroupRows = document.getElementsByClassName('legend-group-row');
-            for (let row of legendGroupRows) {
-                row.style.display = '';
-            }
-
-            // Toujours activer le mode test lors du changement de figure
-            var text_saisie_gauche = document.getElementsByClassName('text_saisie_gauche');
-            for (let sais of text_saisie_gauche) {
-                sais.style.display = 'flex';
-            }
-
-            // Hide all buttons with class 'btn-gauche'
-            var btnGaucheButtons = document.getElementsByClassName('btn-gauche');
-            for (let btn of btnGaucheButtons) {
-                btn.style.display = 'none';
-            }
-
-            var correctionButtonsD = document.getElementsByClassName('btn-droite');
-            for (let btn of correctionButtonsD) {
-                btn.style.display = 'none';
-            }
-
-            // Show all divs with class 'textGauche'
-            var textGaucheDivs = document.getElementsByClassName('textGauche');
-            for (let div of textGaucheDivs) {
-                div.style.visibility = 'visible';
-            }
-
-            var textResponses = document.getElementsByClassName('text_response');
-            for (let div of textResponses) {
-                div.style.display = 'none';
-            }
-
-            var textGaucheDrDivs = document.getElementsByClassName('textGaucheCoteDroite');
-            for (let div of textGaucheDrDivs) {
-                div.style.display = 'flex';
-                div.style.flexWrap = "nowrap";
-            }
-
-            var correctionButtonsTT = document.getElementsByClassName('text_titre');
-            for (let j = 0; j < correctionButtonsTT.length; j++) {
-                correctionButtonsTT[j].style.display = 'flex';
-            }
-
-            var correctionButtonsBT = document.getElementsByClassName('bloc_titre');
-            for (let btn of correctionButtonsBT) {
-                btn.style.display = 'none';
-            }
-
-
+            // Au changement de figure, on revient au mode par défaut "Légende complète"
+            activateLegendComplete();
         }
 
         var afficheReponseBlock = function(event,isHide) {
@@ -902,53 +950,8 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
         }
 
         window.onload = function() {
-            // Activer automatiquement le mode test si le bouton "Légende active" est sélectionné par défaut
-            var activeTestButton = document.querySelector('.beginTest.active');
-            if (activeTestButton) {
-                // Simuler le clic sur le bouton pour activer le mode test
-                var text_saisie_gauche = document.getElementsByClassName('text_saisie_gauche');
-                for (let sais of text_saisie_gauche) {
-                    sais.style.display = 'flex';
-                }
-
-                // Hide all buttons with class 'btn-gauche'
-                var btnGaucheButtons = document.getElementsByClassName('btn-gauche');
-                for (let btn of btnGaucheButtons) {
-                    btn.style.display = 'none';
-                }
-
-                var correctionButtonsD = document.getElementsByClassName('btn-droite');
-                for (let btn of correctionButtonsD) {
-                    btn.style.display = 'none';
-                }
-
-                // Show all divs with class 'textGauche'
-                var textGaucheDivs = document.getElementsByClassName('textGauche');
-                for (let div of textGaucheDivs) {
-                    div.style.visibility = 'visible';
-                }
-
-                var textResponses = document.getElementsByClassName('text_response');
-                for (let div of textResponses) {
-                    div.style.display = 'none';
-                }
-
-                var textGaucheDrDivs = document.getElementsByClassName('textGaucheCoteDroite');
-                for (let div of textGaucheDrDivs) {
-                    div.style.display = 'flex';
-                    div.style.flexWrap = "nowrap";
-                }
-
-                var correctionButtonsTT = document.getElementsByClassName('text_titre');
-                for (let j = 0; j < correctionButtonsTT.length; j++) {
-                    correctionButtonsTT[j].style.display = 'flex';
-                }
-
-                var correctionButtonsBT = document.getElementsByClassName('bloc_titre');
-                for (let btn of correctionButtonsBT) {
-                    btn.style.display = 'none';
-                }
-            }
+            // Mode par défaut au chargement : "Légende complète"
+            activateLegendComplete();
 
             // playAudio();
             // setTimeout(function() {

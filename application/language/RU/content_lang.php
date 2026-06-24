@@ -360,6 +360,9 @@ $lang['sidebar_retour'] = "Назад";
 
 $lang['test_evaluation'] 	= "Контрольный тест";
 $lang['test_legendes'] 		= "активная легенда";
+$lang['legend_test'] 		= "Тест";
+$lang['legend_complete'] 	= "Полная легенда";
+$lang['legend_progressive'] 	= "Прогрессивная легенда";
 
 $lang['lecture_mode']         = "Режим чтения";
 $lang['lecture_perso']        = "Личное чтение";

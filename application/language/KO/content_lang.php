@@ -354,6 +354,9 @@ $lang['sidebar_retour'] = "뒤로";
 
 $lang['test_evaluation'] 	= "평가 테스트";
 $lang['test_legendes'] 		= "활성 범례";
+$lang['legend_test'] 		= "테스트";
+$lang['legend_complete'] 	= "전체 범례";
+$lang['legend_progressive'] 	= "점진적 범례";
 
 $lang['lecture_mode'] 		= "읽기 모드";
 $lang['lecture_perso'] 		= "개인 읽기";

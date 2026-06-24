@@ -322,6 +322,9 @@ $lang['sidebar_retour'] = "Volver";
 
 $lang['test_evaluation'] 	= "Prueba de evaluación";
 $lang['test_legendes'] 		= "Leyenda activa";
+$lang['legend_test'] 		= "Prueba";
+$lang['legend_complete'] 	= "Leyenda completa";
+$lang['legend_progressive'] 	= "Leyenda progresiva";
 
 $lang['lecture_mode']         = "Modo de lectura";
 $lang['lecture_perso']        = "Lectura personal";

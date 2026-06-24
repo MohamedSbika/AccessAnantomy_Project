@@ -354,6 +354,9 @@ $lang['sidebar_retour'] = "Zurück";
 
 $lang['test_evaluation'] 	= "Bewertungstest";
 $lang['test_legendes'] 		= "Aktive Beschriftung";
+$lang['legend_test'] 		= "Test";
+$lang['legend_complete'] 	= "Vollständige Beschriftung";
+$lang['legend_progressive'] 	= "Progressive Beschriftung";
 
 $lang['lecture_mode'] 		= "Lesemodus";
 $lang['lecture_perso'] 		= "Persönliches Lesen";

@@ -354,6 +354,9 @@ $lang['sidebar_retour'] = "Voltar";
 
 $lang['test_evaluation'] 	= "Teste de avaliação";
 $lang['test_legendes'] 		= "Legenda ativa";
+$lang['legend_test'] 		= "Teste";
+$lang['legend_complete'] 	= "Legenda completa";
+$lang['legend_progressive'] 	= "Legenda progressiva";
 
 $lang['lecture_mode'] 		= "Modo de leitura";
 $lang['lecture_perso'] 		= "Leitura pessoal";

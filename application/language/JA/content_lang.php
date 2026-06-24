@@ -354,6 +354,9 @@ $lang['sidebar_retour'] = "戻る";
 
 $lang['test_evaluation'] 	= "評価テスト";
 $lang['test_legendes'] 		= "アクティブな凡例";
+$lang['legend_test'] 		= "テスト";
+$lang['legend_complete'] 	= "完全な凡例";
+$lang['legend_progressive'] 	= "段階的な凡例";
 
 $lang['lecture_mode'] 		= "閲覧モード";
 $lang['lecture_perso'] 		= "個人読書";

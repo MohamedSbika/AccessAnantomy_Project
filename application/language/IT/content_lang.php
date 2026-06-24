@@ -354,6 +354,9 @@ $lang['sidebar_retour'] = "Indietro";
 
 $lang['test_evaluation'] 	= "Test di valutazione";
 $lang['test_legendes'] 		= "Didascalia attiva";
+$lang['legend_test'] 		= "Test";
+$lang['legend_complete'] 	= "Didascalia completa";
+$lang['legend_progressive'] 	= "Didascalia progressiva";
 
 $lang['lecture_mode'] 		= "Modalità di lettura";
 $lang['lecture_perso'] 		= "Lettura personale";

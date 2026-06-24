@@ -354,6 +354,9 @@ $lang['sidebar_retour'] = "Geri";
 
 $lang['test_evaluation'] 	= "Değerlendirme Testi";
 $lang['test_legendes'] 		= "Aktif Etiket";
+$lang['legend_test'] 		= "Test";
+$lang['legend_complete'] 	= "Tam Etiket";
+$lang['legend_progressive'] 	= "Aşamalı Etiket";
 
 $lang['lecture_mode'] 		= "Okuma Modu";
 $lang['lecture_perso'] 		= "Kişisel Okuma";

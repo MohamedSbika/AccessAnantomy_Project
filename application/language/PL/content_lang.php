@@ -354,6 +354,9 @@ $lang['sidebar_retour'] = "Powrót";
 
 $lang['test_evaluation'] 	= "Test oceniający";
 $lang['test_legendes'] 		= "Aktywny podpis";
+$lang['legend_test'] 		= "Test";
+$lang['legend_complete'] 	= "Pełny podpis";
+$lang['legend_progressive'] 	= "Podpis progresywny";
 
 $lang['lecture_mode'] 		= "Tryb czytania";
 $lang['lecture_perso'] 		= "Czytanie osobiste";
