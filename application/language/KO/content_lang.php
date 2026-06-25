@@ -357,6 +357,11 @@ $lang['test_legendes'] 		= "활성 범례";
 $lang['legend_test'] 		= "테스트";
 $lang['legend_complete'] 	= "전체 범례";
 $lang['legend_progressive'] 	= "점진적 범례";
+$lang['legend_label'] 		= "범례:";
+$lang['legend_opt_complete'] 	= "전체";
+$lang['legend_opt_sequential'] 	= "순차";
+$lang['resume_btn'] 		= "요약";
+$lang['resume_soon'] 		= "이 섹션은 곧 제공될 예정입니다.";
 
 $lang['lecture_mode'] 		= "읽기 모드";
 $lang['lecture_perso'] 		= "개인 읽기";

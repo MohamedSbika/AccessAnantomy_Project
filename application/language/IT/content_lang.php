@@ -357,6 +357,11 @@ $lang['test_legendes'] 		= "Didascalia attiva";
 $lang['legend_test'] 		= "Test";
 $lang['legend_complete'] 	= "Didascalia completa";
 $lang['legend_progressive'] 	= "Didascalia progressiva";
+$lang['legend_label'] 		= "Didascalia:";
+$lang['legend_opt_complete'] 	= "Completa";
+$lang['legend_opt_sequential'] 	= "Sequenziale";
+$lang['resume_btn'] 		= "Riassunto";
+$lang['resume_soon'] 		= "Questa sezione sarà presto disponibile.";
 
 $lang['lecture_mode'] 		= "Modalità di lettura";
 $lang['lecture_perso'] 		= "Lettura personale";

@@ -65,9 +65,11 @@
                     }
                 }
             }
+            // Script qui renvoie la hauteur réelle du contenu au parent (pour supprimer le scroll interne).
+            $heightReporter = '<script>(function(){function r(){try{parent.postMessage({cursIframeHeight:Math.max(document.body.scrollHeight,document.documentElement.scrollHeight)},"*");}catch(e){}}window.addEventListener("load",r);setTimeout(r,400);setTimeout(r,1200);})();</' . 'script>';
             $iframeSrc = '<!DOCTYPE html><html><head><meta charset="utf-8">' . $headStyles .
                 '<style>body{padding:1em 2em;line-height:1.6;font-family:inherit;}</style></head><body>' .
-                $truncatedHtml . '</body></html>';
+                $truncatedHtml . $heightReporter . '</body></html>';
             $iframeSrc = htmlspecialchars($iframeSrc, ENT_QUOTES, 'UTF-8');
             ?>
             <iframe srcdoc="<?php echo $iframeSrc; ?>" style="width:100%; height:calc(100vh - 200px); border:none;" sandbox="allow-same-origin allow-scripts"></iframe>
@@ -91,6 +93,16 @@
             document.getElementById("ifrm").remove();
         </script>
     <?php endif; ?>
+
+    <script>
+        // L'iframe interne (srcdoc) renvoie sa hauteur réelle : on l'agrandit pour supprimer son scroll.
+        window.addEventListener('message', function (e) {
+            if (e && e.data && e.data.cursIframeHeight) {
+                var f = document.querySelector('#ifrmAff iframe');
+                if (f) f.style.height = (parseInt(e.data.cursIframeHeight, 10) + 20) + 'px';
+            }
+        });
+    </script>
 
     <?php if(strlen($this->session->userdata('passTok'))==200) { ?>
         <button style="width: 100%;color: red; font-size: 20px; text-align: left;"  name="btn_offre" id="btn_offre" class="btn-success">

@@ -357,6 +357,11 @@ $lang['test_legendes'] 		= "アクティブな凡例";
 $lang['legend_test'] 		= "テスト";
 $lang['legend_complete'] 	= "完全な凡例";
 $lang['legend_progressive'] 	= "段階的な凡例";
+$lang['legend_label'] 		= "凡例：";
+$lang['legend_opt_complete'] 	= "完全";
+$lang['legend_opt_sequential'] 	= "順次";
+$lang['resume_btn'] 		= "要約";
+$lang['resume_soon'] 		= "このセクションは近日公開予定です。";
 
 $lang['lecture_mode'] 		= "閲覧モード";
 $lang['lecture_perso'] 		= "個人読書";

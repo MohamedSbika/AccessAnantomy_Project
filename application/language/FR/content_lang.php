@@ -357,6 +357,11 @@ $lang['test_legendes'] 		= "Légende active";
 $lang['legend_test'] 		= "Test";
 $lang['legend_complete'] 	= "Légende complète";
 $lang['legend_progressive'] 	= "Légende progressive";
+$lang['legend_label'] 		= "Légende :";
+$lang['legend_opt_complete'] 	= "Complète";
+$lang['legend_opt_sequential'] 	= "Séquentielle";
+$lang['resume_btn'] 		= "Résumé";
+$lang['resume_soon'] 		= "Cette partie sera bientôt disponible.";
 
 $lang['lecture_mode'] 		= "Mode de lecture";
 $lang['lecture_perso'] 		= "Lecture personnelle";

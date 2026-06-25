@@ -1,5 +1,5 @@
 <?php if(strlen($this->session->userdata('passTok'))==200) { ?>
-<div style="display: flex; background-color: white;">
+<div style="display: flex; flex-direction: column; background-color: white;">
 	<style>
 		.zoom {
 			width: 320px;
@@ -171,22 +171,27 @@
 
 		div.scroll-container {
 			background-color: white;
-			overflow: auto;
+			overflow-x: auto;
+			overflow-y: hidden;
 			white-space: nowrap;
-			padding-right: 13px;
+			padding: 1px;
 		}
 
 		div.scroll-container img {
 			padding: 1px;
 		}
 
-		/* Scroll container images */
+		/* Scroll container images — bande horizontale au-dessus de la figure (scroll latéral) */
 		.scroll-container {
 			display: flex;
-			flex-direction: column;
-			/*gap: 8px;*/
-			overflow-y: auto;
-			max-height: 90vh; /* Limite de hauteur pour activer le scroll */
+			flex-direction: row;
+			flex-wrap: nowrap;
+			justify-content: flex-start;      /* le centrage est géré par les marges auto ci-dessous */
+			gap: 14px;                        /* espacement entre les miniatures */
+			overflow-x: auto;
+			overflow-y: hidden;
+			max-height: none;
+			width: 100%;
 			padding: 1px;
 			background-color: white;
 			scroll-behavior: smooth;
@@ -194,9 +199,20 @@
 			scrollbar-color: #bbb #f8f8f8;    /* Firefox */
 		}
 
-		/* WebKit (Chrome, Edge, Safari) */
+		/* Les miniatures gardent leur taille et débordent horizontalement (pas de rétrécissement) */
+		.scroll-container .image-container {
+			flex: 0 0 auto;
+		}
+
+		/* Centrage par marges auto : la bande est centrée quand elle tient,
+		   mais quand il y a beaucoup d'images le défilement part bien de la 1re
+		   (corrige le bug où la 1re miniature était coupée/inaccessible avec justify-content:center). */
+		.scroll-container > .image-container:first-child { margin-left: auto; }
+		.scroll-container > .image-container:last-child  { margin-right: auto; }
+
+		/* WebKit (Chrome, Edge, Safari) — barre horizontale */
 		.scroll-container::-webkit-scrollbar {
-			width: 6px;
+			height: 6px;
 		}
 
 		.scroll-container::-webkit-scrollbar-track {

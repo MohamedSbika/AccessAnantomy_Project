@@ -357,6 +357,11 @@ $lang['test_legendes'] 		= "Aktywny podpis";
 $lang['legend_test'] 		= "Test";
 $lang['legend_complete'] 	= "Pełny podpis";
 $lang['legend_progressive'] 	= "Podpis progresywny";
+$lang['legend_label'] 		= "Podpis:";
+$lang['legend_opt_complete'] 	= "Pełny";
+$lang['legend_opt_sequential'] 	= "Sekwencyjny";
+$lang['resume_btn'] 		= "Podsumowanie";
+$lang['resume_soon'] 		= "Ta sekcja będzie wkrótce dostępna.";
 
 $lang['lecture_mode'] 		= "Tryb czytania";
 $lang['lecture_perso'] 		= "Czytanie osobiste";

@@ -357,6 +357,11 @@ $lang['test_legendes'] 		= "Aktif Etiket";
 $lang['legend_test'] 		= "Test";
 $lang['legend_complete'] 	= "Tam Etiket";
 $lang['legend_progressive'] 	= "Aşamalı Etiket";
+$lang['legend_label'] 		= "Etiket:";
+$lang['legend_opt_complete'] 	= "Tam";
+$lang['legend_opt_sequential'] 	= "Sıralı";
+$lang['resume_btn'] 		= "Özet";
+$lang['resume_soon'] 		= "Bu bölüm yakında kullanıma sunulacak.";
 
 $lang['lecture_mode'] 		= "Okuma Modu";
 $lang['lecture_perso'] 		= "Kişisel Okuma";

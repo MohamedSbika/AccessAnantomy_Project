@@ -364,6 +364,11 @@ $lang['test_legendes'] 		= "active legend";
 $lang['legend_test'] 		= "Test";
 $lang['legend_complete'] 	= "Complete legend";
 $lang['legend_progressive'] 	= "Progressive legend";
+$lang['legend_label'] 		= "Legend:";
+$lang['legend_opt_complete'] 	= "Complete";
+$lang['legend_opt_sequential'] 	= "Sequential";
+$lang['resume_btn'] 		= "Summary";
+$lang['resume_soon'] 		= "This section will be available soon.";
 
 $lang['lecture_mode']         = "Reading mode";
 $lang['lecture_perso']        = "Personal reading";

@@ -363,6 +363,11 @@ $lang['test_legendes'] 		= "активная легенда";
 $lang['legend_test'] 		= "Тест";
 $lang['legend_complete'] 	= "Полная легенда";
 $lang['legend_progressive'] 	= "Прогрессивная легенда";
+$lang['legend_label'] 		= "Легенда:";
+$lang['legend_opt_complete'] 	= "Полная";
+$lang['legend_opt_sequential'] 	= "Последовательная";
+$lang['resume_btn'] 		= "Резюме";
+$lang['resume_soon'] 		= "Этот раздел скоро будет доступен.";
 
 $lang['lecture_mode']         = "Режим чтения";
 $lang['lecture_perso']        = "Личное чтение";

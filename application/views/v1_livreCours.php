@@ -176,7 +176,7 @@ if (strlen($this->session->userdata('passTok')) == 200) {
         #element {
             display: flex;
             flex-wrap: wrap;
-            justify-content: space-between;
+            justify-content: flex-start;
             padding: 1px;
         }
         .left-column {
@@ -217,13 +217,32 @@ if (strlen($this->session->userdata('passTok')) == 200) {
         }
         @media (min-width: 769px) {
             .col-12.col-lg-6.col-xl-6:first-of-type {
-                width: 47% !important;
+                width: 40% !important;
                 margin-left: 5% !important;
             }
             .col-12.col-lg-6.col-xl-6:last-of-type {
-                width: 47% !important;
+                width: 55% !important;
                 margin-left: 0% !important;
             }
+        }
+
+        /* Cours : un SEUL scroll, sur le wrapper externe (#demo) — boîte à hauteur fixe.
+           Les iframes internes (#iframeID + srcdoc) sont agrandies en JS pour ne pas créer
+           de scrolls imbriqués : #demo défile alors la totalité du contenu. */
+        #demo {
+            overflow-x: hidden !important;
+            overflow-y: auto !important;
+            height: calc(100vh - 120px) !important;
+        }
+
+        /* La colonne figures passe à 60%, mais on NE grossit PAS la figure : on plafonne la
+           figure et la bande de miniatures à leur largeur actuelle (≈40vw) et on les centre
+           dans la colonne. L'affichage interne du bloc reste donc identique. */
+        #element .container-fig,
+        #element .scroll-container {
+            max-width: 40vw !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
         }
     </style>
 </head>
@@ -236,7 +255,7 @@ if (strlen($this->session->userdata('passTok')) == 200) {
     <div id="element">
         <?php include('v1_racourci.php'); ?>
 
-<div class="col-12 col-lg-6 col-xl-6" style="float: left; width: 47%; margin-left: 5%;">
+<div class="col-12 col-lg-6 col-xl-6" style="float: left; width: 40%; margin-left: 5%;">
                 <div class="row">
                 <li class="breadcrumb-item">
                     &nbsp;&nbsp;
@@ -296,12 +315,40 @@ if (strlen($this->session->userdata('passTok')) == 200) {
             </div>
         </div>
 
-<div class="col-12 col-lg-6 col-xl-6" style="float: right; width: 47%; margin-right: 1%;">
+<div class="col-12 col-lg-6 col-xl-6" style="float: right; width: 55%; margin-right: 0;">
             <?php include('v1_bloc_figures.php'); ?>
         </div>
     </div>
 
     <?php include('v1_modal_mode_lecture.php'); ?>
+
+    <script>
+        // Le cours est dans une iframe (#iframeID, même origine) elle-même dans un wrapper (#demo).
+        // On agrandit l'iframe à la hauteur de son contenu : plus de scroll imbriqué, seule la page défile.
+        function autoSizeCursOuter() {
+            var iframe = document.getElementById('iframeID');
+            if (!iframe) return;
+            try {
+                var doc = iframe.contentDocument || iframe.contentWindow.document;
+                if (doc) {
+                    var h = Math.max(
+                        doc.body ? doc.body.scrollHeight : 0,
+                        doc.documentElement ? doc.documentElement.scrollHeight : 0
+                    );
+                    if (h > 0) iframe.style.height = (h + 20) + 'px';
+                }
+            } catch (e) {
+                // Cross-origin : on ne peut pas lire la hauteur, on laisse tel quel.
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            var iframe = document.getElementById('iframeID');
+            if (iframe) iframe.addEventListener('load', autoSizeCursOuter);
+        });
+        window.addEventListener('load', autoSizeCursOuter);
+        // L'iframe interne et ses images se mettent en page après coup : on réessaie plusieurs fois.
+        [400, 900, 1600, 2500, 3500].forEach(function (t) { setTimeout(autoSizeCursOuter, t); });
+    </script>
 </body>
 
 <script src="//mozilla.github.io/pdf.js/build/pdf.js"></script>
