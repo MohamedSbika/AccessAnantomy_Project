@@ -248,6 +248,152 @@
 			overflow: hidden;
 		}
 
+		/* ═════════ Viewer SVG interactif (porté de viewer.html) ═════════
+		   Panneaux de légendes aux extrémités gauche/droite de la figure,
+		   pleine hauteur, défilement interne uniquement si dépassement. */
+		.fig-legend-panel {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			display: none;             /* affiché par le JS quand la figure a un SVG */
+			flex-direction: column;
+			max-width: 26%;
+			overflow-y: auto;
+			overflow-x: hidden;
+			padding: 6px 8px;
+			box-sizing: border-box;
+			z-index: 5;
+			scrollbar-width: thin;            /* Firefox */
+			scrollbar-color: #bbb #f1f1f1;    /* Firefox */
+		}
+		.fig-legend-panel.left  {
+			left: 0;
+			direction: rtl;            /* place la barre de défilement à gauche */
+			padding-left: 8px;
+			padding-right: 0;
+		}
+		.fig-legend-panel.left > * { direction: ltr; }   /* le contenu reste lisible de gauche à droite */
+		.fig-legend-panel.right {
+			right: -5px;             /* compense le padding (5px) de la colonne pour coller au bord droit */
+			padding-right: 0;
+			padding-left: 8px;
+		}
+		.fig-legend-panel::-webkit-scrollbar { width: 6px; }
+		.fig-legend-panel::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+		.fig-legend-panel::-webkit-scrollbar-thumb { background: #bbb; border-radius: 10px; }
+		.fig-legend-panel::-webkit-scrollbar-thumb:hover { background: #888; }
+
+		/* Bloc (sous-figure) : séparé par un filet gris */
+		.fig-block { padding: 6px 2px 10px; }
+		.fig-block + .fig-block {
+			border-top: 1px solid #d1d5db;
+			margin-top: 6px;
+			padding-top: 12px;
+		}
+
+		/* Croix d'orientation (Crânial / Dorsal…) */
+		.orient-cross { display: inline-block; margin: 0 0 6px 0; user-select: none; }
+		.orient-cross svg { width: 100px; height: 47px; display: block; overflow: visible; }
+		.orient-cross text { font-size: 2.0px; font-weight: 600; fill: #c2410c; font-family: inherit; }
+		.orient-cross .axis { stroke: #c2410c; stroke-width: 0.32; fill: none; stroke-linecap: butt; }
+		.orient-cross .arrow { fill: #c2410c; stroke: none; }
+
+		/* Sous-titre de sous-figure (ex. "4-1- Stade de cinq semaines") */
+		.fig-subtitle {
+			font-weight: 600;
+			font-size: 12px;
+			color: #1e3a8a;
+			margin: 4px 0 8px;
+			line-height: 1.4;
+		}
+
+		/* Légendes numérotées cliquables */
+		.legend-list { list-style: none; padding: 0; margin: 0; }
+		.legend-item {
+			display: flex;
+			align-items: flex-start;
+			gap: 8px;
+			padding: 5px 6px;
+			margin-bottom: 3px;
+			border-radius: 6px;
+			font-size: 12.5px;
+			line-height: 1.35;
+			cursor: pointer;
+			transition: background 120ms;
+		}
+		.legend-item:hover { background: #eff6ff; }
+		.legend-item.active { background: #fee2e2; }
+		.legend-item .leg-badge {
+			flex-shrink: 0;
+			min-width: 22px; height: 22px;
+			border-radius: 4px;
+			background: #1e3a8a; color: white;
+			font-size: 11px; font-weight: 700;
+			display: flex; align-items: center; justify-content: center;
+			padding: 0 5px;
+			box-sizing: border-box;
+		}
+		.legend-item.active .leg-badge { background: #d62828; }
+		.legend-item .leg-text { flex: 1; color: #1f2937; }
+
+		/* Légendes romaines / lettres (non cliquables) */
+		.roman-list { list-style: none; padding: 0; margin: 8px 0 0; }
+		.roman-item { padding: 4px 0; font-size: 12px; color: #4b5563; line-height: 1.4; }
+		.roman-item .roman-prefix { display: inline-block; min-width: 24px; color: #6b21a8; font-weight: 600; }
+		.roman-children { list-style: none; padding: 0; margin: 4px 0 4px 28px; }
+		.roman-children li { padding: 2px 0; font-size: 11.5px; color: #6b7280; }
+		.roman-children .roman-prefix { min-width: 18px; color: #6b21a8; }
+
+		.empty-hint { padding: 14px 6px; font-size: 12px; color: #9ca3af; text-align: center; font-style: italic; }
+
+		/* Marqueurs du SVG : numéro + flèche passent en rouge quand la légende est active */
+		.marker-num { transition: fill 200ms; }
+		.marker-arrow { transition: stroke 200ms, stroke-width 200ms; vector-effect: non-scaling-stroke; }
+		.marker-num.active { fill: #d62828 !important; font-weight: 900 !important; }
+		.marker-arrow.active {
+			stroke: #d62828 !important;
+			stroke-width: 2.5px !important;
+			vector-effect: non-scaling-stroke;
+		}
+
+		/* Zone d'affichage du SVG (remplace #expandedImg quand la figure a un SVG) */
+		#svg-viewer {
+			display: none;             /* affiché par le JS */
+			width: 100%;
+			height: 100%;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+		}
+		#svg-host {
+			flex: 1 1 auto;
+			width: 100%;
+			min-height: 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			overflow: hidden;
+		}
+		#svg-host svg {
+			width: 100%;
+			height: 100%;
+			max-width: 100%;
+			max-height: 100%;
+			display: block;            /* pas de width/height forcés : viewBox + preserveAspectRatio gèrent */
+		}
+		#figure-title {
+			flex: 0 0 auto;
+			margin-top: 6px;
+			padding: 8px 12px 4px;
+			font-size: 13px;
+			font-weight: 600;
+			color: #1f2937;
+			text-align: center;
+			line-height: 1.4;
+			max-width: 90%;
+			border-top: 2px solid #1e3a8a;
+		}
+
 		.container-fig img {
 			max-width: 100%;
 			max-height: 100%;
@@ -401,7 +547,7 @@ if (isset($OneBook) && !empty($OneBook) && is_array($OneBook) && isset($OneBook[
     $showScroll = false;
 }
 ?>
-	<div class="" style="width: 100%;">
+	<div class="" style="width: 100%; position: relative;">
 		<div class="container-fig" style="max-height: 50vw; overflow: hidden;height: 100vh;background: rgb(255, 255, 255);position: relative;
   											width: 100%;  max-width: 900px; margin: auto; display: flex;
   											justify-content: center; align-items: center;">
@@ -414,8 +560,20 @@ if (isset($OneBook) && !empty($OneBook) && is_array($OneBook) && isset($OneBook[
   height: auto;
   object-fit: contain; " onclick="toggleZoom()">
 			<div id="imgtext"></div>
+			<?php if (isset($page) && $page === 'livreCours'): ?>
+				<!-- Viewer SVG interactif : remplace l'image PNG quand la figure a un SVG -->
+				<div id="svg-viewer">
+					<div id="svg-host"></div>
+					<div id="figure-title"></div>
+				</div>
+			<?php endif; ?>
 			<?php if ($showScroll): ?><button onclick="nextImage()" class="nav-arrow absolute-arrow right-arrow"> > <button><?php endif; ?>
 		</div>
+		<?php if (isset($page) && $page === 'livreCours'): ?>
+			<!-- Panneaux de légendes du viewer SVG (remplis par le JS depuis le JSON de la figure) -->
+			<div class="fig-legend-panel left" id="fig-legend-left"></div>
+			<div class="fig-legend-panel right" id="fig-legend-right"></div>
+		<?php endif; ?>
 	</div>
 
 	<script>
@@ -434,18 +592,21 @@ if (isset($OneBook) && !empty($OneBook) && is_array($OneBook) && isset($OneBook[
         }
 
         function showFig(imgs) {
+            // Route par l'index pour bénéficier de l'aiguillage SVG/PNG de showFigByIndex
+            const index = figImages.indexOf(imgs.src);
+            if (index !== -1) {
+                currentIndex = index;
+                showFigByIndex(index);
+                return;
+            }
+
+            // Fallback historique (liste pas encore initialisée) : affichage PNG direct
             const expandImg = document.getElementById("expandedImg");
             const imgText = document.getElementById("imgtext");
 
             expandImg.src = imgs.src;
             imgText.innerHTML = imgs.getAttribute("data-name");
             expandImg.parentElement.style.display = "block";
-
-            // Met à jour l’index courant
-            const index = figImages.indexOf(imgs.src);
-            if (index !== -1) {
-                currentIndex = index;
-            }
 
             // Met à jour l’apparence des miniatures
             document.querySelectorAll('.slider-image').forEach((el) => {
@@ -514,16 +675,8 @@ if (isset($OneBook) && !empty($OneBook) && is_array($OneBook) && isset($OneBook[
             document.getElementById("expandedImg").style.cursor = "pointer"; // Remove the zoom-in cursor
         }
 
-        // Affiche automatiquement la première figure au chargement
-        document.addEventListener("DOMContentLoaded", function() {
-			<?php if (!empty($firstFig)): ?>
-            // Crée un élément virtuel pour déclencher showFig()
-            const firstImg = document.createElement('img');
-            firstImg.src = "data:image/jpeg;base64,<?php echo $firstFig['encryptFigure']; ?>";
-            firstImg.setAttribute('data-name', "<?php echo $firstFig['TitreFigure']; ?>");
-            showFig(firstImg); // Affiche la première image
-			<?php endif; ?>
-        });
+        // NB : l'affichage initial de la première figure est géré plus bas
+        // (DOMContentLoaded du bloc "figImages" → showFigByIndex(0), qui aiguille SVG/PNG).
 
 	</script>
 
@@ -599,8 +752,14 @@ if (isset($OneBook) && !empty($OneBook) && is_array($OneBook) && isset($OneBook[
             const imgText = document.getElementById("imgtext");
 
             if (figImages.length > 0 && figImages[index]) {
-                expandImg.src = figImages[index];
-                imgText.innerHTML = figTitles[index];
+                // Aiguillage : viewer SVG interactif si la figure a un SVG, sinon PNG classique
+                if (figHasSvg(index)) {
+                    showSvgViewer(index);
+                } else {
+                    hideSvgViewer();
+                    expandImg.src = figImages[index];
+                    imgText.innerHTML = figTitles[index];
+                }
 
                 // Mise à jour de la miniature active
                 const allThumbs = document.querySelectorAll('.slider-image');
@@ -625,6 +784,170 @@ if (isset($OneBook) && !empty($OneBook) && is_array($OneBook) && isset($OneBook[
         function prevImage() {
             currentIndex = (currentIndex - 1 + figImages.length) % figImages.length;
             showFigByIndex(currentIndex);
+        }
+
+	</script>
+
+	<script>
+        /* ═════════ Viewer SVG interactif (porté de viewer.html) ═════════
+           Le SVG (numéros/flèches data-num) et son JSON de légendes sont
+           chargés à la demande depuis _figure_svg, puis le SVG est INLINÉ
+           dans le DOM (indispensable : un <img src> rendrait les marqueurs
+           inaccessibles au JS). Clic légende N ↔ numéro+flèche N en rouge. */
+
+        // Carte index de miniature → {id, hasSvg} (même ordre que .slider-image)
+        var FIG_SVG_MAP = <?php
+            $figSvgMap = array();
+            if (isset($listFig) && is_array($listFig)) {
+                foreach ($listFig as $vMap) {
+                    $figSvgMap[] = array(
+                        'id' => isset($vMap['IDFigure']) ? (int) $vMap['IDFigure'] : 0,
+                        'hasSvg' => !empty($vMap['hasSvg'])
+                    );
+                }
+            }
+            echo json_encode($figSvgMap);
+        ?>;
+        var FIG_BASE_URL = "<?php echo base_url(); ?>";
+        var svgFigCache = {};          // idFigure → {svg, meta} (jamais re-téléchargé dans la page)
+        var activeLegendNum = null;
+
+        function figHasSvg(index) {
+            // Le viewer n'existe que sur livreCours (#svg-viewer présent) ; ailleurs → toujours PNG
+            return !!(document.getElementById('svg-viewer') && FIG_SVG_MAP[index] && FIG_SVG_MAP[index].hasSvg);
+        }
+
+        function hideSvgViewer() {
+            var viewer = document.getElementById('svg-viewer');
+            if (!viewer) return;
+            viewer.style.display = 'none';
+            document.querySelectorAll('.fig-legend-panel').forEach(function (p) { p.style.display = 'none'; });
+            var expandImg = document.getElementById('expandedImg');
+            var imgText = document.getElementById('imgtext');
+            if (expandImg) expandImg.style.display = '';
+            if (imgText) imgText.style.display = '';
+        }
+
+        function showSvgViewer(index) {
+            var idFigure = FIG_SVG_MAP[index].id;
+            var viewer = document.getElementById('svg-viewer');
+
+            document.getElementById('expandedImg').style.display = 'none';
+            document.getElementById('imgtext').style.display = 'none';
+            viewer.style.display = 'flex';
+            document.querySelectorAll('.fig-legend-panel').forEach(function (p) { p.style.display = 'flex'; });
+
+            if (svgFigCache[idFigure]) {
+                renderSvgFigure(svgFigCache[idFigure]);
+                return;
+            }
+
+            document.getElementById('svg-host').innerHTML = '<div class="empty-hint">Chargement…</div>';
+            Promise.all([
+                fetch(FIG_BASE_URL + 'home/figureSvg/' + idFigure).then(function (r) { if (!r.ok) throw new Error('svg'); return r.text(); }),
+                fetch(FIG_BASE_URL + 'home/figureMeta/' + idFigure).then(function (r) { if (!r.ok) throw new Error('meta'); return r.json(); })
+            ]).then(function (res) {
+                svgFigCache[idFigure] = { svg: res[0], meta: res[1] };
+                renderSvgFigure(svgFigCache[idFigure]);
+            }).catch(function () {
+                // Échec de chargement : retour au PNG classique (aucune page cassée)
+                hideSvgViewer();
+                document.getElementById('expandedImg').src = figImages[index];
+                document.getElementById('imgtext').innerHTML = figTitles[index];
+            });
+        }
+
+        function renderSvgFigure(data) {
+            activeLegendNum = null;
+            document.getElementById('svg-host').innerHTML = data.svg;   // inline dans le DOM
+            document.getElementById('figure-title').textContent = data.meta.title_fr || '';
+            renderLegendPanels(data.meta);
+        }
+
+        function escapeXmlFig(s) {
+            return String(s).replace(/[<>&]/g, function (c) { return { '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]; });
+        }
+
+        // Croix d'orientation (Crânial / Dorsal…) — géométrie reprise de viewer.html
+        function renderOrientationCross(orient) {
+            if (!orient) return '';
+            var v = escapeXmlFig(orient.vertical || '');
+            var h = escapeXmlFig(orient.horizontal || '');
+            return '<div class="orient-cross" title="Orientation">'
+                + '<svg viewBox="-8 -4 30 14" xmlns="http://www.w3.org/2000/svg">'
+                + '<line class="axis" x1="0" y1="8" x2="0" y2="1.7"/>'
+                + '<polygon class="arrow" points="-0.65,1.8 0,0.2 0.65,1.8"/>'
+                + '<text x="0" y="-0.9" text-anchor="middle">' + v + '</text>'
+                + '<line class="axis" x1="0" y1="8" x2="6.3" y2="8"/>'
+                + '<polygon class="arrow" points="6.2,7.35 7.8,8 6.2,8.65"/>'
+                + '<text x="8.7" y="8" dominant-baseline="middle">' + h + '</text>'
+                + '</svg></div>';
+        }
+
+        function renderLegendBlock(block) {
+            var parts = ['<div class="fig-block">'];
+            parts.push(renderOrientationCross(block.orientation));
+            if (block.subtitle) {
+                parts.push('<div class="fig-subtitle">' + escapeXmlFig(block.subtitle) + '</div>');
+            }
+            // Légendes numérotées (cliquables)
+            if (block.legends && block.legends.length) {
+                parts.push('<ul class="legend-list">');
+                block.legends.forEach(function (leg) {
+                    parts.push('<li class="legend-item" data-num="' + parseInt(leg.num, 10) + '">'
+                        + '<span class="leg-badge">' + parseInt(leg.num, 10) + '</span>'
+                        + '<span class="leg-text">' + escapeXmlFig(leg.label_fr) + '</span></li>');
+                });
+                parts.push('</ul>');
+            }
+            // Légendes romaines / lettres (non cliquables)
+            if (block.roman_legends && block.roman_legends.length) {
+                parts.push('<ul class="roman-list">');
+                block.roman_legends.forEach(function (r) {
+                    parts.push('<li class="roman-item"><span class="roman-prefix">' + escapeXmlFig(r.prefix) + '-</span>' + escapeXmlFig(r.text));
+                    if (r.children && r.children.length) {
+                        parts.push('<ul class="roman-children">');
+                        r.children.forEach(function (c) {
+                            parts.push('<li><span class="roman-prefix">' + escapeXmlFig(c.prefix) + '-</span>' + escapeXmlFig(c.text) + '</li>');
+                        });
+                        parts.push('</ul>');
+                    }
+                    parts.push('</li>');
+                });
+                parts.push('</ul>');
+            }
+            parts.push('</div>');
+            return parts.join('');
+        }
+
+        function renderLegendPanels(meta) {
+            var left = document.getElementById('fig-legend-left');
+            var right = document.getElementById('fig-legend-right');
+            if (!left || !right) return;
+
+            left.innerHTML = (meta.left_panel && meta.left_panel.length)
+                ? meta.left_panel.map(renderLegendBlock).join('')
+                : '<div class="empty-hint">Aucune légende à gauche</div>';
+            right.innerHTML = (meta.right_panel && meta.right_panel.length)
+                ? meta.right_panel.map(renderLegendBlock).join('')
+                : '<div class="empty-hint">Aucune légende à droite</div>';
+
+            document.querySelectorAll('.fig-legend-panel .legend-item').forEach(function (el) {
+                el.addEventListener('click', function () {
+                    setActiveLegend(parseInt(el.dataset.num, 10));
+                });
+            });
+        }
+
+        // Clic légende N → numéro + flèche N en rouge sur le schéma ; re-clic → désactivation
+        function setActiveLegend(n) {
+            activeLegendNum = (activeLegendNum === n) ? null : n;
+            document.querySelectorAll('.fig-legend-panel .legend-item').forEach(function (el) {
+                el.classList.toggle('active', parseInt(el.dataset.num, 10) === activeLegendNum);
+            });
+            document.querySelectorAll('#svg-host .marker-num, #svg-host .marker-arrow').forEach(function (el) {
+                el.classList.toggle('active', parseInt(el.getAttribute('data-num'), 10) === activeLegendNum);
+            });
         }
 
 	</script>

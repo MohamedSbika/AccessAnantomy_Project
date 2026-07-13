@@ -3176,6 +3176,23 @@ fclose($myfile);                             */
         $this->db->order_by("IDFigure", "asc");
         $this->db->order_by("TitreFigure", "asc");
         $listFigures = $this->db->get()->result_array();
+
+        // Figures SVG interactives : marquer celles qui ont un SVG dans _figure_svg
+        // (simple test d'existence — le contenu lourd n'est chargé qu'à la demande via figureSvg/figureMeta)
+        $svgIds = array();
+        if (!empty($listFigures)) {
+            $figIds = array_column($listFigures, 'IDFigure');
+            $this->db->select('IDFigure');
+            $this->db->from('_figure_svg');
+            $this->db->where_in('IDFigure', $figIds);
+            foreach ($this->db->get()->result_array() as $rSvg) {
+                $svgIds[] = (int) $rSvg['IDFigure'];
+            }
+        }
+        foreach ($listFigures as $kFig => $fFig) {
+            $listFigures[$kFig]['hasSvg'] = in_array((int) $fFig['IDFigure'], $svgIds);
+        }
+
         $arr['listFig'] = $listFigures;
 
         // Detect pathologie category
@@ -9901,6 +9918,279 @@ loadingTask.promise.then(function(pdf) {
             echo json_encode(array('success' => false, 'message' => 'Erreur: ' . $e->getMessage()));
         }
 
+        exit;
+    }
+
+    /* ─────────────────────────────────────────────────────────────
+     * Figures SVG interactives (table _figure_svg)
+     * Le PNG base64 de _figure reste la miniature + l'affichage de
+     * secours ; le SVG (numéros/flèches cliquables) et son JSON de
+     * légendes sont servis à la demande, avec cache navigateur (ETag).
+     * ───────────────────────────────────────────────────────────── */
+
+    /** Sert le SVG interactif d'une figure (chargé à la demande par le viewer). */
+    public function figureSvg($idFigure = 0)
+    {
+        $this->serveFigureSvgColumn((int) $idFigure, 'svgContent', 'image/svg+xml');
+    }
+
+    /** Sert le JSON de légendes d'une figure. */
+    public function figureMeta($idFigure = 0)
+    {
+        $this->serveFigureSvgColumn((int) $idFigure, 'jsonMeta', 'application/json');
+    }
+
+    /** Lecture d'une colonne de _figure_svg avec gestion du cache navigateur (ETag / 304). */
+    private function serveFigureSvgColumn($idFigure, $column, $contentType)
+    {
+        if (strlen($this->session->userdata('passTok')) != 200) {
+            show_error('Accès refusé', 403);
+            return;
+        }
+
+        $this->db->select($column . ', updatedAt');
+        $this->db->from('_figure_svg');
+        $this->db->where('IDFigure', (int) $idFigure);
+        $res = $this->db->get()->result_array();
+        if (empty($res)) {
+            show_404();
+            return;
+        }
+
+        $etag = '"' . md5($idFigure . '|' . $column . '|' . $res[0]['updatedAt']) . '"';
+        $ifNoneMatch = isset($_SERVER['HTTP_IF_NONE_MATCH']) ? trim($_SERVER['HTTP_IF_NONE_MATCH']) : '';
+
+        if ($ifNoneMatch === $etag) {
+            // Le navigateur a déjà la bonne version : réponse vide, pas de transfert du contenu
+            $this->output
+                ->set_status_header(304)
+                ->set_header('ETag: ' . $etag)
+                ->set_header('Cache-Control: private, max-age=86400');
+            return;
+        }
+
+        $this->output
+            ->set_content_type($contentType, 'utf-8')
+            ->set_header('ETag: ' . $etag)
+            ->set_header('Cache-Control: private, max-age=86400')
+            ->set_output($res[0][$column]);
+    }
+
+    /** Upload admin : enregistre la paire SVG + JSON d'une figure (UPSERT sur IDFigure). */
+    public function saveFigureSvg()
+    {
+        $arr_Res = array();
+
+        try {
+            if (strlen($this->session->userdata('passTok')) != 200 || $this->session->userdata('EstAdmin') != 1) {
+                $arr_Res[] = array("id" => '-1', "desc" => 'Accès refusé');
+                echo json_encode($arr_Res);
+                exit;
+            }
+
+            $idFigure = (int) $this->input->post('IDFigure');
+            if ($idFigure <= 0) {
+                $arr_Res[] = array("id" => '-1', "desc" => 'Figure introuvable');
+                echo json_encode($arr_Res);
+                exit;
+            }
+
+            // La figure doit exister dans _figure
+            $this->db->select('IDFigure');
+            $this->db->from('_figure');
+            $this->db->where('IDFigure', $idFigure);
+            if (empty($this->db->get()->result_array())) {
+                $arr_Res[] = array("id" => '-1', "desc" => 'Figure inexistante en base');
+                echo json_encode($arr_Res);
+                exit;
+            }
+
+            // Validation de la paire (mutualisée avec addFigureSvg)
+            $pair = $this->checkFigureSvgPair();
+            if (isset($pair['error'])) {
+                $arr_Res[] = array("id" => '-1', "desc" => $pair['error']);
+                echo json_encode($arr_Res);
+                exit;
+            }
+            $svgContent = $pair['svg'];
+            $jsonContent = $pair['json'];
+
+            // UPSERT : ré-uploader = remplacer (UNIQUE(IDFigure))
+            $sql = "INSERT INTO _figure_svg (IDFigure, svgContent, jsonMeta) VALUES (?, ?, ?)
+                    ON DUPLICATE KEY UPDATE svgContent = VALUES(svgContent), jsonMeta = VALUES(jsonMeta)";
+            $this->db->query($sql, array($idFigure, $svgContent, $jsonContent));
+
+            $arr_Res[] = array("id" => '1', "desc" => 'Figure SVG enregistrée');
+
+        } catch (Exception $e) {
+            log_message('error', 'Erreur saveFigureSvg: ' . $e->getMessage());
+            $arr_Res[] = array("id" => '-1', "desc" => 'Erreur: ' . $e->getMessage());
+        }
+
+        echo json_encode($arr_Res);
+        exit;
+    }
+
+    /** Suppression admin : retire le SVG d'une figure → retour instantané à l'affichage PNG. */
+    public function deleteFigureSvg()
+    {
+        if (strlen($this->session->userdata('passTok')) != 200 || $this->session->userdata('EstAdmin') != 1) {
+            echo json_encode(array('success' => false, 'message' => 'Accès refusé'));
+            exit;
+        }
+
+        $postData = json_decode(file_get_contents('php://input'), true);
+        $idFigure = isset($postData['idFigure']) ? (int) $postData['idFigure'] : 0;
+
+        if ($idFigure <= 0) {
+            echo json_encode(array('success' => false, 'message' => 'Figure introuvable'));
+            exit;
+        }
+
+        try {
+            $this->db->where('IDFigure', $idFigure);
+            $this->db->delete('_figure_svg');
+
+            if ($this->db->affected_rows() > 0) {
+                echo json_encode(array('success' => true, 'message' => 'SVG supprimé — retour à l\'affichage PNG'));
+            } else {
+                echo json_encode(array('success' => false, 'message' => 'Aucun SVG pour cette figure'));
+            }
+
+        } catch (Exception $e) {
+            log_message('error', 'Erreur deleteFigureSvg: ' . $e->getMessage());
+            echo json_encode(array('success' => false, 'message' => 'Erreur: ' . $e->getMessage()));
+        }
+
+        exit;
+    }
+
+    /** Valide la paire uploadée (svgFile + jsonFile) : retourne ['svg'=>…, 'json'=>…] ou ['error'=>message]. */
+    private function checkFigureSvgPair()
+    {
+        // La paire est obligatoire (le viewer a besoin des deux)
+        if (
+            !isset($_FILES['svgFile']) || $_FILES['svgFile']['error'] != 0 ||
+            !isset($_FILES['jsonFile']) || $_FILES['jsonFile']['error'] != 0
+        ) {
+            return array('error' => 'Les deux fichiers (.svg et .json) sont obligatoires');
+        }
+
+        // Taille max 2 Mo par fichier (le lot livré fait ≤ 700 Ko)
+        $maxSize = 2097152;
+        if ($_FILES['svgFile']['size'] > $maxSize || $_FILES['jsonFile']['size'] > $maxSize) {
+            return array('error' => 'Fichier trop volumineux (max 2 Mo)');
+        }
+
+        $svgContent = file_get_contents($_FILES['svgFile']['tmp_name']);
+        $jsonContent = file_get_contents($_FILES['jsonFile']['tmp_name']);
+
+        // Validation SVG : structure attendue…
+        if (stripos($svgContent, '<svg') === false || strpos($svgContent, 'data-num=') === false) {
+            return array('error' => 'SVG invalide : balise <svg> ou attributs data-num absents');
+        }
+        // …et rejet de tout contenu actif (sécurité : le SVG sera inliné dans le DOM)
+        if (
+            stripos($svgContent, '<script') !== false
+            || stripos($svgContent, '<foreignobject') !== false
+            || preg_match('/\son[a-z]+\s*=/i', $svgContent)
+        ) {
+            return array('error' => 'SVG refusé : contenu actif détecté (script / foreignObject / on*)');
+        }
+
+        // Validation JSON : décodable + clés attendues (schéma v2 du pipeline)
+        $meta = json_decode($jsonContent, true);
+        if (
+            !is_array($meta) || !isset($meta['title_fr'])
+            || (!isset($meta['left_panel']) && !isset($meta['right_panel']) && !isset($meta['legend']))
+        ) {
+            return array('error' => 'JSON invalide : title_fr et left_panel/right_panel/legend attendus');
+        }
+
+        return array('svg' => $svgContent, 'json' => $jsonContent);
+    }
+
+    /** Ajout admin : crée une NOUVELLE figure (ligne _figure + paire SVG/JSON).
+     *  La miniature (encryptFigure) est extraite de l'image embarquée dans le SVG. */
+    public function addFigureSvg()
+    {
+        $arr_Res = array();
+
+        try {
+            if (strlen($this->session->userdata('passTok')) != 200 || $this->session->userdata('EstAdmin') != 1) {
+                $arr_Res[] = array("id" => '-1', "desc" => 'Accès refusé');
+                echo json_encode($arr_Res);
+                exit;
+            }
+
+            $idCours = (int) $this->input->post('IDCours');
+            $titre = trim(preg_replace('/\s+/', ' ', (string) $this->input->post('titre')));
+            $titre = mb_substr($titre, 0, 50); // TitreFigure est un varchar(50)
+
+            if ($idCours <= 0) {
+                $arr_Res[] = array("id" => '-1', "desc" => 'Cours introuvable');
+                echo json_encode($arr_Res);
+                exit;
+            }
+            if ($titre === '') {
+                $arr_Res[] = array("id" => '-1', "desc" => 'Le titre de la figure est obligatoire');
+                echo json_encode($arr_Res);
+                exit;
+            }
+
+            // Le cours doit exister
+            $this->db->select('IDCours');
+            $this->db->from('_cours');
+            $this->db->where('IDCours', $idCours);
+            if (empty($this->db->get()->result_array())) {
+                $arr_Res[] = array("id" => '-1', "desc" => 'Cours inexistant en base');
+                echo json_encode($arr_Res);
+                exit;
+            }
+
+            $pair = $this->checkFigureSvgPair();
+            if (isset($pair['error'])) {
+                $arr_Res[] = array("id" => '-1', "desc" => $pair['error']);
+                echo json_encode($arr_Res);
+                exit;
+            }
+
+            // Miniature : image embarquée dans le SVG (le SVG contient l'image en base64)
+            $thumb = '';
+            if (preg_match('/href="data:image\/(?:jpeg|jpg|png);base64,([^"]+)"/i', $pair['svg'], $mImg)) {
+                $thumb = $mImg[1];
+            }
+
+            // 1) Nouvelle ligne _figure (le PNG extrait sert de miniature + affichage de secours)
+            // NB : IDResume est NOT NULL sans défaut dans le schéma → on le fixe explicitement à 0
+            $data = array(
+                'TitreFigure' => $titre,
+                'UrlFigure' => '',
+                'IDCours' => $idCours,
+                'IDResume' => 0,
+                'encryptFigure' => $thumb
+            );
+            $this->db->insert('_figure', $data);
+            $idFigure = (int) $this->db->insert_id();
+            if ($idFigure <= 0) {
+                $arr_Res[] = array("id" => '-1', "desc" => 'Échec de création de la figure');
+                echo json_encode($arr_Res);
+                exit;
+            }
+
+            // 2) La paire SVG + JSON
+            $sql = "INSERT INTO _figure_svg (IDFigure, svgContent, jsonMeta) VALUES (?, ?, ?)
+                    ON DUPLICATE KEY UPDATE svgContent = VALUES(svgContent), jsonMeta = VALUES(jsonMeta)";
+            $this->db->query($sql, array($idFigure, $pair['svg'], $pair['json']));
+
+            $arr_Res[] = array("id" => '1', "desc" => 'Nouvelle figure créée', "idFigure" => $idFigure);
+
+        } catch (Exception $e) {
+            log_message('error', 'Erreur addFigureSvg: ' . $e->getMessage());
+            $arr_Res[] = array("id" => '-1', "desc" => 'Erreur: ' . $e->getMessage());
+        }
+
+        echo json_encode($arr_Res);
         exit;
     }
 
