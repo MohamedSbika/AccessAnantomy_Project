@@ -293,6 +293,17 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
 						margin-left: 1px;
 					}
 
+					/* Hôte du HTML autonome (Shadow DOM) : pleine largeur du bloc figure,
+					   affiché par le JS uniquement en mode "Légende complète" */
+					.atlas-html-host {
+						display: none;
+						width: 100%;
+						height: 88vh;
+						overflow: auto;
+						background: #fff;
+						margin-top: 10px;
+					}
+
 					.ad-legend-text {
 						color: #182540;
 						font-size: 14px;
@@ -396,7 +407,11 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
 
 							</div>
 
-							<div class="row">
+							<!-- Figure HTML autonome : rendue dans un Shadow DOM en mode "Légende complète"
+							     (remplace les rangées classiques) ; chargée à la demande via atlasFigureHtml -->
+							<div class="atlas-html-host" data-idfig="<?= (int) $figure['idFigure']; ?>" data-hashtml="<?= !empty($figure['hasHtml']) ? '1' : '0'; ?>"></div>
+
+							<div class="row atlas-classic-row">
 								<div class="col-sm-3" style="padding-left: 30px;">
 									<?php $compteurEssai = 0;
 									$compteurReponse = 0;
@@ -518,7 +533,7 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
 
 							</div>
 
-							<div class="row">
+							<div class="row atlas-classic-row">
 								<div class="col-sm-6" style="margin:20px; margin-left:auto; margin-right:auto;">
 									<div class="row" style="margin-right: 0rem; margin-left: 1rem;">
 										<div class="col-12" style="position:relative; padding-left:0px; padding-right:0px; margin-bottom:5px;">
@@ -951,6 +966,111 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
                 if(firstButtonPlayAudio) firstButtonPlayAudio.click()
             }, 3000);  // Delay set to 1000 milliseconds (1 second)
         }
+
+        /* ═════════ Figures HTML autonomes (Shadow DOM) — même principe que livreCours ═════════
+           En mode "Légende complète", si la figure a un HTML : les rangées classiques
+           (légendes texte + image + titre) sont remplacées par le HTML complet, rendu
+           dans un Shadow DOM (isolation CSS totale). Clic légende/marqueur N → tous les
+           éléments data-num=N en rouge. Modes "Séquentielle" et "Test" : rangées
+           classiques restaurées (elles fonctionnent sur les légendes texte extraites). */
+
+        var ATLAS_HTML_URL = "<?php echo base_url(); ?>home/atlasFigureHtml/";
+
+        // Styles de base injectés dans chaque Shadow DOM : surlignage rouge (contrat data-num)
+        var ATLAS_SHADOW_STYLE = ':host{display:block;width:100%;height:100%;}'
+            + 'img,svg{max-width:100%;height:auto;}'
+            + '[data-num]{cursor:pointer;}'
+            + '.marker-num{transition:fill 200ms;}'
+            + '.marker-arrow{transition:stroke 200ms,stroke-width 200ms;vector-effect:non-scaling-stroke;}'
+            + '.marker-num.active{fill:#d62828 !important;font-weight:900 !important;}'
+            + '.marker-arrow.active{stroke:#d62828 !important;stroke-width:2.5px !important;vector-effect:non-scaling-stroke;}'
+            + '.legend-item.active,.aa-legend-item.active{background:#fee2e2;}'
+            + '.legend-item.active .leg-badge,.aa-legend-item.active .aa-badge{background:#d62828;}'
+            + 'text[data-num].active,tspan[data-num].active{fill:#d62828 !important;font-weight:900 !important;}'
+            + 'line[data-num].active,path[data-num].active,polyline[data-num].active,circle[data-num].active{stroke:#d62828 !important;stroke-width:2.5px !important;}'
+            + 'li[data-num].active,span[data-num].active,div[data-num].active,td[data-num].active{background:#fee2e2;color:#d62828;}';
+
+        // Surcharges de mise en page (injectées APRÈS le style de l'export, donc gagnantes) :
+        // pleine hauteur, légendes aux extrémités, figure maximale (boîte SVG = toute la cellule)
+        var ATLAS_SHADOW_LAYOUT = '.aa-root{height:100%;}'
+            + '@container (min-width:621px){'
+            + '.aa-layout{height:100%;gap:6px;grid-template-columns:minmax(160px,24%) minmax(0,1fr) minmax(160px,24%);}'
+            + '.aa-side{position:relative;overflow:hidden;}'
+            + '.aa-svg-host{align-items:center;}'
+            + '.aa-svg-host svg{width:100% !important;height:100% !important;max-width:100% !important;max-height:100% !important;}'
+            + '.aa-viewer{padding:4px;}'
+            + '.aa-legend-item{font-size:14px;padding:7px 8px;}'
+            + '.aa-badge{min-width:24px;height:24px;font-size:12px;}'
+            + '.aa-title{font-size:16px;}'
+            + '.aa-subtitle{font-size:13.5px;}'
+            + '.aa-roman-item{font-size:13px;}'
+            + '.aa-roman-children li{font-size:12px;}'
+            + '}';
+
+        function atlasGetShadow(host) {
+            if (host._shadow) return host._shadow;
+            host._shadow = host.attachShadow({ mode: 'open' });
+            host._activeNum = null;
+            // Écouteur délégué : clic sur tout porteur de data-num → surlignage rouge ; re-clic → désactivation
+            host._shadow.addEventListener('click', function (e) {
+                var item = e.target && e.target.closest ? e.target.closest('[data-num]') : null;
+                if (!item) return;
+                var n = parseInt(item.getAttribute('data-num'), 10);
+                if (isNaN(n)) return;
+                host._activeNum = (host._activeNum === n) ? null : n;
+                host._shadow.querySelectorAll('[data-num]').forEach(function (el) {
+                    el.classList.toggle('active', parseInt(el.getAttribute('data-num'), 10) === host._activeNum);
+                });
+            });
+            return host._shadow;
+        }
+
+        function atlasLoadHtml(host) {
+            if (host._loaded) return;
+            var sr = atlasGetShadow(host);
+            sr.innerHTML = '<style>' + ATLAS_SHADOW_STYLE + '</style><div style="padding:20px;text-align:center;color:#9ca3af;font-style:italic;">Chargement…</div>';
+            fetch(ATLAS_HTML_URL + host.dataset.idfig)
+                .then(function (r) { if (!r.ok) throw new Error('html'); return r.text(); })
+                .then(function (html) {
+                    host._loaded = true;
+                    host._activeNum = null;
+                    sr.innerHTML = '<style>' + ATLAS_SHADOW_STYLE + '</style>' + html + '<style>' + ATLAS_SHADOW_LAYOUT + '</style>';
+                })
+                .catch(function () {
+                    // Échec de chargement : retour à l'affichage classique (aucune page cassée)
+                    host.style.display = 'none';
+                    var block = host.closest('.block-figure');
+                    if (block) {
+                        block.querySelectorAll('.atlas-classic-row').forEach(function (r) { r.style.display = ''; });
+                    }
+                });
+        }
+
+        // showHtml=true : mode "Légende complète" → HTML à la place des rangées classiques
+        function atlasApplyHtmlMode(showHtml) {
+            document.querySelectorAll('.block-figure').forEach(function (block) {
+                var host = block.querySelector('.atlas-html-host');
+                if (!host || host.dataset.hashtml !== '1') return; // figure classique : rien à faire
+                if (showHtml) {
+                    block.querySelectorAll('.atlas-classic-row').forEach(function (r) { r.style.display = 'none'; });
+                    host.style.display = 'block';
+                    // Chargement à la demande : seulement la figure actuellement visible
+                    if (!block.classList.contains('inactive')) atlasLoadHtml(host);
+                } else {
+                    host.style.display = 'none';
+                    block.querySelectorAll('.atlas-classic-row').forEach(function (r) { r.style.display = ''; });
+                }
+            });
+        }
+
+        // Branché APRÈS les gestionnaires existants (ordre d'exécution garanti) :
+        // le comportement historique des modes s'applique d'abord, puis l'aiguillage HTML
+        document.querySelectorAll('.adMode').forEach(function (b) {
+            b.addEventListener('click', function () { atlasApplyHtmlMode(true); });
+        });
+        document.querySelectorAll('.restoreNormalMode, .beginTest').forEach(function (b) {
+            b.addEventListener('click', function () { atlasApplyHtmlMode(false); });
+        });
 
         // Fonction pour déclencher un clic sur le bouton lorsque l'audio commence à jouer
         function handleAudioPlay(compteurFigure) {

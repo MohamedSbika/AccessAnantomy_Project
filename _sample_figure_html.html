@@ -1,0 +1,101 @@
+<!-- Figure HTML autonome — fichier d'EXEMPLE pour tester le pipeline.
+     Contrat viewer : chaque marqueur du schéma ET chaque ligne de légende
+     porte data-num="N" ; le clic (géré par la page, pas par ce fichier)
+     ajoute la classe .active sur tous les éléments du même numéro.
+     Aucun contenu actif autorisé (scripts, iframes, gestionnaires on*…). -->
+<style>
+    .fig-wrap {
+        display: flex;
+        gap: 16px;
+        align-items: stretch;
+        font-family: Arial, Helvetica, sans-serif;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+        padding: 10px;
+    }
+    .fig-wrap .panel-legende {
+        flex: 0 0 220px;
+        overflow-y: auto;
+        padding: 6px;
+    }
+    .fig-wrap .panel-schema {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-width: 0;
+    }
+    .fig-wrap .panel-schema svg { width: 100%; height: auto; max-height: 100%; }
+    .fig-wrap .titre-figure {
+        margin-top: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #1f2937;
+        border-top: 2px solid #1e3a8a;
+        padding-top: 6px;
+        text-align: center;
+    }
+    .fig-wrap .legend-list { list-style: none; padding: 0; margin: 0; }
+    .fig-wrap .legend-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 5px 6px;
+        margin-bottom: 3px;
+        border-radius: 6px;
+        font-size: 12.5px;
+        line-height: 1.35;
+        cursor: pointer;
+    }
+    .fig-wrap .legend-item:hover { background: #eff6ff; }
+    .fig-wrap .leg-badge {
+        flex-shrink: 0;
+        min-width: 22px; height: 22px;
+        border-radius: 4px;
+        background: #1e3a8a; color: #fff;
+        font-size: 11px; font-weight: 700;
+        display: flex; align-items: center; justify-content: center;
+        padding: 0 5px;
+        box-sizing: border-box;
+    }
+    .fig-wrap .marker-num { font-size: 14px; font-weight: 700; fill: #1e3a8a; cursor: pointer; }
+    .fig-wrap .marker-arrow { stroke: #1e3a8a; stroke-width: 1.5; fill: none; cursor: pointer; }
+</style>
+
+<div class="fig-wrap">
+    <!-- Image raster embarquée : sert uniquement à l'extraction de la miniature
+         lors d'un AJOUT de figure (encryptFigure) ; invisible à l'affichage -->
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==" alt="" style="display:none;">
+
+    <div class="panel-legende">
+        <ul class="legend-list">
+            <li class="legend-item" data-num="1"><span class="leg-badge">1</span><span>Paroi supérieure</span></li>
+            <li class="legend-item" data-num="2"><span class="leg-badge">2</span><span>Cavité centrale</span></li>
+            <li class="legend-item" data-num="3"><span class="leg-badge">3</span><span>Conduit latéral</span></li>
+            <li class="legend-item" data-num="4"><span class="leg-badge">4</span><span>Base inférieure</span></li>
+        </ul>
+    </div>
+
+    <div class="panel-schema">
+        <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="200" cy="150" rx="120" ry="90" fill="#fde8d8" stroke="#8a5a3b" stroke-width="2"/>
+            <ellipse cx="200" cy="150" rx="55" ry="40" fill="#f9c9a8" stroke="#8a5a3b" stroke-width="1.5"/>
+            <path d="M 320 150 Q 360 150 370 120" fill="none" stroke="#8a5a3b" stroke-width="2"/>
+
+            <line class="marker-arrow" data-num="1" x1="150" y1="40" x2="180" y2="70"/>
+            <text class="marker-num" data-num="1" x="140" y="35">1</text>
+
+            <line class="marker-arrow" data-num="2" x1="120" y1="150" x2="160" y2="150"/>
+            <text class="marker-num" data-num="2" x="105" y="155">2</text>
+
+            <line class="marker-arrow" data-num="3" x1="380" y1="100" x2="365" y2="122"/>
+            <text class="marker-num" data-num="3" x="378" y="95">3</text>
+
+            <line class="marker-arrow" data-num="4" x1="200" y1="270" x2="200" y2="238"/>
+            <text class="marker-num" data-num="4" x="195" y="285">4</text>
+        </svg>
+        <div class="titre-figure">Fig. démo — Figure HTML autonome (exemple de test)</div>
+    </div>
+</div>

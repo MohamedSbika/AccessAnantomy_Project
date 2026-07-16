@@ -481,22 +481,24 @@ if (strlen($this->session->userdata('passTok')) == 200) {
     <div id="figureSvgModal" tabindex="-1" aria-hidden="true" style="z-index: 10000; position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;">
         <div style="background: #fff; border-radius: 12px; width: min(1050px, 96vw); max-height: 90vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
             <div style="background: #1d3557; color: #fff; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; flex: 0 0 auto;">
-                <h2 style="margin: 0; font-size: 1.15rem;">Gérer les figures SVG interactives</h2>
+                <h2 style="margin: 0; font-size: 1.15rem;">Gérer les figures interactives (HTML ou SVG+JSON)</h2>
                 <button type="button" onclick="$('#figureSvgModal').hide()" style="background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; line-height: 1;">&times;</button>
             </div>
             <div style="padding: 16px 20px; color: #333; overflow-y: auto; flex: 1 1 auto;">
                 <p style="font-size: 12px; color: #6b7280; margin-top: 0;">
-                    Pour chaque figure : sélectionner <strong>le .svg ET son .json</strong> (la paire est obligatoire), puis Enregistrer.
-                    Supprimer un SVG fait revenir la figure à son affichage PNG classique.
+                    Pour chaque figure : sélectionner <strong>un .html autonome</strong> (prioritaire),
+                    OU <strong>le .svg ET son .json</strong> (la paire est obligatoire), puis Enregistrer.
+                    Supprimer fait revenir la figure à son affichage PNG classique.
                 </p>
                 <table style="width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed;">
                     <thead>
                         <tr style="border-bottom: 2px solid #1d3557; text-align: left;">
-                            <th style="padding: 6px; width: 16%;">Figure</th>
-                            <th style="padding: 6px; width: 11%;">Statut</th>
-                            <th style="padding: 6px; width: 26%;">Fichier .svg</th>
-                            <th style="padding: 6px; width: 26%;">Fichier .json</th>
-                            <th style="padding: 6px; width: 21%;">Actions</th>
+                            <th style="padding: 6px; width: 13%;">Figure</th>
+                            <th style="padding: 6px; width: 10%;">Statut</th>
+                            <th style="padding: 6px; width: 19%;">Fichier .html</th>
+                            <th style="padding: 6px; width: 19%;">Fichier .svg</th>
+                            <th style="padding: 6px; width: 19%;">Fichier .json</th>
+                            <th style="padding: 6px; width: 20%;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -504,11 +506,15 @@ if (strlen($this->session->userdata('passTok')) == 200) {
                         <tr id="svgRow_<?= (int) $figRow['IDFigure']; ?>" style="border-bottom: 1px solid #eee;">
                             <td style="padding: 6px; font-weight: 600; color: #1d3557; overflow: hidden; text-overflow: ellipsis;"><?= html_escape($figRow['TitreFigure']); ?></td>
                             <td style="padding: 6px;">
-                                <span class="svg-status" style="display:inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: bold;
-                                    <?= !empty($figRow['hasSvg']) ? 'background:#d1fae5; color:#065f46;' : 'background:#f3f4f6; color:#6b7280;'; ?>">
-                                    <?= !empty($figRow['hasSvg']) ? 'SVG ✓' : 'PNG seul'; ?>
+                                <?php
+                                    $figStatus = !empty($figRow['hasHtml']) ? 'HTML ✓' : (!empty($figRow['hasSvg']) ? 'SVG ✓' : 'PNG seul');
+                                    $figStatusCss = ($figStatus === 'PNG seul') ? 'background:#f3f4f6; color:#6b7280;' : 'background:#d1fae5; color:#065f46;';
+                                ?>
+                                <span class="svg-status" style="display:inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; <?= $figStatusCss; ?>">
+                                    <?= $figStatus; ?>
                                 </span>
                             </td>
+                            <td style="padding: 6px;"><input type="file" accept=".html,.htm,text/html" class="htmlFileInput" style="width: 100%; font-size: 11px;"></td>
                             <td style="padding: 6px;"><input type="file" accept=".svg,image/svg+xml" class="svgFileInput" style="width: 100%; font-size: 11px;"></td>
                             <td style="padding: 6px;"><input type="file" accept=".json,application/json" class="jsonFileInput" style="width: 100%; font-size: 11px;"></td>
                             <td style="padding: 6px; white-space: nowrap;">
@@ -522,7 +528,7 @@ if (strlen($this->session->userdata('passTok')) == 200) {
                     </tbody>
                 </table>
 
-                <!-- Ajout d'une NOUVELLE figure (crée la ligne _figure + la paire SVG/JSON) -->
+                <!-- Ajout d'une NOUVELLE figure (crée la ligne _figure + HTML autonome OU paire SVG/JSON) -->
                 <div style="margin-top: 20px; border-top: 2px solid #1d3557; padding-top: 14px;">
                     <h3 style="font-size: 1rem; color: #1d3557; margin: 0 0 10px;"><i class="fa fa-plus-circle"></i> Ajouter une nouvelle figure</h3>
                     <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end;">
@@ -532,11 +538,15 @@ if (strlen($this->session->userdata('passTok')) == 200) {
                                    onclick="this.focus();"
                                    style="width: 100%; border: 1px solid #1d3557; border-radius: 4px; padding: 7px 8px; box-sizing: border-box; font-size: 13px; color: #1d3557; background: #fff;">
                         </div>
-                        <div style="flex: 1 1 210px; min-width: 180px;">
+                        <div style="flex: 1 1 180px; min-width: 160px;">
+                            <label style="font-size: 11px; font-weight: 600; display: block; margin-bottom: 3px;">Fichier .html (prioritaire)</label>
+                            <input type="file" id="newFigHtml" accept=".html,.htm,text/html" style="width: 100%; font-size: 11px;">
+                        </div>
+                        <div style="flex: 1 1 180px; min-width: 160px;">
                             <label style="font-size: 11px; font-weight: 600; display: block; margin-bottom: 3px;">Fichier .svg</label>
                             <input type="file" id="newFigSvg" accept=".svg,image/svg+xml" style="width: 100%; font-size: 11px;">
                         </div>
-                        <div style="flex: 1 1 210px; min-width: 180px;">
+                        <div style="flex: 1 1 180px; min-width: 160px;">
                             <label style="font-size: 11px; font-weight: 600; display: block; margin-bottom: 3px;">Fichier .json</label>
                             <input type="file" id="newFigJson" accept=".json,application/json" style="width: 100%; font-size: 11px;">
                         </div>
@@ -544,7 +554,8 @@ if (strlen($this->session->userdata('passTok')) == 200) {
                                 style="background: #2d5e51; color: white; border: none; padding: 7px 16px; border-radius: 5px; cursor: pointer; font-size: 13px; font-weight: 600; flex: 0 0 auto;">Ajouter</button>
                     </div>
                     <p style="font-size: 11px; color: #6b7280; margin: 8px 0 0;">
-                        La miniature est générée automatiquement à partir de l'image contenue dans le SVG.
+                        Un .html autonome suffit à lui seul ; sinon fournir la paire .svg + .json.
+                        La miniature est générée automatiquement à partir de l'image contenue dans le fichier.
                     </p>
                 </div>
             </div>
@@ -556,32 +567,40 @@ if (strlen($this->session->userdata('passTok')) == 200) {
         $('#figureSvgModal').css('display', 'flex');
     }
 
-    function setSvgRowStatus(idFigure, hasSvg) {
+    function setSvgRowStatus(idFigure, label) {
         const badge = document.querySelector('#svgRow_' + idFigure + ' .svg-status');
         if (!badge) return;
-        badge.textContent = hasSvg ? 'SVG ✓' : 'PNG seul';
-        badge.style.background = hasSvg ? '#d1fae5' : '#f3f4f6';
-        badge.style.color = hasSvg ? '#065f46' : '#6b7280';
+        const isInteractive = label !== 'PNG seul';
+        badge.textContent = label;
+        badge.style.background = isInteractive ? '#d1fae5' : '#f3f4f6';
+        badge.style.color = isInteractive ? '#065f46' : '#6b7280';
     }
 
     function saveFigureSvgRow(idFigure) {
         const row = document.getElementById('svgRow_' + idFigure);
+        const htmlInput = row.querySelector('.htmlFileInput');
         const svgInput = row.querySelector('.svgFileInput');
         const jsonInput = row.querySelector('.jsonFileInput');
 
-        if (!svgInput.files[0] || !jsonInput.files[0]) {
-            Swal.fire({ icon: 'warning', title: 'La paire est obligatoire', text: 'Sélectionnez le fichier .svg ET son .json.' });
+        // Aiguillage : un .html sélectionné est prioritaire ; sinon la paire .svg + .json
+        const isHtml = !!htmlInput.files[0];
+        if (!isHtml && (!svgInput.files[0] || !jsonInput.files[0])) {
+            Swal.fire({ icon: 'warning', title: 'Fichier(s) manquant(s)', text: 'Sélectionnez un .html autonome, OU le fichier .svg ET son .json.' });
             return;
         }
 
         const formData = new FormData();
         formData.append('IDFigure', idFigure);
-        formData.append('svgFile', svgInput.files[0]);
-        formData.append('jsonFile', jsonInput.files[0]);
+        if (isHtml) {
+            formData.append('htmlFile', htmlInput.files[0]);
+        } else {
+            formData.append('svgFile', svgInput.files[0]);
+            formData.append('jsonFile', jsonInput.files[0]);
+        }
 
         $.ajax({
             type: 'POST',
-            url: '<?php echo base_url(); ?>home/saveFigureSvg',
+            url: '<?php echo base_url(); ?>home/' + (isHtml ? 'saveFigureHtml' : 'saveFigureSvg'),
             data: formData,
             cache: false, contentType: false, processData: false,
             success: function(response) {
@@ -594,8 +613,9 @@ if (strlen($this->session->userdata('passTok')) == 200) {
                     return;
                 }
                 if (result[0].id == '1') {
-                    Swal.fire({ icon: 'success', title: 'Figure SVG enregistrée', text: 'Rechargez la page pour voir le viewer interactif.', timer: 2500, showConfirmButton: false });
-                    setSvgRowStatus(idFigure, true);
+                    Swal.fire({ icon: 'success', title: isHtml ? 'Figure HTML enregistrée' : 'Figure SVG enregistrée', text: 'Rechargez la page pour voir le viewer interactif.', timer: 2500, showConfirmButton: false });
+                    setSvgRowStatus(idFigure, isHtml ? 'HTML ✓' : 'SVG ✓');
+                    htmlInput.value = '';
                     svgInput.value = '';
                     jsonInput.value = '';
                 } else {
@@ -610,23 +630,29 @@ if (strlen($this->session->userdata('passTok')) == 200) {
 
     function addFigureSvgNew() {
         const titre = document.getElementById('newFigTitle').value.trim();
+        const htmlF = document.getElementById('newFigHtml').files[0];
         const svgF = document.getElementById('newFigSvg').files[0];
         const jsonF = document.getElementById('newFigJson').files[0];
 
-        if (!titre || !svgF || !jsonF) {
-            Swal.fire({ icon: 'warning', title: 'Champs manquants', text: 'Le titre ET les deux fichiers (.svg + .json) sont obligatoires.' });
+        // Aiguillage : un .html sélectionné est prioritaire ; sinon la paire .svg + .json
+        if (!titre || (!htmlF && (!svgF || !jsonF))) {
+            Swal.fire({ icon: 'warning', title: 'Champs manquants', text: 'Le titre ET un .html (ou la paire .svg + .json) sont obligatoires.' });
             return;
         }
 
         const formData = new FormData();
         formData.append('IDCours', '<?= (isset($OneCurs[0]['IDCours'])) ? (int) $OneCurs[0]['IDCours'] : 0; ?>');
         formData.append('titre', titre);
-        formData.append('svgFile', svgF);
-        formData.append('jsonFile', jsonF);
+        if (htmlF) {
+            formData.append('htmlFile', htmlF);
+        } else {
+            formData.append('svgFile', svgF);
+            formData.append('jsonFile', jsonF);
+        }
 
         $.ajax({
             type: 'POST',
-            url: '<?php echo base_url(); ?>home/addFigureSvg',
+            url: '<?php echo base_url(); ?>home/' + (htmlF ? 'addFigureHtml' : 'addFigureSvg'),
             data: formData,
             cache: false, contentType: false, processData: false,
             success: function(response) {
@@ -652,7 +678,7 @@ if (strlen($this->session->userdata('passTok')) == 200) {
     }
 
     function deleteFigureSvgRow(idFigure) {
-        if (!confirm('Supprimer le SVG de cette figure ? Elle reviendra à son affichage PNG.')) return;
+        if (!confirm('Supprimer le contenu interactif (HTML/SVG) de cette figure ? Elle reviendra à son affichage PNG.')) return;
         fetch('<?php echo base_url(); ?>home/deleteFigureSvg', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -661,7 +687,7 @@ if (strlen($this->session->userdata('passTok')) == 200) {
         .then(r => r.json())
         .then(data => {
             if (data.success) {
-                setSvgRowStatus(idFigure, false);
+                setSvgRowStatus(idFigure, 'PNG seul');
                 Swal.fire({ icon: 'success', title: data.message, timer: 2000, showConfirmButton: false });
             } else {
                 Swal.fire({ icon: 'error', title: 'Erreur', text: data.message });

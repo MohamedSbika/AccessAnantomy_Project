@@ -356,6 +356,28 @@
 			vector-effect: non-scaling-stroke;
 		}
 
+		/* Zone d'affichage du HTML autonome (remplace #expandedImg quand la figure a un HTML).
+		   Le contenu vit dans un Shadow DOM : seules les dimensions de l'hôte comptent ici. */
+		#html-viewer {
+			display: none;             /* affiché par le JS */
+			width: 100%;
+			height: 100%;
+			overflow: auto;
+		}
+		/* Mode HTML : la figure occupe TOUTE la largeur du bloc figures.
+		   !important requis : max-width 900px et max-height 50vw sont des styles inline.
+		   Le plafond 50vw (limitant sur écran étroit) est remplacé par la pleine
+		   hauteur du viewport → figure la plus grande possible sans défilement.
+		   Le sélecteur #element est indispensable : v1_livreCours.php impose
+		   "#element .container-fig{max-width:40vw !important}" — il faut une
+		   spécificité supérieure (ID + 2 classes) pour l'emporter en mode HTML. */
+		.container-fig.html-wide,
+		#element .container-fig.html-wide {
+			max-width: 100% !important;
+			max-height: 100vh !important;
+			padding: 0 !important;
+		}
+
 		/* Zone d'affichage du SVG (remplace #expandedImg quand la figure a un SVG) */
 		#svg-viewer {
 			display: none;             /* affiché par le JS */
@@ -566,6 +588,9 @@ if (isset($OneBook) && !empty($OneBook) && is_array($OneBook) && isset($OneBook[
 					<div id="svg-host"></div>
 					<div id="figure-title"></div>
 				</div>
+				<!-- Viewer HTML autonome : le HTML complet (image + marqueurs + légendes)
+				     est rendu dans un Shadow DOM (isolation CSS totale, page ↔ figure) -->
+				<div id="html-viewer"></div>
 			<?php endif; ?>
 			<?php if ($showScroll): ?><button onclick="nextImage()" class="nav-arrow absolute-arrow right-arrow"> > <button><?php endif; ?>
 		</div>
@@ -592,8 +617,11 @@ if (isset($OneBook) && !empty($OneBook) && is_array($OneBook) && isset($OneBook[
         }
 
         function showFig(imgs) {
-            // Route par l'index pour bénéficier de l'aiguillage SVG/PNG de showFigByIndex
-            const index = figImages.indexOf(imgs.src);
+            // Route par l'index pour bénéficier de l'aiguillage HTML/SVG/PNG de showFigByIndex.
+            // Index = POSITION de la miniature dans le DOM (même ordre que figImages et
+            // FIG_SVG_MAP) — jamais par src : deux figures issues du même fichier ont des
+            // miniatures identiques et indexOf(src) renverrait toujours la première.
+            const index = Array.prototype.indexOf.call(document.querySelectorAll('.slider-image'), imgs);
             if (index !== -1) {
                 currentIndex = index;
                 showFigByIndex(index);
@@ -752,11 +780,16 @@ if (isset($OneBook) && !empty($OneBook) && is_array($OneBook) && isset($OneBook[
             const imgText = document.getElementById("imgtext");
 
             if (figImages.length > 0 && figImages[index]) {
-                // Aiguillage : viewer SVG interactif si la figure a un SVG, sinon PNG classique
-                if (figHasSvg(index)) {
+                // Aiguillage : HTML autonome > SVG interactif > PNG classique
+                if (figHasHtml(index)) {
+                    hideSvgViewer();
+                    showHtmlViewer(index);
+                } else if (figHasSvg(index)) {
+                    hideHtmlViewer();
                     showSvgViewer(index);
                 } else {
                     hideSvgViewer();
+                    hideHtmlViewer();
                     expandImg.src = figImages[index];
                     imgText.innerHTML = figTitles[index];
                 }
@@ -795,14 +828,15 @@ if (isset($OneBook) && !empty($OneBook) && is_array($OneBook) && isset($OneBook[
            dans le DOM (indispensable : un <img src> rendrait les marqueurs
            inaccessibles au JS). Clic légende N ↔ numéro+flèche N en rouge. */
 
-        // Carte index de miniature → {id, hasSvg} (même ordre que .slider-image)
+        // Carte index de miniature → {id, hasSvg, hasHtml} (même ordre que .slider-image)
         var FIG_SVG_MAP = <?php
             $figSvgMap = array();
             if (isset($listFig) && is_array($listFig)) {
                 foreach ($listFig as $vMap) {
                     $figSvgMap[] = array(
                         'id' => isset($vMap['IDFigure']) ? (int) $vMap['IDFigure'] : 0,
-                        'hasSvg' => !empty($vMap['hasSvg'])
+                        'hasSvg' => !empty($vMap['hasSvg']),
+                        'hasHtml' => !empty($vMap['hasHtml'])
                     );
                 }
             }
@@ -815,6 +849,136 @@ if (isset($OneBook) && !empty($OneBook) && is_array($OneBook) && isset($OneBook[
         function figHasSvg(index) {
             // Le viewer n'existe que sur livreCours (#svg-viewer présent) ; ailleurs → toujours PNG
             return !!(document.getElementById('svg-viewer') && FIG_SVG_MAP[index] && FIG_SVG_MAP[index].hasSvg);
+        }
+
+        function figHasHtml(index) {
+            return !!(document.getElementById('html-viewer') && FIG_SVG_MAP[index] && FIG_SVG_MAP[index].hasHtml);
+        }
+
+        /* ═════════ Viewer HTML autonome (Shadow DOM) ═════════
+           Le HTML uploadé contient tout (image, marqueurs, légendes, styles)
+           et est rendu dans un Shadow DOM : ses styles ne fuient pas vers la
+           page et réciproquement. L'interactivité (clic légende N ↔ marqueur N
+           en rouge) reste dans la page : un écouteur délégué sur le shadow root
+           agit sur tout élément porteur de data-num — même contrat que le SVG. */
+
+        var htmlFigCache = {};         // idFigure → html (jamais re-téléchargé dans la page)
+        var htmlShadowRoot = null;
+        var activeHtmlNum = null;
+
+        // Styles injectés dans le Shadow DOM : le surlignage rouge (contrat data-num).
+        // Classes du pipeline (marker-num / marker-arrow / legend-item) + repli générique.
+        var FIG_SHADOW_STYLE = ':host{display:block;width:100%;height:100%;}'
+            + 'img,svg{max-width:100%;height:auto;}'
+            + '[data-num]{cursor:pointer;}'
+            + '.marker-num{transition:fill 200ms;}'
+            + '.marker-arrow{transition:stroke 200ms,stroke-width 200ms;vector-effect:non-scaling-stroke;}'
+            + '.marker-num.active{fill:#d62828 !important;font-weight:900 !important;}'
+            + '.marker-arrow.active{stroke:#d62828 !important;stroke-width:2.5px !important;vector-effect:non-scaling-stroke;}'
+            + '.legend-item.active{background:#fee2e2;}'
+            + '.legend-item.active .leg-badge{background:#d62828;}'
+            /* Repli si l'export n'utilise pas les classes du pipeline : data-num nu */
+            + 'text[data-num].active,tspan[data-num].active{fill:#d62828 !important;font-weight:900 !important;}'
+            + 'line[data-num].active,path[data-num].active,polyline[data-num].active,circle[data-num].active{stroke:#d62828 !important;stroke-width:2.5px !important;}'
+            + 'li[data-num].active,span[data-num].active,div[data-num].active,td[data-num].active{background:#fee2e2;color:#d62828;}';
+
+        // Surcharges de MISE EN PAGE injectées APRÈS le style de l'export (donc gagnantes) :
+        // alignement sur les dimensions du viewer SVG — figure pleine hauteur du bloc,
+        // colonnes de légendes aux extrémités, typographie agrandie pour la lisibilité.
+        // Ciblent les classes aa-* du pipeline d'export ; sans effet sur un autre HTML.
+        // Scopées ≥ 621px pour préserver le mode empilé mobile de l'export (@container ≤ 620px).
+        var FIG_SHADOW_LAYOUT = '.aa-root{height:100%;}'
+            + '@container (min-width:621px){'
+            /* Côtés à 26% : maintenant que .container-fig n'est plus plafonné à 40vw,
+               le bloc s'étale sur toute la colonne (55%) — les légendes absorbent la
+               largeur gagnée, la figure centrale garde ses dimensions validées */
+            + '.aa-layout{height:100%;gap:6px;grid-template-columns:minmax(160px,26%) minmax(0,1fr) minmax(160px,26%);}'
+            + '.aa-svg-host{align-items:center;}'
+            /* La boîte du SVG remplit toute la cellule : preserveAspectRatio agrandit
+               le dessin au maximum qui tient (contain), quel que soit son format */
+            + '.aa-svg-host svg{width:100% !important;height:100% !important;max-width:100% !important;max-height:100% !important;}'
+            + '.aa-viewer{padding:4px;}'
+            /* Typographie agrandie (l'export est calibré petit : 12px / badges 20px) */
+            + '.aa-legend-item{font-size:14px;padding:7px 8px;}'
+            + '.aa-badge{min-width:24px;height:24px;font-size:12px;}'
+            + '.aa-title{font-size:16px;}'
+            + '.aa-subtitle{font-size:13.5px;}'
+            + '.aa-roman-item{font-size:13px;}'
+            + '.aa-roman-children li{font-size:12px;}'
+            + '}';
+
+        function getHtmlShadowRoot() {
+            if (htmlShadowRoot) return htmlShadowRoot;
+            var host = document.getElementById('html-viewer');
+            if (!host) return null;
+            htmlShadowRoot = host.attachShadow({ mode: 'open' });
+            // Écouteur unique et délégué : dans le shadow root, e.target n'est pas
+            // re-ciblé, closest() atteint donc le porteur de data-num le plus proche
+            htmlShadowRoot.addEventListener('click', function (e) {
+                var item = e.target && e.target.closest ? e.target.closest('[data-num]') : null;
+                if (item) setActiveHtmlLegend(parseInt(item.getAttribute('data-num'), 10));
+            });
+            return htmlShadowRoot;
+        }
+
+        // Clic légende/marqueur N → tous les éléments data-num=N en rouge ; re-clic → désactivation
+        function setActiveHtmlLegend(n) {
+            if (!htmlShadowRoot || isNaN(n)) return;
+            activeHtmlNum = (activeHtmlNum === n) ? null : n;
+            htmlShadowRoot.querySelectorAll('[data-num]').forEach(function (el) {
+                el.classList.toggle('active', parseInt(el.getAttribute('data-num'), 10) === activeHtmlNum);
+            });
+        }
+
+        function hideHtmlViewer() {
+            var viewer = document.getElementById('html-viewer');
+            if (!viewer) return;
+            viewer.style.display = 'none';
+            var cf = viewer.closest('.container-fig');
+            if (cf) cf.classList.remove('html-wide');   // retour au max-width 900px pour PNG/SVG
+            var expandImg = document.getElementById('expandedImg');
+            var imgText = document.getElementById('imgtext');
+            if (expandImg) expandImg.style.display = '';
+            if (imgText) imgText.style.display = '';
+        }
+
+        function renderHtmlFigure(html) {
+            activeHtmlNum = null;
+            var sr = getHtmlShadowRoot();
+            // Ordre voulu : base < style de l'export < surcharges de mise en page
+            if (sr) sr.innerHTML = '<style>' + FIG_SHADOW_STYLE + '</style>' + html + '<style>' + FIG_SHADOW_LAYOUT + '</style>';
+        }
+
+        function showHtmlViewer(index) {
+            var idFigure = FIG_SVG_MAP[index].id;
+            var viewer = document.getElementById('html-viewer');
+
+            document.getElementById('expandedImg').style.display = 'none';
+            document.getElementById('imgtext').style.display = 'none';
+            // Le HTML embarque ses propres légendes : les panneaux du viewer SVG restent cachés
+            document.querySelectorAll('.fig-legend-panel').forEach(function (p) { p.style.display = 'none'; });
+            viewer.style.display = 'block';
+            var cf = viewer.closest('.container-fig');
+            if (cf) cf.classList.add('html-wide');      // pleine largeur du bloc figures
+
+            if (htmlFigCache[idFigure]) {
+                renderHtmlFigure(htmlFigCache[idFigure]);
+                return;
+            }
+
+            renderHtmlFigure('<div style="padding:20px;text-align:center;color:#9ca3af;font-style:italic;">Chargement…</div>');
+            fetch(FIG_BASE_URL + 'home/figureHtml/' + idFigure)
+                .then(function (r) { if (!r.ok) throw new Error('html'); return r.text(); })
+                .then(function (html) {
+                    htmlFigCache[idFigure] = html;
+                    renderHtmlFigure(html);
+                })
+                .catch(function () {
+                    // Échec de chargement : retour au PNG classique (aucune page cassée)
+                    hideHtmlViewer();
+                    document.getElementById('expandedImg').src = figImages[index];
+                    document.getElementById('imgtext').innerHTML = figTitles[index];
+                });
         }
 
         function hideSvgViewer() {

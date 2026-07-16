@@ -1636,6 +1636,7 @@ fclose($myfile);                             */
         $selectDesc = '*'; //        $this->db->select($selectDesc);
 //		$this->db->select('CAST(SUBSTRING_INDEX(titre, ".", 1) as SIGNED INTEGER ) AS ord,id,image,titre,textGauche,textDroite,IDChapitre,pathAudio');
         $this->db->select('CAST(SUBSTRING(titre, LOCATE(".", titre) + 1, LOCATE("-", titre) - LOCATE(".", titre) - 1) AS UNSIGNED) AS first_number,id,image,titre,textGauche,textDroite,IDChapitre,pathAudio');
+        $this->db->select("(htmlContent IS NOT NULL AND htmlContent <> '') AS hasHtml", false);
         $this->db->from('figures');
         $this->db->where("IDChapitre = " . $IDChapitre);
         $this->db->order_by("first_number", "ASC");
@@ -1706,6 +1707,8 @@ fclose($myfile);                             */
         for ($i = 0; $i < sizeof($arrayChapitres); $i++) {
 
             $this->db->select('CAST(SUBSTRING_INDEX(titre, ".", 1) as SIGNED INTEGER ) AS ord,id,image,titre,textGauche,textDroite,IDChapitre,pathAudio');
+            // Simple drapeau d'existence : le HTML (lourd) n'est chargé qu'à la demande via atlasFigureHtml
+            $this->db->select("(htmlContent IS NOT NULL AND htmlContent <> '') AS hasHtml", false);
             $this->db->from('figures');
             $this->db->where("IDChapitre = " . $arrayChapitres[$i]['chapitre']);
             $this->db->order_by("ord", "DESC");
@@ -1738,6 +1741,7 @@ fclose($myfile);                             */
                     'image' => isset($figure->image) ? $figure->image : $figure['image'],
                     'pathAudio' => isset($figure->pathAudio) ? $figure->pathAudio : $figure['pathAudio'],
                     'idFigure' => isset($figure->id) ? $figure->id : $figure['id'],
+                    'hasHtml' => !empty($figure['hasHtml']),
                 ]; //				log_message('error',"*******>>>3333333333333333333333333333>>>>******" );
 ////				log_message('error',$arrayTextGauche );
 //				log_message('error',"*******>>>44444444444444444444444444444>>>>******" );
@@ -1881,7 +1885,10 @@ fclose($myfile);                             */
         $compteur = 0;
         for ($i = 0; $i < sizeof($arrayChapitres); $i++) {
 
-            $query = $this->db->query('SELECT * FROM figures WHERE IDChapitre =' . $arrayChapitres[$i]['chapitre'] . ' ORDER BY titre ASC');
+            // Colonnes explicites : htmlContent (lourd) n'est PAS chargé, seul le drapeau hasHtml l'est
+            $query = $this->db->query('SELECT id, image, titre, textGauche, textDroite, IDChapitre, pathAudio,'
+                . " (htmlContent IS NOT NULL AND htmlContent <> '') AS hasHtml"
+                . ' FROM figures WHERE IDChapitre =' . $arrayChapitres[$i]['chapitre'] . ' ORDER BY titre ASC');
             $res = $query->result();
 
             for ($j = 0; $j < sizeof($res); $j++) {
@@ -1895,6 +1902,7 @@ fclose($myfile);                             */
                 $arrayFigures[$compteur]['image'] = $res[$j]->image;
                 $arrayFigures[$compteur]['pathAudio'] = $res[$j]->pathAudio;
                 $arrayFigures[$compteur]['idFigure'] = $res[$j]->id;
+                $arrayFigures[$compteur]['hasHtml'] = !empty($res[$j]->hasHtml);
                 $compteur++;
             }
 
@@ -2320,6 +2328,19 @@ fclose($myfile);                             */
         $textGauche = $_POST["textGauche"];
         $textDroite = $_POST["textDroite"];
         $nb_f = sizeof($f);
+
+        // Figure HTML autonome (optionnelle) : même validation/assainissement que les
+        // figures de cours (scripts et gestionnaires on* retirés, data-num exigés)
+        $htmlContent = null;
+        if (isset($_FILES['htmlFile']) && $_FILES['htmlFile']['error'] == 0 && $_FILES['htmlFile']['size'] > 0) {
+            $checkHtml = $this->checkFigureHtml();
+            if (isset($checkHtml['error'])) {
+                $arr_Res[] = array("id" => '-1', "desc" => $checkHtml['error']);
+                echo json_encode($arr_Res);
+                exit;
+            }
+            $htmlContent = $checkHtml['html'];
+        }
         //$bin_data_target    = base64_encode(file_get_contents( $f["mFile"]["tmp_name"] ));
         $err_desc = ''; //print_r("--------------------------");print_r($f);
 //print_r("--------------------------");print_r($nb_f);
@@ -2354,6 +2375,9 @@ fclose($myfile);                             */
                 //$bin_data_target    = base64_encode(file_get_contents( $f["mFile"]["tmp_name"][$key] ));
                 $bin_data_target = base64_encode(file_get_contents($pathCouv));
                 $data = ['IDChapitre' => $IDChapitre, 'image' => $bin_data_target, 'titre' => $titre, 'textGauche' => $textGauche, 'textDroite' => $textDroite];
+                if ($htmlContent !== null) {
+                    $data['htmlContent'] = $htmlContent;
+                }
                 $this->insert_dd("figures", $data);
 
                 //increment nbrTest
@@ -2370,6 +2394,31 @@ fclose($myfile);                             */
                 echo json_encode($arr_Res);
                 exit;
             }
+        }
+
+        // Aucune image uploadée mais un HTML fourni : la figure est créée quand même,
+        // sa vignette est l'image embarquée dans le HTML (même principe que les cours)
+        if ($htmlContent !== null) {
+            $thumb = '';
+            if (preg_match('/(?:src|href)="data:image\/(?:jpeg|jpg|png);base64,([^"]+)"/i', $htmlContent, $mImg)) {
+                $thumb = $mImg[1];
+            }
+            $data = ['IDChapitre' => $IDChapitre, 'image' => $thumb, 'titre' => $titre, 'textGauche' => $textGauche, 'textDroite' => $textDroite, 'htmlContent' => $htmlContent];
+            $this->insert_dd("figures", $data);
+
+            //increment nbrTest
+            $query = $this->db->query('SELECT Count(*) AS nbr FROM figures WHERE IDChapitre =' . $IDChapitre);
+            $res = $query->result();
+            $newNbrTest = $res[0]->nbr;
+
+            $nbrTest = ['NbreTest' => $newNbrTest];
+            $this->db->where("IDChapitre = '" . $IDChapitre . "'");
+            $this->db->update('_chapitre', $nbrTest);
+            //increment nbrTest
+
+            $arr_Res[] = array("id" => '1', "desc" => $err_desc);
+            echo json_encode($arr_Res);
+            exit;
         }
 
         $arr_Res[] = array("id" => '0', "desc" => $err_desc);
@@ -2394,6 +2443,20 @@ fclose($myfile);                             */
         $idFigure = $_POST["idFigure"];
 
         $isOriginImageSupprimer = $_POST["isOriginImageSupprimer"];
+
+        // Figure HTML autonome : nouveau fichier = remplacement ; isHtmlSupprimer=1 = retrait
+        // (retour à l'affichage classique) ; sinon le HTML existant est conservé tel quel
+        $htmlContent = null;
+        $isHtmlSupprimer = isset($_POST["isHtmlSupprimer"]) ? $_POST["isHtmlSupprimer"] : '0';
+        if (isset($_FILES['htmlFile']) && $_FILES['htmlFile']['error'] == 0 && $_FILES['htmlFile']['size'] > 0) {
+            $checkHtml = $this->checkFigureHtml();
+            if (isset($checkHtml['error'])) {
+                $arr_Res[] = array("id" => '-1', "desc" => $checkHtml['error']);
+                echo json_encode($arr_Res);
+                exit;
+            }
+            $htmlContent = $checkHtml['html'];
+        }
 
         $nb_f = sizeof($f);
 
@@ -2423,6 +2486,11 @@ fclose($myfile);                             */
                 //$bin_data_target  = base64_encode(file_get_contents( $f["mFile"]["tmp_name"][$key] ));
                 $bin_data_target = base64_encode(file_get_contents($pathCouv));
                 $data = ['image' => $bin_data_target, 'titre' => $titre, 'textGauche' => $textGauche, 'textDroite' => $textDroite];
+                if ($htmlContent !== null) {
+                    $data['htmlContent'] = $htmlContent;
+                } elseif ($isHtmlSupprimer == "1") {
+                    $data['htmlContent'] = null;
+                }
                 $this->db->where("id = '" . $idFigure . "'");
                 $this->db->update('figures', $data);
 
@@ -2432,6 +2500,16 @@ fclose($myfile);                             */
 
                 if ($isOriginImageSupprimer == "1") {
                     $data = ['image' => "", 'titre' => $titre, 'textGauche' => $textGauche, 'textDroite' => $textDroite];
+                }
+
+                if ($htmlContent !== null) {
+                    $data['htmlContent'] = $htmlContent;
+                    // Pas d'image existante ni uploadée : la vignette vient du HTML
+                    if ($isOriginImageSupprimer == "1" && preg_match('/(?:src|href)="data:image\/(?:jpeg|jpg|png);base64,([^"]+)"/i', $htmlContent, $mImg)) {
+                        $data['image'] = $mImg[1];
+                    }
+                } elseif ($isHtmlSupprimer == "1") {
+                    $data['htmlContent'] = null;
                 }
 
                 $this->db->where("id = '" . $idFigure . "'");
@@ -3177,20 +3255,27 @@ fclose($myfile);                             */
         $this->db->order_by("TitreFigure", "asc");
         $listFigures = $this->db->get()->result_array();
 
-        // Figures SVG interactives : marquer celles qui ont un SVG dans _figure_svg
-        // (simple test d'existence — le contenu lourd n'est chargé qu'à la demande via figureSvg/figureMeta)
+        // Figures interactives : marquer celles qui ont un SVG et/ou un HTML dans _figure_svg
+        // (simple test d'existence — le contenu lourd n'est chargé qu'à la demande via figureSvg/figureMeta/figureHtml)
         $svgIds = array();
+        $htmlIds = array();
         if (!empty($listFigures)) {
             $figIds = array_column($listFigures, 'IDFigure');
-            $this->db->select('IDFigure');
+            $this->db->select("IDFigure, (svgContent <> '') AS hasSvg, (htmlContent IS NOT NULL AND htmlContent <> '') AS hasHtml", false);
             $this->db->from('_figure_svg');
             $this->db->where_in('IDFigure', $figIds);
             foreach ($this->db->get()->result_array() as $rSvg) {
-                $svgIds[] = (int) $rSvg['IDFigure'];
+                if (!empty($rSvg['hasSvg'])) {
+                    $svgIds[] = (int) $rSvg['IDFigure'];
+                }
+                if (!empty($rSvg['hasHtml'])) {
+                    $htmlIds[] = (int) $rSvg['IDFigure'];
+                }
             }
         }
         foreach ($listFigures as $kFig => $fFig) {
             $listFigures[$kFig]['hasSvg'] = in_array((int) $fFig['IDFigure'], $svgIds);
+            $listFigures[$kFig]['hasHtml'] = in_array((int) $fFig['IDFigure'], $htmlIds);
         }
 
         $arr['listFig'] = $listFigures;
@@ -9940,6 +10025,49 @@ loadingTask.promise.then(function(pdf) {
         $this->serveFigureSvgColumn((int) $idFigure, 'jsonMeta', 'application/json');
     }
 
+    /** Sert le HTML autonome d'une figure (inliné dans un Shadow DOM par le viewer).
+     *  text/plain : le contenu n'est jamais rendu comme page si l'URL est ouverte directement. */
+    public function figureHtml($idFigure = 0)
+    {
+        $this->serveFigureSvgColumn((int) $idFigure, 'htmlContent', 'text/plain');
+    }
+
+    /** Sert le HTML autonome d'une figure d'ATLAS (table `figures`, mode "Légende complète").
+     *  ETag calculé sur le contenu (la table n'a pas de colonne updatedAt). */
+    public function atlasFigureHtml($idFigure = 0)
+    {
+        if (strlen($this->session->userdata('passTok')) != 200) {
+            show_error('Accès refusé', 403);
+            return;
+        }
+
+        $this->db->select('htmlContent');
+        $this->db->from('figures');
+        $this->db->where('id', (int) $idFigure);
+        $res = $this->db->get()->result_array();
+        if (empty($res) || $res[0]['htmlContent'] === null || $res[0]['htmlContent'] === '') {
+            show_404();
+            return;
+        }
+
+        $etag = '"' . md5($res[0]['htmlContent']) . '"';
+        $ifNoneMatch = isset($_SERVER['HTTP_IF_NONE_MATCH']) ? trim($_SERVER['HTTP_IF_NONE_MATCH']) : '';
+
+        if ($ifNoneMatch === $etag) {
+            $this->output
+                ->set_status_header(304)
+                ->set_header('ETag: ' . $etag)
+                ->set_header('Cache-Control: private, max-age=86400');
+            return;
+        }
+
+        $this->output
+            ->set_content_type('text/plain', 'utf-8')
+            ->set_header('ETag: ' . $etag)
+            ->set_header('Cache-Control: private, max-age=86400')
+            ->set_output($res[0]['htmlContent']);
+    }
+
     /** Lecture d'une colonne de _figure_svg avec gestion du cache navigateur (ETag / 304). */
     private function serveFigureSvgColumn($idFigure, $column, $contentType)
     {
@@ -9952,7 +10080,8 @@ loadingTask.promise.then(function(pdf) {
         $this->db->from('_figure_svg');
         $this->db->where('IDFigure', (int) $idFigure);
         $res = $this->db->get()->result_array();
-        if (empty($res)) {
+        // Colonne vide = ce format n'existe pas pour cette figure (ex. ligne HTML-only interrogée en SVG)
+        if (empty($res) || !isset($res[0][$column]) || $res[0][$column] === '' || $res[0][$column] === null) {
             show_404();
             return;
         }
@@ -10052,9 +10181,9 @@ loadingTask.promise.then(function(pdf) {
             $this->db->delete('_figure_svg');
 
             if ($this->db->affected_rows() > 0) {
-                echo json_encode(array('success' => true, 'message' => 'SVG supprimé — retour à l\'affichage PNG'));
+                echo json_encode(array('success' => true, 'message' => 'Contenu interactif supprimé — retour à l\'affichage PNG'));
             } else {
-                echo json_encode(array('success' => false, 'message' => 'Aucun SVG pour cette figure'));
+                echo json_encode(array('success' => false, 'message' => 'Aucun contenu interactif pour cette figure'));
             }
 
         } catch (Exception $e) {
@@ -10187,6 +10316,198 @@ loadingTask.promise.then(function(pdf) {
 
         } catch (Exception $e) {
             log_message('error', 'Erreur addFigureSvg: ' . $e->getMessage());
+            $arr_Res[] = array("id" => '-1', "desc" => 'Erreur: ' . $e->getMessage());
+        }
+
+        echo json_encode($arr_Res);
+        exit;
+    }
+
+    /* ─────────────────────────────────────────────────────────────
+     * Figures HTML autonomes (colonne htmlContent de _figure_svg)
+     * Le fichier HTML exporté contient TOUT (image, marqueurs data-num,
+     * légendes, styles) ; il est rendu dans un Shadow DOM côté viewer.
+     * Le PNG de _figure reste la miniature + l'affichage de secours.
+     * ───────────────────────────────────────────────────────────── */
+
+    /** Valide le fichier HTML uploadé : retourne ['html'=>…] ou ['error'=>message]. */
+    private function checkFigureHtml()
+    {
+        if (!isset($_FILES['htmlFile']) || $_FILES['htmlFile']['error'] != 0) {
+            return array('error' => 'Le fichier .html est obligatoire');
+        }
+
+        // Taille max 4 Mo (le HTML embarque l'image en base64)
+        if ($_FILES['htmlFile']['size'] > 4194304) {
+            return array('error' => 'Fichier trop volumineux (max 4 Mo)');
+        }
+
+        $htmlContent = file_get_contents($_FILES['htmlFile']['tmp_name']);
+
+        // ── Assainissement : le JS embarqué de l'export est du code MORT
+        // (innerHTML dans un Shadow DOM n'exécute jamais les <script>, et
+        // l'interactivité data-num est fournie par la page) → on le retire
+        // au lieu de rejeter le fichier. Idem pour les commentaires (inertes,
+        // peuvent citer des balises interdites) et les gestionnaires on* /
+        // URLs javascript: (eux S'EXÉCUTERAIENT dans le Shadow DOM).
+        $htmlContent = preg_replace('/<!--.*?-->/s', '', $htmlContent);
+        $htmlContent = preg_replace('#<script\b[^>]*>.*?</script\s*>#is', '', $htmlContent);
+        $htmlContent = preg_replace('/\son[a-z]+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $htmlContent);
+        $htmlContent = preg_replace('/\bjavascript\s*:/i', 'blocked:', $htmlContent);
+
+        // Structure attendue : les marqueurs data-num sont le contrat d'interactivité
+        // (clic légende N ↔ marqueur N) — sans eux le viewer n'a rien à surligner
+        if (strpos($htmlContent, 'data-num=') === false) {
+            return array('error' => 'HTML invalide : attributs data-num absents (marqueurs/légendes)');
+        }
+
+        // Filet de sécurité APRÈS assainissement : ce qui reste ici est soit
+        // non-strippable proprement (iframe/object/embed), soit un script
+        // malformé/non refermé qui a échappé au strip → rejet.
+        // NB : <meta> est toléré (inerte dans un Shadow DOM, présent dans les exports
+        // complets) ; <link> reste interdit (les stylesheets se chargent dans un shadow tree)
+        $forbidden = array('<script', '<iframe', '<object', '<embed', '<foreignobject', '<link', '<base', '<form');
+        foreach ($forbidden as $tag) {
+            if (stripos($htmlContent, $tag) !== false) {
+                return array('error' => 'HTML refusé : balise interdite détectée (' . trim($tag, '<') . ')');
+            }
+        }
+        if (
+            preg_match('/\son[a-z]+\s*=/i', $htmlContent)
+            || stripos($htmlContent, '@import') !== false
+        ) {
+            return array('error' => 'HTML refusé : contenu actif détecté (on* / @import)');
+        }
+
+        return array('html' => $htmlContent);
+    }
+
+    /** Upload admin : enregistre le HTML d'une figure existante (UPSERT sur IDFigure).
+     *  Les colonnes svgContent/jsonMeta (NOT NULL) restent vides sur une ligne HTML-only. */
+    public function saveFigureHtml()
+    {
+        $arr_Res = array();
+
+        try {
+            if (strlen($this->session->userdata('passTok')) != 200 || $this->session->userdata('EstAdmin') != 1) {
+                $arr_Res[] = array("id" => '-1', "desc" => 'Accès refusé');
+                echo json_encode($arr_Res);
+                exit;
+            }
+
+            $idFigure = (int) $this->input->post('IDFigure');
+            if ($idFigure <= 0) {
+                $arr_Res[] = array("id" => '-1', "desc" => 'Figure introuvable');
+                echo json_encode($arr_Res);
+                exit;
+            }
+
+            $this->db->select('IDFigure');
+            $this->db->from('_figure');
+            $this->db->where('IDFigure', $idFigure);
+            if (empty($this->db->get()->result_array())) {
+                $arr_Res[] = array("id" => '-1', "desc" => 'Figure inexistante en base');
+                echo json_encode($arr_Res);
+                exit;
+            }
+
+            $check = $this->checkFigureHtml();
+            if (isset($check['error'])) {
+                $arr_Res[] = array("id" => '-1', "desc" => $check['error']);
+                echo json_encode($arr_Res);
+                exit;
+            }
+
+            $sql = "INSERT INTO _figure_svg (IDFigure, svgContent, jsonMeta, htmlContent) VALUES (?, '', '', ?)
+                    ON DUPLICATE KEY UPDATE htmlContent = VALUES(htmlContent)";
+            $this->db->query($sql, array($idFigure, $check['html']));
+
+            $arr_Res[] = array("id" => '1', "desc" => 'Figure HTML enregistrée');
+
+        } catch (Exception $e) {
+            log_message('error', 'Erreur saveFigureHtml: ' . $e->getMessage());
+            $arr_Res[] = array("id" => '-1', "desc" => 'Erreur: ' . $e->getMessage());
+        }
+
+        echo json_encode($arr_Res);
+        exit;
+    }
+
+    /** Ajout admin : crée une NOUVELLE figure (ligne _figure + HTML).
+     *  La miniature (encryptFigure) est extraite de l'image embarquée dans le HTML. */
+    public function addFigureHtml()
+    {
+        $arr_Res = array();
+
+        try {
+            if (strlen($this->session->userdata('passTok')) != 200 || $this->session->userdata('EstAdmin') != 1) {
+                $arr_Res[] = array("id" => '-1', "desc" => 'Accès refusé');
+                echo json_encode($arr_Res);
+                exit;
+            }
+
+            $idCours = (int) $this->input->post('IDCours');
+            $titre = trim(preg_replace('/\s+/', ' ', (string) $this->input->post('titre')));
+            $titre = mb_substr($titre, 0, 50); // TitreFigure est un varchar(50)
+
+            if ($idCours <= 0) {
+                $arr_Res[] = array("id" => '-1', "desc" => 'Cours introuvable');
+                echo json_encode($arr_Res);
+                exit;
+            }
+            if ($titre === '') {
+                $arr_Res[] = array("id" => '-1', "desc" => 'Le titre de la figure est obligatoire');
+                echo json_encode($arr_Res);
+                exit;
+            }
+
+            $this->db->select('IDCours');
+            $this->db->from('_cours');
+            $this->db->where('IDCours', $idCours);
+            if (empty($this->db->get()->result_array())) {
+                $arr_Res[] = array("id" => '-1', "desc" => 'Cours inexistant en base');
+                echo json_encode($arr_Res);
+                exit;
+            }
+
+            $check = $this->checkFigureHtml();
+            if (isset($check['error'])) {
+                $arr_Res[] = array("id" => '-1', "desc" => $check['error']);
+                echo json_encode($arr_Res);
+                exit;
+            }
+
+            // Miniature : première image base64 embarquée dans le HTML (src= ou href=)
+            $thumb = '';
+            if (preg_match('/(?:src|href)="data:image\/(?:jpeg|jpg|png);base64,([^"]+)"/i', $check['html'], $mImg)) {
+                $thumb = $mImg[1];
+            }
+
+            // 1) Nouvelle ligne _figure (le PNG extrait sert de miniature + affichage de secours)
+            $data = array(
+                'TitreFigure' => $titre,
+                'UrlFigure' => '',
+                'IDCours' => $idCours,
+                'IDResume' => 0,
+                'encryptFigure' => $thumb
+            );
+            $this->db->insert('_figure', $data);
+            $idFigure = (int) $this->db->insert_id();
+            if ($idFigure <= 0) {
+                $arr_Res[] = array("id" => '-1', "desc" => 'Échec de création de la figure');
+                echo json_encode($arr_Res);
+                exit;
+            }
+
+            // 2) Le HTML autonome
+            $sql = "INSERT INTO _figure_svg (IDFigure, svgContent, jsonMeta, htmlContent) VALUES (?, '', '', ?)
+                    ON DUPLICATE KEY UPDATE htmlContent = VALUES(htmlContent)";
+            $this->db->query($sql, array($idFigure, $check['html']));
+
+            $arr_Res[] = array("id" => '1', "desc" => 'Nouvelle figure créée', "idFigure" => $idFigure);
+
+        } catch (Exception $e) {
+            log_message('error', 'Erreur addFigureHtml: ' . $e->getMessage());
             $arr_Res[] = array("id" => '-1', "desc" => 'Erreur: ' . $e->getMessage());
         }
 

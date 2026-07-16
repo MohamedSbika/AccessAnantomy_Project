@@ -221,6 +221,14 @@
                                             <input type="hidden" name="IDChapitre" id="IDChapitre" value="<?= $IDChapitre; ?>">
                                         </div>
 
+                                        <!-- Figure HTML autonome : à la sélection, les légendes/titre/image sont
+                                             EXTRAITS du fichier et pré-remplis dans les champs (modifiables avant envoi) -->
+                                        <div class="mb-2 text-center">
+                                            <label for="htmlFileAdd" class="btn btn-primary button-modal-login">Fichier .html</label>
+                                            <input type="file" name="htmlFile" id="htmlFileAdd" style="display:none;" accept=".html,.htm,text/html" data-preview="image" onchange="atlasHtmlSelected(this, 'addFigure')">
+                                            <span id="htmlFileAddName" style="color:#fff;font-size:11px;display:block;"></span>
+                                        </div>
+
                                         <div class="mb-2 text-center" style="height:200px; position:relative;">
                                             <img style="max-width:100%; max-height:100%; margin:auto;" id="image">
                                         </div>
@@ -289,6 +297,21 @@
 
                                             </div>
 
+                                            <!-- Figure HTML autonome : nouveau fichier = remplacement (légendes/titre
+                                                 ré-extraits dans les champs) ; case cochée = retrait du HTML -->
+                                            <div class="mb-2 text-center">
+                                                <label for="htmlFileUpd<?= $value['id']; ?>" class="btn btn-primary button-modal-login">Fichier .html</label>
+                                                <input type="file" name="htmlFile" id="htmlFileUpd<?= $value['id']; ?>" style="display:none;" accept=".html,.htm,text/html" data-preview="newImage<?= $value['id']; ?>" onchange="atlasHtmlSelected(this, 'updateFigure<?= $value['id']; ?>')">
+                                                <span id="htmlFileUpd<?= $value['id']; ?>Name" style="color:#fff;font-size:11px;display:block;"></span>
+                                                <?php if (!empty($value['hasHtml'])): ?>
+                                                    <span style="display:inline-block;background:#d1fae5;color:#065f46;border-radius:10px;padding:2px 8px;font-size:11px;font-weight:bold;">HTML &#10003;</span>
+                                                    <label style="color:#fff;font-size:11px;margin-left:8px;cursor:pointer;">
+                                                        <input type="checkbox" onchange="atlasToggleHtmlDelete(this, 'isHtmlSupprimer<?= $value['id']; ?>')"> Supprimer le HTML
+                                                    </label>
+                                                <?php endif; ?>
+                                                <input type="hidden" name="isHtmlSupprimer" id="isHtmlSupprimer<?= $value['id']; ?>" value="0">
+                                            </div>
+
                                             <div class="mb-2 text-center" style="height:200px; position:relative;">
                                                 <img style="max-width:100%; max-height:100%; margin:auto;" id="newImage<?= $value['id']; ?>" src="">
                                                 <img style="max-width:100%; max-height:100%; margin:auto;" id="oldImage<?= $value['id']; ?>" src="data:image/png;base64,<?= $value['image']; ?> ">
@@ -319,9 +342,74 @@
                     </div>
                 </div>
             </div>
-            
+
         <?php } ?>
 
+        <script>
+            /* ═════════ Figures HTML autonomes (atlas) ═════════
+               À la sélection d'un .html : les légendes (li.aa-legend-item data-num,
+               libellé .aa-text), le titre (.aa-title) et l'image embarquée sont
+               EXTRAITS et pré-remplis dans les champs du formulaire — l'admin
+               vérifie/corrige avant d'enregistrer. Le fichier est envoyé tel quel
+               au serveur (assainissement + stockage htmlContent). */
+            function atlasHtmlSelected(input, formId) {
+                var file = input.files[0];
+                var nameSpan = document.getElementById(input.id + 'Name');
+                if (nameSpan) nameSpan.textContent = file ? file.name : '';
+                if (!file) return;
+
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var doc = new DOMParser().parseFromString(e.target.result, 'text/html');
+                    var form = document.getElementById(formId);
+                    if (!form) return;
+
+                    // Panneau gauche = 1er .aa-side, droit = 2e → lignes "N- libellé" (format textGauche/textDroite)
+                    function sideToLines(side) {
+                        var lines = [];
+                        if (!side) return lines;
+                        side.querySelectorAll('.aa-legend-item').forEach(function (li) {
+                            var num = li.getAttribute('data-num');
+                            var txtEl = li.querySelector('.aa-text');
+                            var label = (txtEl ? txtEl.textContent : li.textContent.replace(/^\s*\d+\s*/, ''))
+                                .trim().replace(/\s+/g, ' ');
+                            if (label) lines.push((num ? num + '- ' : '') + label);
+                        });
+                        return lines;
+                    }
+                    var sides = doc.querySelectorAll('.aa-side');
+                    var tg = form.querySelector('[name="textGauche"]');
+                    var td = form.querySelector('[name="textDroite"]');
+                    var linesG = sideToLines(sides[0]);
+                    var linesD = sideToLines(sides[1]);
+                    if (tg && linesG.length) tg.value = linesG.join('\n');
+                    if (td && linesD.length) td.value = linesD.join('\n');
+
+                    if (!linesG.length && !linesD.length) {
+                        alert('Attention : aucune légende (li.aa-legend-item) trouvée dans ce fichier HTML.\nVérifiez le fichier ou saisissez les légendes manuellement.');
+                    }
+
+                    // Titre de la figure
+                    var titleEl = doc.querySelector('.aa-title');
+                    var ti = form.querySelector('[name="titre"]');
+                    if (ti && titleEl && titleEl.textContent.trim() !== '') ti.value = titleEl.textContent.trim();
+
+                    // Aperçu : image embarquée en base64 dans le HTML
+                    var imgEl = doc.querySelector('image[href^="data:image"], img[src^="data:image"]');
+                    var previewId = input.getAttribute('data-preview');
+                    if (imgEl && previewId) {
+                        var preview = document.getElementById(previewId);
+                        if (preview) preview.src = imgEl.getAttribute('href') || imgEl.getAttribute('src');
+                    }
+                };
+                reader.readAsText(file);
+            }
+
+            function atlasToggleHtmlDelete(checkbox, hiddenId) {
+                var hidden = document.getElementById(hiddenId);
+                if (hidden) hidden.value = checkbox.checked ? '1' : '0';
+            }
+        </script>
 
         <?php foreach ($listFigures as $value) { ?>
 
