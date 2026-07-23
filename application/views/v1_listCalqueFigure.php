@@ -407,7 +407,7 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
 
 							</div>
 
-							<!-- Figure HTML autonome : rendue dans un Shadow DOM en mode "Légende complète"
+							<!-- Figure HTML autonome : rendue dans un Shadow DOM dans les 3 modes
 							     (remplace les rangées classiques) ; chargée à la demande via atlasFigureHtml -->
 							<div class="atlas-html-host" data-idfig="<?= (int) $figure['idFigure']; ?>" data-hashtml="<?= !empty($figure['hasHtml']) ? '1' : '0'; ?>"></div>
 
@@ -968,13 +968,28 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
         }
 
         /* ═════════ Figures HTML autonomes (Shadow DOM) — même principe que livreCours ═════════
-           En mode "Légende complète", si la figure a un HTML : les rangées classiques
-           (légendes texte + image + titre) sont remplacées par le HTML complet, rendu
-           dans un Shadow DOM (isolation CSS totale). Clic légende/marqueur N → tous les
-           éléments data-num=N en rouge. Modes "Séquentielle" et "Test" : rangées
-           classiques restaurées (elles fonctionnent sur les légendes texte extraites). */
+           Si la figure a un HTML, les 3 modes s'appuient dessus : les rangées classiques
+           (légendes texte + image + titre) sont remplacées par le HTML complet, rendu dans
+           un Shadow DOM (isolation CSS totale). Clic légende/marqueur N → tous les éléments
+           data-num=N en rouge.
+
+           Mode "Séquentielle" : comportement IDENTIQUE aux figures classiques
+           (.legend-group-row + .btn-corriger) — les légendes sont découpées en groupes de 4
+           et CHAQUE groupe est recouvert de SON bouton "Découvrir la réponse". Tous les
+           boutons sont affichés en même temps : un clic ne dévoile que son groupe, dans
+           l'ordre voulu par l'utilisateur. Aucun parcours pas-à-pas, aucun compteur.
+           Sur un HTML multi-images, le découpage par 4 REPART À ZÉRO à chaque titre :
+           un groupe n'est jamais à cheval sur deux images.
+
+           Mode "Test" : identique au test classique — les masques disparaissent et TOUTES
+           les légendes reçoivent d'un coup badge + œil (réponse en toast) + champ de saisie.
+
+           Si le HTML ne porte aucune légende data-num, ces deux modes retombent sur les
+           rangées classiques (aucune page cassée). */
 
         var ATLAS_HTML_URL = "<?php echo base_url(); ?>home/atlasFigureHtml/";
+        var ATLAS_BLOCK_SIZE = 4;   // nombre de réponses par groupe masqué
+        var ATLAS_REVEAL_LABEL = <?php echo json_encode($this->lang->line('decouv_respons')); ?>;
 
         // Styles de base injectés dans chaque Shadow DOM : surlignage rouge (contrat data-num)
         var ATLAS_SHADOW_STYLE = ':host{display:block;width:100%;height:100%;}'
@@ -1007,12 +1022,321 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
             + '.aa-roman-children li{font-size:12px;}'
             + '}';
 
+        // Styles des modes "Séquentielle" / "Test" : n'ajoutent que des classes atlas-*.
+        // Aucune couleur ni typographie de l'export n'est redéfinie : le bouton est un
+        // CALQUE posé au-dessus du groupe (comme .btn-corriger sur .legend-group-row en
+        // classique) et le texte-réponse est masqué par visibility (la place est conservée,
+        // la mise en page de l'export ne bouge pas).
+        var ATLAS_SHADOW_REVEAL = '.atlas-group{position:relative;display:block;list-style:none;margin:0;padding:0;}'
+            + '.atlas-reveal{display:none;position:absolute;top:0;left:0;width:100%;height:100%;z-index:5;'
+            + 'padding:0;border:none;border-radius:6px;font:inherit;font-weight:700;cursor:pointer;'
+            + 'background:#86C4AF;color:green;}'
+            + '.atlas-reveal:hover{background:rgb(9,138,99);color:#fff;}'
+            + '.atlas-group-covered > .atlas-reveal{display:block;}'
+            + '.atlas-item-hidden > .atlas-answer{visibility:hidden;}'
+            + '.atlas-test-input{display:none;align-items:center;gap:4px;margin-left:4px;flex:1 1 auto;min-width:70px;}'
+            + '.atlas-item-input > .atlas-answer{display:none;}'
+            + '.atlas-item-input .atlas-test-input{display:inline-flex;}'
+            + '.atlas-test-input input{width:100%;min-width:60px;box-sizing:border-box;font:inherit;'
+            + 'padding:1px 4px;border:1px solid #9ca3af;border-radius:4px;background:#fff;}'
+            + '.atlas-eye{cursor:pointer;font-size:13px;line-height:1;user-select:none;}';
+
+        /* ───────── Analyse du HTML : images, titres, découpage des légendes par 4 ───────── */
+
+        var ATLAS_TITLE_SEL = '.titre-figure, .aa-title, .aa-subtitle, figcaption, h1, h2, h3, h4';
+        var ATLAS_BADGE_SEL = '.leg-badge, .aa-badge, .rond, [class*="badge"]';
+
+        function atlasIsHiddenEl(el) {
+            return /display\s*:\s*none/i.test(el.getAttribute('style') || '');
+        }
+
+        // Index d'ordre du document : sert au tri et au rattachement de repli
+        function atlasIndexAll(root) {
+            var i = 0;
+            Array.prototype.forEach.call(root.querySelectorAll('*'), function (el) { el._atlasIdx = i++; });
+        }
+
+        function atlasDocOrder(a, b) { return (a._atlasIdx || 0) - (b._atlasIdx || 0); }
+
+        // Panneaux "image" visibles : <svg> et <img> non masquées. L'<img> de miniature du
+        // contrat porte style="display:none" et ne compte donc pas comme une image.
+        function atlasVisiblePanels(root) {
+            var out = [];
+            Array.prototype.forEach.call(root.querySelectorAll('svg, img'), function (el) {
+                if (el.parentElement && el.parentElement.closest('svg')) return; // imbriqué dans un schéma
+                if (atlasIsHiddenEl(el)) return;
+                out.push(el);
+            });
+            return out;
+        }
+
+        // Items de légende : porteurs de data-num situés HORS du schéma SVG (les marqueurs
+        // restent toujours visibles : ce sont les questions) et non imbriqués dans un autre porteur.
+        function atlasLegendItems(root) {
+            return Array.prototype.slice.call(root.querySelectorAll('[data-num]')).filter(function (el) {
+                if (el.closest('svg')) return false;
+                var p = el.parentElement;
+                while (p) {
+                    if (p.hasAttribute && p.hasAttribute('data-num')) return false;
+                    p = p.parentElement;
+                }
+                return true;
+            });
+        }
+
+        function atlasTitleIn(scope) {
+            var el = scope.querySelector(ATLAS_TITLE_SEL);
+            return el ? (el.textContent || '').replace(/\s+/g, ' ').trim() : '';
+        }
+
+        // Libellé d'un groupe déclaré par data-fig : on ne remonte pas l'arbre (le premier
+        // titre trouvé serait celui de l'image 1) — le titre doit lui aussi porter data-fig.
+        function atlasLabelForFig(root, key, index) {
+            var sel = ATLAS_TITLE_SEL.split(',').map(function (s) {
+                return s.trim() + '[data-fig="' + key + '"]';
+            }).join(', ');
+            var el = root.querySelector(sel);
+            return el ? (el.textContent || '').replace(/\s+/g, ' ').trim() : ('#' + (index + 1));
+        }
+
+        // Plus grand ancêtre d'un panneau ne contenant aucun autre panneau : la "section" de l'image
+        function atlasScopeFor(panel, panels) {
+            var node = panel;
+            while (node.parentElement) {
+                var parent = node.parentElement, n = 0;
+                for (var i = 0; i < panels.length; i++) if (parent.contains(panels[i])) n++;
+                if (n > 1) break;
+                node = parent;
+            }
+            return node;
+        }
+
+        // Rattachement légendes ↔ image, du plus fiable au repli (cf. plan §2.2)
+        function atlasBuildGroups(root) {
+            var items = atlasLegendItems(root);
+            if (!items.length) return [];
+
+            // 1) Contrat explicite data-fig : rattachement sans ambiguïté
+            var tagged = items.filter(function (el) { return el.hasAttribute('data-fig'); });
+            if (tagged.length === items.length) {
+                var order = [], map = {};
+                items.forEach(function (el) {
+                    var k = el.getAttribute('data-fig');
+                    if (!map[k]) { map[k] = { label: '', items: [] }; order.push(k); }
+                    map[k].items.push(el);
+                });
+                return order.map(function (k, i) {
+                    map[k].label = atlasLabelForFig(root, k, i);
+                    return map[k];
+                });
+            }
+
+            var panels = atlasVisiblePanels(root);
+            if (panels.length <= 1) {
+                return [{ label: atlasTitleIn(root), items: items }];
+            }
+
+            // 2) Structure DOM : une section par image
+            var scopes = panels.map(function (p) { return atlasScopeFor(p, panels); });
+            var groups = scopes.map(function (sc, i) {
+                return { label: atlasTitleIn(sc) || ('#' + (i + 1)), items: [] };
+            });
+            var orphans = [];
+            items.forEach(function (it) {
+                for (var i = 0; i < scopes.length; i++) {
+                    if (scopes[i].contains(it)) { groups[i].items.push(it); return; }
+                }
+                orphans.push(it);
+            });
+
+            // 3) Repli : rattacher l'item au panneau le plus proche dans l'ordre du document
+            orphans.forEach(function (it) {
+                var best = 0, bestDist = Infinity;
+                panels.forEach(function (p, i) {
+                    var d = Math.abs((it._atlasIdx || 0) - (p._atlasIdx || 0));
+                    if (d < bestDist) { bestDist = d; best = i; }
+                });
+                groups[best].items.push(it);
+            });
+
+            groups.forEach(function (g) { g.items.sort(atlasDocOrder); });
+            return groups.filter(function (g) { return g.items.length; });
+        }
+
+        // Isole le texte-réponse dans un <span class="atlas-answer"> : le badge numéro reste
+        // en place (il fait partie de la question), le HTML d'origine n'est pas dénaturé.
+        function atlasWrapAnswer(item) {
+            if (item._atlasAnswer) return item._atlasAnswer;
+            var span = document.createElement('span');
+            span.className = 'atlas-answer';
+            Array.prototype.slice.call(item.childNodes).forEach(function (n) {
+                if (n.nodeType === 1 && n.matches && n.matches(ATLAS_BADGE_SEL)) return; // garder le badge
+                span.appendChild(n);
+            });
+            item.appendChild(span);
+            item._atlasAnswer = span;
+            item._atlasText = (span.textContent || '').replace(/\s+/g, ' ').trim();
+            return span;
+        }
+
+        // Mode Test : champ de saisie + œil qui révèle la réponse en info-bulle (comme le test classique)
+        function atlasEnsureInput(item) {
+            if (item._atlasInput) return item._atlasInput;
+            var wrap = document.createElement('span');
+            wrap.className = 'atlas-test-input';
+
+            var eye = document.createElement('span');
+            eye.className = 'atlas-eye';
+            eye.textContent = '👁';
+            eye.setAttribute('data-title', item._atlasText || '');
+            eye.addEventListener('click', function (e) {
+                e.stopPropagation();
+                if (typeof showToast === 'function') showToast(eye);
+            });
+
+            var input = document.createElement('input');
+            input.type = 'text';
+            input.setAttribute('autocomplete', 'off');
+            input.addEventListener('click', function (e) { e.stopPropagation(); });
+
+            wrap.appendChild(eye);
+            wrap.appendChild(input);
+            item.appendChild(wrap);
+            item._atlasInput = wrap;
+            return wrap;
+        }
+
+        function atlasChunk(items, size) {
+            var out = [];
+            for (var i = 0; i < items.length; i += size) out.push(items.slice(i, i + size));
+            return out;
+        }
+
+        // Liste des groupes de 4, le découpage repartant à zéro à chaque titre d'image
+        function atlasAnalyzeFigure(root) {
+            atlasIndexAll(root);
+            var groups = atlasBuildGroups(root);
+            var blocks = [];
+            groups.forEach(function (g, gi) {
+                g.items.forEach(atlasWrapAnswer);
+                atlasChunk(g.items, ATLAS_BLOCK_SIZE).forEach(function (chunkItems) {
+                    blocks.push({ items: chunkItems, titleIndex: gi, title: g.label || '' });
+                });
+            });
+            return { groups: groups, blocks: blocks, multi: groups.length > 1 };
+        }
+
+        /* ───────── Masques par groupe de 4 : un bouton par groupe, tous affichés ─────────
+           Copie du fonctionnement classique : chaque groupe est enveloppé dans un
+           .atlas-group (position:relative) recouvert d'un bouton « Découvrir la réponse ».
+           Le clic masque CE bouton uniquement — les autres groupes restent couverts. */
+
+        // Découpe les items d'un groupe en suites de frères contigus : un masque par suite
+        // (un groupe dont les légendes ne se suivent pas dans le DOM reçoit plusieurs
+        // masques, qui se lèvent ensemble puisqu'ils portent le même index de groupe).
+        function atlasRuns(items) {
+            var runs = [], cur = null;
+            items.forEach(function (it) {
+                var last = cur && cur.items[cur.items.length - 1];
+                if (cur && it.parentElement === cur.parent && last.nextElementSibling === it) {
+                    cur.items.push(it);
+                    return;
+                }
+                cur = { parent: it.parentElement, items: [it] };
+                runs.push(cur);
+            });
+            return runs;
+        }
+
+        // Enveloppe une suite d'items et pose son bouton-masque. Le conteneur reprend la
+        // balise attendue par le parent (<li> dans une liste) pour ne pas casser le HTML.
+        function atlasWrapRun(run, groupIndex) {
+            var parent = run.parent;
+            if (!parent) return null;
+            var wrap = document.createElement(/^(UL|OL)$/.test(parent.tagName) ? 'li' : 'div');
+            wrap.className = 'atlas-group';
+            wrap.setAttribute('data-atlas-group', groupIndex);
+            parent.insertBefore(wrap, run.items[0]);
+            run.items.forEach(function (it) { wrap.appendChild(it); });
+
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'atlas-reveal';
+            btn.textContent = ATLAS_REVEAL_LABEL;
+            wrap.appendChild(btn);
+            return wrap;
+        }
+
+        // Enveloppement effectué une seule fois par figure (à la 1re bascule Séquentielle/Test)
+        function atlasEnsureGroups(host) {
+            var a = host._analysis;
+            if (!a || a.wrapped) return;
+            a.blocks.forEach(function (blk, bi) {
+                blk.wrappers = atlasRuns(blk.items)
+                    .map(function (run) { return atlasWrapRun(run, bi); })
+                    .filter(Boolean);
+            });
+            a.wrapped = true;
+        }
+
+        function atlasRender(host) {
+            var a = host._analysis;
+            if (!a) return;
+            var mode = host._mode || 'complete';
+            var revealed = host._revealed || (host._revealed = {});
+
+            a.blocks.forEach(function (blk, bi) {
+                // Séquentielle : groupe couvert tant qu'on n'a pas cliqué son bouton.
+                // Test : aucun masque (les saisies remplacent les réponses, comme en classique).
+                var covered = (mode === 'sequential') && !revealed[bi];
+                blk.items.forEach(function (item) {
+                    item.classList.remove('atlas-item-hidden', 'atlas-item-input');
+                    if (covered) item.classList.add('atlas-item-hidden');
+                    if (mode === 'test') {
+                        atlasEnsureInput(item);
+                        item.classList.add('atlas-item-input');
+                    }
+                });
+                (blk.wrappers || []).forEach(function (w) {
+                    w.classList.toggle('atlas-group-covered', covered);
+                });
+            });
+        }
+
+        // Clic sur un bouton-masque : ce groupe (et lui seul) se dévoile
+        function atlasReveal(host, groupIndex) {
+            if (!host._analysis) return;
+            host._revealed = host._revealed || {};
+            host._revealed[groupIndex] = true;
+            atlasRender(host);
+        }
+
+        // Retour à l'état de départ : tous les groupes recouverts, saisies vidées
+        function atlasResetProgress(host) {
+            host._revealed = {};
+            var a = host._analysis;
+            if (!a) return;
+            a.blocks.forEach(function (blk) {
+                blk.items.forEach(function (item) {
+                    if (!item._atlasInput) return;
+                    var input = item._atlasInput.querySelector('input');
+                    if (input) input.value = '';
+                });
+            });
+        }
+
         function atlasGetShadow(host) {
             if (host._shadow) return host._shadow;
             host._shadow = host.attachShadow({ mode: 'open' });
             host._activeNum = null;
-            // Écouteur délégué : clic sur tout porteur de data-num → surlignage rouge ; re-clic → désactivation
+            // Écouteur délégué : bouton-masque → révélation de son groupe ; sinon clic sur
+            // tout porteur de data-num → surlignage rouge ; re-clic → désactivation
             host._shadow.addEventListener('click', function (e) {
+                var btn = e.target && e.target.closest ? e.target.closest('.atlas-reveal') : null;
+                if (btn) {
+                    atlasReveal(host, parseInt(btn.parentElement.getAttribute('data-atlas-group'), 10));
+                    return;
+                }
                 var item = e.target && e.target.closest ? e.target.closest('[data-num]') : null;
                 if (!item) return;
                 var n = parseInt(item.getAttribute('data-num'), 10);
@@ -1025,51 +1349,91 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
             return host._shadow;
         }
 
-        function atlasLoadHtml(host) {
-            if (host._loaded) return;
+        // Repli sur l'affichage classique (HTML indisponible ou inexploitable)
+        function atlasFallbackToClassic(host) {
+            host.style.display = 'none';
+            var block = host.closest('.block-figure');
+            if (block) {
+                block.querySelectorAll('.atlas-classic-row').forEach(function (r) { r.style.display = ''; });
+            }
+        }
+
+        function atlasLoadHtml(host, done) {
+            if (host._loaded) { if (done) done(); return; }
+            if (host._loading) { host._pending = done; return; }   // évite un double fetch
+            host._loading = true;
             var sr = atlasGetShadow(host);
             sr.innerHTML = '<style>' + ATLAS_SHADOW_STYLE + '</style><div style="padding:20px;text-align:center;color:#9ca3af;font-style:italic;">Chargement…</div>';
             fetch(ATLAS_HTML_URL + host.dataset.idfig)
                 .then(function (r) { if (!r.ok) throw new Error('html'); return r.text(); })
                 .then(function (html) {
                     host._loaded = true;
+                    host._loading = false;
                     host._activeNum = null;
-                    sr.innerHTML = '<style>' + ATLAS_SHADOW_STYLE + '</style>' + html + '<style>' + ATLAS_SHADOW_LAYOUT + '</style>';
+                    // Le style de l'export est conservé tel quel ; les surcharges de mise en page
+                    // et les styles des masques sont ajoutés APRÈS (ils ne touchent pas aux couleurs).
+                    sr.innerHTML = '<style>' + ATLAS_SHADOW_STYLE + '</style>' + html
+                        + '<style>' + ATLAS_SHADOW_LAYOUT + '</style>'
+                        + '<style>' + ATLAS_SHADOW_REVEAL + '</style>';
+                    host._analysis = atlasAnalyzeFigure(sr);
+                    host._revealed = {};
+                    if (done) done();
+                    if (host._pending) { var p = host._pending; host._pending = null; p(); }
                 })
                 .catch(function () {
-                    // Échec de chargement : retour à l'affichage classique (aucune page cassée)
-                    host.style.display = 'none';
-                    var block = host.closest('.block-figure');
-                    if (block) {
-                        block.querySelectorAll('.atlas-classic-row').forEach(function (r) { r.style.display = ''; });
-                    }
+                    host._loading = false;
+                    host._pending = null;
+                    atlasFallbackToClassic(host);
                 });
         }
 
-        // showHtml=true : mode "Légende complète" → HTML à la place des rangées classiques
-        function atlasApplyHtmlMode(showHtml) {
+        // Applique le mode courant à une figure dont le HTML est chargé
+        function atlasApplyModeToHost(host) {
+            var mode = host._mode || 'complete';
+            var a = host._analysis;
+
+            // Aucune légende data-num exploitable : Séquentielle / Test repassent au classique
+            if (mode !== 'complete' && a && !a.blocks.length) {
+                atlasFallbackToClassic(host);
+                return;
+            }
+
+            var block = host.closest('.block-figure');
+            if (block) block.querySelectorAll('.atlas-classic-row').forEach(function (r) { r.style.display = 'none'; });
+            host.style.display = 'block';
+            // Les groupes ne sont enveloppés qu'au premier passage en Séquentielle / Test :
+            // en mode Complète, le HTML de l'export reste strictement intact.
+            if (mode !== 'complete') atlasEnsureGroups(host);
+            atlasResetProgress(host);   // changement de mode → tous les groupes recouverts
+            atlasRender(host);
+        }
+
+        // mode ∈ {'complete', 'sequential', 'test'} — tout changement de mode remet les masques
+        function atlasApplyHtmlMode(mode) {
             document.querySelectorAll('.block-figure').forEach(function (block) {
                 var host = block.querySelector('.atlas-html-host');
                 if (!host || host.dataset.hashtml !== '1') return; // figure classique : rien à faire
-                if (showHtml) {
-                    block.querySelectorAll('.atlas-classic-row').forEach(function (r) { r.style.display = 'none'; });
-                    host.style.display = 'block';
-                    // Chargement à la demande : seulement la figure actuellement visible
-                    if (!block.classList.contains('inactive')) atlasLoadHtml(host);
-                } else {
-                    host.style.display = 'none';
-                    block.querySelectorAll('.atlas-classic-row').forEach(function (r) { r.style.display = ''; });
-                }
+                host._mode = mode;
+                host._revealed = {};
+                block.querySelectorAll('.atlas-classic-row').forEach(function (r) { r.style.display = 'none'; });
+                host.style.display = 'block';
+                // Chargement à la demande : seulement la figure actuellement visible
+                if (block.classList.contains('inactive')) return;
+                atlasLoadHtml(host, function () { atlasApplyModeToHost(host); });
             });
         }
 
         // Branché APRÈS les gestionnaires existants (ordre d'exécution garanti) :
-        // le comportement historique des modes s'applique d'abord, puis l'aiguillage HTML
+        // le comportement historique des modes s'applique d'abord (il ne concerne
+        // visuellement que les figures sans HTML), puis l'aiguillage HTML
         document.querySelectorAll('.adMode').forEach(function (b) {
-            b.addEventListener('click', function () { atlasApplyHtmlMode(true); });
+            b.addEventListener('click', function () { atlasApplyHtmlMode('complete'); });
         });
-        document.querySelectorAll('.restoreNormalMode, .beginTest').forEach(function (b) {
-            b.addEventListener('click', function () { atlasApplyHtmlMode(false); });
+        document.querySelectorAll('.restoreNormalMode').forEach(function (b) {
+            b.addEventListener('click', function () { atlasApplyHtmlMode('sequential'); });
+        });
+        document.querySelectorAll('.beginTest').forEach(function (b) {
+            b.addEventListener('click', function () { atlasApplyHtmlMode('test'); });
         });
 
         // Fonction pour déclencher un clic sur le bouton lorsque l'audio commence à jouer

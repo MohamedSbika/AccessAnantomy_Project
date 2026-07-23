@@ -1,8 +1,19 @@
-<!-- Figure HTML autonome — fichier d'EXEMPLE pour tester le pipeline.
+<!-- Figure HTML autonome — fichier d'EXEMPLE pour tester le pipeline (MONO-IMAGE).
      Contrat viewer : chaque marqueur du schéma ET chaque ligne de légende
      porte data-num="N" ; le clic (géré par la page, pas par ce fichier)
      ajoute la classe .active sur tous les éléments du même numéro.
-     Aucun contenu actif autorisé (scripts, iframes, gestionnaires on*…). -->
+     Aucun contenu actif autorisé (scripts, iframes, gestionnaires on*…).
+
+     Mode "Légende séquentielle" de l'Atlas : les lignes de légende (les data-num
+     situés HORS du <svg>) sont découpées en groupes de 4 et chaque groupe est
+     recouvert de SON bouton "Découvrir la réponse" — tous affichés en même temps,
+     comme sur les figures classiques. Ici 4 légendes → un seul groupe, un bouton.
+     Mode "Test" : toutes les légendes reçoivent d'un coup badge + œil + saisie.
+
+     MULTI-IMAGES : voir _sample_figure_html_multi.html. Le découpage par 4 repart
+     à zéro à chaque image ; le rattachement légende ↔ image se fait via l'attribut
+     optionnel data-fig="K" (à porter par les légendes ET par le titre de l'image),
+     avec repli automatique sur la structure du DOM si data-fig est absent. -->
 <style>
     .fig-wrap {
         display: flex;

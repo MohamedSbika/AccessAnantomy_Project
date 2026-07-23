@@ -1,0 +1,163 @@
+<!-- Figure HTML autonome — fichier d'EXEMPLE MULTI-IMAGES.
+     Même contrat que _sample_figure_html.html (data-num sur les marqueurs et sur les
+     lignes de légende, aucun contenu actif), plus l'attribut data-fig="K" qui rattache
+     explicitement chaque légende — et le titre de chaque image — à son image.
+
+     Mode "Légende séquentielle" de l'Atlas : le découpage en groupes de 4 REPART À
+     ZÉRO à chaque image, et chaque groupe porte SON bouton "Découvrir la réponse"
+     (tous affichés en même temps, comme sur les figures classiques).
+     Ici image A = 6 légendes, image B = 5 légendes, donc 4 boutons simultanés :
+         A[1-4]   A[5-6]   B[7-10]   B[11]
+     Un groupe n'est jamais à cheval sur deux images.
+     Mode "Test" : toutes les légendes reçoivent d'un coup badge + œil + saisie. -->
+<style>
+    .fig-multi {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        font-family: Arial, Helvetica, sans-serif;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 10px;
+    }
+    .fig-multi .fig-wrap {
+        display: flex;
+        gap: 16px;
+        align-items: stretch;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .fig-multi .panel-legende {
+        flex: 0 0 220px;
+        overflow-y: auto;
+        padding: 6px;
+    }
+    .fig-multi .panel-schema {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-width: 0;
+    }
+    .fig-multi .panel-schema svg { width: 100%; height: auto; max-height: 100%; }
+    .fig-multi .titre-figure {
+        margin-top: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #1f2937;
+        border-top: 2px solid #1e3a8a;
+        padding-top: 6px;
+        text-align: center;
+    }
+    .fig-multi .legend-list { list-style: none; padding: 0; margin: 0; }
+    .fig-multi .legend-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 5px 6px;
+        margin-bottom: 3px;
+        border-radius: 6px;
+        font-size: 12.5px;
+        line-height: 1.35;
+        cursor: pointer;
+    }
+    .fig-multi .legend-item:hover { background: #eff6ff; }
+    .fig-multi .leg-badge {
+        flex-shrink: 0;
+        min-width: 22px; height: 22px;
+        border-radius: 4px;
+        background: #1e3a8a; color: #fff;
+        font-size: 11px; font-weight: 700;
+        display: flex; align-items: center; justify-content: center;
+        padding: 0 5px;
+        box-sizing: border-box;
+    }
+    .fig-multi .marker-num { font-size: 14px; font-weight: 700; fill: #1e3a8a; cursor: pointer; }
+    .fig-multi .marker-arrow { stroke: #1e3a8a; stroke-width: 1.5; fill: none; cursor: pointer; }
+</style>
+
+<div class="fig-multi">
+    <!-- Image raster embarquée : sert uniquement à l'extraction de la miniature
+         lors d'un AJOUT de figure (encryptFigure) ; invisible à l'affichage.
+         Étant en display:none, elle n'est pas comptée comme une image du HTML. -->
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==" alt="" style="display:none;">
+
+    <!-- ═══════════ Image A — 6 légendes → blocs [1-4] puis [5-6] ═══════════ -->
+    <section class="fig-wrap">
+        <div class="panel-legende">
+            <ul class="legend-list">
+                <li class="legend-item" data-fig="A" data-num="1"><span class="leg-badge">1</span><span>Paroi supérieure</span></li>
+                <li class="legend-item" data-fig="A" data-num="2"><span class="leg-badge">2</span><span>Cavité centrale</span></li>
+                <li class="legend-item" data-fig="A" data-num="3"><span class="leg-badge">3</span><span>Conduit latéral</span></li>
+                <li class="legend-item" data-fig="A" data-num="4"><span class="leg-badge">4</span><span>Base inférieure</span></li>
+                <li class="legend-item" data-fig="A" data-num="5"><span class="leg-badge">5</span><span>Bord antérieur</span></li>
+                <li class="legend-item" data-fig="A" data-num="6"><span class="leg-badge">6</span><span>Bord postérieur</span></li>
+            </ul>
+        </div>
+
+        <div class="panel-schema">
+            <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="200" cy="150" rx="120" ry="90" fill="#fde8d8" stroke="#8a5a3b" stroke-width="2"/>
+                <ellipse cx="200" cy="150" rx="55" ry="40" fill="#f9c9a8" stroke="#8a5a3b" stroke-width="1.5"/>
+                <path d="M 320 150 Q 360 150 370 120" fill="none" stroke="#8a5a3b" stroke-width="2"/>
+
+                <line class="marker-arrow" data-fig="A" data-num="1" x1="150" y1="40" x2="180" y2="70"/>
+                <text class="marker-num" data-fig="A" data-num="1" x="140" y="35">1</text>
+
+                <line class="marker-arrow" data-fig="A" data-num="2" x1="120" y1="150" x2="160" y2="150"/>
+                <text class="marker-num" data-fig="A" data-num="2" x="105" y="155">2</text>
+
+                <line class="marker-arrow" data-fig="A" data-num="3" x1="380" y1="100" x2="365" y2="122"/>
+                <text class="marker-num" data-fig="A" data-num="3" x="378" y="95">3</text>
+
+                <line class="marker-arrow" data-fig="A" data-num="4" x1="200" y1="270" x2="200" y2="238"/>
+                <text class="marker-num" data-fig="A" data-num="4" x="195" y="285">4</text>
+
+                <line class="marker-arrow" data-fig="A" data-num="5" x1="60" y1="90" x2="95" y2="115"/>
+                <text class="marker-num" data-fig="A" data-num="5" x="48" y="85">5</text>
+
+                <line class="marker-arrow" data-fig="A" data-num="6" x1="345" y1="230" x2="310" y2="205"/>
+                <text class="marker-num" data-fig="A" data-num="6" x="348" y="245">6</text>
+            </svg>
+            <!-- Le titre porte data-fig : c'est lui qui nomme l'image dans la barre de progression -->
+            <div class="titre-figure" data-fig="A">Fig. A — Coupe transversale (exemple multi-images)</div>
+        </div>
+    </section>
+
+    <!-- ═══════════ Image B — 5 légendes → blocs [1-4] puis [5] ═══════════ -->
+    <section class="fig-wrap">
+        <div class="panel-legende">
+            <ul class="legend-list">
+                <li class="legend-item" data-fig="B" data-num="7"><span class="leg-badge">7</span><span>Apex</span></li>
+                <li class="legend-item" data-fig="B" data-num="8"><span class="leg-badge">8</span><span>Face médiale</span></li>
+                <li class="legend-item" data-fig="B" data-num="9"><span class="leg-badge">9</span><span>Face latérale</span></li>
+                <li class="legend-item" data-fig="B" data-num="10"><span class="leg-badge">10</span><span>Sillon longitudinal</span></li>
+                <li class="legend-item" data-fig="B" data-num="11"><span class="leg-badge">11</span><span>Extrémité distale</span></li>
+            </ul>
+        </div>
+
+        <div class="panel-schema">
+            <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+                <polygon points="200,30 300,250 100,250" fill="#e8f0fd" stroke="#1e3a8a" stroke-width="2"/>
+                <line x1="200" y1="30" x2="200" y2="250" stroke="#1e3a8a" stroke-width="1.5" stroke-dasharray="5 4"/>
+
+                <line class="marker-arrow" data-fig="B" data-num="7" x1="200" y1="12" x2="200" y2="32"/>
+                <text class="marker-num" data-fig="B" data-num="7" x="193" y="10">7</text>
+
+                <line class="marker-arrow" data-fig="B" data-num="8" x1="120" y1="140" x2="160" y2="150"/>
+                <text class="marker-num" data-fig="B" data-num="8" x="105" y="140">8</text>
+
+                <line class="marker-arrow" data-fig="B" data-num="9" x1="285" y1="140" x2="245" y2="150"/>
+                <text class="marker-num" data-fig="B" data-num="9" x="292" y="140">9</text>
+
+                <line class="marker-arrow" data-fig="B" data-num="10" x1="255" y1="90" x2="205" y2="120"/>
+                <text class="marker-num" data-fig="B" data-num="10" x="258" y="86">10</text>
+
+                <line class="marker-arrow" data-fig="B" data-num="11" x1="200" y1="278" x2="200" y2="255"/>
+                <text class="marker-num" data-fig="B" data-num="11" x="188" y="292">11</text>
+            </svg>
+            <div class="titre-figure" data-fig="B">Fig. B — Vue antérieure (exemple multi-images)</div>
+        </div>
+    </section>
+</div>
