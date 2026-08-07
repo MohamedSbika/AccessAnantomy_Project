@@ -898,8 +898,11 @@ if (isset($OneBook) && !empty($OneBook) && is_array($OneBook) && isset($OneBook[
                le dessin au maximum qui tient (contain), quel que soit son format */
             + '.aa-svg-host svg{width:100% !important;height:100% !important;max-width:100% !important;max-height:100% !important;}'
             + '.aa-viewer{padding:4px;}'
+            /* Légendes alignées à gauche (l'export les centre par défaut) */
+            + '.aa-side{align-items:flex-start;text-align:left;}'
+            + '.aa-legend-list{align-items:flex-start;}'
             /* Typographie agrandie (l'export est calibré petit : 12px / badges 20px) */
-            + '.aa-legend-item{font-size:14px;padding:7px 8px;}'
+            + '.aa-legend-item{font-size:14px;padding:7px 8px;justify-content:flex-start;text-align:left;}'
             + '.aa-badge{min-width:24px;height:24px;font-size:12px;}'
             + '.aa-title{font-size:16px;}'
             + '.aa-subtitle{font-size:13.5px;}'
