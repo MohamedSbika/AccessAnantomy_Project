@@ -905,6 +905,25 @@ if (isset($OneBook) && !empty($OneBook) && is_array($OneBook) && isset($OneBook[
             + '.aa-subtitle{font-size:13.5px;}'
             + '.aa-roman-item{font-size:13px;}'
             + '.aa-roman-children li{font-size:12px;}'
+            + '}'
+            /* Mobile (< 621px) : l'export empile déjà les panneaux, mais dans
+               l'ordre légendes → figure → légendes, et calibré pour un écran
+               large (légendes 12px sur 26px de haut, pastilles 18px, alors
+               qu'elles se cliquent au doigt pour surligner un repère).
+               On remonte donc la figure en tête et on desserre la typographie. */
+            + '@container (max-width:620px){'
+            + '.aa-layout{gap:10px;}'
+            + '.aa-layout > .aa-viewer{order:-1;}'
+            + '.aa-viewer{padding:4px;}'
+            /* L'export verrouille ces deux-là par ".aa-root .aa-x{... !important}" :
+               il faut la même spécificité ET !important pour reprendre la main
+               (la feuille injectée passe après celle de l'export). */
+            + '.aa-root .aa-legend-item{font-size:13.5px !important;padding:8px 6px !important;line-height:1.35 !important;}'
+            + '.aa-root .aa-badge{min-width:22px !important;width:22px !important;height:22px !important;font-size:11.5px !important;}'
+            + '.aa-title{font-size:15px;}'
+            + '.aa-subtitle{font-size:12.5px;}'
+            + '.aa-roman-item{font-size:12.5px;}'
+            + '.aa-roman-children li{font-size:12px;}'
             + '}';
 
         function getHtmlShadowRoot() {

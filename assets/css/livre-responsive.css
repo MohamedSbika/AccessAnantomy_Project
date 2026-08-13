@@ -1,0 +1,121 @@
+/* ==========================================================================
+   Page livre (livreDetails) — responsive mobile & tablette
+   --------------------------------------------------------------------------
+   Ne traite QUE ce qui est propre à cette page : la couverture (col-md-4) et
+   le bloc de description (col-md-8). La colonne de raccourcis et le panneau
+   des chapitres sont communs à plusieurs pages et vivent dans
+   racourci-responsive.css.
+
+   Chargée APRÈS v1_app.css et responsive-global.css. Le desktop (>= 992px)
+   n'est pas touché : tout est enfermé dans des media queries max-width.
+   ========================================================================== */
+
+
+/* --------------------------------------------------------------------------
+   1. Tablette paysage (768px - 991.98px)
+   La colonne de raccourcis reste en position: fixed à gauche : on décale le
+   contenu pour qu'elle cesse de recouvrir la couverture.
+   -------------------------------------------------------------------------- */
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+
+    /* 110px et non 88 : la variante atlas de v1_racourci fait 100px de large
+       (75px pour la variante par défaut). On réserve la plus large. */
+    .main-section {
+        padding-left: 110px !important;
+        padding-right: 10px !important;
+    }
+}
+
+
+/* --------------------------------------------------------------------------
+   2. Tablette portrait et mobile (<= 767.98px)
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767.98px) {
+
+    /* Fond de page gris clair : les blocs blancs (raccourcis, couverture,
+       description) se détachent au lieu de former un seul aplat. */
+    body {
+        background: #eef1f5 !important;
+    }
+
+    /* .main-section est un flex row : il doit s'empiler comme sa grille. */
+    .main-section {
+        flex-direction: column !important;
+        gap: 0 !important;
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+    }
+
+    .main-section > .row {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    /* Sans cela, la gouttière de la colonne décale la fiche description de
+       12px par rapport à la fiche couverture. */
+    .main-section .col-md-8 {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    /* La couverture dans sa propre fiche, comme le bloc description. */
+    .main-section .col-md-4 {
+        background: #ffffff;
+        border-radius: 14px;
+        box-shadow: 0 1px 3px rgba(16, 24, 40, .10);
+        padding: 10px !important;
+        margin-bottom: 14px;
+    }
+
+    /* La couverture porte un margin-left: 30px inline, calé sur la mise en
+       page deux colonnes. */
+    .main-section .col-md-4 img {
+        width: 100% !important;
+        max-height: 320px !important;
+        margin-left: 0 !important;
+        margin-bottom: 14px !important;
+        object-fit: contain;
+    }
+
+    /* Le bloc description a un max-height de 500px : un second ascenseur
+       imbriqué dans celui de la page est pénible au doigt. On laisse le
+       contenu se dérouler, la page défile normalement. */
+    .bloc_pub {
+        margin: 0 0 16px !important;
+        padding: 14px !important;
+        max-height: none !important;
+        overflow: auto !important;
+        font-size: 14px !important;
+        border-radius: 14px;
+        background: #ffffff;
+        box-shadow: 0 1px 3px rgba(16, 24, 40, .10) !important;
+    }
+
+    /* Le HTML de description vient de Word : largeurs en dur et tableaux. */
+    .bloc_pub table {
+        max-width: 100% !important;
+    }
+
+    .bloc_pub img {
+        max-width: 100% !important;
+        height: auto !important;
+    }
+}
+
+
+/* --------------------------------------------------------------------------
+   3. Petits téléphones (<= 400px)
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 400px) {
+
+    .main-section .col-md-4 img {
+        max-height: 260px !important;
+    }
+
+    .bloc_pub {
+        padding: 12px !important;
+    }
+}

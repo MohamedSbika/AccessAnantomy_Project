@@ -97,9 +97,9 @@ $query_builder = TRUE;
 
 $db['default'] = array(
     'dsn'	=> '',
-    'hostname' => 'localhost',
-    'username' => 'root',
-    'password' => '',
+    'hostname' => '127.0.0.1',
+    'username' => 'mezidxco',
+    'password' => 'AccessAnat0my_2026_dev',
     'database' => 'mezidxco_db_local',
     'dbdriver' => 'mysqli',
     'dbprefix' => '',

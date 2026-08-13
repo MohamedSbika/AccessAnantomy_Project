@@ -531,6 +531,8 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 		}
 	</script>
 
+	<?php $aa_mobile_bar = false; include('components/aa_header_mobile.php'); ?>
+
 	<main>
 
 		<section class="hero">

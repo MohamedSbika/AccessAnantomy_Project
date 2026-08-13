@@ -1,0 +1,151 @@
+/* ==========================================================================
+   Bloc figures (v1_bloc_figures.php) — responsive mobile & tablette
+   --------------------------------------------------------------------------
+   Couche commune à toutes les pages qui incluent le bloc figures :
+   livreCours, livreQcm, livreQroc, livreFigures.
+
+   Le bloc réunit trois choses :
+     - la bande de miniatures (.scroll-container),
+     - la figure elle-même (.container-fig), qui affiche selon le cas une image
+       PNG (#expandedImg), un SVG interactif (#svg-viewer) ou un HTML autonome
+       rendu en Shadow DOM (#html-viewer),
+     - les deux panneaux de légendes du visionneur SVG (.fig-legend-panel),
+       frères de .container-fig, posés en absolu sur ses bords.
+
+   Chargée APRÈS v1_app.css et responsive-global.css. Le desktop (>= 992px)
+   n'est pas touché.
+
+   La mise en page interne des figures HTML (Shadow DOM) ne se pilote pas
+   d'ici : elle est traitée par FIG_SHADOW_LAYOUT dans v1_bloc_figures.php,
+   via une container query.
+   ========================================================================== */
+
+
+@media (max-width: 767.98px) {
+
+    /* ---- 1. Bande de miniatures ----
+       v1_livreCours.php plafonne la bande à 40vw pour la centrer dans la
+       colonne desktop : sur téléphone il ne reste que ~150px de vignettes.
+       Deux id dans le sélecteur pour passer devant ce !important. */
+    #element #figures-scroll-container.scroll-container,
+    #element .scroll-container {
+        max-width: 100% !important;
+        width: 100% !important;
+        gap: 10px !important;
+    }
+
+    /* Cible tactile : 60px de vignette, c'est juste pour un doigt. */
+    .scroll-container img {
+        width: 68px !important;
+        height: 68px !important;
+    }
+
+
+    /* ---- 2. Figure principale ----
+       Le style inline impose height: 100vh et max-height: 50vw (relevé à
+       100vh en mode HTML), le tout en overflow: hidden et centré
+       verticalement : une figure plus haute que la boîte était rognée EN HAUT
+       ET EN BAS, sans aucun moyen d'atteindre le reste. La boîte épouse donc
+       son contenu, et c'est la page qui défile.
+
+       `div.container-fig.html-wide` (et non `.container-fig.html-wide`) :
+       v1_bloc_figures.php pose la même règle en !important depuis un <style>
+       situé dans le <body>, donc plus tard dans la cascade. À spécificité
+       égale il gagnerait ; le nom de balise fait la différence. */
+    #element .container-fig,
+    #element div.container-fig.html-wide {
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        max-width: 100% !important;
+        overflow: visible !important;
+        padding: 6px !important;
+        /* En flex, l'image PNG (max-height: 100% inline) et la boîte se
+           dimensionnent l'une par rapport à l'autre : la figure débordait de
+           son conteneur. Un seul visionneur est visible à la fois, le flux
+           bloc suffit et supprime la circularité. */
+        display: block !important;
+        border-radius: 10px;
+    }
+
+    /* Figure HTML autonome : son contenu (image + marqueurs + légendes) fait
+       souvent plus de 1500px de haut une fois la colonne étroite. */
+    #element .container-fig #html-viewer {
+        height: auto !important;
+        min-height: 0 !important;
+        overflow: visible !important;
+    }
+
+    /* Figure SVG : à l'inverse, le SVG se met à l'échelle de son hôte
+       (width/height: 100%) — il lui faut donc une hauteur définie, sinon il
+       se réduit à rien. */
+    #element .container-fig #svg-viewer {
+        height: 62vh !important;
+        min-height: 320px;
+        flex: 0 0 auto;
+    }
+
+    /* Figure PNG classique : bornée à un écran pour rester comparable au
+       reste de la page. */
+    #element .container-fig #expandedImg {
+        max-height: 80vh !important;
+    }
+
+    .image-viewer {
+        padding: 6px 0 !important;
+    }
+
+    /* Flèches de navigation entre figures : 20px de large, intenable au doigt. */
+    .absolute-arrow {
+        width: 34px !important;
+        height: 58px !important;
+        font-size: 20px !important;
+    }
+
+
+    /* ---- 3. Légendes du visionneur SVG ----
+       Deux panneaux à 26% de large chacun aux bords de la figure : sur
+       téléphone il ne resterait que la moitié de l'écran pour la figure.
+       Remis dans le flux, ils s'empilent sous elle en pleine largeur, avec
+       leur propre défilement.
+
+       Le JS ne pose que `display` en inline : la mise en page reste pilotée
+       d'ici. */
+    #element .fig-legend-panel {
+        position: static !important;
+        left: auto !important;
+        right: auto !important;
+        top: auto !important;
+        bottom: auto !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        max-height: 22vh;
+        flex: 0 0 auto;
+        border-top: 1px solid #d1d5db;
+    }
+
+    /* La croix d'orientation est dimensionnée pour un panneau large. */
+    .orient-cross svg {
+        width: 78px;
+        height: 37px;
+    }
+}
+
+
+/* --------------------------------------------------------------------------
+   Petits téléphones (<= 400px)
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 400px) {
+
+    /* Aucun plafond de hauteur sur .container-fig : il rognerait la figure.
+       Seule la boîte SVG, qui a besoin d'une hauteur définie, est resserrée. */
+    #element .container-fig #svg-viewer {
+        height: 58vh !important;
+    }
+
+    .scroll-container img {
+        width: 60px !important;
+        height: 60px !important;
+    }
+}

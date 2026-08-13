@@ -245,6 +245,8 @@ if (strlen($this->session->userdata('passTok')) == 200) {
             margin-right: auto !important;
         }
     </style>
+
+    <?php include('components/aa_cours_responsive.php'); ?>
 </head>
 
 <header style="z-index: 1000; width: 100%; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
@@ -490,7 +492,10 @@ if (strlen($this->session->userdata('passTok')) == 200) {
                     OU <strong>le .svg ET son .json</strong> (la paire est obligatoire), puis Enregistrer.
                     Supprimer fait revenir la figure à son affichage PNG classique.
                 </p>
-                <table style="width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed;">
+                <!-- data-label sur chaque cellule : sous 768px, cours-responsive.css
+                     replie le tableau en fiches et affiche ces libellés à la place
+                     de l'en-tête (voir "Modale figures interactives"). -->
+                <table class="aa-fig-table" style="width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed;">
                     <thead>
                         <tr style="border-bottom: 2px solid #1d3557; text-align: left;">
                             <th style="padding: 6px; width: 13%;">Figure</th>
@@ -504,8 +509,8 @@ if (strlen($this->session->userdata('passTok')) == 200) {
                     <tbody>
                         <?php if (isset($listFig) && is_array($listFig)) foreach ($listFig as $figRow): ?>
                         <tr id="svgRow_<?= (int) $figRow['IDFigure']; ?>" style="border-bottom: 1px solid #eee;">
-                            <td style="padding: 6px; font-weight: 600; color: #1d3557; overflow: hidden; text-overflow: ellipsis;"><?= html_escape($figRow['TitreFigure']); ?></td>
-                            <td style="padding: 6px;">
+                            <td data-label="Figure" style="padding: 6px; font-weight: 600; color: #1d3557; overflow: hidden; text-overflow: ellipsis;"><?= html_escape($figRow['TitreFigure']); ?></td>
+                            <td data-label="Statut" style="padding: 6px;">
                                 <?php
                                     $figStatus = !empty($figRow['hasHtml']) ? 'HTML ✓' : (!empty($figRow['hasSvg']) ? 'SVG ✓' : 'PNG seul');
                                     $figStatusCss = ($figStatus === 'PNG seul') ? 'background:#f3f4f6; color:#6b7280;' : 'background:#d1fae5; color:#065f46;';
@@ -514,10 +519,10 @@ if (strlen($this->session->userdata('passTok')) == 200) {
                                     <?= $figStatus; ?>
                                 </span>
                             </td>
-                            <td style="padding: 6px;"><input type="file" accept=".html,.htm,text/html" class="htmlFileInput" style="width: 100%; font-size: 11px;"></td>
-                            <td style="padding: 6px;"><input type="file" accept=".svg,image/svg+xml" class="svgFileInput" style="width: 100%; font-size: 11px;"></td>
-                            <td style="padding: 6px;"><input type="file" accept=".json,application/json" class="jsonFileInput" style="width: 100%; font-size: 11px;"></td>
-                            <td style="padding: 6px; white-space: nowrap;">
+                            <td data-label="Fichier .html" style="padding: 6px;"><input type="file" accept=".html,.htm,text/html" class="htmlFileInput" style="width: 100%; font-size: 11px;"></td>
+                            <td data-label="Fichier .svg" style="padding: 6px;"><input type="file" accept=".svg,image/svg+xml" class="svgFileInput" style="width: 100%; font-size: 11px;"></td>
+                            <td data-label="Fichier .json" style="padding: 6px;"><input type="file" accept=".json,application/json" class="jsonFileInput" style="width: 100%; font-size: 11px;"></td>
+                            <td data-label="Actions" style="padding: 6px; white-space: nowrap;">
                                 <button type="button" onclick="saveFigureSvgRow(<?= (int) $figRow['IDFigure']; ?>)"
                                         style="background: #1d3557; color: white; border: none; padding: 4px 10px; border-radius: 5px; cursor: pointer; font-size: 12px;">Enregistrer</button>
                                 <button type="button" onclick="deleteFigureSvgRow(<?= (int) $figRow['IDFigure']; ?>)"

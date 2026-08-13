@@ -1,0 +1,244 @@
+/* ==========================================================================
+   Pages de lecture — squelette responsive commun
+   --------------------------------------------------------------------------
+   Couche partagée par les vues bâties sur le même gabarit :
+   #element > (v1_header_nav + v1_racourci + une ou deux colonnes flottantes).
+
+     v1_livreCours     texte du cours   + bloc figures
+     v1_livreQcm       liste QCM        + bloc figures
+     v1_livreQroc      liste QROC       + bloc figures
+     v1_livreFigures   banner           + bloc figures
+     v1_evaluatQCM     grille d'examen  (une seule colonne)
+     v1_evaluatQROC    grille d'examen  (une seule colonne)
+
+   Toutes posent leurs largeurs en style inline (width: 48%, margin-left: 45px…)
+   calé sur la colonne de raccourcis fixe : d'où les !important ici.
+
+   Le bloc figures a sa propre feuille (figures-responsive.css), la colonne de
+   raccourcis aussi (racourci-responsive.css).
+
+   Chargée APRÈS v1_app.css et responsive-global.css. Le desktop (>= 992px)
+   n'est pas touché.
+   ========================================================================== */
+
+
+/* --------------------------------------------------------------------------
+   1. Tablette paysage (768px - 991.98px)
+   La colonne de raccourcis reste flottante à gauche : on lui réserve sa bande
+   sur #element. Les colonnes étant dimensionnées en % de #element, elles se
+   recalculent dans la largeur restante — aucun débordement à droite.
+   -------------------------------------------------------------------------- */
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+
+    /* 110px et non 85 : la variante atlas de v1_racourci fait 100px de large
+       (75px pour la variante par défaut). On réserve la plus large. */
+    #element {
+        padding-left: 110px !important;
+        padding-right: 8px !important;
+        height: auto !important;
+    }
+
+    /* Les colonnes flottent : sans cela #element ne les contient pas, la page
+       ne peut pas défiler et tout ce qui suit (pagination des questions)
+       reste hors d'atteinte. */
+    #element::after {
+        content: "";
+        display: block;
+        clear: both;
+    }
+
+    /* Ces marges doublaient la réservation faite ci-dessus. */
+    #element > div[class*="col-"] {
+        margin-left: 0 !important;
+    }
+
+    body {
+        height: auto !important;
+    }
+}
+
+
+/* --------------------------------------------------------------------------
+   1 bis. Liste des questions : un seul ascenseur, celui de la page
+   --------------------------------------------------------------------------
+   v1_livreQcm.php enferme la liste dans un conteneur défilant de 88vh
+   (#datatables-ajax_wrapper { overflow-y: scroll; height: calc(100vh - 12vh) }).
+   Sur un écran étroit, cet ascenseur imbriqué occupe tout l'affichage et la
+   pagination, placée à sa fin, devient introuvable. v1_livreQroc.php a déjà
+   renoncé à ce conteneur (height: auto) : on aligne le QCM dessus.
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 991.98px) {
+
+    #datatables-ajax_wrapper {
+        height: auto !important;
+        max-height: none !important;
+        overflow-y: visible !important;
+        width: 100% !important;
+        margin-left: 0 !important;
+    }
+}
+
+
+/* --------------------------------------------------------------------------
+   2. Tablette portrait et mobile (<= 767.98px)
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767.98px) {
+
+    /* ---- 2.1 Squelette ----
+       Hauteurs fixes héritées (body 300/400px, #element 100/200px) que le
+       contenu dépasse de plusieurs milliers de pixels. */
+    body,
+    #element {
+        height: auto !important;
+        min-height: 0 !important;
+    }
+
+    #element {
+        display: block !important;   /* les colonnes flottantes s'empilent */
+        padding: 0 8px 24px !important;
+        text-align: left !important;
+    }
+
+    /* Fond gris clair : les blocs blancs se détachent au lieu de former un
+       seul aplat, et la limite entre colonnes empilées devient lisible. */
+    body,
+    #element {
+        background: #eef1f5 !important;
+    }
+
+    /* ---- 2.2 Colonnes ----
+       48% + margin-left: 45px donnaient une colonne de 187px de large sur un
+       téléphone : le texte des questions y était illisible. */
+    #element > div[class*="col-"] {
+        float: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 0 14px !important;
+        padding: 10px !important;
+        background: #ffffff;
+        border-radius: 14px;
+        box-shadow: 0 1px 3px rgba(16, 24, 40, .10);
+    }
+
+
+    /* ---- 2.3 Listes de questions (DataTables) ----
+       Le tableau n'a qu'une colonne : chaque ligne est une question. Il n'y a
+       donc rien à replier, seulement à élargir et à aérer. */
+    .dataTables_wrapper,
+    table.dataTable,
+    #datatables-ajax {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    table.dataTable td,
+    table.dataTable th {
+        padding: 6px 2px !important;
+        white-space: normal !important;
+        word-break: break-word;
+    }
+
+    /* Réponses (une ligne = un choix) : cible tactile et texte alignés. */
+    table.dataTable .form-check,
+    table.dataTable label {
+        text-align: left;
+        line-height: 1.4;
+    }
+
+    table.dataTable input[type="radio"],
+    table.dataTable input[type="checkbox"] {
+        width: 20px !important;
+        height: 20px !important;
+        margin-right: 8px;
+        flex: 0 0 auto;
+    }
+
+    table.dataTable textarea,
+    table.dataTable input[type="text"] {
+        width: 100% !important;
+        font-size: 16px !important;   /* < 16px : iOS zoome à la mise au point */
+    }
+
+    /* Pagination : les numéros de page sortaient de l'écran, la vue posant
+       `white-space: nowrap` sur le conteneur et DataTables enfilant les liens
+       dans un <span> unique. On autorise le retour à la ligne et on empile
+       les numéros sur plusieurs rangs. */
+    .dataTables_paginate {
+        display: block !important;
+        white-space: normal !important;
+        padding-bottom: 6px;
+    }
+
+    .dataTables_paginate > span,
+    .dataTables_paginate .pagination {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        white-space: normal !important;
+        gap: 4px;
+        padding-left: 0;
+    }
+
+    .dataTables_paginate .paginate_button,
+    .dataTables_paginate .page-item .page-link {
+        min-width: 40px;
+        min-height: 40px;
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+    }
+
+    .dataTables_filter,
+    .dataTables_length {
+        float: none !important;
+        width: 100% !important;
+        text-align: left !important;
+    }
+
+    .dataTables_filter input {
+        width: 100% !important;
+        margin-left: 0 !important;
+        font-size: 16px !important;
+    }
+
+
+    /* ---- 2.4 Barre « mode lecture » et minuteur d'examen ---- */
+    .carreaux_lec {
+        width: auto !important;
+        min-width: 120px;
+        padding: 0 10px;
+        height: 30px !important;
+        font-size: 11px !important;
+    }
+
+    /* Le chronomètre est en position: fixed à 20px du bord droit : il passait
+       par-dessus le contenu et sous la barre mobile. */
+    #setMinut {
+        top: auto !important;
+        bottom: 10px !important;
+        right: 10px !important;
+        font-size: 15px !important;
+        padding: 6px 12px !important;
+        opacity: .95;
+    }
+}
+
+
+/* --------------------------------------------------------------------------
+   3. Petits téléphones (<= 400px)
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 400px) {
+
+    #element {
+        padding: 0 6px 20px !important;
+    }
+
+    #element > div[class*="col-"] {
+        padding: 8px !important;
+    }
+}

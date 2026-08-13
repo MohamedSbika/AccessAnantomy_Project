@@ -1,0 +1,358 @@
+/* ==========================================================================
+   Header responsive — mobile & tablette uniquement
+   --------------------------------------------------------------------------
+   IMPORTANT : le design du header desktop n'est PAS modifie.
+   Toutes les regles ci-dessous sont soit :
+     - dans @media (max-width: 991.98px)  -> mobile + tablette,
+     - soit sur des elements nouveaux (.aa-mobile-bar, .aa-nav-backdrop)
+       qui sont masques par defaut sur desktop.
+   ========================================================================== */
+
+/* Nouveaux elements : invisibles sur desktop (>= 992px) */
+.aa-mobile-bar,
+.aa-nav-backdrop {
+    display: none;
+}
+
+@media (max-width: 991.98px) {
+
+    /* ----------------------------------------------------------------------
+       1. Bascule desktop -> mobile/tablette
+       Les classes Bootstrap du markup basculent a 768px : on etend la bascule
+       jusqu'a 991.98px pour que les tablettes aient aussi le menu burger.
+       ---------------------------------------------------------------------- */
+    nav.main-nav,
+    div.main-nav {
+        display: none !important;
+    }
+
+    button.menu-btn {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        border-radius: 8px;
+        font-size: 24px;
+        line-height: 1;
+        z-index: 1031;
+    }
+
+    /* ----------------------------------------------------------------------
+       2. Le tiroir (drawer) de navigation
+       ---------------------------------------------------------------------- */
+    #sideNav.side-nav {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: -320px !important; /* ferme : bat le style inline de l'ancien JS */
+        width: 280px;
+        max-width: 86vw;
+        height: 100%;
+        padding: 18px 0 32px !important;
+        background-color: #0E2A47;
+        box-shadow: 2px 0 18px rgba(0, 0, 0, .35);
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        transition: left .3s ease;
+        z-index: 100000;
+    }
+
+    #sideNav.side-nav.aa-open {
+        left: 0 !important;
+    }
+
+    #sideNav.side-nav,
+    #sideNav.side-nav * {
+        box-sizing: border-box;
+    }
+
+    /* Logo dans le tiroir : pastille blanche, le logo est concu pour un fond clair */
+    #sideNav.side-nav > img {
+        width: 136px !important;
+        height: auto;
+        margin: 0 16px 12px;
+        padding: 6px 8px;
+        background: #ffffff;
+        border-radius: 8px;
+        flex: 0 0 auto;
+        cursor: pointer;
+    }
+
+    /* Bouton fermer : zone tactile confortable */
+    #sideNav.side-nav .close-btn {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 44px;
+        height: 44px;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        line-height: 1;
+        color: #fff;
+        border-bottom: 0 !important;
+    }
+
+    /* ----------------------------------------------------------------------
+       3. Les entrees du menu dans le tiroir (lisibilite + zones tactiles)
+       ---------------------------------------------------------------------- */
+    #sideNav.side-nav .navbar-nav {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        width: 100%;
+        margin: 0 !important;
+        padding: 0 !important;
+        list-style: none;
+    }
+
+    #sideNav.side-nav .nav-item,
+    #sideNav.side-nav .nav-item-menu-li {
+        width: 100%;
+        margin: 0 !important;
+        list-style: none;
+        position: relative;
+    }
+
+    #sideNav.side-nav .nav-link {
+        display: flex !important;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        margin: 0 !important;
+        padding: 13px 16px !important;
+        font-size: 15px !important;
+        font-weight: 600;
+        color: #ffffff !important;
+        border-bottom: 1px solid rgba(255, 255, 255, .10);
+    }
+
+    #sideNav.side-nav .nav-link .style-font-header-categorie {
+        font-size: 15px;
+    }
+
+    #sideNav.side-nav .nav-link.dropdown-toggle::after {
+        margin-left: 8px;
+        transition: transform .2s ease-in-out;
+    }
+
+    /* Sous-menus : accordeon (pas de :hover sur ecran tactile) */
+    #sideNav.side-nav .nav-item-menu-li:hover > .dropdown-menu {
+        display: none;
+    }
+
+    #sideNav.side-nav .dropdown-menu {
+        position: static !important;
+        float: none;
+        display: none;
+        width: 100%;
+        min-width: 0 !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 4px 0 8px !important;
+        background: rgba(255, 255, 255, .06) !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        white-space: normal !important;
+    }
+
+    #sideNav.side-nav .nav-item-menu-li.aa-open > .dropdown-menu,
+    #sideNav.side-nav .nav-item.aa-open > .dropdown-menu {
+        display: block !important;
+    }
+
+    #sideNav.side-nav .nav-item-menu-li.aa-open > .nav-link.dropdown-toggle::after {
+        transform: rotate(180deg);
+        display: inline-block;
+    }
+
+    #sideNav.side-nav .dropdown-item {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 11px 20px 11px 28px !important;
+        font-size: 13.5px !important;
+        line-height: 1.35;
+        color: #dbe4f0 !important;
+        white-space: normal !important;
+        border-radius: 0;
+    }
+
+    #sideNav.side-nav .dropdown-item:hover,
+    #sideNav.side-nav .dropdown-item:active {
+        background: rgba(255, 255, 255, .12) !important;
+        color: #ffffff !important;
+    }
+
+    /* Bouton "Demarrer gratuitement" */
+    #sideNav.side-nav > .btn {
+        margin: 16px;
+        padding: 11px 14px;
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, .7);
+        border-radius: 8px;
+        text-align: center;
+        flex: 0 0 auto;
+    }
+
+    /* Recherche + bloc utilisateur du tiroir (pages livre / cours) */
+    #sideNav.side-nav > div {
+        width: 100%;
+        max-width: none !important;
+        padding: 0 16px;
+    }
+
+    #sideNav.side-nav form {
+        width: 100% !important;
+        margin: 10px 0 !important;
+    }
+
+    #sideNav.side-nav .input-group-navbar {
+        background: #ffffff;
+        border-radius: 8px;
+        overflow: hidden;
+        border-bottom: 0 !important;
+    }
+
+    #sideNav.side-nav .language-user-navbar {
+        display: flex;
+        align-items: center;
+        padding: 6px 0;
+    }
+
+    #sideNav.side-nav .language-user-navbar .nav-link,
+    #sideNav.side-nav .language-user-navbar .nav-icon {
+        border-bottom: 0;
+        padding-left: 0 !important;
+    }
+
+    #sideNav.side-nav .language-user-navbar .text-dark {
+        color: #ffffff !important;
+    }
+
+    /* Menu langues dans le tiroir : liste deroulante a plat */
+    #sideNav.side-nav #languageDropdown + .dropdown-menu {
+        left: 0 !important;
+        top: 0 !important;
+    }
+
+    /* ----------------------------------------------------------------------
+       4. Voile sombre derriere le tiroir
+       ---------------------------------------------------------------------- */
+    .aa-nav-backdrop {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, .5);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity .3s ease, visibility .3s ease;
+        z-index: 99999;
+    }
+
+    .aa-nav-backdrop.aa-open {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    body.aa-nav-lock {
+        overflow: hidden !important;
+    }
+
+    /* ----------------------------------------------------------------------
+       5. Barre superieure mobile (pages interieures : livre, cours, figures)
+       ---------------------------------------------------------------------- */
+    .aa-mobile-bar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        position: sticky;
+        top: 0;
+        width: 100%;
+        min-height: 54px;
+        padding: 6px 10px;
+        background: #ffffff;
+        border-bottom: 1px solid rgba(14, 42, 71, .12);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, .06);
+        z-index: 1030;
+    }
+
+    .aa-mobile-bar__burger {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        flex: 0 0 42px;
+        font-size: 24px;
+        line-height: 1;
+        color: #0E2A47;
+        background: none;
+        border: 1px solid rgba(14, 42, 71, .35);
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    .aa-mobile-bar__brand {
+        display: flex;
+        align-items: center;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .aa-mobile-bar__brand img {
+        width: 104px !important;
+        height: auto !important;
+    }
+
+    .aa-mobile-bar__spacer {
+        flex: 1 1 auto;
+    }
+
+    /* ----------------------------------------------------------------------
+       6. Barre de contact / reseaux (page d'accueil) : evite le burger
+       ---------------------------------------------------------------------- */
+    .top-bar {
+        align-items: center !important;
+        gap: 6px;
+        padding: 6px 10px 6px 58px !important;
+        row-gap: 2px;
+    }
+
+    .top-bar > span {
+        font-size: 12px;
+    }
+
+    .top-bar nav {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 4px;
+    }
+
+    .top-bar .social-icon {
+        width: 30px;
+        height: 30px;
+    }
+}
+
+/* Telephones : on gagne encore un peu de place */
+@media (max-width: 575.98px) {
+    .top-bar > span {
+        font-size: 11px;
+    }
+
+    .aa-mobile-bar__brand img {
+        width: 92px !important;
+    }
+}

@@ -126,6 +126,8 @@
 				font-weight: bold;
 			}
 		</style>
+	<?php $aa_avec_figures = false; ?>
+	<?php include('components/aa_lecture_responsive.php'); ?>
 	</head>
 
 	<header style=" /*position: fixed;*/  z-index: 1000;  width: 100%;box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);

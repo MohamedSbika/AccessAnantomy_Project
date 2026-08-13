@@ -1,0 +1,2326 @@
+/* ==========================================================================
+   AccessAnatomy — système d'interface unifié (aa-ui)
+   ==========================================================================
+
+   UN seul en-tête et UN seul pied de page pour les trois contextes de
+   l'application, qui en avaient chacun un différent :
+
+     1. front « mode admin »   header_steppes.php  (navbar blanche Bootstrap)
+     2. front « mode lecture »  v1_header_menu.php  (menu dupliqué mobile/desktop)
+     3. back-office            adm_nav.php         (barre sombre + sidebar)
+
+   Le basculement mode admin / mode lecture est porté par
+   Home::switchPlatform(), qui change la session `typePlatform` : les vues
+   `v1_*` sont servies en mode lecture, les vues historiques en mode admin.
+   Les deux jeux de vues partagent désormais ces mêmes composants.
+
+   Préfixe `aa-` sur toutes les classes : aucune collision possible avec
+   app.css, v1_app.css ou Bootstrap 4.
+
+   Paliers (alignés sur la grille Bootstrap déjà utilisée par app.css) :
+     Mobile    <= 575.98px
+     Tablette   576 - 991.98px    en-tête compact + tiroir
+     Desktop   >= 992px           barre horizontale complète
+
+   Ordre de chargement : APRÈS app.css / v1_app.css / responsive-global.css.
+   À spécificité égale c'est le dernier chargé qui gagne, et aa-ui.css doit
+   pouvoir reprendre la main sur les styles historiques.
+   ========================================================================== */
+
+
+/* --------------------------------------------------------------------------
+   1. Jetons de design
+   Couleurs reprises de l'existant pour ne pas dépayser : le bleu #19496e est
+   déjà celui du pied de page et de la sidebar d'administration, le vert
+   #098a63 celui du logo et des accents de recherche.
+   -------------------------------------------------------------------------- */
+
+:root {
+    --aa-navy:        #19496e;
+    --aa-navy-fonce:  #123a57;
+    --aa-navy-clair:  #245f8f;
+    --aa-navy-pale:   #eef4fa;
+
+    --aa-vert:        #098a63;
+    --aa-vert-clair:  #0fae7e;
+    --aa-vert-pale:   #e8f5f0;
+
+    --aa-encre:       #16324f;
+    --aa-encre-doux:  #5c7183;
+    --aa-bordure:     #e2e8f0;
+    --aa-blanc:       #ffffff;
+    --aa-fond:        #f5f8fb;
+
+    --aa-header-h:      68px;
+    --aa-header-h-mob:  58px;
+    --aa-sidebar-w:     300px;
+
+    --aa-radius:      12px;
+    --aa-radius-sm:   8px;
+    --aa-ombre:       0 1px 2px rgba(16, 40, 66, .06), 0 4px 14px rgba(16, 40, 66, .07);
+    --aa-ombre-forte: 0 12px 40px rgba(16, 40, 66, .22);
+
+    --aa-transition:  .2s cubic-bezier(.4, 0, .2, 1);
+
+    /* Au-dessus des modales Bootstrap (1050) : le tiroir doit pouvoir
+       s'ouvrir par-dessus une figure affichée en plein écran. */
+    --aa-z-header:    1030;
+    --aa-z-voile:     1055;
+    --aa-z-drawer:    1060;
+}
+
+/* app.css pose box-sizing: border-box globalement, mais v1_app.css non : sur
+   les vues v1_* l'en-tête, qui fait `width: 100%` plus 22px de padding de
+   chaque côté, dépassait donc de 44px et provoquait un défilement
+   horizontal. On le fixe sur nos composants plutôt que globalement, pour ne
+   pas modifier le calcul de mise en page des vues existantes. */
+[class^="aa-"],
+[class*=" aa-"],
+[class^="aa-"]::before,
+[class^="aa-"]::after,
+[class*=" aa-"]::before,
+[class*=" aa-"]::after {
+    box-sizing: border-box;
+}
+
+/* `overflow-x: hidden` (posé par responsive-global.css) fait de <html> un
+   conteneur de défilement, ce qui neutralise `position: sticky` sur
+   l'en-tête. `clip` borne la même chose sans créer ce conteneur. */
+@supports (overflow: clip) {
+    html,
+    body {
+        overflow-x: clip;
+    }
+}
+
+
+/* --------------------------------------------------------------------------
+   2. En-tête
+   Une seule barre, un seul markup : le responsive est piloté par le CSS et
+   non par deux versions du menu (`d-md-none` / `d-none d-md-flex`) qu'il
+   fallait modifier en parallèle.
+   -------------------------------------------------------------------------- */
+
+.aa-header {
+    position: sticky;
+    top: 0;
+    z-index: var(--aa-z-header);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    height: var(--aa-header-h);
+
+    /* footer.php met <body> en flex-column : sans ceci l'en-tête, le bandeau
+       admin et le pied de page se font comprimer dès que le contenu dépasse
+       la fenêtre. */
+    flex-shrink: 0;
+    padding: 0 22px;
+    background: var(--aa-blanc);
+    border-bottom: 1px solid var(--aa-bordure);
+    box-shadow: var(--aa-ombre);
+    font-family: inherit;
+
+    /* Taille posée, pas héritée : livreFigures.php met <body> à `font-size:0`
+       pour supprimer les blancs entre ses colonnes inline-block. Les libellés
+       de l'en-tête qui n'ont pas de taille propre disparaissaient. */
+    font-size: 14px;
+
+    /* Même logique pour la couleur : v1_page_home.php met <body> en blanc,
+       sa barre d'origine étant sur fond sombre. Sur l'en-tête, qui est blanc,
+       tout texte sans couleur propre devenait invisible. */
+    color: var(--aa-encre);
+}
+
+.aa-header__logo {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    text-decoration: none;
+}
+
+.aa-header__logo img {
+    height: 42px;
+    width: auto;
+    max-width: none;   /* responsive-global.css impose max-width:100% aux img */
+    display: block;
+}
+
+/* Bouton hamburger. Masqué au-dessus de 992px par le CSS : il n'existe qu'en
+   un seul exemplaire dans le DOM. */
+.aa-burger {
+    display: none;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    width: 44px;               /* cible tactile recommandée */
+    height: 44px;
+    flex: 0 0 auto;
+    padding: 0;
+    border: 1px solid var(--aa-bordure);
+    border-radius: var(--aa-radius-sm);
+    background: var(--aa-blanc);
+    color: var(--aa-navy);
+    cursor: pointer;
+    transition: background var(--aa-transition), border-color var(--aa-transition);
+}
+
+.aa-burger:hover,
+.aa-burger:focus-visible {
+    background: var(--aa-navy-pale);
+    border-color: var(--aa-navy-clair);
+}
+
+.aa-burger__bar,
+.aa-burger__bar::before,
+.aa-burger__bar::after {
+    display: block;
+    width: 18px;
+    height: 2px;
+    background: currentColor;
+    border-radius: 2px;
+    transition: transform var(--aa-transition), opacity var(--aa-transition);
+}
+
+.aa-burger__bar::before,
+.aa-burger__bar::after {
+    content: "";
+    position: absolute;
+}
+
+.aa-burger__bar::before { transform: translateY(-6px); }
+.aa-burger__bar::after  { transform: translateY(6px); }
+
+
+/* --- Navigation principale (desktop) ------------------------------------ */
+
+.aa-nav {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex: 1 1 auto;
+    min-width: 0;              /* autorise le rétrécissement au lieu de pousser */
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    /* Pas d'overflow ici : un conteneur en `overflow` rognerait les panneaux
+       déroulants, qui sont positionnés en absolu par rapport aux items.
+       La largeur est tenue en amont — la barre ne rend que les catégories
+       et Contact, les autres entrées vivant dans le menu compte et le
+       tiroir (voir aa_header.php). */
+}
+
+/* `0 1 auto` et non `0 0 auto` : les libellés viennent de la base et changent
+   de longueur d'une langue à l'autre. Plutôt que de déborder sur le logo ou
+   sous la zone de droite quand la barre est trop courte, les entrées se
+   compriment et leur texte se coupe proprement (voir .aa-nav__libelle).
+   C'est un filet de sécurité : aux largeurs courantes, les paliers de la
+   section 8 laissent la place nécessaire et rien n'est tronqué. */
+.aa-nav__item {
+    position: relative;
+    flex: 0 1 auto;
+    min-width: 0;
+}
+
+.aa-nav__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    height: 40px;
+    padding: 0 13px;
+    border-radius: var(--aa-radius-sm);
+    color: var(--aa-encre);
+    font-size: 14.5px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    background: none;
+    border: 0;
+    min-width: 0;
+    transition: background var(--aa-transition), color var(--aa-transition);
+}
+
+/* Le libellé porte la troncature, pas le lien : text-overflow ne s'applique
+   pas au texte anonyme d'un conteneur flex, et le chevron doit rester visible
+   même quand le texte est coupé. */
+.aa-nav__libelle {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.aa-nav__link:hover,
+.aa-nav__link:focus-visible,
+.aa-nav__item.est-ouvert > .aa-nav__link {
+    background: var(--aa-navy-pale);
+    color: var(--aa-navy);
+    text-decoration: none;
+}
+
+.aa-nav__link--actif {
+    color: var(--aa-vert);
+    background: var(--aa-vert-pale);
+}
+
+.aa-nav__link--actif:hover {
+    background: var(--aa-vert-pale);
+    color: var(--aa-vert);
+}
+
+/* Chevron des entrées à sous-menu. */
+.aa-nav__chevron {
+    width: 8px;
+    height: 8px;
+    border-right: 1.8px solid currentColor;
+    border-bottom: 1.8px solid currentColor;
+    transform: translateY(-2px) rotate(45deg);
+    transition: transform var(--aa-transition);
+    flex: 0 0 auto;
+}
+
+.aa-nav__item.est-ouvert .aa-nav__chevron {
+    transform: translateY(1px) rotate(-135deg);
+}
+
+
+/* --- Panneau déroulant --------------------------------------------------- */
+
+/* Piloté par aa-ui.js, pas par Bootstrap : plusieurs vues (v1_figures_only,
+   video_upload) ne chargent pas bootstrap.js et l'en-tête doit y fonctionner. */
+.aa-panneau {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    z-index: 20;
+    min-width: 260px;
+    max-width: min(420px, calc(100vw - 32px));
+    max-height: min(70vh, 520px);
+    overflow-y: auto;
+    padding: 8px;
+    background: var(--aa-blanc);
+    border: 1px solid var(--aa-bordure);
+    border-radius: var(--aa-radius);
+    box-shadow: var(--aa-ombre-forte);
+
+    /* visibility plutôt que display : la transition reste animable et le
+       contenu reste hors de l'ordre de tabulation quand il est fermé. */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    transition: opacity var(--aa-transition), transform var(--aa-transition), visibility var(--aa-transition);
+}
+
+.aa-nav__item.est-ouvert > .aa-panneau,
+.aa-compte.est-ouvert > .aa-panneau,
+.aa-langue.est-ouvert > .aa-panneau {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Aligné à droite pour les menus de fin de barre, qui déborderaient sinon. */
+.aa-panneau--droite { left: auto; right: 0; }
+
+.aa-panneau__lien {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 9px 12px;
+    border-radius: var(--aa-radius-sm);
+    color: var(--aa-encre);
+    font-size: 14px;
+    line-height: 1.35;
+    text-decoration: none;
+    transition: background var(--aa-transition), color var(--aa-transition);
+}
+
+.aa-panneau__lien:hover,
+.aa-panneau__lien:focus-visible {
+    background: var(--aa-navy-pale);
+    color: var(--aa-navy);
+    text-decoration: none;
+}
+
+.aa-panneau__lien--actif { color: var(--aa-vert); font-weight: 600; }
+
+.aa-panneau__titre {
+    padding: 8px 12px 4px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--aa-encre-doux);
+}
+
+.aa-panneau__separateur {
+    height: 1px;
+    margin: 6px 8px;
+    background: var(--aa-bordure);
+}
+
+.aa-panneau__vide {
+    padding: 10px 12px;
+    color: var(--aa-encre-doux);
+    font-size: 13.5px;
+}
+
+
+/* --- Zone de droite : recherche, langue, compte -------------------------- */
+
+.aa-header__actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 0 0 auto;
+    margin-left: auto;
+}
+
+.aa-recherche {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 40px;
+    padding: 0 6px 0 14px;
+    background: var(--aa-fond);
+    border: 1px solid var(--aa-bordure);
+    border-radius: 999px;
+    transition: border-color var(--aa-transition), background var(--aa-transition);
+}
+
+.aa-recherche:focus-within {
+    border-color: var(--aa-vert);
+    background: var(--aa-blanc);
+}
+
+.aa-recherche__icone {
+    width: 17px;
+    height: 17px;
+    flex: 0 0 auto;
+    color: var(--aa-vert);
+}
+
+.aa-recherche input {
+    border: 0;
+    outline: 0;
+    padding: 0;
+    background: transparent;
+    font-size: 14px;
+    width: 170px;
+    min-width: 0;
+    min-height: 0;
+    color: var(--aa-encre);
+    box-shadow: none;
+}
+
+.aa-recherche input::placeholder { color: var(--aa-encre-doux); }
+
+.aa-recherche__valider {
+    display: none;   /* la touche Entrée suffit sur desktop */
+}
+
+/* Déclencheur commun aux menus langue et compte. */
+.aa-langue,
+.aa-compte {
+    position: relative;
+    flex: 0 0 auto;
+}
+
+.aa-declencheur {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 40px;
+    padding: 0 10px;
+    border: 1px solid transparent;
+    border-radius: var(--aa-radius-sm);
+    background: transparent;
+    color: var(--aa-encre);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background var(--aa-transition), border-color var(--aa-transition);
+}
+
+.aa-declencheur:hover,
+.aa-declencheur:focus-visible,
+.est-ouvert > .aa-declencheur {
+    background: var(--aa-navy-pale);
+    border-color: var(--aa-bordure);
+    color: var(--aa-navy);
+}
+
+.aa-drapeau { font-size: 18px; line-height: 1; }
+
+.aa-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: var(--aa-vert-pale);
+    flex: 0 0 auto;
+}
+
+.aa-compte__nom {
+    max-width: 130px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/* --- Boutons ------------------------------------------------------------- */
+
+.aa-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 40px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: var(--aa-radius-sm);
+    background: var(--aa-vert);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background var(--aa-transition);
+}
+
+.aa-btn:hover,
+.aa-btn:focus-visible { background: var(--aa-vert-clair); color: #fff; text-decoration: none; }
+
+.aa-btn--navy       { background: var(--aa-navy); }
+.aa-btn--navy:hover { background: var(--aa-navy-clair); }
+
+.aa-btn--ghost {
+    background: transparent;
+    color: var(--aa-navy);
+    border: 1px solid var(--aa-bordure);
+}
+
+.aa-btn--ghost:hover { background: var(--aa-navy-pale); color: var(--aa-navy); }
+
+/* Boutons secondaires de la barre : ils sautent avant les autres quand la
+   place manque, plutôt que de comprimer la navigation.
+
+   Le seuil de .aa-cacher-md est à 1500 et non à 1200 : c'est l'appel à
+   l'action de la page d'accueil (« Démarrer gratuitement », ~190px) qui le
+   porte, et il ne cohabite avec la recherche, la langue et les deux boutons
+   de compte qu'à partir de cette largeur. En dessous, la navigation
+   débordait sous la zone de droite. Il reste rendu dans le héros de la page,
+   la valeur n'est donc pas perdue. */
+@media (max-width: 1499.98px) { .aa-cacher-md { display: none !important; } }
+@media (max-width: 575.98px)  { .aa-cacher-xs { display: none !important; } }
+
+/* Zone qui doit occuper le reste de la fenêtre sous l'en-tête.
+
+   Les visionneuses de figures (livreFigure, livreFigures) posaient un
+   `100vh` en dur. L'en-tête étant `sticky`, il occupe sa place dans le flux :
+   un enfant à 100vh dépassait alors d'une hauteur d'en-tête, ce qui ajoutait
+   une barre de défilement pour du vide et, sur téléphone, masquait la
+   dernière vignette derrière le bord de l'écran.
+
+   La hauteur est reprise du palier mobile en dessous de 768px, où l'en-tête
+   passe de 68 à 58px. */
+.aa-plein-ecran {
+    height: calc(100vh - var(--aa-header-h)) !important;
+    min-height: calc(100vh - var(--aa-header-h)) !important;
+}
+
+@media (max-width: 767.98px) {
+    .aa-plein-ecran {
+        height: calc(100vh - var(--aa-header-h-mob)) !important;
+        min-height: calc(100vh - var(--aa-header-h-mob)) !important;
+    }
+}
+
+
+/* --------------------------------------------------------------------------
+   3. Tiroir de navigation
+   Le même composant sert de tiroir sous 992px et de colonne ancrée au-dessus
+   (`.aa-sidebar--ancree`), pour éviter un second markup.
+   -------------------------------------------------------------------------- */
+
+.aa-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: var(--aa-z-drawer);
+    width: var(--aa-sidebar-w);
+    max-width: 88vw;            /* jamais plein écran : on garde le contexte */
+    display: flex;
+    flex-direction: column;
+    background: var(--aa-blanc);
+    border-right: 1px solid var(--aa-bordure);
+    box-shadow: var(--aa-ombre-forte);
+    transform: translateX(-100%);
+    transition: transform var(--aa-transition);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;  /* le scroll du tiroir ne défile pas la page */
+
+    /* Mêmes raisons que .aa-header : ne pas hériter d'un `font-size:0` ni
+       d'une couleur de texte blanche posée sur <body> par la page. */
+    font-size: 14px;
+    color: var(--aa-encre);
+}
+
+.aa-sidebar.est-ouvert { transform: translateX(0); }
+
+.aa-sidebar__entete {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--aa-bordure);
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--aa-blanc);
+}
+
+.aa-sidebar__entete .aa-header__logo img { height: 36px; }
+
+.aa-sidebar__fermer {
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: var(--aa-radius-sm);
+    background: transparent;
+    color: var(--aa-encre-doux);
+    font-size: 26px;
+    line-height: 1;
+    cursor: pointer;
+    flex: 0 0 auto;
+}
+
+.aa-sidebar__fermer:hover { background: var(--aa-fond); color: var(--aa-encre); }
+
+.aa-sidebar__corps { padding: 12px; flex: 1 1 auto; }
+
+.aa-sidebar__titre {
+    padding: 14px 10px 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--aa-encre-doux);
+}
+
+.aa-sidebar__lien {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 46px;
+    padding: 11px 12px;
+    border-radius: var(--aa-radius-sm);
+    color: var(--aa-encre);
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background var(--aa-transition), color var(--aa-transition);
+}
+
+.aa-sidebar__lien:hover,
+.aa-sidebar__lien:focus-visible {
+    background: var(--aa-navy-pale);
+    color: var(--aa-navy);
+    text-decoration: none;
+}
+
+.aa-sidebar__lien--actif {
+    background: var(--aa-vert-pale);
+    color: var(--aa-vert);
+    font-weight: 700;
+}
+
+/* Accordéon des catégories dans le tiroir : le survol du desktop n'existe
+   pas au tactile, il faut un dépliage au clic. */
+.aa-accordeon > .aa-sidebar__lien {
+    justify-content: space-between;
+    width: 100%;
+    border: 0;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.aa-accordeon__contenu {
+    display: none;
+    padding: 2px 0 6px 12px;
+    margin-left: 10px;
+    border-left: 2px solid var(--aa-bordure);
+}
+
+.aa-accordeon.est-ouvert > .aa-accordeon__contenu { display: block; }
+
+.aa-accordeon__contenu .aa-sidebar__lien {
+    min-height: 42px;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--aa-encre-doux);
+}
+
+.aa-accordeon .aa-nav__chevron { color: var(--aa-encre-doux); }
+.aa-accordeon.est-ouvert .aa-nav__chevron { transform: translateY(1px) rotate(-135deg); }
+
+/* Voile derrière le tiroir : fermeture au clic hors zone. */
+.aa-voile {
+    position: fixed;
+    inset: 0;
+    z-index: var(--aa-z-voile);
+    background: rgba(16, 40, 66, .55);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--aa-transition), visibility var(--aa-transition);
+}
+
+.aa-voile.est-ouvert { opacity: 1; visibility: visible; }
+
+/* Tiroir ouvert : le corps ne défile plus derrière. */
+body.aa-drawer-ouvert { overflow: hidden; }
+
+
+/* --------------------------------------------------------------------------
+   4. Pied de page
+   Remplace les trois pieds de page existants : le bloc bleu de footer.php,
+   le bloc vert sapin de v1_footer.php, et l'absence totale de pied de page
+   sur les vues de cours.
+   -------------------------------------------------------------------------- */
+
+.aa-footer {
+    background: linear-gradient(160deg, var(--aa-navy) 0%, var(--aa-navy-fonce) 100%);
+    color: rgba(255, 255, 255, .78);
+    padding: 52px 24px 0;
+    margin-top: 56px;
+    font-size: 14.5px;
+    line-height: 1.65;
+
+    /* livreCours.php, livreResume.php et livreFigure.php construisent leur
+       mise en page avec des colonnes flottantes. Sans clear, le pied de page
+       se rangeait à côté du cours dans la colonne de droite au lieu de
+       s'étendre sous toute la page. */
+    clear: both;
+    width: 100%;
+    flex-shrink: 0;
+}
+
+.aa-footer__grille {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr 1.4fr;
+    gap: 40px;
+    max-width: 1240px;
+    margin: 0 auto;
+}
+
+.aa-footer__logo img {
+    height: 46px;
+    width: auto;
+    max-width: none;
+    margin-bottom: 14px;
+    display: block;
+}
+
+.aa-footer__pitch { margin: 0 0 18px; max-width: 42ch; }
+
+.aa-footer__titre {
+    color: #fff;
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin: 0 0 16px;
+}
+
+.aa-footer__liste { list-style: none; margin: 0; padding: 0; }
+
+.aa-footer__liste li { margin-bottom: 10px; }
+
+.aa-footer__liste a,
+.aa-footer__bas a {
+    color: rgba(255, 255, 255, .78);
+    text-decoration: none;
+    transition: color var(--aa-transition);
+}
+
+.aa-footer__liste a:hover,
+.aa-footer__bas a:hover { color: #fff; text-decoration: underline; }
+
+/* Réseaux sociaux : pastilles cerclées, alignées sur le style du site. */
+.aa-socials { display: flex; flex-wrap: wrap; gap: 10px; }
+
+.aa-socials a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .09);
+    border: 1px solid rgba(255, 255, 255, .18);
+    transition: background var(--aa-transition), transform var(--aa-transition);
+}
+
+.aa-socials a:hover { background: rgba(255, 255, 255, .2); transform: translateY(-2px); }
+
+.aa-socials img { width: 20px; height: 20px; object-fit: contain; display: block; }
+
+/* Newsletter : le champ et le bouton se replient sous 480px de colonne. */
+.aa-newsletter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.aa-newsletter input {
+    flex: 1 1 160px;
+    min-width: 0;
+    height: 44px;
+    padding: 0 14px;
+    border: 1px solid rgba(255, 255, 255, .22);
+    border-radius: var(--aa-radius-sm);
+    background: rgba(255, 255, 255, .08);
+    color: #fff;
+    font-size: 14px;
+}
+
+.aa-newsletter input::placeholder { color: rgba(255, 255, 255, .55); }
+
+.aa-newsletter input:focus {
+    outline: 0;
+    border-color: var(--aa-vert-clair);
+    background: rgba(255, 255, 255, .14);
+}
+
+.aa-newsletter button {
+    flex: 0 0 auto;
+    height: 44px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: var(--aa-radius-sm);
+    background: var(--aa-vert);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background var(--aa-transition);
+}
+
+.aa-newsletter button:hover { background: var(--aa-vert-clair); }
+
+.aa-footer__bas {
+    max-width: 1240px;
+    margin: 40px auto 0;
+    padding: 18px 0 20px;
+    border-top: 1px solid rgba(255, 255, 255, .14);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 22px;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: rgba(255, 255, 255, .62);
+}
+
+.aa-footer__legal { display: flex; flex-wrap: wrap; gap: 6px 18px; }
+
+
+/* --------------------------------------------------------------------------
+   5. Bandeau mode admin
+   Auparavant, être administrateur ne se voyait qu'aux crayons d'édition
+   disséminés dans les breadcrumbs : rien ne distinguait la consultation de
+   l'édition sur un contenu pédagogique.
+   -------------------------------------------------------------------------- */
+
+.aa-admin-bar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    padding: 7px 22px;
+    background: linear-gradient(135deg, var(--aa-navy) 0%, var(--aa-navy-clair) 100%);
+    color: #fff;
+    font-size: 13px;
+    position: sticky;
+    top: var(--aa-header-h);
+    z-index: calc(var(--aa-z-header) - 1);
+    flex-shrink: 0;
+}
+
+.aa-admin-bar__etiquette {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 11px;
+    background: rgba(255, 255, 255, .2);
+    border-radius: 999px;
+    font-weight: 700;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    font-size: 10.5px;
+    white-space: nowrap;
+}
+
+.aa-admin-bar__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-left: auto;
+}
+
+.aa-admin-bar a {
+    color: #fff;
+    text-decoration: none;
+    padding: 5px 11px;
+    border-radius: var(--aa-radius-sm);
+    background: rgba(255, 255, 255, .13);
+    transition: background var(--aa-transition);
+    white-space: nowrap;
+}
+
+.aa-admin-bar a:hover { background: rgba(255, 255, 255, .26); color: #fff; }
+
+
+/* --------------------------------------------------------------------------
+   6. Mode lecture
+   Deux sens différents dans l'application, à ne pas confondre :
+
+     - le « mode lecture » de switchPlatform, qui change de jeu de vues ;
+     - celui-ci, une bascule d'affichage locale (classe sur <body>) qui retire
+       le chrome et ramène le cours à une colonne lisible.
+
+   Le second est persisté en localStorage pour survivre au passage au
+   chapitre suivant.
+   -------------------------------------------------------------------------- */
+
+.aa-lecture-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 38px;
+    padding: 0 15px;
+    border: 1px solid var(--aa-bordure);
+    border-radius: var(--aa-radius-sm);
+    background: var(--aa-blanc);
+    color: var(--aa-navy);
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background var(--aa-transition);
+}
+
+.aa-lecture-btn:hover { background: var(--aa-navy-pale); color: var(--aa-navy); }
+
+body.aa-mode-lecture .aa-header,
+body.aa-mode-lecture .aa-footer,
+body.aa-mode-lecture .aa-admin-bar,
+body.aa-mode-lecture .aa-sidebar,
+body.aa-mode-lecture .aa-voile,
+body.aa-mode-lecture .aa-masquer-en-lecture {
+    display: none !important;
+}
+
+body.aa-mode-lecture { background: var(--aa-blanc); }
+
+/* Colonne de lecture : ~72 caractères, l'optimum de confort en lecture
+   longue. Les figures peuvent déborder de la colonne via .aa-large. */
+body.aa-mode-lecture .aa-lecture-zone {
+    max-width: 72ch;
+    margin: 0 auto;
+    padding: 48px 24px 96px;
+    font-size: 18px;
+    line-height: 1.75;
+    color: var(--aa-encre);
+}
+
+body.aa-mode-lecture .aa-lecture-zone img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 28px auto;
+}
+
+body.aa-mode-lecture .aa-lecture-zone .aa-large {
+    max-width: min(100vw - 48px, 1100px);
+    margin-left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Sortie flottante : en mode lecture l'en-tête est masqué, il faut un moyen
+   visible de revenir. */
+.aa-lecture-sortie {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: var(--aa-z-drawer);
+    display: none;
+}
+
+body.aa-mode-lecture .aa-lecture-sortie { display: block; }
+
+.aa-lecture-sortie .aa-btn {
+    background: var(--aa-navy);
+    box-shadow: var(--aa-ombre-forte);
+}
+
+
+/* --------------------------------------------------------------------------
+   7. Contrôles de formulaire
+
+   L'application mélangeait trois habillages de champ : ceux de Bootstrap
+   (.form-control), ceux de app.css, et une série d'écritures en dur — la
+   modale de connexion de footer.php peignait par exemple ses champs en vert
+   sur vert avec des `!important`. Ces classes donnent un seul vocabulaire :
+
+       <div class="aa-groupe">
+         <label class="aa-label" for="x">Libellé</label>
+         <input class="aa-champ" id="x" type="email">
+         <p class="aa-aide">Texte d'aide facultatif</p>
+       </div>
+
+   .aa-champ vaut pour <input>, <textarea> et <select> : un seul jeu de
+   règles, pas un par élément. Les contrôles historiques ne sont pas touchés
+   — rien ici ne vise un sélecteur d'élément nu, précisément la faute que la
+   règle `nav { … }` de v1_page_home.php faisait payer à l'en-tête.
+   -------------------------------------------------------------------------- */
+
+.aa-groupe {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+    text-align: left;
+}
+
+.aa-label {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--aa-encre);
+    margin: 0;
+}
+
+.aa-label__requis {
+    color: #c0392b;
+    margin-left: 2px;
+}
+
+.aa-champ {
+    width: 100%;
+    min-height: 44px;          /* cible tactile */
+    padding: 10px 14px;
+    border: 1px solid var(--aa-bordure);
+    border-radius: var(--aa-radius-sm);
+    background: var(--aa-blanc);
+    color: var(--aa-encre);
+
+    /* 16px : en dessous, iOS zoome sur le champ à la mise au point et laisse
+       la page décalée une fois la saisie terminée. */
+    font-size: 16px;
+    font-family: inherit;
+    line-height: 1.4;
+    box-shadow: none;
+    transition: border-color var(--aa-transition), box-shadow var(--aa-transition);
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.aa-champ::placeholder { color: var(--aa-encre-doux); opacity: 1; }
+
+.aa-champ:hover:not(:disabled) { border-color: #cbd5e1; }
+
+.aa-champ:focus,
+.aa-champ:focus-visible {
+    outline: 0;
+    border-color: var(--aa-vert);
+    box-shadow: 0 0 0 3px var(--aa-vert-pale);
+}
+
+.aa-champ:disabled,
+.aa-champ[readonly] {
+    background: var(--aa-fond);
+    color: var(--aa-encre-doux);
+    cursor: not-allowed;
+}
+
+/* Erreur de validation : la bordure seule ne suffit pas (daltonisme), le
+   message .aa-aide--erreur qui l'accompagne porte l'information. */
+.aa-champ--erreur,
+.aa-champ.error {
+    border-color: #c0392b;
+}
+
+.aa-champ--erreur:focus,
+.aa-champ.error:focus {
+    box-shadow: 0 0 0 3px rgba(192, 57, 43, .14);
+}
+
+textarea.aa-champ {
+    min-height: 110px;
+    resize: vertical;
+}
+
+/* Chevron dessiné en fond : `appearance: none` retire celui du système, et
+   une icône de fond évite d'ajouter un élément autour de chaque <select>. */
+select.aa-champ {
+    padding-right: 38px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%235c7183' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    cursor: pointer;
+}
+
+.aa-aide {
+    margin: 0;
+    font-size: 12.5px;
+    color: var(--aa-encre-doux);
+}
+
+.aa-aide--erreur { color: #c0392b; }
+
+/* Champ avec bouton incrusté (œil du mot de passe, effacement…). */
+.aa-champ-groupe { position: relative; }
+
+.aa-champ-groupe .aa-champ { padding-right: 46px; }
+
+.aa-champ-action {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--aa-radius-sm);
+    background: transparent;
+    color: var(--aa-encre-doux);
+    cursor: pointer;
+    transition: background var(--aa-transition), color var(--aa-transition);
+}
+
+.aa-champ-action:hover { background: var(--aa-fond); color: var(--aa-encre); }
+.aa-champ-action svg { width: 19px; height: 19px; display: block; }
+
+/* Cases à cocher et boutons radio : la cible cliquable est le libellé
+   entier, pas seulement le carré de 13px du contrôle natif. */
+.aa-case {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: var(--aa-encre);
+    cursor: pointer;
+}
+
+.aa-case input[type="checkbox"],
+.aa-case input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    margin: 2px 0 0;
+    flex: 0 0 auto;
+    accent-color: var(--aa-vert);
+    cursor: pointer;
+}
+
+/* Variantes de bouton complétant .aa-btn (section 2). */
+.aa-btn--bloc  { width: 100%; }
+.aa-btn--large { min-height: 48px; padding: 0 24px; font-size: 15px; }
+
+.aa-btn:disabled,
+.aa-btn[aria-disabled="true"] {
+    opacity: .55;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.aa-btn--lien {
+    background: transparent;
+    color: var(--aa-vert);
+    min-height: auto;
+    padding: 0;
+    font-weight: 600;
+}
+
+.aa-btn--lien:hover,
+.aa-btn--lien:focus-visible {
+    background: transparent;
+    color: var(--aa-vert-clair);
+    text-decoration: underline;
+}
+
+/* Messages de formulaire. */
+.aa-alerte {
+    padding: 11px 14px;
+    border-radius: var(--aa-radius-sm);
+    border: 1px solid transparent;
+    font-size: 13.5px;
+    text-align: left;
+    margin-bottom: 16px;
+}
+
+.aa-alerte--erreur  { background: #fdecea; border-color: #f5c6c0; color: #8e2a20; }
+.aa-alerte--succes  { background: var(--aa-vert-pale); border-color: #b6e2d3; color: #0a6b4e; }
+
+
+/* --- Page de formulaire ---------------------------------------------------
+   Même carte que la modale de connexion, posée dans le flux de la page.
+   L'inscription et le contact reprenaient chacun leur propre habillage — fond
+   #14556d et titre noir pour l'un, champs à bords carrés pour l'autre — alors
+   qu'ils demandent la même chose à l'utilisateur que la modale. */
+
+.aa-page-form {
+    display: flex;
+    justify-content: center;
+
+    /* `main.main` d'app.css ne pose pas de largeur : sans width:100%, le
+       conteneur se réduit au contenu et `justify-content` n'a plus rien à
+       centrer — la carte restait collée à gauche. */
+    width: 100%;
+    padding: 44px 16px 64px;
+    background: var(--aa-fond);
+
+    /* Les vues historiques mettent leur contenu en serif (app.css) et les
+       vues v1_* en Manrope. La carte doit se lire pareil dans les deux, sans
+       dépendre d'une police chargée par la page : d'où la pile complète. */
+    font-family: 'Manrope', 'Roboto', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+}
+
+.aa-carte {
+    width: 100%;
+    max-width: 640px;
+
+    /* Le centrage passe par la marge automatique, pas par le
+       `justify-content` du parent : les vues historiques posent
+       `flex-direction: column` sur <main>, axe sur lequel justify-content
+       gère la verticale — la carte restait alors calée à gauche. La marge
+       auto centre dans les trois cas : bloc, flex en ligne, flex en colonne. */
+    margin: 0 auto;
+    padding: 34px 32px 30px;
+    background: var(--aa-blanc);
+    border: 1px solid var(--aa-bordure);
+    border-radius: var(--aa-radius);
+    box-shadow: var(--aa-ombre);
+}
+
+.aa-carte--large { max-width: 860px; }
+
+.aa-carte__logo {
+    display: block;
+    height: 42px;
+    width: auto;
+    max-width: none;
+    margin: 0 auto 18px;
+}
+
+.aa-carte__titre {
+    margin: 0 0 6px;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--aa-navy);
+    text-align: center;
+}
+
+.aa-carte__intro {
+    margin: 0 0 26px;
+    font-size: 14.5px;
+    color: var(--aa-encre-doux);
+    text-align: center;
+}
+
+.aa-carte__section {
+    margin: 26px 0 16px;
+    padding-top: 20px;
+    border-top: 1px solid var(--aa-bordure);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--aa-navy);
+}
+
+.aa-carte__pied {
+    margin: 22px 0 0;
+    padding-top: 18px;
+    border-top: 1px solid var(--aa-bordure);
+    font-size: 13.5px;
+    color: var(--aa-encre-doux);
+    text-align: center;
+}
+
+.aa-carte__pied a { color: var(--aa-vert); font-weight: 600; text-decoration: none; }
+.aa-carte__pied a:hover { text-decoration: underline; }
+
+/* Grille de champs. Une colonne sous 640px : deux champs côte à côte y
+   tombent sous la largeur où une adresse email reste lisible. */
+.aa-grille {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 18px;
+}
+
+.aa-grille--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+@media (max-width: 639.98px) {
+    .aa-grille,
+    .aa-grille--3 { grid-template-columns: 1fr; }
+    .aa-page-form { padding: 26px 12px 44px; }
+    .aa-carte { padding: 26px 20px 24px; }
+}
+
+/* Mention légale à cocher : encadrée pour se distinguer des champs. */
+.aa-mention {
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    background: var(--aa-navy-pale);
+    border-radius: var(--aa-radius-sm);
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--aa-encre);
+}
+
+.aa-mention .aa-case { margin-bottom: 0; }
+
+
+/* --------------------------------------------------------------------------
+   Fiche d'ouvrage (livre, livreDetails)
+
+   La couverture et la description vivaient dans une grille `col-md-4` /
+   `col-md-8` : sous 768px les deux colonnes s'empilent, et la couverture —
+   jusqu'à 450px de haut — occupait tout le premier écran avant le moindre
+   mot de description. Elle est donc remplacée, sous 992px, par un bouton qui
+   l'ouvre en plein écran (voir .aa-visionneuse).
+   -------------------------------------------------------------------------- */
+
+.aa-livre {
+    display: grid;
+    grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+    gap: 28px;
+    align-items: start;
+    padding: 24px 0 8px;
+}
+
+.aa-livre__couverture {
+    /* La description est longue : la couverture suit le défilement plutôt que
+       de laisser une colonne vide sur les trois quarts de la page. */
+    position: sticky;
+    top: calc(var(--aa-header-h) + 16px);
+}
+
+.aa-livre__image {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    border-radius: var(--aa-radius);
+    border: 1px solid var(--aa-bordure);
+    box-shadow: var(--aa-ombre);
+    background: var(--aa-blanc);
+    cursor: zoom-in;
+}
+
+/* Bouton d'ouverture de la couverture : n'existe qu'en dessous de 992px. */
+.aa-livre__voir { display: none; }
+
+.aa-livre__corps {
+    min-width: 0;
+    padding: 26px 28px;
+    background: var(--aa-blanc);
+    border: 1px solid var(--aa-bordure);
+    border-radius: var(--aa-radius);
+    box-shadow: var(--aa-ombre);
+    color: var(--aa-encre);
+    font-size: 15.5px;
+    line-height: 1.7;
+}
+
+/* La description vient d'un export Word : elle arrive avec ses propres
+   polices, ses tableaux et ses images en largeur fixe. On la borne sans
+   toucher au HTML stocké en base. */
+.aa-livre__corps img {
+    max-width: 100%;
+    height: auto;
+}
+
+.aa-livre__corps table {
+    max-width: 100%;
+    display: block;
+    overflow-x: auto;
+}
+
+.aa-livre__corps p:first-child { margin-top: 0; }
+.aa-livre__corps p:last-child  { margin-bottom: 0; }
+
+@media (max-width: 991.98px) {
+
+    .aa-livre {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        padding: 16px 0 8px;
+    }
+
+    .aa-livre__couverture { display: none; }
+
+    .aa-livre__voir {
+        display: inline-flex;
+
+        /* justify-self et non align-self : .aa-livre est une grille, et
+           align-self n'y agit que sur la verticale — le bouton s'étirait sur
+           toute la largeur de la colonne. */
+        justify-self: start;
+    }
+
+    .aa-livre__corps {
+        padding: 20px 18px;
+        font-size: 15px;
+    }
+}
+
+
+/* --- En-tête de fiche (livreDetails) ------------------------------------- */
+
+.aa-fiche {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 18px;
+    padding: 18px 20px;
+    background: var(--aa-blanc);
+    border: 1px solid var(--aa-bordure);
+    border-radius: var(--aa-radius);
+    box-shadow: var(--aa-ombre);
+}
+
+.aa-fiche__vignette {
+    flex: 0 0 auto;
+    width: 86px;
+    height: 112px;
+    max-width: none;
+    object-fit: cover;
+    border-radius: var(--aa-radius-sm);
+    border: 1px solid var(--aa-bordure);
+    background: var(--aa-fond);
+    cursor: zoom-in;
+}
+
+.aa-fiche__texte { min-width: 0; }
+
+.aa-fiche__titre {
+    margin: 0 0 4px;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--aa-navy);
+}
+
+.aa-fiche__meta {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--aa-encre-doux);
+}
+
+.aa-fiche__voir { display: none; }
+
+@media (max-width: 991.98px) {
+
+    /* La vignette cède la place au bouton : sur téléphone, l'en-tête doit
+       tenir en deux lignes au-dessus du sommaire. */
+    .aa-fiche { gap: 14px; padding: 16px; }
+    .aa-fiche__vignette { display: none; }
+    .aa-fiche__titre { font-size: 19px; }
+
+    .aa-fiche__voir {
+        display: inline-flex;
+        margin-top: 12px;
+    }
+}
+
+
+/* --- Visionneuse plein écran --------------------------------------------- */
+
+.aa-visionneuse {
+    position: fixed;
+    inset: 0;
+    z-index: 1080;              /* au-dessus de la modale de connexion */
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background: rgba(11, 27, 43, .92);
+}
+
+.aa-visionneuse.est-ouverte { display: flex; }
+
+.aa-visionneuse img {
+    max-width: 100%;
+    max-height: 92vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: var(--aa-radius);
+    background: var(--aa-blanc);
+}
+
+.aa-visionneuse__fermer {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .14);
+    color: #fff;
+    font-size: 26px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background var(--aa-transition);
+}
+
+.aa-visionneuse__fermer:hover { background: rgba(255, 255, 255, .28); }
+
+/* Empêche la page de défiler derrière la visionneuse. */
+body.aa-fige { overflow: hidden; }
+
+
+/* --------------------------------------------------------------------------
+   Tableaux
+
+   Le sommaire d'un ouvrage (livreDetails) compte jusqu'à neuf colonnes —
+   outils, Cours, Résumé, QCM B/I/A, QROC, Calques, Test. En `.table
+   .table-striped` de Bootstrap, cela donnait sur téléphone une grille
+   illisible qui débordait de l'écran sans même défiler.
+
+   Deux rendus pour un seul markup :
+     >= 992px  tableau classique, en-tête collant ;
+     <  992px  une carte par ligne, chaque cellule sur son propre rang avec
+               le nom de sa colonne à gauche, repris de l'attribut data-col.
+
+   La cellule de titre porte .aa-tableau__entete : elle devient l'en-tête de
+   la carte au lieu d'une ligne comme les autres.
+   -------------------------------------------------------------------------- */
+
+.aa-tableau-zone {
+    width: 100%;
+    background: var(--aa-blanc);
+    border: 1px solid var(--aa-bordure);
+    border-radius: var(--aa-radius);
+    box-shadow: var(--aa-ombre);
+
+    /* Filet de sécurité en attendant le passage en cartes : un ouvrage dont
+       toutes les colonnes sont actives dépasse encore sur petit portable. */
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.aa-tableau {
+    width: 100%;
+    margin: 0;
+    border-collapse: collapse;
+    font-size: 14px;
+    color: var(--aa-encre);
+}
+
+.aa-tableau thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: 13px 14px;
+    background: var(--aa-navy-pale);
+    color: var(--aa-navy);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .03em;
+    text-align: left;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--aa-bordure);
+}
+
+.aa-tableau tbody td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--aa-bordure);
+    vertical-align: middle;
+}
+
+.aa-tableau tbody tr:last-child > td { border-bottom: 0; }
+
+.aa-tableau tbody tr:hover { background: var(--aa-fond); }
+
+/* Titre de chapitre : c'est l'information qui identifie la ligne, elle doit
+   ressortir des colonnes d'action qui l'entourent. */
+.aa-tableau__entete { font-weight: 600; color: var(--aa-navy); }
+
+/* Le titre de chapitre est l'information qui identifie la ligne : il lui faut
+   la place d'une ligne, pas les 5% que déclarait l'ancien en-tête. */
+.aa-tableau__col-titre { width: 26%; min-width: 200px; }
+
+/* Les liens d'action des colonnes sont des .btn Bootstrap dans les vues
+   historiques : on les ramène au gabarit des boutons du site sans toucher au
+   markup, qui est généré à neuf endroits différents.
+
+   Les couleurs sont posées ici et non héritées de Bootstrap : plusieurs vues
+   ne le chargent pas, et les liens y apparaissaient soulignés en bleu. */
+.aa-tableau .btn,
+.aa-tableau .btn-outline-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 34px;
+    padding: 0 14px;
+    border: 1px solid var(--aa-bordure);
+    border-radius: var(--aa-radius-sm);
+    background: var(--aa-blanc);
+    color: var(--aa-navy);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background var(--aa-transition), border-color var(--aa-transition), color var(--aa-transition);
+}
+
+.aa-tableau .btn:hover,
+.aa-tableau .btn-outline-primary:hover,
+.aa-tableau .btn:focus-visible {
+    background: var(--aa-vert);
+    border-color: var(--aa-vert);
+    color: #fff;
+    text-decoration: none;
+}
+
+@media (max-width: 991.98px) {
+
+    .aa-tableau-zone {
+        overflow-x: visible;
+        background: transparent;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .aa-tableau,
+    .aa-tableau tbody,
+    .aa-tableau tbody tr,
+    .aa-tableau tbody td {
+        display: block;
+        width: 100%;
+
+        /* Indispensable : <tr> et <td> ne portent pas de classe `aa-`, la
+           règle border-box du haut du fichier ne les atteint donc pas. En
+           content-box, `width: 100%` + 28px de padding faisait déborder
+           chaque carte de l'écran, boutons compris. */
+        box-sizing: border-box;
+    }
+
+    /* Les intitulés passent dans data-col, cellule par cellule. */
+    .aa-tableau thead { display: none; }
+
+    .aa-tableau tbody tr {
+        margin-bottom: 14px;
+        background: var(--aa-blanc);
+        border: 1px solid var(--aa-bordure);
+        border-radius: var(--aa-radius);
+        box-shadow: var(--aa-ombre);
+        overflow: hidden;
+    }
+
+    .aa-tableau tbody tr:hover { background: var(--aa-blanc); }
+
+    .aa-tableau tbody td {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 11px 14px;
+        text-align: left !important;   /* les cellules portent un style en ligne */
+        border-bottom: 1px solid var(--aa-bordure);
+    }
+
+    .aa-tableau tbody td::before {
+        content: attr(data-col);
+        flex: 0 0 auto;
+        font-size: 11.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .03em;
+        color: var(--aa-encre-doux);
+    }
+
+    /* Une cellule sans data-col — titre, sous-chapitres — n'a pas d'intitulé
+       à afficher : le pseudo-élément vide laisserait une colonne creuse. */
+    .aa-tableau tbody td:not([data-col])::before,
+    .aa-tableau tbody td[data-col=""]::before { content: none; }
+
+    .aa-tableau tbody td.aa-tableau__entete {
+        display: block;
+        background: var(--aa-navy-pale);
+        color: var(--aa-navy);
+        font-size: 15px;
+        padding: 13px 14px;
+    }
+
+    /* Cellule pleine largeur (sous-chapitres dépliés) : pas de mise en page
+       en deux colonnes, son contenu porte déjà la sienne. */
+    .aa-tableau tbody td[colspan] {
+        display: block;
+        padding: 0;
+    }
+
+    .aa-tableau tbody tr:last-child > td:last-child { border-bottom: 0; }
+
+    .aa-tableau tbody td .btn { min-height: 38px; }
+
+    /* Le contenu d'une cellule est une grille Bootstrap (`.row > .col-md-6`)
+       qui, en bloc, se placerait sous son intitulé. On la ramène à sa taille
+       utile pour que l'intitulé et l'action tiennent sur une même ligne. */
+    .aa-tableau tbody td > .row {
+        flex: 0 1 auto;
+        width: auto;
+        margin: 0;
+        justify-content: flex-end;
+    }
+
+    .aa-tableau tbody td > .row > [class^="col-"],
+    .aa-tableau tbody td > .row > [class*=" col-"] {
+        flex: 0 1 auto;
+        width: auto;
+        max-width: none;
+        padding: 0;
+    }
+
+    /* Chapitre sans ressource dans cette colonne : la cellule ne contient
+       aucun lien. Plutôt qu'un intitulé suivi de vide, on affiche un tiret.
+
+       Le sélecteur exige un data-col non vide : la cellule de titre et celle
+       des sous-chapitres n'ont pas de lien non plus, et n'ont pas à recevoir
+       de tiret.
+
+       :has() n'est pas indispensable — là où il manque, la règle entière est
+       ignorée et on retrouve le comportement précédent. */
+    .aa-tableau tbody td[data-col]:not([data-col=""]):not(:has(a, button, input, label))::after {
+        content: '—';
+        color: var(--aa-encre-doux);
+    }
+
+    .aa-tableau tbody td[data-col]:not([data-col=""]):not(:has(a, button, input, label))::before {
+        opacity: .6;
+    }
+}
+
+
+/* --------------------------------------------------------------------------
+   Modale
+
+   UNE seule modale de connexion pour toute l'application. Il y en avait deux,
+   au design sans rapport : celle de footer.php (fond vert plein, champs verts
+   sur vert, dépendante de Bootstrap) sur les 38 vues historiques, et celle de
+   v1_modal_login.php (carte blanche, styles en ligne) sur l'accueil.
+
+   Celle-ci ne dépend d'aucun framework : plusieurs vues (v1_figures_only,
+   video_upload) ne chargent pas bootstrap.js, et la connexion doit y
+   fonctionner. Ouverture et fermeture passent par .est-ouverte, posée par
+   aa-ui.js.
+   -------------------------------------------------------------------------- */
+
+.aa-modale {
+    position: fixed;
+    inset: 0;
+    z-index: 1070;             /* au-dessus du voile et du tiroir */
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(11, 27, 43, .55);
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+    overflow-y: auto;
+
+    /* Même pile que .aa-page-form : la modale s'affiche aussi bien sur les
+       vues historiques (serif) que sur les vues v1_* (Manrope). */
+    font-family: 'Manrope', 'Roboto', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+}
+
+/* `.show` couvre le cas où une page charge encore bootstrap.js et ouvre la
+   modale par son API : il pose display:block en style en ligne, que ce
+   !important reprend. */
+.aa-modale.est-ouverte,
+.aa-modale.show {
+    display: flex !important;
+}
+
+.aa-modale__contenu {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    margin: auto;
+    padding: 30px 28px 26px;
+    background: var(--aa-blanc);
+    border-radius: var(--aa-radius);
+    box-shadow: var(--aa-ombre-forte);
+    animation: aa-modale-entree .22s cubic-bezier(.4, 0, .2, 1);
+}
+
+@keyframes aa-modale-entree {
+    from { opacity: 0; transform: translateY(10px) scale(.985); }
+    to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .aa-modale__contenu { animation: none; }
+}
+
+.aa-modale__fermer {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--aa-radius-sm);
+    background: transparent;
+    color: var(--aa-encre-doux);
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background var(--aa-transition), color var(--aa-transition);
+}
+
+.aa-modale__fermer:hover { background: var(--aa-fond); color: var(--aa-encre); }
+
+.aa-modale__logo {
+    display: block;
+    height: 38px;
+    width: auto;
+    max-width: none;
+    margin: 0 auto 16px;
+}
+
+.aa-modale__titre {
+    margin: 0 0 6px;
+    font-size: 21px;
+    font-weight: 700;
+    color: var(--aa-navy);
+    text-align: center;
+}
+
+.aa-modale__intro {
+    margin: 0 0 22px;
+    font-size: 14px;
+    color: var(--aa-encre-doux);
+    text-align: center;
+}
+
+.aa-modale__liens {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px;
+    margin: -6px 0 20px;
+    font-size: 13px;
+}
+
+.aa-modale__liens a {
+    color: var(--aa-vert);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.aa-modale__liens a:hover { text-decoration: underline; }
+
+.aa-modale__pied {
+    margin: 18px 0 0;
+    padding-top: 16px;
+    border-top: 1px solid var(--aa-bordure);
+    font-size: 13.5px;
+    color: var(--aa-encre-doux);
+    text-align: center;
+}
+
+.aa-modale__pied a { color: var(--aa-vert); font-weight: 600; text-decoration: none; }
+.aa-modale__pied a:hover { text-decoration: underline; }
+
+@media (max-width: 575.98px) {
+    .aa-modale { padding: 12px; }
+    .aa-modale__contenu { padding: 26px 20px 22px; }
+}
+
+
+/* --------------------------------------------------------------------------
+   8. Correctifs de mise en page hérités
+   Ces règles ne créent pas de design : elles réparent des mises en page dont
+   les dimensions étaient calées en dur sur un écran desktop.
+   -------------------------------------------------------------------------- */
+
+/* Les vues v1_* enveloppaient l'en-tête dans un <header> à dégradé sombre.
+   Le markup est retiré des vues, mais un thème ou une vue oubliée peut en
+   reposer un : on neutralise le fond plutôt que de laisser une bande noire
+   apparaître au-dessus de l'en-tête blanc. */
+header:not(.aa-header) > .aa-header {
+    margin: 0;
+}
+
+/* Breadcrumbs des vues de cours : sur mobile ils débordaient en une ligne
+   unique non repliable. */
+.breadcrumb {
+    flex-wrap: wrap;
+    background: transparent;
+    padding: 10px 0;
+    margin-bottom: 0;
+}
+
+/* livreCours.php / livreResume.php posent un <li class="breadcrumb-item">
+   isolé, hors de tout <ul class="breadcrumb">, et y empilent le fil
+   d'Ariane, deux boutons d'admin flottés à droite et un champ de recherche.
+   Hors de son conteneur, le <li> hérite de la taille de police du body et
+   les boutons flottés sortaient de l'écran. */
+.row > li.breadcrumb-item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 15px;
+    list-style: none;
+}
+
+.row > li.breadcrumb-item > .badge,
+.row > li.breadcrumb-item > button {
+    float: none !important;
+    margin: 0 !important;
+}
+
+.row > li.breadcrumb-item > .input-group {
+    flex: 1 1 200px;
+    min-width: 0;
+    padding: 0 !important;
+}
+
+@media (max-width: 767.98px) {
+
+    .row > li.breadcrumb-item {
+        font-size: 14px;
+        padding: 8px 10px;
+    }
+
+    .row > li.breadcrumb-item > .input-group { flex-basis: 100%; }
+}
+
+/* DataTables : les tables d'administration (liste des utilisateurs, 12
+   colonnes) font 1200px de large et débordaient de l'écran au lieu de
+   défiler dans leur conteneur. */
+.dataTables_wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+}
+
+/* La pagination et le champ de filtre sortaient eux aussi du viewport. */
+.dataTables_wrapper .dataTables_paginate,
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_info {
+    float: none !important;
+    text-align: left;
+    max-width: 100%;
+}
+
+.dataTables_wrapper .dataTables_paginate {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+    padding-top: 8px;
+}
+
+.dataTables_wrapper .dataTables_filter input { max-width: 100%; }
+
+/* v1_racourci* : rail de raccourcis (Cours / QCM / QROC / Test…) en
+   position fixe, calé à `top: 110px` en dur — une valeur qui correspondait à
+   l'ancien en-tête. On la recalcule à partir de la hauteur réelle du chrome
+   pour qu'il ne passe ni sous l'en-tête ni trop bas. */
+.sidebar-racc {
+    top: calc(var(--aa-header-h) + 46px) !important;
+}
+
+/* Sous 992px il recouvrait le cours : il repasse dans le flux, en une rangée
+   défilable au-dessus du contenu. */
+@media (max-width: 991.98px) {
+
+    .sidebar-racc,
+    .racourci-bar,
+    .new-side-nav {
+        position: static !important;
+        top: auto !important;
+        left: auto !important;
+        width: 100% !important;
+        height: auto !important;
+        display: flex !important;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 10px 12px !important;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .sidebar-racc > *,
+    .racourci-bar > *,
+    .new-side-nav > * {
+        flex: 0 0 auto;
+        margin: 0 !important;
+    }
+}
+
+/* v1_livreCours.php pose `float:left; width:40%; margin-left:5%` en style
+   inline sur la colonne de contenu. Un style inline bat toute règle de
+   classe : !important est nécessaire pour reprendre la main sous 992px,
+   sinon le cours reste dans 40% de l'écran à côté d'une colonne vide. */
+@media (max-width: 991.98px) {
+
+    .aa-colonne-cours {
+        float: none !important;
+        width: 100% !important;
+        margin-left: 0 !important;
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+    }
+}
+
+body.aa-mode-lecture .aa-colonne-cours {
+    float: none !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+}
+
+
+/* --------------------------------------------------------------------------
+   7 bis. Back-office
+   La sidebar métier (Platforme, Utilisateurs, Paramétrages, Actualités) est
+   conservée : c'est de la navigation, pas du chrome. Seule sa barre
+   supérieure a été retirée, remplacée par l'en-tête unifié.
+   -------------------------------------------------------------------------- */
+
+/* .sidebar-content d'app.css fait 100vh. Sous l'en-tête, ça dépassait d'une
+   hauteur d'en-tête et créait un défilement parasite. */
+.aa-wrapper-admin .sidebar-content {
+    height: calc(100vh - var(--aa-header-h));
+    position: sticky;
+    top: var(--aa-header-h);
+
+    /* app.css la peint en #222e3c, un gris-bleu qui n'appartient à aucune
+       palette du site. On reprend le bleu de la marque, celui du pied de
+       page et du bandeau admin. */
+    background: var(--aa-navy-fonce);
+}
+
+.aa-wrapper-admin .sidebar-link,
+.aa-wrapper-admin .sidebar-item.active .sidebar-link {
+    background: transparent;
+}
+
+.aa-wrapper-admin .sidebar-item.active .sidebar-link {
+    border-left-color: var(--aa-vert);
+    color: #fff;
+}
+
+.aa-wrapper-admin .sidebar-link:hover { background: rgba(255, 255, 255, .07); }
+
+/* Le logo est déjà dans l'en-tête juste au-dessus : le répéter dans la
+   sidebar prenait 90px de haut pour rien. */
+.aa-wrapper-admin .sidebar-brand { display: none; }
+
+/* Bouton d'ouverture de la sidebar métier. Masqué sur desktop, où elle est
+   déjà visible en colonne. */
+.aa-admin-toggle {
+    display: none;
+    align-items: center;
+    gap: 12px;
+    margin: 12px 12px 0;
+    padding: 0 16px;
+    height: 44px;
+    border: 1px solid var(--aa-bordure);
+    border-radius: var(--aa-radius-sm);
+    background: var(--aa-blanc);
+    color: var(--aa-navy);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Les trois barres sont dessinées par ::before/::after décalés en absolu :
+   il leur faut une boîte de référence de hauteur suffisante, sinon elles se
+   superposent au libellé. */
+.aa-admin-toggle .aa-burger__bar {
+    position: relative;
+    flex: 0 0 auto;
+    margin: 0 4px;
+}
+
+@media (max-width: 991.98px) {
+
+    .aa-admin-toggle { display: inline-flex; }
+
+    /* app.css replie la sidebar par un margin-left négatif, mais elle reste
+       dans le flux : sur tablette elle se superposait au contenu en
+       semi-transparence, et sa hauteur 100vh laissait une page presque vide.
+       On l'empile franchement au-dessus du contenu, affichée/masquée par la
+       classe .collapsed — dont app.css inverse déjà le sens sous 992px
+       (`.sidebar.collapsed { margin-left: 0 }`) et que le bouton bascule via
+       app.js. */
+    .aa-wrapper-admin {
+        display: block;
+    }
+
+    .aa-wrapper-admin > .sidebar {
+        display: none;
+        position: static;
+        min-width: 100%;
+        max-width: 100%;
+        margin-left: 0 !important;
+    }
+
+    .aa-wrapper-admin > .sidebar.collapsed { display: block; }
+
+    .aa-wrapper-admin .sidebar-content {
+        height: auto;
+        min-height: 0;
+        position: static;
+    }
+
+    /* simplebar impose un conteneur à hauteur fixe et défilement propre :
+       hors de la colonne pleine hauteur, il n'a plus lieu d'être. */
+    .aa-wrapper-admin .simplebar-content-wrapper,
+    .aa-wrapper-admin .simplebar-mask,
+    .aa-wrapper-admin .simplebar-offset {
+        height: auto !important;
+        overflow: visible !important;
+        position: static !important;
+    }
+
+    .aa-wrapper-admin .simplebar-placeholder,
+    .aa-wrapper-admin .simplebar-track { display: none !important; }
+
+    /* app.css donne flex-grow:1 à la liste pour occuper la colonne pleine
+       hauteur : empilée, elle laissait 900px de fond bleu vide sous les
+       cinq entrées. */
+    .aa-wrapper-admin .sidebar-nav { flex-grow: 0; }
+}
+
+
+/* --------------------------------------------------------------------------
+   9. Paliers
+   -------------------------------------------------------------------------- */
+
+/* Desktop : le tiroir peut devenir une colonne ancrée si la page le demande. */
+@media (min-width: 992px) {
+
+    .aa-sidebar--ancree {
+        position: sticky;
+        top: var(--aa-header-h);
+        height: calc(100vh - var(--aa-header-h));
+        transform: none;
+        box-shadow: none;
+        flex: 0 0 var(--aa-sidebar-w);
+    }
+
+    .aa-sidebar--ancree .aa-sidebar__fermer { display: none; }
+
+    .aa-avec-sidebar { display: flex; align-items: flex-start; }
+    .aa-avec-sidebar > .aa-contenu { flex: 1 1 auto; min-width: 0; }
+}
+
+/* C'est l'état déconnecté qui dimensionne la barre : la zone de droite y porte
+   deux boutons (« Se connecter » + « S'inscrire ») là où un compte ouvert n'a
+   qu'un menu, plus l'appel à l'action de l'accueil. On resserre donc dès que la
+   fenêtre descend sous 1700px, avant que .aa-cacher-md ne retire l'appel à
+   l'action à 1500 et que la nav ne rejoigne le tiroir à 1200. */
+@media (max-width: 1699.98px) and (min-width: 1200px) {
+
+    .aa-header { gap: 10px; padding: 0 16px; }
+    .aa-nav__link { padding: 0 10px; font-size: 14px; }
+    .aa-recherche { padding: 0 6px 0 11px; }
+    .aa-recherche input { width: 120px; }
+}
+
+/* Dernier palier avant le repli dans le tiroir. À 1200px il manquait cinq
+   pixels à la navigation — assez pour amorcer la troncature d'un libellé.
+   Deux pixels de moins de chaque côté des cinq entrées les rendent. */
+@media (max-width: 1279.98px) and (min-width: 1200px) {
+
+    .aa-nav__link { padding: 0 8px; }
+    .aa-header { gap: 8px; }
+}
+
+/* Tablette et petit portable : hamburger visible, navigation repliée dans le
+   tiroir.
+
+   Le seuil est à 1200 et non à 992 : les libellés de catégorie viennent de la
+   base et sont longs (« Cours d'Anatomie », « Atlas d'Anatomie »…). En
+   dessous de 1200px ils ne tiennent plus à côté de la recherche, de la langue
+   et des boutons de compte, et la nav passait sous la zone de droite. */
+@media (max-width: 1199.98px) {
+
+    .aa-burger { display: inline-flex; }
+
+    /* La nav horizontale disparaît : son contenu vit dans le tiroir, rendu
+       depuis la même source (aa_nav_items.php) — pas de markup dupliqué. */
+    .aa-nav { display: none; }
+
+    .aa-recherche input { width: 120px; }
+
+    .aa-compte__nom { display: none; }
+}
+
+@media (max-width: 991.98px) {
+
+    .aa-footer__grille { grid-template-columns: 1fr 1fr; gap: 28px; }
+}
+
+@media (max-width: 767.98px) {
+
+    .aa-header {
+        height: var(--aa-header-h-mob);
+        padding: 0 12px;
+        gap: 8px;
+    }
+
+    .aa-header__logo img { height: 32px; }
+
+    /* La recherche prend trop de place : elle bascule dans le tiroir. */
+    .aa-recherche { display: none; }
+
+    /* Le libellé de langue disparaît, le drapeau suffit. */
+    .aa-langue__nom { display: none; }
+
+    .aa-declencheur { padding: 0 8px; gap: 5px; }
+
+    .aa-admin-bar {
+        top: var(--aa-header-h-mob);
+        padding: 7px 12px;
+        font-size: 12px;
+    }
+
+    .aa-admin-bar__actions {
+        margin-left: 0;
+        width: 100%;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 2px;
+    }
+
+    .aa-footer {
+        padding: 36px 16px 0;
+        margin-top: 36px;
+    }
+
+    .aa-footer__grille { grid-template-columns: 1fr; gap: 26px; }
+
+    .aa-footer__bas { justify-content: flex-start; }
+
+    body.aa-mode-lecture .aa-lecture-zone {
+        padding: 28px 18px 72px;
+        font-size: 16px;
+        line-height: 1.7;
+    }
+
+    body.aa-mode-lecture .aa-lecture-zone .aa-large {
+        max-width: 100%;
+        margin-left: 0;
+        transform: none;
+    }
+}
+
+@media (max-width: 575.98px) {
+
+    .aa-sidebar { width: 88vw; }
+
+    .aa-btn { padding: 0 13px; font-size: 13px; }
+
+    /* Le nom d'utilisateur et le libellé « Se connecter » sautent : l'avatar
+       et l'icône restent des cibles tactiles suffisantes. */
+    .aa-compte .aa-declencheur { padding: 0 4px; }
+}
+
+
+/* --------------------------------------------------------------------------
+   10. Accessibilité
+   -------------------------------------------------------------------------- */
+
+/* Le focus doit rester visible : c'est le seul repère pour traverser le
+   tiroir au clavier. */
+.aa-nav__link:focus-visible,
+.aa-panneau__lien:focus-visible,
+.aa-sidebar__lien:focus-visible,
+.aa-declencheur:focus-visible,
+.aa-btn:focus-visible,
+.aa-burger:focus-visible {
+    outline: 2px solid var(--aa-vert);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .aa-sidebar,
+    .aa-voile,
+    .aa-panneau,
+    .aa-nav__link,
+    .aa-btn,
+    .aa-socials a,
+    .aa-burger__bar,
+    .aa-burger__bar::before,
+    .aa-burger__bar::after {
+        transition: none !important;
+    }
+}
+
+/* Lien d'évitement pour aller directement au contenu. */
+.aa-skip {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 2000;
+    padding: 10px 16px;
+    background: var(--aa-navy);
+    color: #fff;
+    border-radius: 0 0 var(--aa-radius-sm) 0;
+}
+
+.aa-skip:focus { left: 0; color: #fff; }
+
+/* Impression : le chrome de navigation n'a rien à faire sur le papier. */
+@media print {
+    .aa-header,
+    .aa-footer,
+    .aa-admin-bar,
+    .aa-sidebar,
+    .aa-voile,
+    .aa-lecture-sortie,
+    .aa-skip {
+        display: none !important;
+    }
+}

@@ -24,6 +24,7 @@ if (strlen($this->session->userdata('passTok')) == 200) {
             .col-text, .col-figures { flex: 0 0 100%; max-width: 100%; margin: 0; }
         }
     </style>
+<?php include('components/aa_lecture_responsive.php'); ?>
 </head>
 
 <header style="z-index: 1000; width: 100%; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); background: linear-gradient(135deg, #120E47 30%, #182540 100%);">

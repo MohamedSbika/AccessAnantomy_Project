@@ -1,0 +1,169 @@
+/* ==========================================================================
+   Page cours (livreCours) — responsive mobile & tablette
+   --------------------------------------------------------------------------
+   Ne traite QUE ce qui est propre à cette page :
+     - #demo, la zone de défilement du texte du cours,
+     - la ligne de recherche dans le cours,
+     - les deux modales d'administration (figures interactives, images de
+       rappel).
+
+   Le squelette (#element, colonnes empilées, habillage) vient de
+   lecture-responsive.css, le bloc figures de figures-responsive.css, la
+   colonne de raccourcis de racourci-responsive.css.
+
+   Chargée APRÈS ces trois feuilles. Le desktop (>= 992px) n'est pas touché.
+   ========================================================================== */
+
+
+@media (max-width: 767.98px) {
+
+    /* ---- 1. Colonne texte : la zone de lecture du cours ----
+       #demo est le seul ascenseur du cours (l'iframe interne est agrandie en
+       JS). On lui laisse presque tout l'écran, moins la barre mobile et la
+       ligne de recherche. dvh suit la barre d'adresse mobile ; la valeur en
+       vh reste comme repli pour les navigateurs qui l'ignorent. */
+    #demo {
+        width: 100% !important;
+        height: calc(100vh - 150px) !important;
+        height: calc(100dvh - 150px) !important;
+        min-height: 320px !important;
+        margin: 0 !important;
+        border-radius: 10px;
+        background: #ffffff;
+    }
+
+    #demo iframe,
+    #iframeID {
+        width: 100% !important;
+    }
+
+    /* Ligne de recherche : elle doit passer à la ligne plutôt que déborder. */
+    #element .breadcrumb-item > div {
+        flex-wrap: wrap !important;
+        justify-content: flex-start !important;
+        gap: 8px !important;
+        margin-left: 0 !important;
+    }
+
+    #keywordsIN {
+        max-width: none !important;
+        flex: 1 1 160px;
+    }
+
+    #element .scroll-container {
+        background: #f7f8fa !important;
+        border-radius: 10px;
+        padding: 8px !important;
+    }
+
+
+    /* ---- 2. Modale « Gérer les figures interactives » (admin) ----
+       Six colonnes dont trois sélecteurs de fichier : illisible sous 768px.
+       Chaque ligne devient une fiche, et l'en-tête du tableau est remplacé
+       par les libellés portés en data-label sur les cellules. */
+    #figureSvgModal {
+        padding: 8px !important;
+        align-items: flex-end !important;
+    }
+
+    #figureSvgModal > div {
+        width: 100% !important;
+        max-height: 94vh !important;
+        border-radius: 14px 14px 0 0 !important;
+    }
+
+    #figureSvgModal h2 {
+        font-size: .95rem !important;
+        line-height: 1.3;
+        padding-right: 8px;
+    }
+
+    .aa-fig-table,
+    .aa-fig-table tbody,
+    .aa-fig-table tr,
+    .aa-fig-table td {
+        display: block !important;
+        width: 100% !important;
+    }
+
+    .aa-fig-table {
+        table-layout: auto !important;
+    }
+
+    /* L'en-tête n'a plus de colonnes à nommer : les libellés passent en fiche. */
+    .aa-fig-table thead {
+        display: none !important;
+    }
+
+    .aa-fig-table tr {
+        margin-bottom: 12px;
+        padding: 10px;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        background: #fbfcfd;
+    }
+
+    .aa-fig-table td {
+        padding: 6px 0 !important;
+        overflow: visible !important;
+        white-space: normal !important;
+        text-align: left;
+    }
+
+    .aa-fig-table td[data-label]::before {
+        content: attr(data-label);
+        display: block;
+        margin-bottom: 3px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #6b7280;
+    }
+
+    /* La 1re cellule sert de titre de fiche : son libellé est superflu. */
+    .aa-fig-table td:first-child {
+        padding-top: 0 !important;
+        font-size: 15px;
+    }
+
+    .aa-fig-table td:first-child::before {
+        display: none;
+    }
+
+    .aa-fig-table td input[type="file"] {
+        font-size: 12px !important;
+    }
+
+    .aa-fig-table td:last-child button {
+        min-height: 40px;
+        padding: 8px 14px !important;
+        font-size: 13px !important;
+    }
+
+    /* Formulaire « Ajouter une nouvelle figure » : une ligne = un champ. */
+    #newFigTitle,
+    #newFigHtml,
+    #newFigSvg,
+    #newFigJson {
+        font-size: 16px !important;   /* < 16px : iOS zoome à la mise au point */
+    }
+
+    #figureSvgModal button[onclick="addFigureSvgNew()"] {
+        width: 100%;
+        min-height: 44px;
+    }
+
+
+    /* ---- 3. Modale « Gérer les images de rappel » (admin) ---- */
+    #addImageRappelModal > div,
+    #addImageRappelModal .modal-content {
+        width: 100% !important;
+        max-width: calc(100vw - 16px) !important;
+        max-height: 92vh !important;
+        overflow-y: auto !important;
+    }
+
+    #imagesContainer img {
+        max-width: 46% !important;
+        height: auto !important;
+    }
+}

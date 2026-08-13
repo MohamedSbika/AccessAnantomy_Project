@@ -1,0 +1,315 @@
+/* ==========================================================================
+   AccessAnatomy — couche responsive globale (mobile / tablette / desktop)
+   ==========================================================================
+
+   Chargée APRÈS app.css et v1_app.css : à spécificité égale, c'est elle qui
+   gagne. Ne pas déplacer avant, sinon la plupart des règles sont écrasées.
+
+   Points de rupture alignés sur la grille Bootstrap déjà présente dans
+   app.css (576 / 768 / 992 / 1200), pour ne pas créer un second système
+   concurrent :
+
+     Mobile            <= 575.98px
+     Tablette portrait  576px - 767.98px
+     Tablette paysage   768px - 991.98px
+     Desktop           >= 992px      (mise en page d'origine, non touchée)
+
+   Principe : le desktop reste tel quel. Tout ce qui change est enfermé dans
+   une media query max-width, pour ne pas régresser l'existant.
+
+   Le code applique !important un peu partout (app.css et les styles inline
+   des vues) : il en faut donc ici aussi pour reprendre la main. C'est un
+   choix subi, pas un choix de style.
+   ========================================================================== */
+
+
+/* --------------------------------------------------------------------------
+   1. Règles sûres, tous écrans
+   Rien ici ne modifie une mise en page desktop : on borne seulement ce qui
+   peut déborder.
+   -------------------------------------------------------------------------- */
+
+/* Le débordement horizontal est LE bug mobile classique : une seule boîte
+   trop large et toute la page se met à défiler latéralement.
+
+   overflow-x est posé sur body SEUL, jamais sur html. Les vues posent déjà
+   `body { overflow-x: hidden }` : le navigateur propage alors cet overflow au
+   viewport, et la page défile normalement. Ajouter la même règle sur html
+   coupe cette propagation — body devient un conteneur de défilement isolé,
+   la page entière cesse de défiler verticalement. */
+html,
+body {
+    max-width: 100%;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+/* Les médias ne dépassent jamais leur conteneur. `height: auto` évite
+   l'écrasement quand seul un width est contraint. */
+img,
+video,
+canvas,
+svg {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Les iframes (cours, vidéos intégrées) n'ont pas de ratio intrinsèque. */
+iframe,
+embed,
+object {
+    max-width: 100%;
+}
+
+/* Les mots très longs (noms anatomiques, URLs) forcent sinon la largeur. */
+p,
+li,
+td,
+th,
+dd,
+dt,
+h1, h2, h3, h4, h5, h6 {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+
+/* --------------------------------------------------------------------------
+   2. Tablette et en dessous (<= 991.98px)
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 991.98px) {
+
+    /* Les conteneurs Bootstrap à largeur fixe deviennent fluides. */
+    .container,
+    .container-lg,
+    .container-xl {
+        max-width: 100% !important;
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+    }
+
+    /* Beaucoup de vues posent des largeurs en dur (style="width:900px").
+       On les ramène dans le viewport sans toucher à la hauteur. */
+    [style*="width:"][style*="px"],
+    [width] {
+        max-width: 100% !important;
+    }
+
+    /* Les tableaux ne se replient pas : on les rend défilables plutôt que de
+       laisser la page entière déborder. -webkit-overflow-scrolling garde
+       l'inertie sur iOS. */
+    .table-responsive,
+    .dataTables_wrapper {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Tableau non enveloppé dans .table-responsive : on le rend défilable
+       via son parent direct plutôt que de casser sa mise en page interne. */
+    table {
+        max-width: 100% !important;
+    }
+
+    /* Les positionnements absolus calés sur des coordonnées desktop sortent
+       de l'écran. On neutralise les décalages négatifs les plus courants. */
+    .dropleft .dropdown-menu,
+    .dropdown-menu {
+        max-width: calc(100vw - 30px) !important;
+    }
+}
+
+
+/* --------------------------------------------------------------------------
+   3. Tablette portrait (<= 767.98px)
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767.98px) {
+
+    /* Les grilles à colonnes fixes passent en pleine largeur. */
+    .row > [class*="col-"] {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+    }
+
+    /* Colonnes flottantes à largeur en pourcentage posées en style inline
+       (`float:left; width:48%`), très présentes dans les vues de cours et de
+       résumé. Un style inline bat toute règle de classe : !important est le
+       seul moyen de les empiler.
+
+       Le sélecteur exige float ET un pourcentage : cibler `[style*="float"]`
+       seul emporterait aussi les petites images et icônes flottées, qui
+       doivent rester flottées. */
+    [style*="float"][style*="%"] {
+        float: none !important;
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    /* Les barres latérales (sommaire de chapitre, raccourcis atlas) prennent
+       toute la largeur et se placent dans le flux au lieu de flotter.
+
+       NE PAS ajouter ici .new-side-nav.livre-side-nav : ce sélecteur désigne
+       le tiroir du menu (#sideNav), qui doit rester en position: fixed hors
+       écran. Le remettre dans le flux le déroule en pleine hauteur en haut de
+       la page et repousse tout le contenu vers le bas. Son responsive est
+       traité par header-responsive.css. */
+    .sidebar-racc {
+        position: static !important;
+        width: 100% !important;
+        height: auto !important;
+        top: auto !important;
+    }
+
+    /* Les modales plein écran sont plus lisibles que des boîtes centrées
+       étroites sur petit écran. */
+    .modal-dialog {
+        margin: 10px !important;
+        max-width: calc(100% - 20px) !important;
+    }
+
+    /* Cible tactile minimale recommandée (~44px) pour les contrôles. */
+    .btn,
+    button,
+    input[type="submit"],
+    input[type="button"],
+    .nav-link {
+        min-height: 44px;
+    }
+
+    /* Empêche le zoom automatique d'iOS à la mise au point d'un champ :
+       il se déclenche sous 16px. */
+    input,
+    select,
+    textarea {
+        font-size: 16px !important;
+        max-width: 100% !important;
+    }
+}
+
+
+/* --------------------------------------------------------------------------
+   4. Mobile (<= 575.98px)
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 575.98px) {
+
+    body {
+        font-size: 14px;
+    }
+
+    /* Échelle typographique resserrée : les tailles desktop mangent l'écran. */
+    h1 { font-size: 1.5rem !important; }
+    h2 { font-size: 1.3rem !important; }
+    h3 { font-size: 1.15rem !important; }
+    h4, h5, h6 { font-size: 1rem !important; }
+
+    .container,
+    .container-fluid {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+    }
+
+    /* Les figures d'anatomie sont le cœur de l'application : elles doivent
+       rester lisibles plutôt que rognées. */
+    .figure-container img,
+    .imageViewAnimation img,
+    .hero-image img {
+        width: 100% !important;
+        height: auto !important;
+        margin-left: 0 !important;
+    }
+
+    /* .imageViewAnimation est centrée par un margin-left négatif calé sur
+       une largeur de 400px : hors sujet sous 576px. */
+    .imageViewAnimation {
+        position: static !important;
+        width: 100% !important;
+        margin-left: 0 !important;
+        left: auto !important;
+    }
+
+    /* Les infobulles de chapitre sont dimensionnées en dur à 225px. */
+    .tooltip-chapitre {
+        width: auto !important;
+        max-width: calc(100vw - 20px) !important;
+    }
+
+    /* Empile les barres d'outils et en-têtes en ligne. */
+    .top-bar,
+    .navbar > .container,
+    .navbar > .container-fluid {
+        flex-wrap: wrap !important;
+    }
+
+    /* Les tableaux de données très larges (QCM, listes de cours) : on passe
+       en défilement horizontal explicite avec un indice visuel. */
+    .table-responsive {
+        border: 0;
+    }
+
+    /* Marges et ombres décoratives coûtent de la largeur utile. */
+    .card,
+    .panel {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+}
+
+
+/* --------------------------------------------------------------------------
+   5. Très petits écrans (<= 400px)
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 400px) {
+
+    body {
+        font-size: 13px;
+    }
+
+    .container,
+    .container-fluid {
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+    }
+
+    /* Les boutons côte à côte ne tiennent plus : on les empile. */
+    .btn-group {
+        flex-wrap: wrap !important;
+    }
+}
+
+
+/* --------------------------------------------------------------------------
+   6. Aides utilitaires
+   Classes à poser ponctuellement dans les vues quand une page a besoin d'un
+   traitement particulier, sans rouvrir ce fichier.
+   -------------------------------------------------------------------------- */
+
+/* Enveloppe à poser autour d'un tableau large : <div class="aa-scroll-x"> */
+.aa-scroll-x {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+}
+
+/* Masquer / afficher selon le palier. */
+@media (max-width: 767.98px) {
+    .aa-hide-mobile { display: none !important; }
+}
+
+@media (min-width: 768px) {
+    .aa-only-mobile { display: none !important; }
+}
+
+/* Impression : le responsive ne doit pas parasiter la sortie papier des
+   cours et résumés. */
+@media print {
+    html,
+    body {
+        overflow-x: visible;
+    }
+}

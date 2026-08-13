@@ -774,4 +774,6 @@
     }
 </script>
 
+<?php $aa_mobile_bar = true; include('components/aa_header_mobile.php'); ?>
+
 <?php include_once('v1_google_translate.php'); ?>
