@@ -134,6 +134,29 @@ h1, h2, h3, h4, h5, h6 {
         max-width: 100% !important;
     }
 
+    /* Colonnes à point de rupture : la règle ci-dessus ne suffit PAS.
+       app.css et v1_app.css embarquent la grille de Bootstrap 5, qui
+       dimensionne par `.col-sm-3 { flex: 0 0 auto; width: 25% }` — et non plus
+       par `flex-basis` + `max-width` comme en Bootstrap 4. Sans `width`, rien
+       ne bougeait entre 576px et 767.98px : les colonnes `col-sm-*` gardaient
+       leur quart ou leur moitié d'écran sur une tablette portrait.
+
+       Seules les variantes suffixées sont visées, et le seul palier réellement
+       concerné est `col-sm-*` entre 576px et 767.98px : `col-md-*` et au-delà
+       ne s'appliquent déjà plus sous leur propre point de rupture. Les colonnes
+       sans suffixe (`col-6`, `col-4`…) sont volontairement laissées de côté :
+       elles servent aux grilles 2 ou 3 par ligne que les vues veulent garder
+       telles quelles sur téléphone. */
+    .row > [class*="col-sm-"],
+    .row > [class*="col-md-"],
+    .row > [class*="col-lg-"],
+    .row > [class*="col-xl-"],
+    .row > [class*="col-xxl-"] {
+        flex: 0 0 auto !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
     /* Colonnes flottantes à largeur en pourcentage posées en style inline
        (`float:left; width:48%`), très présentes dans les vues de cours et de
        résumé. Un style inline bat toute règle de classe : !important est le

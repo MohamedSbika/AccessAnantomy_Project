@@ -162,48 +162,15 @@
         font-size: 16px !important;   /* < 16px : iOS zoome à la mise au point */
     }
 
-    /* Pagination : les numéros de page sortaient de l'écran, la vue posant
-       `white-space: nowrap` sur le conteneur et DataTables enfilant les liens
-       dans un <span> unique. On autorise le retour à la ligne et on empile
-       les numéros sur plusieurs rangs. */
-    .dataTables_paginate {
-        display: block !important;
-        white-space: normal !important;
-        padding-bottom: 6px;
-    }
+    /* Pagination : traitée par pagination-responsive.css, chargée APRÈS
+       cette feuille (voir components/aa_lecture_responsive.php). La rangée de
+       numéros y devient une bande défilante bornée à la largeur disponible,
+       et pagination-responsive.js y recentre la question courante.
 
-    .dataTables_paginate > span,
-    .dataTables_paginate .pagination {
-        display: flex !important;
-        flex-wrap: wrap !important;
-        justify-content: center !important;
-        white-space: normal !important;
-        gap: 4px;
-        padding-left: 0;
-    }
-
-    .dataTables_paginate .paginate_button,
-    .dataTables_paginate .page-item .page-link {
-        min-width: 40px;
-        min-height: 40px;
-        display: inline-flex !important;
-        align-items: center;
-        justify-content: center;
-        font-size: 13px;
-    }
-
-    .dataTables_filter,
-    .dataTables_length {
-        float: none !important;
-        width: 100% !important;
-        text-align: left !important;
-    }
-
-    .dataTables_filter input {
-        width: 100% !important;
-        margin-left: 0 !important;
-        font-size: 16px !important;
-    }
+       Ne rien redéclarer ici : les deux feuilles se disputeraient les mêmes
+       propriétés en !important, et celle-ci étant chargée en premier, c'est
+       l'autre qui l'emporterait — ou l'inverse au moindre changement d'ordre.
+       Un seul endroit décide de la pagination. */
 
 
     /* ---- 2.4 Barre « mode lecture » et minuteur d'examen ---- */

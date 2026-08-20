@@ -1,0 +1,299 @@
+/* ==========================================================================
+   Page des calques (v1_listCalqueFigure.php) — responsive mobile & tablette
+   --------------------------------------------------------------------------
+   Une seule vue sert les deux parcours :
+
+     /XX/listCalque/<chapitre>            (home/getListCalqueByChapitres)
+     /XX/evaluatCalque/<chap>.<chap>…     (home/getListCalqueByChapitres2)
+
+   Elles ne diffèrent que par les données ; la mise en page est la même et
+   cette feuille vaut donc pour les deux.
+
+   Gabarit d'origine, entièrement calé sur un écran large :
+
+     .wrapper > .main > main.content
+         v1_racourci            colonne fixe de 75px, hors flux
+         <style> section { margin-left: 90px }   la bande qu'on lui réserve
+         section  > .scroll-container            bande de miniatures
+         section  > .block-figure (une par figure)
+             .row              Légende : Complète / Séquentielle | audio | Test
+             .atlas-html-host  figure HTML autonome (Shadow DOM)
+             .row.atlas-classic-row   col-sm-3 légendes | col-sm-6 image |
+                                      col-sm-3 légendes
+             .row.atlas-classic-row   col-sm-6 titre
+
+   Ce que la page faisait sous 992px, faute de toute couche responsive :
+     - les 90px réservés à la colonne de raccourcis restaient pris alors que
+       celle-ci repasse dans le flux sous 768px (racourci-responsive.css) ;
+     - `col-sm-3 / col-sm-6 / col-sm-3` s'applique dès 576px : sur une tablette
+       portrait, les légendes tenaient dans deux colonnes de ~150px ;
+     - le `<style>` de la vue pose `div.scroll-container { white-space: nowrap }`
+       pour la bande de miniatures, mais la même classe enveloppe les légendes
+       de gauche : les noms anatomiques ne revenaient pas à la ligne et
+       sortaient de l'écran ;
+     - `.image-figure:hover { padding: 10px }` : au doigt, le survol reste
+       collé et la bande de miniatures sautait de 10px après chaque tap.
+
+   Chargée APRÈS v1_app.css et responsive-global.css (voir
+   components/aa_calque_responsive.php). Le desktop (>= 992px) n'est pas
+   touché : tout est enfermé dans des media queries max-width.
+   ========================================================================== */
+
+
+/* --------------------------------------------------------------------------
+   1. Tablette paysage (768px - 991.98px)
+   La colonne de raccourcis reste fixe et hors flux : on lui garde sa bande,
+   élargie à 110px comme sur les autres pages de lecture (la variante atlas de
+   v1_racourci fait 100px).
+   -------------------------------------------------------------------------- */
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+
+    /* `main.content > section` (0,1,1) passe devant le `section` (0,0,1) posé
+       par la vue, quel que soit l'ordre de chargement. */
+    main.content > section {
+        margin-left: 110px !important;
+        margin-right: 8px !important;
+    }
+
+    /* Barre d'outils de la figure : « Légende : Complète / Séquentielle »,
+       lecteur audio, « Test » / « Résumé ». Un tiers de la largeur restante
+       (~210px) ne suffit pas à la phrase des légendes, qui se coupait après le
+       séparateur « / ». Elle prend donc la ligne entière ; l'audio et les deux
+       boutons se partagent la suivante.
+
+       Borné à ce palier : sous 768px, responsive-global.css empile déjà les
+       trois colonnes, et une règle en 50% ici les en empêcherait. */
+    .block-figure > .row > .col-sm-4.legend-switch {
+        flex: 0 0 auto !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .block-figure > .row > .col-sm-4:not(.legend-switch) {
+        flex: 0 0 auto !important;
+        width: 50% !important;
+        max-width: 50% !important;
+    }
+}
+
+
+/* --------------------------------------------------------------------------
+   2. Tablette et en dessous (<= 991.98px) — la figure d'abord
+   --------------------------------------------------------------------------
+   Trois colonnes de légendes autour de l'image ne tiennent pas sous 992px.
+   Elles s'empilent, et l'image passe EN PREMIER : c'est elle qu'on lit, les
+   légendes s'y rapportent.
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 991.98px) {
+
+    /* `.row` reste une rangée flex qui passe à la ligne ; ce sont les colonnes
+       qui prennent toute la largeur. `width` est la propriété décisive : la
+       grille de Bootstrap 5 embarquée dans v1_app.css dimensionne par
+       `.col-sm-3 { flex: 0 0 auto; width: 25% }`. */
+    .row.atlas-classic-row > [class*="col-sm-"] {
+        flex: 0 0 auto !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+    }
+
+    /* La colonne de l'image (col-sm-6) remonte au-dessus des deux colonnes de
+       légendes. Sur la seconde rangée (le titre), qui n'a qu'une colonne,
+       l'ordre n'a aucun effet. */
+    .row.atlas-classic-row > .col-sm-6 {
+        order: -1;
+    }
+
+    /* Les rangées imbriquées dans une colonne de légendes portent la marge
+       négative de gouttière de Bootstrap (-12px de chaque côté). Le bouton
+       « Découvrir la réponse », posé en absolu sur toute la largeur de sa
+       rangée, débordait donc de la carte de la figure et touchait les bords de
+       l'écran. */
+    .block-figure .legend-group-row,
+    .row.atlas-classic-row > [class*="col-sm-"] > .row {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    /* `div.scroll-container { white-space: nowrap; overflow: auto }` de la vue
+       vise la bande de miniatures ; la même classe enveloppe les légendes de
+       gauche, qui ne revenaient donc pas à la ligne. Restreint aux blocs de
+       légendes : la bande de miniatures, elle, doit rester en nowrap. */
+    .block-figure .legend-group-row .scroll-container {
+        white-space: normal !important;
+        overflow: visible !important;
+    }
+
+    /* Le HTML autonome est plafonné à 88vh avec son propre ascenseur : sur un
+       écran étroit son contenu s'allonge beaucoup, et l'ascenseur imbriqué
+       rend le reste de la page difficile à atteindre. */
+    .atlas-html-host {
+        height: auto !important;
+        min-height: 60vh;
+        max-height: none !important;
+        overflow: visible !important;
+    }
+}
+
+
+/* --------------------------------------------------------------------------
+   3. Tablette portrait et mobile (<= 767.98px)
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767.98px) {
+
+    /* ---- 3.1 Squelette ----
+       La colonne de raccourcis repasse dans le flux (racourci-responsive.css) :
+       la bande de 90px qui lui était réservée n'a plus lieu d'être. */
+    main.content {
+        max-width: 100% !important;
+        padding: 0 8px 24px !important;
+    }
+
+    main.content > section {
+        margin: 0 0 12px !important;
+    }
+
+    /* Fond gris clair : les blocs blancs se détachent, comme sur les autres
+       pages de lecture (lecture-responsive.css). */
+    .main {
+        background: #eef1f5 !important;
+    }
+
+    /* Chaque figure devient une carte : la limite entre deux figures empilées
+       redevient lisible. */
+    .block-figure {
+        padding: 10px !important;
+        margin-bottom: 14px;
+        background: #ffffff;
+        border-radius: 14px;
+        box-shadow: 0 1px 3px rgba(16, 24, 40, .10);
+    }
+
+
+    /* ---- 3.2 Bande de miniatures ----
+       Elle reste en défilement horizontal : c'est sa nature. Seules les cibles
+       tactiles changent. */
+    .slider-container .scroll-container {
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-x: contain;
+        padding: 4px !important;
+    }
+
+    .image-figure {
+        width: 68px !important;
+        height: 68px !important;
+        padding: 4px !important;
+    }
+
+    /* Le survol reste collé après un tap sur écran tactile : la bande sautait
+       de 10px à chaque changement de figure. */
+    .image-figure:hover {
+        padding: 4px !important;
+    }
+
+
+    /* ---- 3.3 Barre d'outils de la figure ----
+       « Légende : Complète / Séquentielle », lecteur audio, « Test » /
+       « Résumé » : trois col-sm-4 qui s'empilent ici. */
+    .legend-switch {
+        justify-content: flex-start !important;
+        margin-top: 10px !important;
+        gap: 8px !important;
+    }
+
+    /* `height: 35px` sur un bouton en flex-direction: column tronquait les
+       libellés traduits les plus longs. */
+    .btn_app {
+        height: auto !important;
+        min-height: 40px;
+        padding: 8px 10px !important;
+        font-size: .85em !important;
+    }
+
+    .block-figure audio {
+        width: 100% !important;
+        padding-right: 0 !important;
+    }
+
+
+    /* ---- 3.4 Légendes ----
+       Le badge numéroté et son texte doivent rester sur la même ligne, le
+       texte pouvant lui revenir à la ligne autant qu'il le faut. */
+    .ad-legend-item {
+        align-items: flex-start;
+    }
+
+    .ad-legend-text {
+        font-size: 13px !important;
+        line-height: 1.35;
+    }
+
+    .rond {
+        min-width: 36px;
+        height: 36px !important;
+        font-size: 13px !important;
+        flex: 0 0 auto;
+    }
+
+    /* Le bouton « Découvrir la réponse » recouvre entièrement son groupe
+       (position: absolute; width/height: 100%). Un groupe d'une seule légende
+       courte donnait une cible de moins de 30px de haut. */
+    .legend-group-row {
+        min-height: 46px;
+    }
+
+    /* Le champ de saisie du mode Test : à côté du badge, il n'a plus de place
+       en dessous de ~120px. */
+    .textGaucheCoteDroite textarea {
+        min-width: 0;
+        font-size: 16px !important;   /* < 16px : iOS zoome à la mise au point */
+    }
+
+
+    /* ---- 3.5 Éléments flottants ----
+       L'infobulle de réponse est positionnée en absolu sur les coordonnées du
+       badge cliqué : près du bord droit, elle sortait de l'écran. */
+    #toastMessage {
+        max-width: calc(100vw - 20px) !important;
+    }
+
+    .resume-modal-box {
+        max-width: calc(100vw - 32px);
+        padding: 20px 16px 16px;
+    }
+}
+
+
+/* --------------------------------------------------------------------------
+   4. Petits téléphones (<= 400px)
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 400px) {
+
+    main.content {
+        padding: 0 6px 20px !important;
+    }
+
+    .block-figure {
+        padding: 8px !important;
+    }
+
+    .row.atlas-classic-row > [class*="col-sm-"] {
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+    }
+
+    .image-figure {
+        width: 60px !important;
+        height: 60px !important;
+    }
+
+    .btn_app {
+        font-size: .78em !important;
+        padding: 8px 8px !important;
+    }
+}

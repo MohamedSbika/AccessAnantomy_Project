@@ -15,6 +15,7 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
 		<link href="<?php echo HTTP_CSS; ?>v1_app.css" rel="stylesheet">
+	<?php include('components/aa_calque_responsive.php'); ?>
 	<?php echo aa_rtl_assets(); ?>
 	</head>
 

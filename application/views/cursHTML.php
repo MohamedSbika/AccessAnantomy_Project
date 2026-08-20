@@ -1,9 +1,32 @@
 <?php if(strlen($this->session->userdata('passTok'))==200) { ?>
 
     <style>
+        /* Marge de lecture du cours.
+
+           Ce document est celui de l'IFRAME du cours (#iframeID dans
+           v1_livreCours) : les media queries ci-dessous s'évaluent donc sur la
+           largeur de l'IFRAME, pas sur celle de l'écran — exactement ce qu'il
+           faut, la colonne du texte ne faisant que 40% de la page en desktop.
+
+           3em fixes revenaient, sur un téléphone, à manger près d'un tiers de
+           la ligne : un nom anatomique un peu long ne tenait plus. */
         body{
             padding-left: 3em;
             padding-right: 3em;
+        }
+
+        @media (max-width: 700px) {
+            body{
+                padding-left: 1.5em;
+                padding-right: 1.5em;
+            }
+        }
+
+        @media (max-width: 420px) {
+            body{
+                padding-left: .9em;
+                padding-right: .9em;
+            }
         }
         ::-moz-selection { /* Code for Firefox */
             color: red;
@@ -68,7 +91,14 @@
             // Script qui renvoie la hauteur réelle du contenu au parent (pour supprimer le scroll interne).
             $heightReporter = '<script>(function(){function r(){try{parent.postMessage({cursIframeHeight:Math.max(document.body.scrollHeight,document.documentElement.scrollHeight)},"*");}catch(e){}}window.addEventListener("load",r);setTimeout(r,400);setTimeout(r,1200);})();</' . 'script>';
             $iframeSrc = '<!DOCTYPE html><html><head><meta charset="utf-8">' . $headStyles .
-                '<style>body{padding:1em 2em;line-height:1.6;font-family:inherit;}</style></head><body>' .
+                /* padding VERTICAL seulement : ce document est imbriqué dans une
+                   iframe posée à l'intérieur du <body> ci-dessus, qui porte déjà
+                   la marge de lecture. Les 2em horizontaux s'y ajoutaient — un
+                   cours au format HTML complet se lisait avec 5em de marge de
+                   chaque côté, contre 3em pour un cours issu d'un DOCX.
+                   `margin: 0` : la marge par défaut de 8px du <body> décalait
+                   encore le HTML de 8px par rapport au texte issu d'un DOCX. */
+                '<style>body{margin:0;padding:1em 0;line-height:1.6;font-family:inherit;}</style></head><body>' .
                 $truncatedHtml . $heightReporter . '</body></html>';
             $iframeSrc = htmlspecialchars($iframeSrc, ENT_QUOTES, 'UTF-8');
             ?>

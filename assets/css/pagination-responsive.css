@@ -1,0 +1,367 @@
+/* ==========================================================================
+   Pagination DataTables — couche responsive commune à toute l'application
+   --------------------------------------------------------------------------
+   Une seule feuille pour TOUS les pagineurs du site : listes QCM / QROC des
+   pages de lecture (v1_*) comme tableaux d'administration (users, settingCurs,
+   settingUsers, livreQcmEdit…).
+
+   Ce qu'elle corrige
+   ------------------
+   Les vues de questions posent `$.fn.DataTable.ext.pager.numbers_length = 200`
+   avec `pageLength: 1` (QROC) ou `2` (QCM) : le pagineur est la seule
+   navigation entre les questions, et DataTables aligne donc UN bouton PAR
+   QUESTION — souvent 40 à 60, parfois davantage. À 40px de bouton plus 10px
+   de marge, la rangée mesurait 2 000 à 3 000px : elle débordait de la page sur
+   TOUS les écrans, desktop compris, et emportait la largeur du document avec
+   elle (défilement horizontal parasite).
+
+   Le parti pris ici : le pagineur ne déborde jamais. Il devient une rangée
+   flex dont SEULE la bande des numéros défile horizontalement, bornée à la
+   largeur disponible. pagination-responsive.js y recentre en continu le
+   numéro courant, de sorte que la question affichée reste toujours visible.
+
+   Structure visée — les deux rendus de DataTables sont couverts :
+
+     .dataTables_paginate                       (rendu « _ », le plus courant
+       > a.paginate_button.page-item.first        ici : les vues demandent un
+       > a.paginate_button.page-item.previous     renderer inexistant, donc
+       > span            <- bande défilante       DataTables retombe dessus)
+           > a.paginate_button.page-item[.current]
+       > a.paginate_button.page-item.next
+       > a.paginate_button.page-item.last
+
+     .dataTables_paginate > ul.pagination        (rendu « bootstrap »)
+       > li.paginate_button.page-item[.active] > a.page-link
+
+   Chargée APRÈS app.css / v1_app.css et les feuilles responsive de page.
+   Les !important sont subis : les vues posent leurs propres règles de
+   pagination dans un <style> situé DANS le <body> (donc plus tard dans la
+   cascade) et avec une spécificité supérieure (.paginate_button.page-item
+   .current). L'ordre de chargement ne suffit pas à les reprendre.
+
+   Aucune règle n'est enfermée dans une media query pour la géométrie de base :
+   le débordement existait aussi en desktop, c'est bien partout qu'il faut le
+   corriger. Les media queries ne servent qu'à resserrer les tailles.
+   ========================================================================== */
+
+
+/* --------------------------------------------------------------------------
+   1. Le pagineur : une rangée qui ne déborde jamais
+   --------------------------------------------------------------------------
+   `overflow: hidden` sur le conteneur et `overflow-x: auto` sur la bande :
+   c'est la bande des numéros qui défile, pas le pagineur. Les flèches
+   Premier / Précédent / Suivant / Dernier restent donc toujours atteignables.
+
+   `display: block ruby` (v1_livreQcm/QROC) et `white-space: nowrap`
+   (div.dataTables_wrapper div.dataTables_paginate) sont les deux règles
+   d'origine qu'il faut neutraliser ici.
+   -------------------------------------------------------------------------- */
+
+.dataTables_paginate {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    max-width: 100%;
+    margin: 0 auto !important;
+    padding: 4px 0 8px;
+    overflow: hidden !important;
+    white-space: normal !important;
+    text-align: center;
+}
+
+/* Le pagineur est un enfant du wrapper : sans min-width: 0, un tableau large
+   étire le wrapper et le plafond `max-width: 100%` ci-dessus ne borne plus
+   rien. */
+.dataTables_wrapper {
+    min-width: 0;
+}
+
+
+/* --------------------------------------------------------------------------
+   2. La bande des numéros : le seul élément défilant
+   --------------------------------------------------------------------------
+   `flex: 0 1 auto` (et non 1 1 auto) : quand il n'y a que quelques pages, la
+   bande fait la largeur de son contenu et le `justify-content: center` du
+   parent la centre. Quand il y en a cent, elle se réduit à la place
+   disponible et défile — en partant de la gauche, ce qu'un
+   `justify-content: center` sur un conteneur défilant rendrait impossible
+   (le début du contenu deviendrait inatteignable dans plusieurs moteurs).
+
+   `min-width: 0` est indispensable : un élément flex refuse par défaut de
+   descendre sous la largeur de son contenu, et la bande déborderait malgré
+   l'overflow.
+   -------------------------------------------------------------------------- */
+
+.dataTables_paginate > span,
+.dataTables_paginate ul.pagination {
+    display: flex !important;
+    flex: 0 1 auto;
+    min-width: 0;
+    flex-wrap: nowrap !important;
+    align-items: center;
+    justify-content: flex-start !important;
+    gap: 4px;
+    margin: 0 !important;
+    padding: 2px 0 !important;
+    list-style: none;
+    white-space: nowrap !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+}
+
+/* Ascenseur discret : sur un pagineur de 40px de haut, la barre par défaut de
+   Chrome mange un tiers du bouton. */
+.dataTables_paginate > span::-webkit-scrollbar,
+.dataTables_paginate ul.pagination::-webkit-scrollbar {
+    height: 4px;
+}
+
+.dataTables_paginate > span::-webkit-scrollbar-thumb,
+.dataTables_paginate ul.pagination::-webkit-scrollbar-thumb {
+    background: rgba(59, 125, 221, .35);
+    border-radius: 2px;
+}
+
+/* Indice visuel : un dégradé au bord du côté où il reste des numéros.
+   Les classes sont posées par pagination-responsive.js. */
+.dataTables_paginate.aa-pager-more-start > span,
+.dataTables_paginate.aa-pager-more-start ul.pagination {
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 18px);
+    mask-image: linear-gradient(to right, transparent 0, #000 18px);
+}
+
+.dataTables_paginate.aa-pager-more-end > span,
+.dataTables_paginate.aa-pager-more-end ul.pagination {
+    -webkit-mask-image: linear-gradient(to left, transparent 0, #000 18px);
+    mask-image: linear-gradient(to left, transparent 0, #000 18px);
+}
+
+.dataTables_paginate.aa-pager-more-start.aa-pager-more-end > span,
+.dataTables_paginate.aa-pager-more-start.aa-pager-more-end ul.pagination {
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 18px, #000 calc(100% - 18px), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, #000 18px, #000 calc(100% - 18px), transparent 100%);
+}
+
+
+/* --------------------------------------------------------------------------
+   3. Les boutons
+   --------------------------------------------------------------------------
+   Géométrie uniforme, en cible tactile (>= 40px). Les marges d'origine
+   (`margin: 0 5px`) sont remplacées par le `gap` de la bande : elles
+   s'ajoutaient sinon à celui-ci et gonflaient la rangée de 20% pour rien.
+
+   Les vues déclarent `.paginate_button.page-item.current { width: 40px;
+   height: 40px; padding: 12px }` — spécificité (0,3,0), depuis un <style> du
+   <body>. D'où les !important sur la géométrie.
+   -------------------------------------------------------------------------- */
+
+.dataTables_paginate .paginate_button {
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    min-width: 40px !important;
+    width: auto !important;
+    min-height: 40px !important;
+    margin: 0 !important;
+    padding: 0 8px !important;
+    border-radius: .25rem;
+    font-size: 14px;
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* `display` est traité à part, et JAMAIS en !important sur les flèches.
+   v1_livreQcm / v1_livreQroc et leurs jumelles d'administration masquent
+   volontairement Premier / Précédent / Suivant / Dernier, tous les numéros
+   étant affichés : un !important ici les ferait réapparaître, ce qui n'a rien
+   à voir avec du responsive. Le :not() borne donc la contrainte aux numéros,
+   et la règle suivante ne fait que proposer le centrage aux flèches — les
+   pages qui les masquent, plus tardives dans la cascade et de spécificité
+   égale, gardent le dernier mot. */
+.dataTables_paginate .paginate_button:not(.first):not(.previous):not(.next):not(.last) {
+    display: inline-flex !important;
+}
+
+.dataTables_paginate .paginate_button.first,
+.dataTables_paginate .paginate_button.previous,
+.dataTables_paginate .paginate_button.next,
+.dataTables_paginate .paginate_button.last {
+    display: inline-flex;
+}
+
+/* Rendu « bootstrap » : le <li> n'est qu'une enveloppe, c'est le <a> qui porte
+   la surface cliquable. */
+.dataTables_paginate li.paginate_button {
+    padding: 0 !important;
+}
+
+.dataTables_paginate li.paginate_button > .page-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    min-width: 40px;
+    height: 40px;
+    margin: 0 !important;
+    padding: 0 8px !important;
+    font-size: 14px;
+    line-height: 1;
+}
+
+/* Flèches : leur libellé est traduit ("Précédent", "Первая"…) et peut être
+   long. On les borne pour qu'elles ne mangent pas la bande des numéros. */
+.dataTables_paginate .paginate_button.first,
+.dataTables_paginate .paginate_button.previous,
+.dataTables_paginate .paginate_button.next,
+.dataTables_paginate .paginate_button.last {
+    flex: 0 0 auto;
+    max-width: 22%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Sur les pages qui les masquent, la règle ci-dessus ne s'applique jamais :
+   `display: none` l'emporte et l'élément ne participe pas à la mise en page. */
+
+/* Rendu « bootstrap » : contrairement au rendu « _ », les flèches sont DANS
+   le <ul> — donc dans la zone défilante, d'où elles disparaissaient dès que la
+   bande dépassait. On les ancre à ses bords.
+
+   Seules Précédent / Suivant sont ancrées : c'est le couple que produit le
+   `pagingType` par défaut (simple_numbers), le seul utilisé par les tableaux
+   d'administration. Ancrer aussi Premier / Dernier les empilerait au même
+   `left: 0`, faute de connaître en CSS la largeur du voisin.
+
+   Le fond opaque vient de `.page-link` (blanc chez Bootstrap), qui remplit
+   entièrement son <li> : les numéros passent dessous sans transparaître. */
+.dataTables_paginate ul.pagination > li.paginate_button.previous {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+}
+
+.dataTables_paginate ul.pagination > li.paginate_button.next {
+    position: sticky;
+    right: 0;
+    z-index: 1;
+}
+
+.dataTables_paginate ul.pagination > li.paginate_button.previous > .page-link,
+.dataTables_paginate ul.pagination > li.paginate_button.next > .page-link {
+    background-color: #ffffff;
+}
+
+
+/* L'ellipse « … » de DataTables n'est pas un bouton : pas de cible tactile. */
+.dataTables_paginate .ellipsis {
+    flex: 0 0 auto;
+    align-self: center;
+    padding: 0 4px;
+    color: #6c757d;
+}
+
+
+/* --------------------------------------------------------------------------
+   4. Tablette portrait et mobile (<= 767.98px)
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767.98px) {
+
+    .dataTables_paginate {
+        gap: 3px;
+        padding-bottom: 6px;
+    }
+
+    .dataTables_paginate > span,
+    .dataTables_paginate ul.pagination {
+        gap: 3px;
+    }
+
+    .dataTables_paginate .paginate_button {
+        min-width: 36px !important;
+        min-height: 36px !important;
+        padding: 0 6px !important;
+        font-size: 13px;
+    }
+
+    .dataTables_paginate li.paginate_button > .page-link {
+        min-width: 36px;
+        height: 36px;
+        padding: 0 6px !important;
+        font-size: 13px;
+    }
+
+    /* Premier / Dernier font double emploi avec la bande, qui va déjà d'un
+       bout à l'autre, et leur libellé traduit ("Premier", "Первая"…) mange la
+       place des numéros. Sur téléphone ils cèdent le pas à Précédent /
+       Suivant, les seuls réellement utiles quand une question s'affiche à la
+       fois. Les pages qui masquent déjà les quatre flèches ne sont pas
+       concernées. */
+    .dataTables_paginate .paginate_button.first,
+    .dataTables_paginate .paginate_button.last {
+        display: none !important;
+    }
+
+    .dataTables_paginate .paginate_button.previous,
+    .dataTables_paginate .paginate_button.next {
+        max-width: 30%;
+    }
+
+    /* Les autres commandes du wrapper (recherche, nombre de lignes, compteur)
+       flottent à côté du pagineur et se chevauchaient. */
+    .dataTables_filter,
+    .dataTables_length,
+    .dataTables_info {
+        float: none !important;
+        width: 100% !important;
+        text-align: left !important;
+    }
+
+    .dataTables_filter input {
+        width: 100% !important;
+        margin-left: 0 !important;
+        font-size: 16px !important;   /* < 16px : iOS zoome à la mise au point */
+    }
+}
+
+
+/* --------------------------------------------------------------------------
+   5. Petits téléphones (<= 400px)
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 400px) {
+
+    .dataTables_paginate .paginate_button {
+        min-width: 32px !important;
+        min-height: 32px !important;
+        padding: 0 4px !important;
+        font-size: 12px;
+    }
+
+    .dataTables_paginate li.paginate_button > .page-link {
+        min-width: 32px;
+        height: 32px;
+        padding: 0 4px !important;
+        font-size: 12px;
+    }
+}
+
+
+/* --------------------------------------------------------------------------
+   6. Impression : un pagineur n'a pas de sens sur papier
+   -------------------------------------------------------------------------- */
+
+@media print {
+
+    .dataTables_paginate {
+        display: none !important;
+    }
+}

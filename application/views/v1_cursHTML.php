@@ -1,9 +1,25 @@
 <?php if(strlen($this->session->userdata('passTok'))==200) { ?>
 
     <style>
+        /* Même barème que cursHTML.php : les media queries portent sur la
+           largeur de l'IFRAME du cours, pas sur celle de l'écran. */
         body{
             padding-left: 3em;
             padding-right: 3em;
+        }
+
+        @media (max-width: 700px) {
+            body{
+                padding-left: 1.5em;
+                padding-right: 1.5em;
+            }
+        }
+
+        @media (max-width: 420px) {
+            body{
+                padding-left: .9em;
+                padding-right: .9em;
+            }
         }
         ::-moz-selection { /* Code for Firefox */
             color: red;

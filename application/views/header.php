@@ -77,6 +77,7 @@
     <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-treeview/1.2.0/bootstrap-treeview.min.js"></script>
     -->
 
+<?php include('components/aa_pagination_responsive.php'); ?>
 <?php echo aa_rtl_assets(); ?>
 </head>
 <style>

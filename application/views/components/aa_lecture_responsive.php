@@ -31,3 +31,9 @@ include(__DIR__ . '/aa_racourci_responsive.php');
 <?php if ($aa_avec_figures) { ?>
 <link rel="stylesheet" href="<?php echo HTTP_CSS; ?>figures-responsive.css<?php echo $aa_v('css/figures-responsive.css'); ?>">
 <?php } ?>
+<?php
+/* En dernier : la pagination des listes de questions doit reprendre la main
+   sur les règles que les vues posent dans un <style> du <body>, et sur celles
+   de lecture-responsive.css chargée juste au-dessus. */
+include(__DIR__ . '/aa_pagination_responsive.php');
+?>
