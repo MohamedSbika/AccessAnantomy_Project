@@ -494,3 +494,21 @@ $lang['see_detailed_version']	= "Смотреть подробную верси�
 
 $lang['supp_souschap_succes'] = "Подраздел успешно удалён!";
 $lang['supp_textS']			= "Вы уверены, что хотите удалить этот подраздел и всё его содержимое?";
+
+/* ---- En-tetes et actions des tableaux ---- */
+$lang['tbl_ordre']	= 'Порядок';
+$lang['tbl_menu']	= 'Меню';
+$lang['tbl_est_livre']	= 'Является книгой';
+$lang['tbl_test']	= 'Тест';
+$lang['tbl_image']	= 'Изображение';
+$lang['tbl_url']	= 'URL';
+$lang['tbl_tags']	= 'Теги';
+$lang['tbl_figures']	= 'Рисунки';
+$lang['tbl_username']	= 'Имя пользователя';
+$lang['tbl_titre_chapitre']	= 'Название главы';
+$lang['tbl_anat_cours']	= 'Анатомия — полный базовый курс';
+$lang['tbl_anat_synthese']	= 'Анатомия — структурированное резюме';
+$lang['tbl_pathologies']	= 'Патологии';
+$lang['tbl_qcm_b']	= 'QCM B';
+$lang['tbl_qcm_i']	= 'QCM I';
+$lang['tbl_qcm_a']	= 'QCM A';

@@ -486,3 +486,21 @@ $lang['no_legend_left']			= "왼쪽에 범례가 없습니다";
 $lang['no_legend_right']		= "오른쪽에 범례가 없습니다";
 $lang['detailed_version_hint']	= "심층 연구, 학위 논문 및 학술 출판에 유용합니다";
 $lang['see_detailed_version']	= "상세 버전 보기";
+
+/* ---- En-tetes et actions des tableaux ---- */
+$lang['tbl_ordre']	= '순서';
+$lang['tbl_menu']	= '메뉴';
+$lang['tbl_est_livre']	= '도서 여부';
+$lang['tbl_test']	= '테스트';
+$lang['tbl_image']	= '이미지';
+$lang['tbl_url']	= 'URL';
+$lang['tbl_tags']	= '태그';
+$lang['tbl_figures']	= '그림';
+$lang['tbl_username']	= '사용자 이름';
+$lang['tbl_titre_chapitre']	= '챕터 제목';
+$lang['tbl_anat_cours']	= '해부학 - 기본 강의 전체';
+$lang['tbl_anat_synthese']	= '해부학 - 구조화 요약';
+$lang['tbl_pathologies']	= '병리';
+$lang['tbl_qcm_b']	= 'QCM B';
+$lang['tbl_qcm_i']	= 'QCM I';
+$lang['tbl_qcm_a']	= 'QCM A';

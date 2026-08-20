@@ -29,16 +29,16 @@
                                         <table id="datatables-reponsive" class="table table-striped dataTable no-footer dt-responsive nowrap" role="grid" aria-describedby="datatables-reponsive_info">
                                             <thead>
                                                 <tr>
-                                                    <th>Libelle</th>
-                                                    <th>Ordre</th>
-                                                    <th>Menu</th>
-                                                    <th>Accueil</th>
-                                                    <th>Est un livre</th>
+                                                    <th><?php echo $this->lang->line('paramsLib'); ?></th>
+                                                    <th><?php echo $this->lang->line('tbl_ordre'); ?></th>
+                                                    <th><?php echo $this->lang->line('tbl_menu'); ?></th>
+                                                    <th><?php echo $this->lang->line('accueil'); ?></th>
+                                                    <th><?php echo $this->lang->line('tbl_est_livre'); ?></th>
                                                     <th style="text-align: left;"><?php echo $this->lang->line('resume'); ?></th>
                                                     <th style="text-align: left;"><?php echo $this->lang->line('testQCM'); ?></th>
                                                     <th style="text-align: left;"><?php echo $this->lang->line('testQROC'); ?></th>
                                                     <th style="text-align: left;"><?php echo $this->lang->line('Calques'); ?></th>
-                                                    <th style="text-align: left;">Test</th>
+                                                    <th style="text-align: left;"><?php echo $this->lang->line('tbl_test'); ?></th>
 
                                                     <th hidden="hidden"><?php echo $this->lang->line('bloquee'); ?></th>
                                                 </tr>

@@ -94,6 +94,101 @@ html[dir="rtl"] {
 	text-align: right;
 }
 
+/* Alignement gauche pose en style INLINE dans les vues (livreDetails,
+   settingCurs, settingPlat, settingActualites...). Le style inline bat la
+   feuille : seul le selecteur d'attribut + !important le reprend. */
+[dir="rtl"] th[style*="text-align: left"],
+[dir="rtl"] td[style*="text-align: left"],
+[dir="rtl"] th[style*="text-align:left"],
+[dir="rtl"] td[style*="text-align:left"] {
+	text-align: right !important;
+}
+
+/* ------------------------------------------------------------ DataTables */
+
+/* datatables.css est ecrit pour LTR : fleches de tri, barre d'outils et
+   colonne "+" du mode responsive sont ancrees en dur a gauche ou a droite.
+   Chaque regle ci-dessous reprend son homologue en ajoutant [dir="rtl"],
+   donc specificite superieure, et rtl.css est charge apres datatables.css. */
+
+/* fleches de tri : la place se reserve du cote fin de ligne */
+[dir="rtl"] table.dataTable > thead > tr > th:not(.sorting_disabled),
+[dir="rtl"] table.dataTable > thead > tr > td:not(.sorting_disabled) {
+	padding-right: 0.75rem;
+	padding-left: 30px;
+}
+[dir="rtl"] table.dataTable > thead .sorting:before,
+[dir="rtl"] table.dataTable > thead .sorting_asc:before,
+[dir="rtl"] table.dataTable > thead .sorting_desc:before,
+[dir="rtl"] table.dataTable > thead .sorting_asc_disabled:before,
+[dir="rtl"] table.dataTable > thead .sorting_desc_disabled:before {
+	right: auto;
+	left: 1em;
+}
+[dir="rtl"] table.dataTable > thead .sorting:after,
+[dir="rtl"] table.dataTable > thead .sorting_asc:after,
+[dir="rtl"] table.dataTable > thead .sorting_desc:after,
+[dir="rtl"] table.dataTable > thead .sorting_asc_disabled:after,
+[dir="rtl"] table.dataTable > thead .sorting_desc_disabled:after {
+	right: auto;
+	left: 0.5em;
+}
+[dir="rtl"] table.dataTable.table-sm > thead > tr > th:not(.sorting_disabled) {
+	padding-right: 0.3rem;
+	padding-left: 20px;
+}
+[dir="rtl"] table.dataTable.table-sm .sorting:before,
+[dir="rtl"] table.dataTable.table-sm .sorting_asc:before,
+[dir="rtl"] table.dataTable.table-sm .sorting_desc:before {
+	right: auto;
+	left: 0.85em;
+}
+
+/* barre d'outils : nombre de lignes, recherche, info, pagination */
+[dir="rtl"] div.dataTables_wrapper div.dataTables_length label,
+[dir="rtl"] div.dataTables_wrapper div.dataTables_filter label {
+	text-align: right;
+}
+[dir="rtl"] div.dataTables_wrapper div.dataTables_filter {
+	text-align: left;
+}
+[dir="rtl"] div.dataTables_wrapper div.dataTables_filter input {
+	margin-left: 0;
+	margin-right: 0.5em;
+}
+[dir="rtl"] div.dataTables_wrapper div.dataTables_paginate {
+	text-align: left;
+}
+[dir="rtl"] div.dataTables_wrapper div.dataTables_paginate ul.pagination {
+	justify-content: flex-start;
+}
+
+/* colonne "+" du mode responsive et sa fiche enfant */
+[dir="rtl"] table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td.dtr-control,
+[dir="rtl"] table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > th.dtr-control {
+	padding-left: 0.75rem;
+	padding-right: 30px;
+}
+[dir="rtl"] table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td.dtr-control:before,
+[dir="rtl"] table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > th.dtr-control:before {
+	left: auto;
+	right: 5px;
+}
+[dir="rtl"] table.dataTable.dtr-inline.collapsed.compact > tbody > tr > td.dtr-control,
+[dir="rtl"] table.dataTable.dtr-inline.collapsed.compact > tbody > tr > th.dtr-control {
+	padding-left: 0.75rem;
+	padding-right: 27px;
+}
+[dir="rtl"] table.dataTable.dtr-inline.collapsed.compact > tbody > tr > td.dtr-control:before,
+[dir="rtl"] table.dataTable.dtr-inline.collapsed.compact > tbody > tr > th.dtr-control:before {
+	left: auto;
+	right: 4px;
+}
+[dir="rtl"] table.dataTable > tbody > tr.child ul.dtr-details,
+[dir="rtl"] table.dataTable > tbody > tr.child span.dtr-title {
+	text-align: right;
+}
+
 [dir="rtl"] .form-check,
 [dir="rtl"] .form-check-input {
 	margin-right: 0;

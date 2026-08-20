@@ -494,3 +494,21 @@ $lang['see_detailed_version']	= "View the detailed version";
 
 $lang['supp_souschap_succes'] = "The sub-chapter was deleted successfully!";
 $lang['supp_textS']			= "Are you sure you want to delete this sub-chapter and all its content?";
+
+/* ---- En-tetes et actions des tableaux ---- */
+$lang['tbl_ordre']	= 'Order';
+$lang['tbl_menu']	= 'Menu';
+$lang['tbl_est_livre']	= 'Is a book';
+$lang['tbl_test']	= 'Test';
+$lang['tbl_image']	= 'Image';
+$lang['tbl_url']	= 'URL';
+$lang['tbl_tags']	= 'Tags';
+$lang['tbl_figures']	= 'Figures';
+$lang['tbl_username']	= 'Username';
+$lang['tbl_titre_chapitre']	= 'Chapter title';
+$lang['tbl_anat_cours']	= 'Anatomy - Complete core course';
+$lang['tbl_anat_synthese']	= 'Anatomy - Structured summary';
+$lang['tbl_pathologies']	= 'Pathologies';
+$lang['tbl_qcm_b']	= 'QCM B';
+$lang['tbl_qcm_i']	= 'QCM I';
+$lang['tbl_qcm_a']	= 'QCM A';

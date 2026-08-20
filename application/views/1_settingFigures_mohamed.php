@@ -386,11 +386,11 @@
                                             <table class="table table-striped dataTable no-footer dt-responsive">
                                                 <thead>
                                                     <tr>
-                                                        <th>Image</th>
+                                                        <th><?php echo $this->lang->line('tbl_image'); ?></th>
                                                         <th><?php echo $this->lang->line('titreFigure'); ?></th>
                                                         <th><?php echo $this->lang->line('textGauche'); ?></th>
                                                         <th><?php echo $this->lang->line('textDroite'); ?></th>
-                                                        <th>Action</th>
+                                                        <th><?php echo $this->lang->line('paramsAction'); ?></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>

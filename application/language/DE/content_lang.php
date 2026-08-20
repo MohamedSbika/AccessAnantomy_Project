@@ -486,3 +486,21 @@ $lang['no_legend_left']			= "Keine Legende links";
 $lang['no_legend_right']		= "Keine Legende rechts";
 $lang['detailed_version_hint']	= "Nützlich für vertiefte Recherche, Abschlussarbeiten und wissenschaftliche Publikationen";
 $lang['see_detailed_version']	= "Ausführliche Version ansehen";
+
+/* ---- En-tetes et actions des tableaux ---- */
+$lang['tbl_ordre']	= 'Reihenfolge';
+$lang['tbl_menu']	= 'Menü';
+$lang['tbl_est_livre']	= 'Ist ein Buch';
+$lang['tbl_test']	= 'Test';
+$lang['tbl_image']	= 'Bild';
+$lang['tbl_url']	= 'URL';
+$lang['tbl_tags']	= 'Tags';
+$lang['tbl_figures']	= 'Abbildungen';
+$lang['tbl_username']	= 'Benutzername';
+$lang['tbl_titre_chapitre']	= 'Kapiteltitel';
+$lang['tbl_anat_cours']	= 'Anatomie - Vollständiger Grundkurs';
+$lang['tbl_anat_synthese']	= 'Anatomie - Strukturierte Zusammenfassung';
+$lang['tbl_pathologies']	= 'Pathologien';
+$lang['tbl_qcm_b']	= 'QCM B';
+$lang['tbl_qcm_i']	= 'QCM I';
+$lang['tbl_qcm_a']	= 'QCM A';

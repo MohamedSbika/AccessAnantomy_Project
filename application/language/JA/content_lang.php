@@ -486,3 +486,21 @@ $lang['no_legend_left']			= "左側に凡例はありません";
 $lang['no_legend_right']		= "右側に凡例はありません";
 $lang['detailed_version_hint']	= "詳細な研究、学位論文、学術出版に役立ちます";
 $lang['see_detailed_version']	= "詳細版を見る";
+
+/* ---- En-tetes et actions des tableaux ---- */
+$lang['tbl_ordre']	= '順序';
+$lang['tbl_menu']	= 'メニュー';
+$lang['tbl_est_livre']	= '書籍かどうか';
+$lang['tbl_test']	= 'テスト';
+$lang['tbl_image']	= '画像';
+$lang['tbl_url']	= 'URL';
+$lang['tbl_tags']	= 'タグ';
+$lang['tbl_figures']	= '図';
+$lang['tbl_username']	= 'ユーザー名';
+$lang['tbl_titre_chapitre']	= '章タイトル';
+$lang['tbl_anat_cours']	= '解剖学 - 基礎コース（完全版）';
+$lang['tbl_anat_synthese']	= '解剖学 - 構造化要約';
+$lang['tbl_pathologies']	= '病理';
+$lang['tbl_qcm_b']	= 'QCM B';
+$lang['tbl_qcm_i']	= 'QCM I';
+$lang['tbl_qcm_a']	= 'QCM A';

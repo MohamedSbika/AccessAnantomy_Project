@@ -487,3 +487,21 @@ $lang['testQcmImpair']		= 'Tipo test impares';
 $lang['testQcmPair']		= 'Tipo test pares';
 $lang['testQrqImpair']		= 'Respuesta corta impares';
 $lang['testQrqPair']		= 'Respuesta corta pares';
+
+/* ---- En-tetes et actions des tableaux ---- */
+$lang['tbl_ordre']	= 'Orden';
+$lang['tbl_menu']	= 'Menú';
+$lang['tbl_est_livre']	= 'Es un libro';
+$lang['tbl_test']	= 'Test';
+$lang['tbl_image']	= 'Imagen';
+$lang['tbl_url']	= 'URL';
+$lang['tbl_tags']	= 'Etiquetas';
+$lang['tbl_figures']	= 'Figuras';
+$lang['tbl_username']	= 'Nombre de usuario';
+$lang['tbl_titre_chapitre']	= 'Título del capítulo';
+$lang['tbl_anat_cours']	= 'Anatomía - Curso fundamental completo';
+$lang['tbl_anat_synthese']	= 'Anatomía - Síntesis estructurada';
+$lang['tbl_pathologies']	= 'Patologías';
+$lang['tbl_qcm_b']	= 'QCM B';
+$lang['tbl_qcm_i']	= 'QCM I';
+$lang['tbl_qcm_a']	= 'QCM A';

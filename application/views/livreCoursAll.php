@@ -33,10 +33,10 @@ include('header_steppes.php');
 									<thead>
 									<tr>
 										<th>#</th>
-										<th>Titre</th>
-										<th>URL</th>
-										<th>Tags</th>
-										<th>Figures</th>
+										<th><?php echo $this->lang->line('titreFigure'); ?></th>
+										<th><?php echo $this->lang->line('tbl_url'); ?></th>
+										<th><?php echo $this->lang->line('tbl_tags'); ?></th>
+										<th><?php echo $this->lang->line('tbl_figures'); ?></th>
 									</tr>
 									</thead>
 									<tbody>

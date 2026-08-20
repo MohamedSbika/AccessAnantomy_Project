@@ -486,3 +486,21 @@ $lang['no_legend_left']			= "Solda açıklama yok";
 $lang['no_legend_right']		= "Sağda açıklama yok";
 $lang['detailed_version_hint']	= "Derinlemesine araştırma, tezler ve bilimsel yayınlar için yararlıdır";
 $lang['see_detailed_version']	= "Ayrıntılı sürümü görüntüle";
+
+/* ---- En-tetes et actions des tableaux ---- */
+$lang['tbl_ordre']	= 'Sıra';
+$lang['tbl_menu']	= 'Menü';
+$lang['tbl_est_livre']	= 'Kitap mı';
+$lang['tbl_test']	= 'Test';
+$lang['tbl_image']	= 'Görsel';
+$lang['tbl_url']	= 'URL';
+$lang['tbl_tags']	= 'Etiketler';
+$lang['tbl_figures']	= 'Şekiller';
+$lang['tbl_username']	= 'Kullanıcı adı';
+$lang['tbl_titre_chapitre']	= 'Bölüm başlığı';
+$lang['tbl_anat_cours']	= 'Anatomi - Tam temel ders';
+$lang['tbl_anat_synthese']	= 'Anatomi - Yapılandırılmış özet';
+$lang['tbl_pathologies']	= 'Patolojiler';
+$lang['tbl_qcm_b']	= 'QCM B';
+$lang['tbl_qcm_i']	= 'QCM I';
+$lang['tbl_qcm_a']	= 'QCM A';

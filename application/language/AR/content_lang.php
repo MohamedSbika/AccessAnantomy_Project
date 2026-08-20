@@ -486,3 +486,21 @@ $lang['no_legend_left']			= "لا توجد وسائل إيضاح على اليس
 $lang['no_legend_right']		= "لا توجد وسائل إيضاح على اليمين";
 $lang['detailed_version_hint']	= "مفيد للبحث المعمّق والأطروحات والمنشورات العلمية";
 $lang['see_detailed_version']	= "عرض النسخة المفصّلة";
+
+/* ---- En-tetes et actions des tableaux ---- */
+$lang['tbl_ordre']	= 'الترتيب';
+$lang['tbl_menu']	= 'القائمة';
+$lang['tbl_est_livre']	= 'كتاب';
+$lang['tbl_test']	= 'اختبار';
+$lang['tbl_image']	= 'صورة';
+$lang['tbl_url']	= 'الرابط';
+$lang['tbl_tags']	= 'الوسوم';
+$lang['tbl_figures']	= 'الأشكال';
+$lang['tbl_username']	= 'اسم المستخدم';
+$lang['tbl_titre_chapitre']	= 'عنوان الفصل';
+$lang['tbl_anat_cours']	= 'التشريح - الدرس الأساسي الكامل';
+$lang['tbl_anat_synthese']	= 'التشريح - الخلاصة المنظّمة';
+$lang['tbl_pathologies']	= 'الأمراض';
+$lang['tbl_qcm_b']	= 'QCM مبتدئ';
+$lang['tbl_qcm_i']	= 'QCM متوسط';
+$lang['tbl_qcm_a']	= 'QCM متقدّم';

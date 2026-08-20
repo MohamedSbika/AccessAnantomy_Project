@@ -27,7 +27,7 @@
                                 <div class="row">
                                     <div class="col-sm-12">
 
-                                        <a href="#" class="" title="Supprimer" data-toggle="modal" data-target="#centeredModalPrimaryADDFigure">
+                                        <a href="#" class="" title="<?php echo $this->lang->line('actionAjout'); ?>" data-toggle="modal" data-target="#centeredModalPrimaryADDFigure">
                                             <i class="fa fa-plus" style="float:right; font-size:15px; margin-top:15px;"></i>
                                         </a>
 
@@ -35,17 +35,17 @@
                                             <thead>
                                                 <tr>
                                                     <th style="text-align: left;">#ID</th>
-                                                    <th style="text-align: left;">FR Titre</th>
-                                                    <th style="text-align: left;">EN Titre</th>
-                                                    <th style="text-align: left;">RU Titre</th>
-                                                    <th style="text-align: left;">TR Titre</th>
-                                                    <th style="text-align: left;">PT Titre</th>
-                                                    <th style="text-align: left;">IT Titre</th>
-                                                    <th style="text-align: left;">DE Titre</th>
-                                                    <th style="text-align: left;">PL Titre</th>
-                                                    <th style="text-align: left;">JA Titre</th>
-                                                    <th style="text-align: left;">KO Titre</th>
-                                                    <th style="text-align: left;">AR Titre</th>
+                                                    <th style="text-align: left;">FR <?php echo $this->lang->line('titreFigure'); ?></th>
+                                                    <th style="text-align: left;">EN <?php echo $this->lang->line('titreFigure'); ?></th>
+                                                    <th style="text-align: left;">RU <?php echo $this->lang->line('titreFigure'); ?></th>
+                                                    <th style="text-align: left;">TR <?php echo $this->lang->line('titreFigure'); ?></th>
+                                                    <th style="text-align: left;">PT <?php echo $this->lang->line('titreFigure'); ?></th>
+                                                    <th style="text-align: left;">IT <?php echo $this->lang->line('titreFigure'); ?></th>
+                                                    <th style="text-align: left;">DE <?php echo $this->lang->line('titreFigure'); ?></th>
+                                                    <th style="text-align: left;">PL <?php echo $this->lang->line('titreFigure'); ?></th>
+                                                    <th style="text-align: left;">JA <?php echo $this->lang->line('titreFigure'); ?></th>
+                                                    <th style="text-align: left;">KO <?php echo $this->lang->line('titreFigure'); ?></th>
+                                                    <th style="text-align: left;">AR <?php echo $this->lang->line('titreFigure'); ?></th>
                                                     <th style="text-align: left;"><?php echo $this->lang->line('paramsAction'); ?></th>
 
                                                 </tr>
@@ -92,12 +92,12 @@
                                                             </td>
                                                             <td style="text-align: left;">
                                                                 <div class="dropdown" style="">
-                                                                    <a href="#" class="" title="Modifier" data-toggle="modal" data-target="#centeredModalPrimaryUpdateFigure<?= $value['id']; ?>">
+                                                                    <a href="#" class="" title="<?php echo $this->lang->line('actionEdit'); ?>" data-toggle="modal" data-target="#centeredModalPrimaryUpdateFigure<?= $value['id']; ?>">
                                                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 align-middle">
                                                                             <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                                                         </svg>
                                                                     </a>
-                                                                    <a href="#" class="" title="Supprimer" data-toggle="modal" data-target="#centeredModalPrimaryDeleteFigure<?= $value['id']; ?>">
+                                                                    <a href="#" class="" title="<?php echo $this->lang->line('actionSupp'); ?>" data-toggle="modal" data-target="#centeredModalPrimaryDeleteFigure<?= $value['id']; ?>">
                                                                         <i class="fa fa-trash" style="font-size:15px; margin-top:15px;"></i>
                                                                     </a>
                                                                 </div>
