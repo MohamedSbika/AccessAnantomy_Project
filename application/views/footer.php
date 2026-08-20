@@ -187,11 +187,7 @@
                         <span class="connecte-span" data-toggle="modal" data-target="#centeredModalPrimary" onclick="redirectLogLivr(0)">
             				<img src="<?php echo HTTP_IMAGES; ?>photos/user-white-icon.png"
                                  class="rounded-circle mr-1" alt="Avatar"  width="30">
-            				<?php if ($this->session->userdata('site_lang') == '' || $this->session->userdata('site_lang') == 'FR') { ?>
-                                Connectez-vous
-                            <?php } else { ?>
-                                Log in
-                            <?php } ?>
+            				<?php echo $this->lang->line('sign_in'); ?>
         				</span>
                     <?php } ?>
                 </div>

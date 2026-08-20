@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html <?php echo aa_html_attrs(); ?>>
 
 <head>
 	<meta charset="UTF-8">
@@ -486,6 +486,7 @@
 		}
 	</style>
 
+<?php echo aa_rtl_assets(); ?>
 </head>
 <style>
 	input.error {
@@ -644,7 +645,7 @@
 										<div class="row justify-content-center mt-2 mb-2" hidden>
 											<div class="mb-2 col-md-5">
 												<label class="form-label" for="inputIDF"
-													style="font-weight: bold">Identifiant</label>
+													style="font-weight: bold"><?php echo $this->lang->line('IDF'); ?></label>
 											</div>
 											<div class="mb-2 col-md-7">
 												<input type="text" name="inputIDF" id="inputIDF" class="form-control"
@@ -653,10 +654,7 @@
 										</div>
 										<label class="form-check" style="background-color: #f1eeff;">
 											<span class="form-check-label">
-												En fournissant des informations personnelles et en terminant cette
-												procédure, vous acceptez les Conditions d'utilisation et la politique de
-												Protection des données personnelles de Access
-												Anatomy.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+												<?php echo $this->lang->line('legal_consent'); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 											</span>
 											<input class="form-check-input" type="checkbox" style="float: revert"
 												name="inputLegal" id="inputLegal">
@@ -665,7 +663,7 @@
 										<?php echo $widget; ?>
 										<?php echo $script; ?>
 
-										<button type="submit" class="btn btn-primary">Valider</button>
+										<button type="submit" class="btn btn-primary"><?php echo $this->lang->line('submit_form'); ?></button>
 									</div>
 								</form>
 							</div>
@@ -685,6 +683,15 @@
 <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
 <!-- <script src="https://cdn.jsdelivr.net/jquery.validation/1.19.5/jquery.validate.min.js"></script> -->
 <script>
+	var AA_SIGNUP_I18N = <?php echo json_encode(array(
+		'correct'    => $this->lang->line('correct'),
+		'incorrect'  => $this->lang->line('incorrect'),
+		'creation'   => $this->lang->line('cmpt_creation'),
+		'sending'    => $this->lang->line('cmpt_sending'),
+		'validation' => $this->lang->line('cmpt_validation'),
+		'check_email' => $this->lang->line('cmpt_check_email'),
+	), JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
+
 	$(document).ready(function () {
 
 		$("body").on("contextmenu", function (e) {
@@ -728,17 +735,17 @@
 				//inputIDF: "<?php echo $this->lang->line('saisi_oblg'); ?>",
 			}, highlight: function (element, errorClass, validClass) {
 				$(element).removeClass(validClass).addClass(errorClass).
-					next('label').removeAttr('data-success').attr('data-error', 'Incorrect!');
+					next('label').removeAttr('data-success').attr('data-error', AA_SIGNUP_I18N.incorrect);
 			},
 			unhighlight: function (element, errorClass, validClass) {
 				$(element).removeClass(errorClass).addClass(validClass).
-					next('label').removeAttr('data-error').attr('data-success', 'Correct!');
+					next('label').removeAttr('data-error').attr('data-success', AA_SIGNUP_I18N.correct);
 			},
 			submitHandler: function () {
 
 				Swal.fire({
-					title: 'Création de compte',
-					text: 'Envoie de demande en cours ..',
+					title: AA_SIGNUP_I18N.creation,
+					text: AA_SIGNUP_I18N.sending,
 					onBeforeOpen: () => {
 						Swal.showLoading()
 					}
@@ -759,8 +766,8 @@
 							Swal.fire({
 								position: 'center',
 								type: 'success',
-								title: 'Validation de compte' + ar[0]["desc"],
-								text: 'Veuillez vérifier votre boîte de réception pour un courriel de confirmation, cliquez sur le lien pour valider votre inscription.',
+								title: AA_SIGNUP_I18N.validation + ar[0]["desc"],
+								text: AA_SIGNUP_I18N.check_email,
 								showConfirmButton: true
 							}).then(function () {
 								window.location.href = '<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>login';

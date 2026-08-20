@@ -45,6 +45,7 @@
                                                     <th style="text-align: left;">PL Titre</th>
                                                     <th style="text-align: left;">JA Titre</th>
                                                     <th style="text-align: left;">KO Titre</th>
+                                                    <th style="text-align: left;">AR Titre</th>
                                                     <th style="text-align: left;"><?php echo $this->lang->line('paramsAction'); ?></th>
 
                                                 </tr>
@@ -85,6 +86,9 @@
                                                             </td>
                                                             <td style="text-align: left;">
                                                                 <?= isset($value['KO_title']) ? $value['KO_title'] : ''; ?>
+                                                            </td>
+                                                            <td style="text-align: left;">
+                                                                <?= isset($value['AR_title']) ? $value['AR_title'] : ''; ?>
                                                             </td>
                                                             <td style="text-align: left;">
                                                                 <div class="dropdown" style="">

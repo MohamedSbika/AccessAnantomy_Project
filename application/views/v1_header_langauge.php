@@ -14,7 +14,8 @@ $flags = [
 	'DE' => '🇩🇪',
 	'PL' => '🇵🇱',
 	'JA' => '🇯🇵',
-	'KO' => '🇰🇷'
+	'KO' => '🇰🇷',
+	'AR' => '🇸🇦'
 ];
 
 $flag = isset($flags[$lang]) ? $flags[$lang] : '🌐';
@@ -70,6 +71,9 @@ $flag = isset($flags[$lang]) ? $flags[$lang] : '🌐';
 				</a>
 				<a class="dropdown-item" href="<?php echo base_url(); ?>login/switchLang/KO" style="color: #120e47;margin-left: 0px;" onclick="resetTranslate()">
 					🇰🇷 &nbsp;한국어
+				</a>
+				<a class="dropdown-item" href="<?php echo base_url(); ?>login/switchLang/AR" style="color: #120e47;margin-left: 0px;" onclick="resetTranslate()">
+					🇸🇦 &nbsp;العربية
 				</a>
 				<a class="dropdown-item dropdown-item-autre" href="javascript:void(0)" style="color: #120e47;margin-left: 0px;" onclick="toggleGtBar()">
 					🌐 &nbsp;Autre...

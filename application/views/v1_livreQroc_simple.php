@@ -1,6 +1,6 @@
 <?php if(strlen($this->session->userdata('passTok'))==200) { ?>
 	<!DOCTYPE html>
-	<html lang="fr">
+	<html <?php echo aa_html_attrs(); ?>>
 
 	<head>
 		<meta charset="UTF-8">
@@ -33,6 +33,7 @@
 					width: 45%;
 				}
 		</style>
+	<?php echo aa_rtl_assets(); ?>
 	</head>
 
 	<header style=" /*position: fixed;*/  z-index: 1000;  width: 100%;box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);

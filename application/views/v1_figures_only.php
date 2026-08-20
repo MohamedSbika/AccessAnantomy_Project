@@ -1,6 +1,6 @@
 <?php if(strlen($this->session->userdata('passTok'))==200) { ?>
 <!DOCTYPE html>
-<html lang="fr">
+<html <?php echo aa_html_attrs(); ?>>
 
 <head>
 	<meta charset="UTF-8">
@@ -203,6 +203,7 @@
 			.figure-image-wrapper img { max-height: 50vh; }
 		}
 	</style>
+<?php echo aa_rtl_assets(); ?>
 </head>
 
 <header style="z-index: 1000; width: 100%; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); background: linear-gradient(135deg, #120E47 30%, #182540 100%);">

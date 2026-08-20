@@ -16,9 +16,9 @@ if (empty($catLibelle) && isset($category) && is_array($category) && isset($cate
 }
 
 // Atlas categories: FR=4, EN=9, ES=2597, RU=2701, TR=2801, PT=2901, IT=3001, DE=3101, PL=3201, JA=3301, KO=3401
-$atlasCategories = [4, 9, 2597, 2701, 2801, 2901, 3001, 3101, 3201, 3301, 3401];
+$atlasCategories = [4, 9, 2597, 2701, 2801, 2901, 3001, 3101, 3201, 3301, 3401, 3501];
 // Pathology categories: FR=7, EN=11, ES=2599, RU=2703, TR=2803, PT=2903, IT=3003, DE=3103, PL=3203, JA=3303, KO=3403
-$pathoCategories = [7, 11, 2599, 2703, 2803, 2903, 3003, 3103, 3203, 3303, 3403];
+$pathoCategories = [7, 11, 2599, 2703, 2803, 2903, 3003, 3103, 3203, 3303, 3403, 3503];
 
 $isPathology =  in_array((int) $OneBook[0]["IDTheme"], [20, 36, 31])
     || in_array($categoryId, $pathoCategories)
@@ -28,6 +28,48 @@ $isAtlas = in_array($bookId, [70, 71])
     || in_array($categoryId, $atlasCategories)
     || (stripos($catLibelle, 'Atlas') !== false || stripos($catLibelle, 'Атлас') !== false || stripos($catLibelle, 'Atlante') !== false || stripos($catLibelle, 'アトラス') !== false || stripos($catLibelle, '아틀라스') !== false);
 
+?>
+    <script>
+	/* Libelles traduits consommes par les gabarits JS des trois barres
+	   laterales (anatomie ici, pathologie et atlas dans les fichiers inclus
+	   ci-dessous). Ils vivent dans des template literals et des Swal.fire(),
+	   donc hors de portee d'un echo PHP place au fil du texte -- et le
+	   dictionnaire est emis AVANT le branchement, les trois variantes etant
+	   exclusives. */
+	var AA_RACC_I18N = <?php echo json_encode(array(
+		'diff_select'            => $this->lang->line('diff_select'),
+		'diff_basic'             => $this->lang->line('diff_basic'),
+		'diff_intermediate'      => $this->lang->line('diff_intermediate'),
+		'diff_advanced'          => $this->lang->line('diff_advanced'),
+		'loading_patho_menu'     => $this->lang->line('loading_patho_menu'),
+		'anat_synthesis'         => $this->lang->line('anat_synthesis'),
+		'full_version'           => $this->lang->line('full_version'),
+		'untitled'               => $this->lang->line('untitled'),
+		'no_patho'               => $this->lang->line('no_patho'),
+		'no_linked_patho'        => $this->lang->line('no_linked_patho'),
+		'loading_error'          => $this->lang->line('loading_error'),
+		'subchapter_load_failed' => $this->lang->line('subchapter_load_failed'),
+		'no_default_recall'      => $this->lang->line('no_default_recall'),
+		'loading_anat_recall'    => $this->lang->line('loading_anat_recall'),
+		'anat_recall_failed'     => $this->lang->line('anat_recall_failed'),
+		'loading_synthesis'      => $this->lang->line('loading_synthesis'),
+		'synthesis_loaded'       => $this->lang->line('synthesis_loaded'),
+		'synthesis_loaded_msg'   => $this->lang->line('synthesis_loaded_msg'),
+		'summary_load_failed'    => $this->lang->line('summary_load_failed'),
+		'error_title'            => $this->lang->line('error_title'),
+		'no_patho_found'         => $this->lang->line('no_patho_found'),
+		'no_content_available'   => $this->lang->line('no_content_available'),
+		'no_attached_file'       => $this->lang->line('no_attached_file'),
+		'content_load_failed'    => $this->lang->line('content_load_failed'),
+		'no_manual_recall'       => $this->lang->line('no_manual_recall'),
+		'manual_recall_check_failed' => $this->lang->line('manual_recall_check_failed'),
+		'manual_recall_failed'   => $this->lang->line('manual_recall_failed'),
+		'recall_load_failed'     => $this->lang->line('recall_load_failed'),
+		'coming_soon'            => $this->lang->line('coming_soon'),
+		'summary_coming_soon'    => $this->lang->line('summary_coming_soon'),
+	), JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
+    </script>
+<?php
 if ($isPathology) {
     include('v1_racourci_pathologie.php');
 } elseif ($isAtlas) {
@@ -434,7 +476,7 @@ if ($isPathology) {
                     <?php if (in_array($page, ['livreCours', 'livreResume', 'livreQcm', 'livreQroc'])) { ?>
                         <span class="carreaux" style="background-color: #A27561;color: white"
                             onclick="document.getElementById('customModal_Mode_Lecture').style.display = 'flex';">
-                            <div class="title_carr">Mode lecture</div>
+                            <div class="title_carr"><?php echo $this->lang->line('ModeLecture'); ?></div>
                         </span>
                     <?php } ?>
                     <span class="carreaux" style="background-color: #FF3264;color: white"
@@ -579,7 +621,7 @@ if ($isPathology) {
 
                 diffBox.innerHTML = `
         <h4 style="margin-bottom:10px; font-weight:bold; text-align:center; color:#1d3557;">
-            Sélectionner le niveau de difficulté
+            ${AA_RACC_I18N.diff_select}
         </h4>
 
         <div style="display:flex; gap:10px;">
@@ -592,7 +634,7 @@ if ($isPathology) {
                 color:#1d3557;
             ">
                 <input type="radio" name="difficulty" value="basique" style="margin-right:6px;">
-                Basique
+                ${AA_RACC_I18N.diff_basic}
             </label>
 
             <label class="diff-label" data-diff="intermediaire" style="
@@ -603,7 +645,7 @@ if ($isPathology) {
                 color:#1d3557;
             ">
                 <input type="radio" name="difficulty" value="intermediaire" style="margin-right:6px;">
-                Intermédiaire
+                ${AA_RACC_I18N.diff_intermediate}
             </label>
 
             <label class="diff-label" data-diff="avance" style="
@@ -614,7 +656,7 @@ if ($isPathology) {
                 color:#1d3557;
             ">
                 <input id="defaultDiff" type="radio" name="difficulty" value="avance" checked style="margin-right:6px;">
-                Avancé
+                ${AA_RACC_I18N.diff_advanced}
             </label>
 
         </div>
@@ -642,7 +684,16 @@ if ($isPathology) {
 
             const sidebarRect = sidebar.getBoundingClientRect();
             tooltip.style.top = `${sidebarRect.top}px`;
-            tooltip.style.left = `${sidebarRect.right + 10}px`;
+            /* Le panneau se colle au bord interieur de la colonne : a sa droite
+               en LTR, a sa gauche en RTL -- ou la colonne est ancree a droite et
+               ou un `left` calcule le pousserait hors de l'ecran. */
+            if (document.documentElement.getAttribute('dir') === 'rtl') {
+                tooltip.style.left  = 'auto';
+                tooltip.style.right = `${window.innerWidth - sidebarRect.left + 10}px`;
+            } else {
+                tooltip.style.right = 'auto';
+                tooltip.style.left  = `${sidebarRect.right + 10}px`;
+            }
             tooltip.style.minHeight = '50%';
             tooltip.style.maxHeight = '80%';
             tooltip.style.display = 'block';
@@ -671,7 +722,7 @@ if ($isPathology) {
 
 
         function loadFeaturedPatho(idChapitre, container) {
-            container.innerHTML = '<div style="text-align:center; padding:10px; font-style:italic; color:#1d3557;">Chargement du menu pathologie...</div>';
+            container.innerHTML = '<div style="text-align:center; padding:10px; font-style:italic; color:#1d3557;">' + AA_RACC_I18N.loading_patho_menu + '</div>';
             container.style.display = 'block';
 
             let payload = { idChap: idChapitre };
@@ -737,7 +788,7 @@ if ($isPathology) {
                                 html += `
                                 <li class="sous-chapitre-item" style="font-weight:bold; color:#457b9d; background-color:#e8f4f8; border-left: 3px solid #457b9d;"
                                     onclick="redirectToAnatomyResume('${chap.IdChapterRappel}', '${chap.NbreResumeRappel}', event)">
-                                    Anatomie - synthèse structurée
+                                    ${AA_RACC_I18N.anat_synthesis}
                                 </li>`;
 
                                 // 3. Liste des pathologies réelles
@@ -745,11 +796,11 @@ if ($isPathology) {
                                     chap.sousChaps.forEach(sc => {
                                         html += `
                                         <li style="padding: 10px 15px; border-bottom: 1px solid #f1f5f9; list-style:none;">
-                                            <span class="patho-item-title">${sc.TitreSousChapitre || 'Sans titre'}</span>
+                                            <span class="patho-item-title">${sc.TitreSousChapitre || AA_RACC_I18N.untitled}</span>
                                             <div class="patho-version-container">
                                                 <a href="#" class="patho-version-link essential" 
                                                    onclick="selectSousChapitrePatho('${sc.IDSousChapitre}', '${chap.IDChapitre}', '${chap.IdChapterRappel}', event, 'essential', ${sc.FichierHTML ? 'true' : 'false'})">
-                                                    <span>Version intégrale</span>
+                                                    <span>${AA_RACC_I18N.full_version}</span>
                                                     <i class="fas fa-chevron-right"></i>
                                                 </a>
                                                 <a href="#" class="patho-version-link integral" 
@@ -761,7 +812,7 @@ if ($isPathology) {
                                         </li>`;
                                     });
                                 } else {
-                                    html += `<li style="padding: 10px 20px; font-style: italic; font-size: 12px; color: #888;">Aucune pathologie</li>`;
+                                    html += `<li style="padding: 10px 20px; font-style: italic; font-size: 12px; color: #888;">${AA_RACC_I18N.no_patho}</li>`;
                                 }
                                 html += `</ul></li>`;
                             });
@@ -770,12 +821,12 @@ if ($isPathology) {
                         html += `</ul>`;
                         container.innerHTML = html;
                     } else {
-                        container.innerHTML = `<div style="padding:15px; color:#d62828; text-align:center; font-weight:bold;">${data.message || 'Aucune pathologie liée'}</div>`;
+                        container.innerHTML = `<div style="padding:15px; color:#d62828; text-align:center; font-weight:bold;">${data.message || AA_RACC_I18N.no_linked_patho}</div>`;
                     }
                 })
                 .catch(err => {
                     console.error(err);
-                    container.innerHTML = `<div style="padding:15px; color:#d62828; text-align:center;">Erreur de chargement.</div>`;
+                    container.innerHTML = `<div style="padding:15px; color:#d62828; text-align:center;">${AA_RACC_I18N.loading_error}</div>`;
                 });
         }
 
@@ -903,12 +954,12 @@ if ($isPathology) {
                             } else if (data.success && data.type === 'books') {
                                 sousChapList.innerHTML = `<li class="sous-chapitre-item" onclick="window.location.href='<?php echo base_url(); ?><?php echo strtoupper($this->uri->segment(1)); ?>/livre/${data.pathoBooks[0].IDLivre}'">Voir pathologies</li>`;
                             } else {
-                                sousChapList.innerHTML = `<li class="sous-chapitre-item" style="color: #d62828;">${data.message || 'Aucune pathologie liée'}</li>`;
+                                sousChapList.innerHTML = `<li class="sous-chapitre-item" style="color: #d62828;">${data.message || AA_RACC_I18N.no_linked_patho}</li>`;
                             }
                         })
                         .catch(error => {
                             console.error('Erreur:', error);
-                            sousChapList.innerHTML = '<li class="sous-chapitre-item">Erreur de chargement</li>';
+                            sousChapList.innerHTML = '<li class="sous-chapitre-item">' + AA_RACC_I18N.loading_error + '</li>';
                         });
                 }
             }
@@ -936,7 +987,7 @@ if ($isPathology) {
                 <li class="sous-chapitre-item rappel-manuel-item" 
                     style="font-weight:bold; color:#457b9d; background-color:#e8f4f8; cursor:pointer;"
                     onclick="redirectToAnatomyResume('${finalIdAnatomy}', '0', event)">
-                    Anatomie - synthèse structurée
+                    ${AA_RACC_I18N.anat_synthesis}
                 </li>
             `;
 
@@ -960,11 +1011,11 @@ if ($isPathology) {
                 sousChaps.forEach(sc => {
                     html += `
                         <li style="padding: 10px 15px; border-bottom: 1px solid #f1f5f9; list-style:none;">
-                            <span class="patho-item-title">${sc.TitreSousChapitre || 'Sans titre'}</span>
+                            <span class="patho-item-title">${sc.TitreSousChapitre || AA_RACC_I18N.untitled}</span>
                             <div class="patho-version-container">
                                 <a href="#" class="patho-version-link essential" 
                                    onclick="selectSousChapitrePatho('${sc.IDSousChapitre}', '${idChapitre}', '${finalIdAnatomy}', event, 'essential', ${sc.FichierHTML ? 'true' : 'false'})">
-                                    <span>Version intégrale</span>
+                                    <span>${AA_RACC_I18N.full_version}</span>
                                     <i class="fas fa-chevron-right"></i>
                                 </a>
                                 <a href="#" class="patho-version-link integral" 
@@ -1050,8 +1101,8 @@ if ($isPathology) {
                     console.error('❌ Erreur lors de la récupération du sous-chapitre:', err);
                     Swal.fire({
                         icon: 'error',
-                        title: 'Erreur de chargement',
-                        text: 'Impossible de charger le contenu du sous-chapitre.'
+                        title: AA_RACC_I18N.loading_error,
+                        text: AA_RACC_I18N.subchapter_load_failed
                     });
                 });
         }
@@ -1066,7 +1117,7 @@ if ($isPathology) {
                 Swal.fire({
                     icon: 'warning',
                     title: 'Aucun rappel disponible',
-                    text: 'Ce chapitre n\'a pas de cours de rappel par défaut.'
+                    text: AA_RACC_I18N.no_default_recall
                 });
                 return;
             }
@@ -1088,7 +1139,7 @@ if ($isPathology) {
             coursContainer.innerHTML = `
                 <div style="text-align:center; padding:50px;">
                     <i class="fas fa-spinner fa-spin" style="font-size:40px; color:#1d3557;"></i>
-                    <p style="margin-top:15px;">Chargement du rappel anatomique...</p>
+                    <p style="margin-top:15px;">${AA_RACC_I18N.loading_anat_recall}</p>
                 </div>
             `;
 
@@ -1111,8 +1162,8 @@ if ($isPathology) {
                         coursContainer.innerHTML = originalContent;
                         Swal.fire({
                             icon: 'error',
-                            title: 'Erreur',
-                            text: 'Impossible de charger le rappel anatomique.'
+                            title: AA_RACC_I18N.error_title,
+                            text: AA_RACC_I18N.anat_recall_failed
                         });
                     }
                 })
@@ -1121,8 +1172,8 @@ if ($isPathology) {
                     coursContainer.innerHTML = originalContent;
                     Swal.fire({
                         icon: 'error',
-                        title: 'Erreur',
-                        text: 'Impossible de charger le rappel anatomique.'
+                        title: AA_RACC_I18N.error_title,
+                        text: AA_RACC_I18N.anat_recall_failed
                     });
                 });
         }
@@ -1151,7 +1202,7 @@ if ($isPathology) {
                 coursContainer.innerHTML = `
                     <div style="text-align:center; padding:50px;">
                         <i class="fas fa-spinner fa-spin" style="font-size:40px; color:#1d3557;"></i>
-                        <p style="margin-top:15px;">Chargement de la synthèse structurée...</p>
+                        <p style="margin-top:15px;">${AA_RACC_I18N.loading_synthesis}</p>
                     </div>
                 `;
 
@@ -1170,8 +1221,8 @@ if ($isPathology) {
                             if (data.hasResume) {
                                 Swal.fire({
                                     icon: 'success',
-                                    title: 'Synthèse chargée',
-                                    text: 'La synthèse structurée a été chargée avec succès.',
+                                    title: AA_RACC_I18N.synthesis_loaded,
+                                    text: AA_RACC_I18N.synthesis_loaded_msg,
                                     timer: 2000,
                                     showConfirmButton: false
                                 });
@@ -1180,8 +1231,8 @@ if ($isPathology) {
                             coursContainer.innerHTML = originalContent;
                             Swal.fire({
                                 icon: 'error',
-                                title: 'Erreur',
-                                text: data.message || 'Impossible de charger le résumé.'
+                                title: AA_RACC_I18N.error_title,
+                                text: data.message || AA_RACC_I18N.summary_load_failed
                             });
                         }
                     })
@@ -1190,8 +1241,8 @@ if ($isPathology) {
                         coursContainer.innerHTML = originalContent;
                         Swal.fire({
                             icon: 'error',
-                            title: 'Erreur',
-                            text: 'Impossible de charger le résumé.'
+                            title: AA_RACC_I18N.error_title,
+                            text: AA_RACC_I18N.summary_load_failed
                         });
                     });
 

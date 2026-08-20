@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html>
+<html <?php echo aa_html_attrs(); ?>>
 
 <head>
 
@@ -12,6 +12,7 @@
 
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
+<?php echo aa_rtl_assets(); ?>
 </head>
 
 <body>

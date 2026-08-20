@@ -12,11 +12,11 @@
 
 			<h3 style="font-size: 12px; color: #007bff; text-align: center; margin-top: 10px; padding: 1px;  border-left: 4px solid #007bff;
   					background-color: #f0f8ff;  border-radius: 4px;  width: 300px;">
-				Utile pour la recherche approfondie, les thèses et les publications scientifiques
+				<?php echo $this->lang->line('detailed_version_hint'); ?>
 			</h3>
 
 			<div style="display: flex; justify-content: center;margin-top: 20px">
-				<button class="carreaux_lec" onclick="showCurs()">Voir la version détaillée</button>
+				<button class="carreaux_lec" onclick="showCurs()"><?php echo $this->lang->line('see_detailed_version'); ?></button>
 			</div>
 
 		</div>

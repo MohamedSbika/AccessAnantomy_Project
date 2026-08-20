@@ -92,6 +92,8 @@
                                     <div class="mb-2">
                                         <label class="form-label label-modal-login">Titre_KO</label>
                                         <textarea rows="2" cols="33" class="form-control form-control-lg input-modal-login" type="text" name="KO_title" placeholder="" style="font-size: 0.8rem;min-height: calc(1px);padding: 0.2rem 0.2rem;"></textarea>
+                                        <label class="form-label label-modal-login">Titre_AR</label>
+                                        <textarea rows="2" cols="33" class="form-control form-control-lg input-modal-login" type="text" name="AR_title" placeholder="" style="font-size: 0.8rem;min-height: calc(1px);padding: 0.2rem 0.2rem;"></textarea>
                                     </div>
                                 </div>
 
@@ -191,6 +193,8 @@
                                         <div class="mb-2">
                                             <label class="form-label label-modal-login">Titre_KO</label>
                                             <textarea rows="2" cols="33" class="form-control form-control-lg input-modal-login" type="text" name="KO_title" placeholder="" style="font-size: 0.8rem;min-height: calc(1px);padding: 0.2rem 0.2rem;"><?= isset($value['KO_title']) ? $value['KO_title'] : ''; ?></textarea>
+                                            <label class="form-label label-modal-login">Titre_AR</label>
+                                            <textarea rows="2" cols="33" class="form-control form-control-lg input-modal-login" type="text" name="AR_title" placeholder="" style="font-size: 0.8rem;min-height: calc(1px);padding: 0.2rem 0.2rem;"><?= isset($value['AR_title']) ? $value['AR_title'] : ''; ?></textarea>
                                         </div>
                                     </div>
 

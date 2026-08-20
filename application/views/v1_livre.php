@@ -1,11 +1,13 @@
 <?php if(strlen($this->session->userdata('passTok'))==200) { ?>
 
 <!DOCTYPE html>
-<html lang="fr">
+<html <?php echo aa_html_attrs(); ?>>
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Membre Supérieur - Atlas d'Anatomie Humaine</title>
+	<?php // Le titre etait fige sur un seul livre : toutes les fiches, dans
+	     // toutes les langues, s'annoncaient « Membre Superieur ». ?>
+	<title><?php echo htmlspecialchars(!empty($OneBook[0]['Titre']) ? $OneBook[0]['Titre'] : 'Access Anatomy', ENT_QUOTES, 'UTF-8'); ?></title>
 	<!-- ✅ Lien vers Font Awesome pour les icônes -->
 	<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700&display=swap" rel="stylesheet">
@@ -139,6 +141,7 @@
 	</style>
 
 	<?php include('components/aa_livre_responsive.php'); ?>
+<?php echo aa_rtl_assets(); ?>
 </head>
 <header style=" /*position: fixed;*/  z-index: 1000;  width: 100%;box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 background: linear-gradient(135deg, #120E47 30%, #182540 100%);">

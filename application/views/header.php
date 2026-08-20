@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html <?php echo aa_html_attrs(); ?>>
 
 <head>
     <meta charset="utf-8">
@@ -77,6 +77,7 @@
     <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-treeview/1.2.0/bootstrap-treeview.min.js"></script>
     -->
 
+<?php echo aa_rtl_assets(); ?>
 </head>
 <style>
     .content {
