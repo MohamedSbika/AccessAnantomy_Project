@@ -116,6 +116,16 @@
 <?php include('v1_modal_videos.php'); ?>
 
 <script>
+	/* Messages du lecteur audio et du panneau video : alert() et Swal.fire(),
+	   hors de portee d'un echo PHP au fil du texte. */
+	var AA_LECT_I18N = <?php echo json_encode(array(
+		'select_reading_mode' => $this->lang->line('select_reading_mode'),
+		'no_text_to_read'     => $this->lang->line('no_text_to_read'),
+		'content_unreachable' => $this->lang->line('content_unreachable'),
+		'wait'                => $this->lang->line('wait'),
+		'sending_data'        => $this->lang->line('sending_data'),
+		'no_video'            => $this->lang->line('no_video'),
+	), JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
     let isPaused = false;
     let msg = null;
 
@@ -123,7 +133,7 @@
         let selectedMode = document.querySelector('input[name="modeLecture"]:checked');
 
         if (!selectedMode) {
-            alert("Veuillez sélectionner un mode de lecture !");
+            alert(AA_LECT_I18N.select_reading_mode);
         }
 
         if (selectedMode.value === "schema") {
@@ -246,10 +256,10 @@
                     };
                 }
             } else {
-                alert("Aucun texte à lire !");
+                alert(AA_LECT_I18N.no_text_to_read);
             }
         } else {
-            alert("Impossible d'accéder au contenu !");
+            alert(AA_LECT_I18N.content_unreachable);
         }
     }
 
@@ -540,7 +550,7 @@
         formData.append('idType', typeVideo);
 
         Swal.fire({
-            title: 'Veuillez patienter ...<br> Envoi des données en cours .. ',
+            title: AA_LECT_I18N.wait + '<br> ' + AA_LECT_I18N.sending_data,
             allowOutsideClick: false,
             allowEscapeKey: false,
             onBeforeOpen: () => {
@@ -572,7 +582,7 @@
 
                 var videoHtml = "";
                 if (listVideos.length === 0) {
-                    videoHtml = "<p>Aucune vidéo disponible.</p>";
+                    videoHtml = "<p>" + AA_LECT_I18N.no_video + "</p>";
                 } else {
                     videoHtml += `<div class="video-grid">`; 
 
@@ -583,7 +593,7 @@
             <div class="video-item">
                 <video   controls controlsList="nodownload" oncontextmenu="return false;">
                     <source src="${fullPath}" type="video/mp4">
-                    Votre navigateur ne prend pas en charge la lecture vidéo.
+                    <?php echo $this->lang->line('video_unsupported'); ?>
                 </video>
                 <h4>${video.titre}</h4>
                 <p>${video.description || ""}</p>

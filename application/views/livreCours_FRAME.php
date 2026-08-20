@@ -2,7 +2,7 @@
 
 
 	<!DOCTYPE html>
-	<html>
+	<html <?php echo aa_html_attrs(); ?>>
 	<?php
 	include('header.php');
 	?>

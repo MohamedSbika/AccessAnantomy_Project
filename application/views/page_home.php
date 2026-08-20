@@ -949,6 +949,10 @@ include('header_steppes.php');
                                     <a href="<?php echo base_url(); ?>KO/category/Haebuhak-Course-KO">
                                         <img src="<?php echo base_url(); ?>assets/couverture_KO/PR_COURSES_KO.jpg" style="width:100%;" class="image-couverture">
                                     </a>
+                                <?php } elseif ($this->session->userdata('site_lang') == 'AR') { ?>
+                                    <a href="<?php echo base_url(); ?>AR/category/Duroos-Tashrih-AR">
+                                        <img src="<?php echo base_url(); ?>assets/couverture_AR/PR_COURSES_AR.jpg" style="width:100%;" class="image-couverture">
+                                    </a>
                                 <?php } else { ?>
                                     <a href="<?php echo base_url(); ?>EN/category/Anatomy-courses">
                                         <img src="<?php echo base_url(); ?>assets/couvertures ENG/PRESENTATION_EN/COURSPA_EN.jpg" style="width:100%;" class="image-couverture">
@@ -1000,6 +1004,10 @@ include('header_steppes.php');
                                     <a href="<?php echo base_url(); ?>KO/category/Haebuhak-Atlas-KO">
                                         <img src="<?php echo base_url(); ?>assets/couverture_KO/PR_ATLAS_KO.jpg" style="width:100%;" class="image-couverture">
                                     </a>
+                                <?php } elseif ($this->session->userdata('site_lang') == 'AR') { ?>
+                                    <a href="<?php echo base_url(); ?>AR/category/Atlas-Tashrih-AR">
+                                        <img src="<?php echo base_url(); ?>assets/couverture_AR/PR_ATLAS_AR.jpg" style="width:100%;" class="image-couverture">
+                                    </a>
                                 <?php } else { ?>
                                     <a href="<?php echo base_url(); ?>EN/category/Atlas-of-Anatomy">
                                         <img src="<?php echo base_url(); ?>assets/couvertures ENG/PRESENTATION_EN/ATLAS_PA_EN.jpg" style="width:100%;" class="image-couverture">
@@ -1050,6 +1058,10 @@ include('header_steppes.php');
                                     <a href="<?php echo base_url(); ?>KO/category/Balsaenghak-KO">
                                         <img src="<?php echo base_url(); ?>assets/couverture_KO/PR_EMBR_KO.jpg" style="width:100%;" class="image-couverture">
                                     </a>
+                                <?php } elseif ($this->session->userdata('site_lang') == 'AR') { ?>
+                                    <a href="<?php echo base_url(); ?>AR/category/Ilm-Ajinna-AR">
+                                        <img src="<?php echo base_url(); ?>assets/couverture_AR/PR_EMBR_AR.jpg" style="width:100%;" class="image-couverture">
+                                    </a>
                                 <?php } else { ?>
                                     <a href="<?php echo base_url(); ?>EN/category/Embryology">
                                         <img src="<?php echo base_url(); ?>assets/couvertures ENG/PRESENTATION_EN/EMBR_PA_EN–1.jpg" style="width:100%;" class="image-couverture">
@@ -1099,6 +1111,10 @@ include('header_steppes.php');
                                 <?php } elseif ($this->session->userdata('site_lang') == 'KO') { ?>
                                     <a href="<?php echo base_url(); ?>KO/category/Byongri-KO">
                                         <img src="<?php echo base_url(); ?>assets/couverture_KO/PR_PATHO_KO.jpg" style="width:100%;" class="image-couverture">
+                                    </a>
+                                <?php } elseif ($this->session->userdata('site_lang') == 'AR') { ?>
+                                    <a href="<?php echo base_url(); ?>AR/category/Ilm-Amrad-AR">
+                                        <img src="<?php echo base_url(); ?>assets/couverture_AR/PR_PATHO_AR.jpg" style="width:100%;" class="image-couverture">
                                     </a>
                                 <?php } else { ?>
                                     <a href="<?php echo base_url(); ?>EN/category/Pathology-EN">
@@ -1301,6 +1317,8 @@ include('header_steppes.php');
                                             <span> <?= $value['JA_title']; ?> </span>
                                         <?php } elseif ($this->session->userdata('site_lang') == 'KO' && !empty($value['KO_title'])) { ?>
                                             <span> <?= $value['KO_title']; ?> </span>
+                                        <?php } elseif ($this->session->userdata('site_lang') == 'AR' && !empty($value['AR_title'])) { ?>
+                                            <span> <?= $value['AR_title']; ?> </span>
                                         <?php } else { ?>
                                             <span> <?= $value['EN_title']; ?> </span>
                                         <?php } ?>

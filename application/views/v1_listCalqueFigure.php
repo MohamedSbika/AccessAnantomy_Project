@@ -1,6 +1,6 @@
 <?php if(strlen($this->session->userdata('passTok'))==200) { ?>
 	<!DOCTYPE html>
-	<html lang="fr">
+	<html <?php echo aa_html_attrs(); ?>>
 
 	<head>
 		<meta charset="UTF-8">
@@ -15,6 +15,7 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
 		<link href="<?php echo HTTP_CSS; ?>v1_app.css" rel="stylesheet">
+	<?php echo aa_rtl_assets(); ?>
 	</head>
 
 	<header style=" /*position: fixed;*/  z-index: 1000;  width: 100%;box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);

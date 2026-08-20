@@ -1,6 +1,6 @@
 <?php if (strlen($this->session->userdata('passTok')) == 200) { ?>
 <!DOCTYPE html>
-<html>
+<html <?php echo aa_html_attrs(); ?>>
 <?php include('header.php'); ?>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>

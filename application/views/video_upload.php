@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html <?php echo aa_html_attrs(); ?>>
     <head>
         <meta charset="UTF-8">
         <title>Codeigniter Video Upload</title>
@@ -33,6 +33,7 @@
                 color: darkgreen;
             }
         </style>
+    <?php echo aa_rtl_assets(); ?>
     </head>
     <body>
         <div id="container">

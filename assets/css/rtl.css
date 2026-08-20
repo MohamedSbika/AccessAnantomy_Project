@@ -1,0 +1,619 @@
+/*!
+ * Access Anatomy -- RTL override sheet (Arabic / AR)
+ *
+ * Loaded ONLY when the active language is right-to-left, via aa_rtl_css() in
+ * application/helpers/aa_rtl_helper.php. Every other language is byte-for-byte
+ * unaffected. Must be the LAST stylesheet on the page.
+ *
+ * Two halves:
+ *   1. this hand-written section -- document direction, Arabic typography, and
+ *      the vendor CSS we cannot regenerate (Bootstrap 3.3.0 + Font Awesome +
+ *      Swiper from CDN, and the minified AdminKit app.css / v1_app.css).
+ *   2. a generated section below the marker -- mechanical mirror of every
+ *      directional rule in assets/css/*.css and the views' <style> blocks.
+ *      Rebuild it with:  python3 tools/build_rtl_css.py
+ */
+
+/* ---------------------------------------------------------------- document */
+
+html[dir="rtl"],
+[dir="rtl"] body {
+	direction: rtl;
+	text-align: right;
+}
+
+/* Containment guard. Several components (carousels, wide tables, absolutely
+   positioned decorations) are authored against an LTR origin; in RTL any that
+   are not mirrored spill to the LEFT, past the viewport, growing scrollWidth.
+   body already has overflow-x:hidden but <html> does not, so the page as a
+   whole still scrolls sideways and can open on an empty region. Clamp it. */
+html[dir="rtl"] {
+	overflow-x: hidden;
+	max-width: 100%;
+}
+
+/* Arabic needs a face with real Arabic coverage; the Latin stacks used across
+   the app (Inter / Manrope / Unbounded / Roboto) have none, so the browser
+   falls back per-glyph and the result is visibly mismatched. Keep the Latin
+   families after it so embedded Latin (QCM, QROC, Access Anatomy) still
+   renders in the brand face. */
+[dir="rtl"] body,
+[dir="rtl"] button,
+[dir="rtl"] input,
+[dir="rtl"] select,
+[dir="rtl"] textarea,
+[dir="rtl"] .btn {
+	font-family: "Noto Naskh Arabic", "Noto Sans Arabic", "Segoe UI",
+		Tahoma, Arial, "Manrope", "Inter", sans-serif;
+}
+
+[dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3,
+[dir="rtl"] h4, [dir="rtl"] h5, [dir="rtl"] h6 {
+	font-family: "Noto Kufi Arabic", "Noto Sans Arabic", "Segoe UI",
+		Tahoma, Arial, "Unbounded", sans-serif;
+}
+
+/* Arabic script sits lower and needs more leading than Latin at the same
+   size, otherwise diacritics collide with the line above. */
+[dir="rtl"] body,
+[dir="rtl"] p,
+[dir="rtl"] li,
+[dir="rtl"] td {
+	line-height: 1.8;
+}
+
+/* Numerals, code and identifiers stay LTR inside RTL text. */
+[dir="rtl"] .ltr,
+[dir="rtl"] code,
+[dir="rtl"] pre,
+[dir="rtl"] .email,
+[dir="rtl"] input[type="email"],
+[dir="rtl"] input[type="url"],
+[dir="rtl"] input[type="tel"],
+[dir="rtl"] input[type="password"] {
+	direction: ltr;
+	text-align: left;
+}
+[dir="rtl"] input[type="email"],
+[dir="rtl"] input[type="url"],
+[dir="rtl"] input[type="tel"],
+[dir="rtl"] input[type="password"] {
+	text-align: right;   /* keep the field visually right-aligned in the form */
+}
+
+/* ------------------------------------------------- lists, forms, tables */
+
+[dir="rtl"] ul,
+[dir="rtl"] ol {
+	padding-right: 40px;
+	padding-left: 0;
+}
+
+[dir="rtl"] th,
+[dir="rtl"] td {
+	text-align: right;
+}
+
+/* Alignement gauche pose en style INLINE dans les vues (livreDetails,
+   settingCurs, settingPlat, settingActualites...). Le style inline bat la
+   feuille : seul le selecteur d'attribut + !important le reprend. */
+[dir="rtl"] th[style*="text-align: left"],
+[dir="rtl"] td[style*="text-align: left"],
+[dir="rtl"] th[style*="text-align:left"],
+[dir="rtl"] td[style*="text-align:left"] {
+	text-align: right !important;
+}
+
+/* ------------------------------------------------------------ DataTables */
+
+/* datatables.css est ecrit pour LTR : fleches de tri, barre d'outils et
+   colonne "+" du mode responsive sont ancrees en dur a gauche ou a droite.
+   Chaque regle ci-dessous reprend son homologue en ajoutant [dir="rtl"],
+   donc specificite superieure, et rtl.css est charge apres datatables.css. */
+
+/* fleches de tri : la place se reserve du cote fin de ligne */
+[dir="rtl"] table.dataTable > thead > tr > th:not(.sorting_disabled),
+[dir="rtl"] table.dataTable > thead > tr > td:not(.sorting_disabled) {
+	padding-right: 0.75rem;
+	padding-left: 30px;
+}
+[dir="rtl"] table.dataTable > thead .sorting:before,
+[dir="rtl"] table.dataTable > thead .sorting_asc:before,
+[dir="rtl"] table.dataTable > thead .sorting_desc:before,
+[dir="rtl"] table.dataTable > thead .sorting_asc_disabled:before,
+[dir="rtl"] table.dataTable > thead .sorting_desc_disabled:before {
+	right: auto;
+	left: 1em;
+}
+[dir="rtl"] table.dataTable > thead .sorting:after,
+[dir="rtl"] table.dataTable > thead .sorting_asc:after,
+[dir="rtl"] table.dataTable > thead .sorting_desc:after,
+[dir="rtl"] table.dataTable > thead .sorting_asc_disabled:after,
+[dir="rtl"] table.dataTable > thead .sorting_desc_disabled:after {
+	right: auto;
+	left: 0.5em;
+}
+[dir="rtl"] table.dataTable.table-sm > thead > tr > th:not(.sorting_disabled) {
+	padding-right: 0.3rem;
+	padding-left: 20px;
+}
+[dir="rtl"] table.dataTable.table-sm .sorting:before,
+[dir="rtl"] table.dataTable.table-sm .sorting_asc:before,
+[dir="rtl"] table.dataTable.table-sm .sorting_desc:before {
+	right: auto;
+	left: 0.85em;
+}
+
+/* barre d'outils : nombre de lignes, recherche, info, pagination */
+[dir="rtl"] div.dataTables_wrapper div.dataTables_length label,
+[dir="rtl"] div.dataTables_wrapper div.dataTables_filter label {
+	text-align: right;
+}
+[dir="rtl"] div.dataTables_wrapper div.dataTables_filter {
+	text-align: left;
+}
+[dir="rtl"] div.dataTables_wrapper div.dataTables_filter input {
+	margin-left: 0;
+	margin-right: 0.5em;
+}
+[dir="rtl"] div.dataTables_wrapper div.dataTables_paginate {
+	text-align: left;
+}
+[dir="rtl"] div.dataTables_wrapper div.dataTables_paginate ul.pagination {
+	justify-content: flex-start;
+}
+
+/* colonne "+" du mode responsive et sa fiche enfant */
+[dir="rtl"] table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td.dtr-control,
+[dir="rtl"] table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > th.dtr-control {
+	padding-left: 0.75rem;
+	padding-right: 30px;
+}
+[dir="rtl"] table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td.dtr-control:before,
+[dir="rtl"] table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > th.dtr-control:before {
+	left: auto;
+	right: 5px;
+}
+[dir="rtl"] table.dataTable.dtr-inline.collapsed.compact > tbody > tr > td.dtr-control,
+[dir="rtl"] table.dataTable.dtr-inline.collapsed.compact > tbody > tr > th.dtr-control {
+	padding-left: 0.75rem;
+	padding-right: 27px;
+}
+[dir="rtl"] table.dataTable.dtr-inline.collapsed.compact > tbody > tr > td.dtr-control:before,
+[dir="rtl"] table.dataTable.dtr-inline.collapsed.compact > tbody > tr > th.dtr-control:before {
+	left: auto;
+	right: 4px;
+}
+[dir="rtl"] table.dataTable > tbody > tr.child ul.dtr-details,
+[dir="rtl"] table.dataTable > tbody > tr.child span.dtr-title {
+	text-align: right;
+}
+
+[dir="rtl"] .form-check,
+[dir="rtl"] .form-check-input {
+	margin-right: 0;
+}
+[dir="rtl"] .form-check {
+	padding-right: 1.25rem;
+	padding-left: 0;
+}
+[dir="rtl"] .form-check-input {
+	float: right;
+	margin-right: -1.25rem;
+	margin-left: 0;
+}
+
+[dir="rtl"] .input-group > .form-control:not(:last-child),
+[dir="rtl"] .input-group > .custom-select:not(:last-child) {
+	border-radius: 0 0.2rem 0.2rem 0;
+}
+[dir="rtl"] .input-group > .form-control:not(:first-child),
+[dir="rtl"] .input-group > .custom-select:not(:first-child) {
+	border-radius: 0.2rem 0 0 0.2rem;
+}
+
+/* --------------------------------------------- Bootstrap 3.3.0 (CDN, LTR) */
+
+[dir="rtl"] .pull-left  { float: right !important; }
+[dir="rtl"] .pull-right { float: left  !important; }
+[dir="rtl"] .text-left  { text-align: right !important; }
+[dir="rtl"] .text-right { text-align: left  !important; }
+
+[dir="rtl"] .dropdown-menu {
+	right: 0;
+	left: auto;
+	text-align: right;
+}
+[dir="rtl"] .dropdown-menu-right {
+	right: auto;
+	left: 0;
+}
+[dir="rtl"] .dropdown-toggle::after {
+	margin-right: 0.255em;
+	margin-left: 0;
+}
+
+[dir="rtl"] .navbar-nav,
+[dir="rtl"] .nav,
+[dir="rtl"] .navbar-right {
+	padding-right: 0;
+}
+[dir="rtl"] .navbar-brand {
+	margin-right: 0;
+	margin-left: 1rem;
+}
+
+[dir="rtl"] .modal-header .close {
+	margin: -1rem auto -1rem -1rem;
+}
+[dir="rtl"] .modal-footer > :not(:first-child) {
+	margin-right: 0.25rem;
+	margin-left: 0;
+}
+
+[dir="rtl"] .breadcrumb-item + .breadcrumb-item {
+	padding-right: 0.5rem;
+	padding-left: 0;
+}
+[dir="rtl"] .breadcrumb-item + .breadcrumb-item::before {
+	padding-right: 0;
+	padding-left: 0.5rem;
+	float: right;
+}
+
+[dir="rtl"] .list-group { padding-right: 0; }
+[dir="rtl"] .close      { float: left; }
+[dir="rtl"] .alert-dismissible { padding-right: 1.25rem; padding-left: 4rem; }
+[dir="rtl"] .alert-dismissible .close { right: auto; left: 0; }
+
+[dir="rtl"] .custom-control { padding-right: 1.5rem; padding-left: 0; }
+[dir="rtl"] .custom-control-label::before,
+[dir="rtl"] .custom-control-label::after { right: -1.5rem; left: auto; }
+
+[dir="rtl"] .pagination { padding-right: 0; }
+[dir="rtl"] .page-item:first-child .page-link { border-radius: 0 0.2rem 0.2rem 0; }
+[dir="rtl"] .page-item:last-child  .page-link { border-radius: 0.2rem 0 0 0.2rem; }
+
+[dir="rtl"] .input-group-addon:first-child { border-right-width: 1px; border-left-width: 0; }
+[dir="rtl"] .input-group-addon:last-child  { border-left-width: 1px; border-right-width: 0; }
+
+/* ------------------------------------------------ AdminKit (minified vendor) */
+
+[dir="rtl"] .sidebar { direction: rtl; }
+[dir="rtl"] .sidebar-nav        { padding-right: 0; }
+[dir="rtl"] .sidebar-link,
+[dir="rtl"] .sidebar-item .sidebar-link { text-align: right; }
+[dir="rtl"] .sidebar-link i,
+[dir="rtl"] .sidebar-link svg  { margin-right: 0; margin-left: 0.5rem; }
+[dir="rtl"] .sidebar-dropdown  { padding-right: 0; }
+[dir="rtl"] .sidebar-toggle    { margin-right: 0; margin-left: auto; }
+[dir="rtl"] .content           { margin-right: 0; margin-left: 0; }
+
+/* -------------------------------------------------------- icons & carets */
+
+/* Directional glyphs must point the other way; symmetric ones must not move. */
+[dir="rtl"] .fa-chevron-left,
+[dir="rtl"] .fa-chevron-right,
+[dir="rtl"] .fa-angle-left,
+[dir="rtl"] .fa-angle-right,
+[dir="rtl"] .fa-angle-double-left,
+[dir="rtl"] .fa-angle-double-right,
+[dir="rtl"] .fa-arrow-left,
+[dir="rtl"] .fa-arrow-right,
+[dir="rtl"] .fa-long-arrow-alt-left,
+[dir="rtl"] .fa-long-arrow-alt-right,
+[dir="rtl"] .fa-caret-left,
+[dir="rtl"] .fa-caret-right,
+[dir="rtl"] .fa-arrow-circle-left,
+[dir="rtl"] .fa-arrow-circle-right,
+[dir="rtl"] .fa-hand-point-left,
+[dir="rtl"] .fa-hand-point-right {
+	transform: scaleX(-1);
+}
+
+/* Swiper navigation swaps sides. */
+[dir="rtl"] .swiper-button-prev { right: 10px; left: auto; }
+[dir="rtl"] .swiper-button-next { left: 10px; right: auto; }
+
+/* ------------------------------------------------------ anatomy content */
+
+/* Figure legends: the left/right label columns swap sides, but the figure
+   IMAGE itself must never mirror -- anatomical laterality is clinical data. */
+[dir="rtl"] .figure-image,
+[dir="rtl"] .image-couverture,
+[dir="rtl"] canvas,
+[dir="rtl"] svg.figure,
+[dir="rtl"] .calque,
+[dir="rtl"] .zoomove,
+[dir="rtl"] img[usemap] {
+	transform: none !important;
+}
+
+/* Course/figure panes keep their reading order flipped but the media pane
+   stays put relative to its caption. */
+[dir="rtl"] .col-left  { border-right: 0; border-left: 1px solid #f1f1f1; }
+
+/* Scrollbar-on-the-left trick used in v1_bloc_figures stays meaningful in RTL
+   only if it flips back to the natural side. */
+[dir="rtl"] .scroll-flip { direction: ltr; }
+[dir="rtl"] .scroll-flip > * { direction: rtl; }
+
+
+/* ------------------------------------------- modale de connexion (accueil) */
+
+/* v1_modal_login.php imprime son <style> APRÈS cette feuille (l'include est en
+   fin de v1_page_home.php), donc l'ordre des règles ne suffit pas : ces
+   sélecteurs sont scopés par #customModal pour gagner sur la spécificité. */
+
+[dir="rtl"] #customModal .close {
+	right: auto;
+	left: 15px;
+}
+
+/* L'œil « afficher le mot de passe » passe du côté opposé, et le champ lui
+   rend la place correspondante pour que le texte ne passe pas dessous. */
+[dir="rtl"] #customModal .toggle-password {
+	right: auto;
+	left: 12px;
+}
+[dir="rtl"] #customModal .password-wrapper input {
+	padding-left: 40px;
+	padding-right: 12px;
+}
+
+/* --------------------------------------------- page d'inscription (signUp) */
+
+/* La case « mention légale » porte un style="float: revert" en ligne : le
+   float n'est donc pas mirroré, mais la marge négative de .form-check-input
+   l'est et décalait la case hors de son libellé. */
+[dir="rtl"] label.form-check > .form-check-input {
+	margin-right: 0;
+	margin-left: 0;
+}
+
+/* jquery.validate insère ses messages juste après le champ. */
+[dir="rtl"] label.error {
+	display: block;
+	text-align: right;
+}
+
+/* -------------------------------------------------------- SweetAlert 2 */
+
+/* Swal monte ses boîtes sur <body>, donc elles héritent de dir="rtl", mais sa
+   feuille CDN aligne titre et texte à gauche en dur. */
+[dir="rtl"] .swal2-popup {
+	direction: rtl;
+}
+[dir="rtl"] .swal2-title,
+[dir="rtl"] .swal2-html-container,
+[dir="rtl"] .swal2-content {
+	text-align: center;
+}
+[dir="rtl"] .swal2-close {
+	right: auto;
+	left: 0;
+}
+[dir="rtl"] .swal2-validation-message {
+	text-align: right;
+}
+
+
+/* ================================================================== *
+ *  Colonne de raccourcis + couche responsive
+ *
+ *  Note de specificite : rtl.css est chargee par aa_rtl_assets() en fin de
+ *  <head>, mais DEUX sources arrivent apres elle et ne peuvent donc pas etre
+ *  battues par le seul ordre des regles :
+ *    - le <style> inline de v1_racourci*.php, imprime dans le <body> ;
+ *    - header-responsive.css, chargee par aa_header_mobile.php, egalement
+ *      dans le <body>, et truffee de !important.
+ *  Les selecteurs ci-dessous sont donc volontairement plus specifiques que
+ *  leur cible (prefixe html[dir="rtl"], !important la ou l'original en a un).
+ * ================================================================== */
+
+/* ---------------------------------------- colonne fixe (desktop >= 992px) */
+
+/* .sidebar-racc est ancree a gauche par `left: 5px` dans les trois variantes
+   (v1_racourci, _atlas, _pathologie). En RTL elle passe du cote du debut de
+   lecture, donc a droite. */
+html[dir="rtl"] .sidebar-racc {
+	left: auto;
+	right: 5px;
+}
+
+/* La fleche du bouton replier/deplier est un « → » litteral (&#8594;) que le
+   CSS fait pivoter de 180deg a l'ouverture. En RTL les deux etats s'inversent.
+   toggleSidebar() ecrit ce transform en style inline : !important est le seul
+   moyen de le reprendre, et rtl.js ne touche jamais aux transform. */
+html[dir="rtl"] .sidebar-racc.collapsed .toggle-btn .arrow {
+	transform: rotate(180deg) !important;
+}
+html[dir="rtl"] .sidebar-racc:not(.collapsed) .toggle-btn .arrow {
+	transform: rotate(0deg) !important;
+}
+
+/* Le panneau des chapitres est positionne en JS a droite de la colonne
+   (`sidebarRect.right + 10`). Le JS pose desormais `right` en RTL ; on neutralise
+   ici le `left` que la feuille d'origine pourrait laisser. */
+html[dir="rtl"] .tooltip-chapitre[style*="right"] {
+	left: auto;
+}
+
+/* --------------------------------------------- tablette (768 - 991.98px) */
+
+/* #element reserve 110px a gauche pour laisser passer la colonne flottante
+   (lecture-responsive.css). La colonne ayant change de bord, la reserve suit. */
+@media (min-width: 768px) and (max-width: 991.98px) {
+	html[dir="rtl"] #element {
+		padding-right: 110px !important;
+		padding-left: 8px !important;
+	}
+	html[dir="rtl"] #element > div[class*="col-"] {
+		margin-right: 0 !important;
+	}
+}
+
+/* ------------------------------------------------ mobile (<= 767.98px) */
+
+@media (max-width: 767.98px) {
+	/* Feuille ancree en bas : l'en-tete reserve 48px pour la croix. */
+	html[dir="rtl"] .tooltip-chapitre .chapter-header {
+		padding: 14px 14px 14px 48px !important;
+		text-align: right;
+	}
+	html[dir="rtl"] .aa-sheet-close {
+		right: auto;
+		left: 8px;
+	}
+}
+
+/* ============================ tiroir de navigation (header-responsive.css) */
+
+/* Le tiroir entre par la gauche (`left: -320px` -> `left: 0`, transition sur
+   `left`). En RTL il doit entrer par la droite : on bascule la propriete
+   animee ET l'ombre portee, sinon le tiroir glisse du mauvais bord et son
+   ombre se dessine du cote de l'ecran au lieu du cote du contenu. */
+@media (max-width: 991.98px) {
+
+	html[dir="rtl"] #sideNav.side-nav {
+		left: auto !important;
+		right: -320px !important;
+		transition: right .3s ease;
+		box-shadow: -2px 0 18px rgba(0, 0, 0, .35);
+	}
+
+	html[dir="rtl"] #sideNav.side-nav.aa-open {
+		left: auto !important;
+		right: 0 !important;
+	}
+
+	html[dir="rtl"] #sideNav.side-nav .close-btn {
+		right: auto;
+		left: 8px;
+	}
+
+	html[dir="rtl"] #sideNav.side-nav .nav-link.dropdown-toggle::after {
+		margin-right: 8px;
+		margin-left: 0;
+	}
+
+	html[dir="rtl"] #sideNav.side-nav .language-user-navbar .nav-link,
+	html[dir="rtl"] #sideNav.side-nav .language-user-navbar .nav-icon {
+		padding-left: .5rem !important;
+		padding-right: 0 !important;
+	}
+
+	html[dir="rtl"] #sideNav.side-nav #languageDropdown + .dropdown-menu {
+		left: auto !important;
+		right: 0 !important;
+	}
+}
+
+/* Les libelles alignes a gauche en dur par la couche responsive. */
+[dir="rtl"] .aa-sheet-title,
+[dir="rtl"] .tooltip-chapitre .chapter-item,
+[dir="rtl"] .chapter-list .chapter-item {
+	text-align: right;
+}
+
+
+/* ------------------------------- AdminKit : direction:ltr code en dur */
+
+/* v1_app.css (build AdminKit minifie, non regenerable) pose `direction: ltr`
+   sur cinq conteneurs. Comme la propriete est portee par la classe et non par
+   <body>, elle bat l'heritage de html[dir="rtl"] et re-passe tout le sous-arbre
+   en LTR -- c'est ce qui alignait a gauche les entrees du tiroir de navigation
+   et le contenu principal, alors meme que la page etait bien en RTL. */
+[dir="rtl"] .content,
+[dir="rtl"] footer.footer,
+[dir="rtl"] .navbar-nav,
+[dir="rtl"] .sidebar,
+[dir="rtl"] .navbar input {
+	direction: rtl;
+}
+
+/* Le champ de recherche redevient RTL avec le reste : ce n'est ni un e-mail ni
+   un identifiant, la regle « champs techniques en LTR » plus haut ne s'y
+   applique pas. */
+[dir="rtl"] .navbar input[type="text"],
+[dir="rtl"] .navbar input[type="search"] {
+	text-align: right;
+}
+
+
+/* -------------------------- Bootstrap : utilitaires d'espacement physiques */
+
+/* Les classes d'espacement directionnelles de Bootstrap 4 (mr-, ml-, pr-, pl-)
+   sont PHYSIQUES : elles ne
+   suivent pas la direction du document. Sous dir="rtl" elles poussent donc du
+   mauvais cote, et comme elles portent !important il faut a la fois !important
+   et une specificite superieure pour les reprendre.
+
+   Le cas qui casse l'en-tete : <ul class="navbar-nav mr-auto"> dans
+   v1_header_menu.php. En LTR, margin-right:auto colle le menu au logo et
+   repousse recherche/utilisateur a l'oppose. En RTL il faut margin-left:auto,
+   sinon le menu decolle du logo (206 px de derive mesures) et toute la barre
+   se desequilibre. */
+
+[dir="rtl"] .mr-auto { margin-right: 0 !important; margin-left: auto !important; }
+[dir="rtl"] .ml-auto { margin-left: 0 !important; margin-right: auto !important; }
+
+/* Echelle d'espacement Bootstrap : 0 / .25 / .5 / 1 / 1.5 / 3 rem. */
+[dir="rtl"] .mr-0 { margin-right: 0 !important; margin-left: 0 !important; }
+[dir="rtl"] .ml-0 { margin-left: 0 !important; margin-right: 0 !important; }
+[dir="rtl"] .mr-1 { margin-right: 0 !important; margin-left: .25rem !important; }
+[dir="rtl"] .ml-1 { margin-left: 0 !important; margin-right: .25rem !important; }
+[dir="rtl"] .mr-2 { margin-right: 0 !important; margin-left: .5rem !important; }
+[dir="rtl"] .ml-2 { margin-left: 0 !important; margin-right: .5rem !important; }
+[dir="rtl"] .mr-3 { margin-right: 0 !important; margin-left: 1rem !important; }
+[dir="rtl"] .ml-3 { margin-left: 0 !important; margin-right: 1rem !important; }
+[dir="rtl"] .mr-4 { margin-right: 0 !important; margin-left: 1.5rem !important; }
+[dir="rtl"] .ml-4 { margin-left: 0 !important; margin-right: 1.5rem !important; }
+[dir="rtl"] .mr-5 { margin-right: 0 !important; margin-left: 3rem !important; }
+[dir="rtl"] .ml-5 { margin-left: 0 !important; margin-right: 3rem !important; }
+
+[dir="rtl"] .pr-0 { padding-right: 0 !important; padding-left: 0 !important; }
+[dir="rtl"] .pl-0 { padding-left: 0 !important; padding-right: 0 !important; }
+[dir="rtl"] .pr-1 { padding-right: 0 !important; padding-left: .25rem !important; }
+[dir="rtl"] .pl-1 { padding-left: 0 !important; padding-right: .25rem !important; }
+[dir="rtl"] .pr-2 { padding-right: 0 !important; padding-left: .5rem !important; }
+[dir="rtl"] .pl-2 { padding-left: 0 !important; padding-right: .5rem !important; }
+[dir="rtl"] .pr-3 { padding-right: 0 !important; padding-left: 1rem !important; }
+[dir="rtl"] .pl-3 { padding-left: 0 !important; padding-right: 1rem !important; }
+[dir="rtl"] .pr-4 { padding-right: 0 !important; padding-left: 1.5rem !important; }
+[dir="rtl"] .pl-4 { padding-left: 0 !important; padding-right: 1.5rem !important; }
+[dir="rtl"] .pr-5 { padding-right: 0 !important; padding-left: 3rem !important; }
+[dir="rtl"] .pl-5 { padding-left: 0 !important; padding-right: 3rem !important; }
+
+[dir="rtl"] .float-left  { float: right !important; }
+[dir="rtl"] .float-right { float: left  !important; }
+
+
+/* ------------------------------- accueil : listes des formules d'abonnement */
+
+/* Le <style> de v1_page_home.php aligne .features a gauche et epingle la
+   pastille « coche » a left:0. Ce bloc etant imprime dans le <body>, il arrive
+   apres cette feuille : d'ou le prefixe html[dir="rtl"] pour la specificite.
+   Symptome sans ces regles : les sept lignes de chaque formule s'affichent en
+   arabe alignees a gauche, la coche par-dessus le debut du texte. */
+
+html[dir="rtl"] .features,
+html[dir="rtl"] .features li span {
+	text-align: right;
+}
+
+html[dir="rtl"] .features li::before {
+	left: auto;
+	right: 0;
+}
+
+html[dir="rtl"] .features li span {
+	margin-left: 0;
+	margin-right: 30px;
+}
+
+
+/* No generated section: this codebase lays out with flexbox, which mirrors
+   automatically under dir="rtl". A mechanical physical-property flip on top of
+   that double-flips already-correct layout (it collapsed the hero to one column
+   and inset the whole page). Fix RTL issues with targeted rules above instead. */

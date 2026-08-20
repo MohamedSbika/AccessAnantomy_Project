@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html <?php echo aa_html_attrs(); ?>>
 
 <head>
 	<meta charset="UTF-8">
@@ -427,6 +427,7 @@
 		}
 	</style>
 
+<?php echo aa_rtl_assets(); ?>
 </head>
 
 <body>
@@ -655,14 +656,14 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 				height: 90%;
 				background: #2E7D32;
 				border-radius: 12px;
-				left: -10px;
+				inset-inline-start: -10px;
 				top: 10px;
 				z-index: -1;
 			}
 
 			.section-info .text-container {
 				max-width: 50%;
-				margin-left: 5%;
+				margin-inline-start: 5%;
 			}
 
 			.section-info h2 {
@@ -691,7 +692,7 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 				content: "✔";
 				color: #2E7D32;
 				font-weight: bold;
-				margin-right: 10px;
+				margin-inline-end: 10px;
 			}
 
 			/* Media Queries for Responsiveness */
@@ -709,7 +710,7 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 				.section-info .text-container {
 					max-width: 100%;
 					text-align: center;
-					margin-left: 0;
+					margin-inline-start: 0;
 					margin-top: 20px;
 				}
 
@@ -961,6 +962,13 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 					box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 					overflow: hidden;
 					margin-bottom: 15px;
+					/* .step-container is a wrapping flex row, so a card sizes to its
+					   own content. French copy happens to be long enough to reach the
+					   810px max; shorter translations (Arabic, Japanese, Korean) let
+					   the card collapse, which staircases the column. Pin it full
+					   width -- a no-op for French, a fix everywhere else. */
+					width: 100%;
+					flex: 0 0 100%;
 				}
 
 				.left-box {
@@ -1141,19 +1149,19 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 				justify-content: center;
 			}
 			.section-info.pathology .text-container {
-				margin-left: 0;
-				margin-right: 5%;
+				margin-inline-start: 0;
+				margin-inline-end: 5%;
 			}
 			.section-info.pathology .image-container::before {
 				background: #008B6A;
-				left: 10px;
+				inset-inline-start: 10px;
 			}
 			@media (max-width: 1200px) {
 				.section-info.pathology {
 					flex-direction: column;
 				}
 				.section-info.pathology .text-container {
-					margin-right: 0;
+					margin-inline-end: 0;
 				}
 			}
 		</style>
@@ -1731,7 +1739,10 @@ background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
 
 
 			<!-- Slider principal -->
-			<div class="swiper-container">
+			<?php // Swiper reads the direction from THIS element's own dir attribute,
+			      // not from <html dir>. Without it the slides lay out LTR inside an
+			      // RTL page and the wrapper translates off-canvas to the left. ?>
+			<div class="swiper-container" dir="<?php echo aa_dir(); ?>">
 				<div class="swiper-wrapper">
 					<!-- Slides -->
 					<div class="swiper-slide">

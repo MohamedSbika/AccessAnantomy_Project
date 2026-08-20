@@ -1128,6 +1128,9 @@ fclose($myfile);                             */
         if ($lang == 'KO') {
             $this->session->set_userdata('site_lang_lib', '한국어');
         }
+        if ($lang == 'AR') {
+            $this->session->set_userdata('site_lang_lib', 'العربية');
+        }
 
         //header(base_url());
         redirect(base_url() . $this->lang->line('siteLang') . 'login');
@@ -1136,7 +1139,7 @@ fclose($myfile);                             */
     {
         // Detect language from URL prefix (FR/, EN/, ES/, DE/, RU/, TR/, PT/)
         $uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
-        if (preg_match('#/(FR|EN|ES|DE|RU|TR|PT|IT|PL|JA|KO)/#', $uri, $matches)) {
+        if (preg_match('#/(FR|EN|ES|DE|RU|TR|PT|IT|PL|JA|KO|AR)/#', $uri, $matches)) {
             $this->session->set_userdata('site_lang', $matches[1]);
         }
 
@@ -1189,6 +1192,10 @@ fclose($myfile);                             */
         if ($lang == 'KO') {
             $this->session->set_userdata('site_lang_lib', '한국어');
             $lang = 'KO';
+        }
+        if ($lang == 'AR') {
+            $this->session->set_userdata('site_lang_lib', 'العربية');
+            $lang = 'AR';
         }
         $this->session->set_userdata('site_lang', $lang);
         $this->lang->load('content', $lang == '' ? 'FR' : $lang);
@@ -1330,6 +1337,8 @@ fclose($myfile);                             */
                 redirect('JA/category/' . $json[36]['url']);
             } elseif ($lang == "KO") {
                 redirect('KO/category/' . $json[40]['url']);
+            } elseif ($lang == "AR") {
+                redirect('AR/category/' . $json[44]['url']);
             } else {
                 redirect('FR/category/' . $json[0]['url']);
             }
@@ -2570,7 +2579,14 @@ fclose($myfile);                             */
         if ($lang == '') {
             $lang = 'FR';
         }
-        $selectDesc = $lang . "_Libelle AS Libelle";
+        // _etablissement ne porte que FR/EN/ES_Libelle : sans ce repli, signUp()
+        // meurt en « Unknown column » dans toutes les langues ajoutees ensuite.
+        // tools/setup_ar_language.py cree AR_Libelle ; les autres retombent
+        // sur le libelle francais, qui est le nom propre de l'etablissement.
+        $colLibelle = $this->db->field_exists($lang . '_Libelle', '_etablissement')
+            ? $lang . '_Libelle'
+            : 'FR_Libelle';
+        $selectDesc = $colLibelle . " AS Libelle";
         $this->db->select('* ,' . $selectDesc);
         $this->db->from('_etablissement');
         $this->db->order_by("Libelle", "Asc");
@@ -2885,7 +2901,9 @@ fclose($myfile);                             */
 
         $titleKO = isset($_POST["KO_title"]) ? $_POST["KO_title"] : '';
 
-        $data = ['FR_title' => $titleFR, 'EN_title' => $titleEN, 'RU_title' => $titleRU, 'TR_title' => $titleTR, 'PT_title' => $titlePT, 'IT_title' => $titleIT, 'DE_title' => $titleDE, 'PL_title' => $titlePL, 'JA_title' => $titleJA, 'KO_title' => $titleKO];
+        $titleAR = isset($_POST["AR_title"]) ? $_POST["AR_title"] : '';
+
+        $data = ['FR_title' => $titleFR, 'EN_title' => $titleEN, 'RU_title' => $titleRU, 'TR_title' => $titleTR, 'PT_title' => $titlePT, 'IT_title' => $titleIT, 'DE_title' => $titleDE, 'PL_title' => $titlePL, 'JA_title' => $titleJA, 'KO_title' => $titleKO, 'AR_title' => $titleAR];
         $this->insert_dd("actualites", $data);
         //increment nbrTest
 
@@ -2924,7 +2942,9 @@ fclose($myfile);                             */
 
         $titleKO = isset($_POST["KO_title"]) ? $_POST["KO_title"] : '';
 
-        $data = ['FR_title' => $titleFR, 'EN_title' => $titleEN, 'RU_title' => $titleRU, 'TR_title' => $titleTR, 'PT_title' => $titlePT, 'IT_title' => $titleIT, 'DE_title' => $titleDE, 'PL_title' => $titlePL, 'JA_title' => $titleJA, 'KO_title' => $titleKO];
+        $titleAR = isset($_POST["AR_title"]) ? $_POST["AR_title"] : '';
+
+        $data = ['FR_title' => $titleFR, 'EN_title' => $titleEN, 'RU_title' => $titleRU, 'TR_title' => $titleTR, 'PT_title' => $titlePT, 'IT_title' => $titleIT, 'DE_title' => $titleDE, 'PL_title' => $titlePL, 'JA_title' => $titleJA, 'KO_title' => $titleKO, 'AR_title' => $titleAR];
 
         $this->db->where("id = '" . $id . "'");
         $this->db->update('actualites', $data);
@@ -2979,6 +2999,7 @@ fclose($myfile);                             */
                 || stripos($cat['Libelle'], 'Patoloji') !== false
                 || stripos($cat['Libelle'], '病理学') !== false
                 || stripos($cat['Libelle'], '병리학') !== false
+                || stripos($cat['Libelle'], 'علم الأمراض') !== false
             ));
     }
 

@@ -522,7 +522,7 @@
 
 			<?php
 			if (!isset($listFig) || empty($listFig)) : ?>
-				<p class="text-center text-muted" style="padding: 10px; font-size: 0.9rem;">Aucune figure disponible pour ce cours.</p>
+				<p class="text-center text-muted" style="padding: 10px; font-size: 0.9rem;"><?php echo $this->lang->line('no_figure_course'); ?></p>
 			<?php else :
 			$counter = -1;
 			$firstFig = $listFig[0];
@@ -559,7 +559,7 @@ if (isset($OneBook) && !empty($OneBook) && is_array($OneBook) && isset($OneBook[
     $idTheme = isset($OneBook[0]["IDTheme"]) ? (int)$OneBook[0]["IDTheme"] : 0;
     
     // Atlas themes: FR=16, EN=27, ES=34, RU=42, TR=46, PT=50, IT=54, DE=58, PL=62, JA=66, KO=70 (verify after running setup_ko_database.sql)
-    if (in_array($idLivre, [70, 71]) || in_array($idTheme, [16, 27, 34, 42, 46, 50, 54, 58, 62, 66, 70])) {
+    if (in_array($idLivre, [70, 71]) || in_array($idTheme, [16, 27, 34, 42, 46, 50, 54, 58, 62, 66, 70, 74])) {
         $showScroll = true;
     } else {
         $showScroll = false;
@@ -1113,10 +1113,10 @@ if (isset($OneBook) && !empty($OneBook) && is_array($OneBook) && isset($OneBook[
 
             left.innerHTML = (meta.left_panel && meta.left_panel.length)
                 ? meta.left_panel.map(renderLegendBlock).join('')
-                : '<div class="empty-hint">Aucune légende à gauche</div>';
+                : '<div class="empty-hint">' + <?php echo json_encode($this->lang->line('no_legend_left'), JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?> + '</div>';
             right.innerHTML = (meta.right_panel && meta.right_panel.length)
                 ? meta.right_panel.map(renderLegendBlock).join('')
-                : '<div class="empty-hint">Aucune légende à droite</div>';
+                : '<div class="empty-hint">' + <?php echo json_encode($this->lang->line('no_legend_right'), JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?> + '</div>';
 
             document.querySelectorAll('.fig-legend-panel .legend-item').forEach(function (el) {
                 el.addEventListener('click', function () {

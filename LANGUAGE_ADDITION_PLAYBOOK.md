@@ -21,7 +21,10 @@ Each new language gets a 4-number block of category IDs and a unique URL slug pe
 | IT   | 3000–3003          | 24 | 54 |
 | DE   | 3100–3103          | 28 | 58 |
 | PL   | 3200–3203          | 32 | 62 |
-| **NEXT** | **3300–3303** | **36** | **66** |
+| JA   | 3300–3303          | 36 | 66 |
+| KO   | 3400–3403          | 40 | 70 |
+| AR   | 3500–3503          | 44 | 74 |
+| **NEXT** | **3600–3603** | **48** | **78** |
 
 **Pattern:** Each new language adds 4 categories (consecutive IDs), 4 themes (one per category — atlas theme ID = `prev_atlas + 4`), 35 livres, ~643 chapters. The first urls.json index = `prev_first + 4`.
 
@@ -232,7 +235,45 @@ done
 
 ---
 
-## Phase D1 — `setup_{lang}_database.sql`
+## Phase D (2026-08 onwards) — `tools/setup_ar_language.py`
+
+> The `setup_*_database.sql` / `update_*_translations.sql` files described below
+> are **not in the repo** — `.gitignore` excludes `*.sql`. Arabic therefore ships
+> its database step as an idempotent Python migration instead, which is the
+> pattern to follow for the next language.
+
+```bash
+python3 tools/setup_ar_language.py --dry-run   # inspect
+python3 tools/setup_ar_language.py             # apply (reads database.php)
+python3 tools/setup_ar_language.py --host prod.example --user root -p
+```
+
+It is safe to re-run — every step checks the current state first, so it doubles
+as the repair path for a partial install. Run it once on first start-up of the
+application after pulling a new language.
+
+Two schema changes it makes are easy to miss and both cause hard failures:
+
+| Column | Why |
+|---|---|
+| `_category.AR_Description` | `Home.php` builds the column name dynamically (`$lang . "_Description"`). Without it every Arabic category page dies with `Unknown column 'AR_Description'`. |
+| `actualites.AR_title` | `add_Actualite()` / `update_Actualite()` write it; without the column the news titles silently never save. |
+
+**Charset trap:** `_category` is a latin1 table. `Libelle`, `FR/EN/ES_Description`
+are explicitly `utf8`, but `TR/PT/IT/DE/PL/JA/KO_Description` were created with no
+charset and so inherited **latin1** — which is why non-Latin descriptions are
+mangled for those languages. `AR_Description` is created explicitly `utf8`.
+
+**Theme IDs are auto-increment, not `prev + 4`.** The reservation table's "Atlas
+theme ID" column is a *prediction*; the script prints the IDs actually assigned
+and warns if the Atlas theme differs from the value hardcoded in
+`application/views/v1_bloc_figures.php`. At the time Arabic was added
+`_theme.AUTO_INCREMENT` was 73, so AR took 73–76 and Atlas landed on 74 as
+predicted.
+
+---
+
+## Phase D1 (historical) — `setup_{lang}_database.sql`
 
 Generate from the most recent template (e.g. PL) using PHP:
 
@@ -370,6 +411,44 @@ The admin language switcher in `application/views/header_steppes.php` was refact
 To add a language, append one entry to the array (see C4.2). The `foreach` loop auto-renders the menu items.
 
 **Difference vs client (`v1_header_langauge.php`):** the admin dropdown does **not** include the "Autre langue" / globe icon for triggering the Google Translate fallback widget, since admins work only with platform-supported languages.
+
+---
+
+## RTL languages (added 2026-08 with Arabic)
+
+Everything above assumes a left-to-right language. Arabic (AR) was the first RTL
+addition; the direction handling it introduced is generic, so the next RTL
+language (Hebrew, Farsi, Urdu…) only needs step 1.
+
+1. **Declare it RTL** — add the code to `$rtl` in `aa_is_rtl()`
+   (`application/helpers/aa_rtl_helper.php`). That is the whole switch.
+2. `aa_html_attrs()` then emits `lang="ar" dir="rtl"` on `<html>`, and
+   `aa_rtl_assets()` pulls in `assets/css/rtl.css` + `assets/js/rtl.js`.
+   Both are already wired into every full-page view; LTR languages get an empty
+   string, so their markup is unchanged.
+3. **Do NOT mechanically flip the CSS.** This was tried and reverted. The
+   layout is flexbox-based, and flexbox mirrors *automatically* under
+   `dir="rtl"`; a physical-property flip on top double-flips it (it collapsed
+   the hero to one column and inset the whole page). Add targeted rules to the
+   hand-written `rtl.css` instead.
+4. **Components that read direction themselves** need the attribute on their own
+   element, not on `<html>`. Swiper is the known case: `v1_page_home.php` sets
+   `dir="<?= aa_dir() ?>"` on `.swiper-container`. Without it the slides lay out
+   LTR, the wrapper translates off-canvas, and the page opens on empty space.
+
+**What is deliberately never mirrored**, because the geometry is clinical data,
+not layout: figure images, `canvas`/`svg`, calque layers and zoom containers.
+`rtl.css` pins `transform: none !important` on them and `rtl.js` skips anything
+inside them or marked `data-no-rtl`. Inline `left:`/`right:` are never flipped
+for the same reason — figure legends are positioned in absolute pixels against
+the image.
+
+**Fonts:** the Latin brand faces (Inter / Manrope / Unbounded) have no Arabic
+coverage. `rtl.css` puts Noto Naskh/Kufi Arabic ahead of them. They are named as
+system/webfont families only — if they are not installed on the client the
+browser falls back to Tahoma/Segoe UI, which is acceptable but not the brand
+look. Self-hosting Noto under `assets/fonts/` is the follow-up if you want it
+pixel-consistent.
 
 ---
 

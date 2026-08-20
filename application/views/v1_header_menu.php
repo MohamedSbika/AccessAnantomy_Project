@@ -594,16 +594,16 @@
 									   style="padding: .5rem 0.2rem;">
 										<?php if ($this->session->userdata('typePlatform') == true) { ?>
 											<i class="fa fa-tools"></i>
-											<span class="text-dark" style="margin-left: 10px">Mode admin</span>
+											<span class="text-dark" style="margin-left: 10px"><?php echo $this->lang->line('modeAdmin'); ?></span>
 										<?php } else { ?>
 											<i class="fa fa-book-open"></i>
-											<span class="text-dark" style="margin-left: 10px">Mode lecture</span>
+											<span class="text-dark" style="margin-left: 10px"><?php echo $this->lang->line('ModeLecture'); ?></span>
 										<?php } ?>
 									</a>
 								<?php } ?>
 								<a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>logout" class="dropdown-item" style="padding: .5rem 0.2rem;">
 									<i class="fa fa-sign-out-alt"></i>
-									<span class="text-dark">Déconnexion</span>
+									<span class="text-dark"><?php echo $this->lang->line('logout'); ?></span>
 								</a>
 							</div>
 						</div>
@@ -620,7 +620,7 @@
 						   onclick="redirectLogLivr(0)" data-target="#centeredModalPrimary">
                             <span class="text-dark">
 							    <img src="<?php echo HTTP_IMAGES; ?>photos/user-icon.png" class="mr-1" alt="Avatar" width="25" data-toggle="dropdown" style=" margin-top:auto; margin-bottom:auto">
-                                Connexion
+                                <?php echo $this->lang->line('sign_in'); ?>
 							</span>
 						</a>
 
@@ -712,16 +712,16 @@
                                        style="padding: .5rem 0.2rem;">
                                         <?php if ($this->session->userdata('typePlatform') == true) { ?>
                                             <i class="fa fa-tools"></i>
-                                            <span class="text-dark" style="margin-left: 10px">Mode admin</span>
+                                            <span class="text-dark" style="margin-left: 10px"><?php echo $this->lang->line('modeAdmin'); ?></span>
                                         <?php } else { ?>
                                             <i class="fa fa-book-open"></i>
-                                            <span class="text-dark" style="margin-left: 10px">Mode lecture</span>
+                                            <span class="text-dark" style="margin-left: 10px"><?php echo $this->lang->line('ModeLecture'); ?></span>
                                         <?php } ?>
                                     </a>
                                 <?php } ?>
                                 <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>logout" class="dropdown-item" style="padding: .5rem 0.2rem;">
                                     <i class="fa fa-sign-out-alt"></i>
-                                    <span class="text-dark">Déconnexion</span>
+                                    <span class="text-dark"><?php echo $this->lang->line('logout'); ?></span>
                                 </a>
                             </div>
                         </div>
@@ -738,7 +738,7 @@
                            onclick="redirectLogLivr(0)" data-target="#centeredModalPrimary">
                             <span class="text-dark">
 							    <img src="<?php echo HTTP_IMAGES; ?>photos/user-icon.png" class="mr-1" alt="Avatar" width="25" data-toggle="dropdown" style=" margin-top:auto; margin-bottom:auto">
-                                Connexion
+                                <?php echo $this->lang->line('sign_in'); ?>
 							</span>
                         </a>
 

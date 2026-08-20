@@ -97,8 +97,7 @@ include('header.php');
                                 <!-- LEGAL TERMS -->
                                 <label class="form-check" style="background-color: #f1eeff;">
                                     <span class="form-check-label">
-                                        En fournissant des informations personnelles et en terminant cette procédure,
-                                        vous acceptez les Conditions d'utilisation et la politique de Protection des données personnelles de Access Anatomy.
+                                        <?php echo $this->lang->line('legal_consent'); ?>
                                     </span>
                                     <input class="form-check-input" type="checkbox" name="inputLegal" id="inputLegal">
                                 </label>
@@ -106,7 +105,7 @@ include('header.php');
                                 <?php echo $widget;?>
                                 <?php echo $script;?>
 
-                                <button type="submit" class="btn btn-primary mt-3">Valider</button>
+                                <button type="submit" class="btn btn-primary mt-3"><?php echo $this->lang->line('submit_form'); ?></button>
                             </form>
                         </div>
                     </div>
@@ -126,6 +125,18 @@ include('header.php');
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
 
 <script>
+var AA_SIGNUP_I18N = <?php echo json_encode(array(
+    'creation'         => $this->lang->line('cmpt_creation'),
+    'sending'          => $this->lang->line('cmpt_sending'),
+    'validation'       => $this->lang->line('cmpt_validation'),
+    'check_email'      => $this->lang->line('cmpt_check_email'),
+    'error_title'      => $this->lang->line('error_title'),
+    'server_error'     => $this->lang->line('server_error'),
+    'try_later'        => $this->lang->line('try_later'),
+    'email_mismatch'   => $this->lang->line('email_mismatch'),
+    'password_mismatch' => $this->lang->line('password_mismatch'),
+), JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
+
 $(document).ready(function(){
 
     $("body").on("contextmenu", function(e){ return false; });
@@ -147,15 +158,15 @@ $(document).ready(function(){
             inputName: "<?php echo $this->lang->line('saisi_oblg'); ?>",
             inputPren: "<?php echo $this->lang->line('saisi_oblg'); ?>",
             inputEmail: "<?php echo $this->lang->line('saisi_oblg'); ?>",
-            inputEmailCF: "Les emails doivent correspondre",
+            inputEmailCF: AA_SIGNUP_I18N.email_mismatch,
             inputPassword: "<?php echo $this->lang->line('saisi_oblg'); ?>",
-            inputPasswordCF: "Les mots de passe doivent correspondre",
+            inputPasswordCF: AA_SIGNUP_I18N.password_mismatch,
         },
         submitHandler: function() {
 
             Swal.fire({
-                title: 'Création de compte',
-                text: 'Envoi de la demande en cours...',
+                title: AA_SIGNUP_I18N.creation,
+                text: AA_SIGNUP_I18N.sending,
                 didOpen: () => { Swal.showLoading(); }
             });
 
@@ -170,8 +181,8 @@ $(document).ready(function(){
                     if (ar[0]["id"] == 1) {
                         Swal.fire({
                             icon: 'success',
-                            title: 'Validation de compte',
-                            text: 'Veuillez vérifier votre email pour confirmer votre inscription.',
+                            title: AA_SIGNUP_I18N.validation,
+                            text: AA_SIGNUP_I18N.check_email,
                             confirmButtonText: 'OK'
                         }).then(() => {
                             window.location.href = '<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>login';
@@ -179,7 +190,7 @@ $(document).ready(function(){
                     } else {
                         Swal.fire({
                             icon: 'error',
-                            title: 'Erreur',
+                            title: AA_SIGNUP_I18N.error_title,
                             text: ar[0]["desc"],
                         });
                     }
@@ -187,8 +198,8 @@ $(document).ready(function(){
                 error: function() {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Erreur serveur',
-                        text: 'Veuillez réessayer plus tard.'
+                        title: AA_SIGNUP_I18N.server_error,
+                        text: AA_SIGNUP_I18N.try_later
                     });
                 }
             });

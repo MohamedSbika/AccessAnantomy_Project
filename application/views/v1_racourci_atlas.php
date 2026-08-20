@@ -527,7 +527,16 @@
 
         const sidebarRect = sidebar.getBoundingClientRect();
         tooltip.style.top = `${sidebarRect.top}px`;
-        tooltip.style.left = `${sidebarRect.right + 10}px`;
+        /* Le panneau se colle au bord interieur de la colonne : a sa droite
+           en LTR, a sa gauche en RTL -- ou la colonne est ancree a droite et
+           ou un `left` calcule le pousserait hors de l'ecran. */
+        if (document.documentElement.getAttribute('dir') === 'rtl') {
+            tooltip.style.left  = 'auto';
+            tooltip.style.right = `${window.innerWidth - sidebarRect.left + 10}px`;
+        } else {
+            tooltip.style.right = 'auto';
+            tooltip.style.left  = `${sidebarRect.right + 10}px`;
+        }
         tooltip.style.minHeight ='50%'; // `${sidebarRect.height}px`;
         tooltip.style.maxHeight ='80%'; // `${sidebarRect.height}px`;
         tooltip.style.display = 'block';
@@ -574,7 +583,7 @@
     }
 
     function loadFeaturedPatho(idChapitre, container) {
-        container.innerHTML = '<div style="text-align:center; padding:10px; font-style:italic; color:#1d3557;">Chargement du menu pathologie...</div>';
+        container.innerHTML = '<div style="text-align:center; padding:10px; font-style:italic; color:#1d3557;">${AA_RACC_I18N.loading_patho_menu}</div>';
         container.style.display = 'block';
 
         let payload = { idChap: idChapitre };
@@ -637,14 +646,14 @@
                         html += `
                             <li class="sous-chapitre-item" style="font-weight:bold; color:#457b9d; background-color:#e8f4f8; border-left: 3px solid #457b9d;"
                                 onclick="redirectToAnatomyResume('${idChapitre}', '${chap.NbreResumeRappel}', event)">
-                                Anatomie - synthèse structurée
+                                ${AA_RACC_I18N.anat_synthesis}
                             </li>`;
 
                         if (chap.sousChaps && chap.sousChaps.length > 0) {
                             chap.sousChaps.forEach(sc => {
                                 html += `
                                     <li style="padding: 10px 15px; border-bottom: 1px solid #f1f5f9; list-style:none;">
-                                        <span class="patho-item-title">${sc.TitreSousChapitre || 'Sans titre'}</span>
+                                        <span class="patho-item-title">${sc.TitreSousChapitre || AA_RACC_I18N.untitled}</span>
                                         <div class="patho-version-container">
                                             ${sc.FichierHTML ? `
                                                 <a href="#" class="patho-version-link essential" 
@@ -656,7 +665,7 @@
                                             ${sc.FichierHTML_Resume ? `
                                                 <a href="#" class="patho-version-link integral" 
                                                    onclick="selectSousChapitrePatho('${sc.IDSousChapitre}', '${chap.IDChapitre}', event, 'integral')">
-                                                    <span>Version intégrale</span>
+                                                    <span>${AA_RACC_I18N.full_version}</span>
                                                     <i class="fas fa-chevron-right"></i>
                                                 </a>
                                             ` : ''}
@@ -664,7 +673,7 @@
                                     </li>`;
                             });
                         } else {
-                            html += `<li style="padding: 10px 20px; font-style: italic; font-size: 12px; color: #888;">Aucune pathologie</li>`;
+                            html += `<li style="padding: 10px 20px; font-style: italic; font-size: 12px; color: #888;">${AA_RACC_I18N.no_patho}</li>`;
                         }
                         html += `</ul></li>`;
                     });
@@ -673,12 +682,12 @@
                 html += `</ul>`;
                 container.innerHTML = html;
             } else {
-                container.innerHTML = `<div style="padding:15px; color:#d62828; text-align:center; font-weight:bold;">${data.message || 'Aucune pathologie liée'}</div>`;
+                container.innerHTML = `<div style="padding:15px; color:#d62828; text-align:center; font-weight:bold;">${data.message || AA_RACC_I18N.no_linked_patho}</div>`;
             }
         })
         .catch(err => {
             console.error(err);
-            container.innerHTML = `<div style="padding:15px; color:#d62828; text-align:center;">Erreur de chargement.</div>`;
+            container.innerHTML = `<div style="padding:15px; color:#d62828; text-align:center;">${AA_RACC_I18N.loading_error}</div>`;
         });
     }
 
@@ -796,12 +805,12 @@
                     } else if (data.success && data.type === 'books') {
                          sousChapList.innerHTML = `<li class="sous-chapitre-item" onclick="window.location.href='<?php echo base_url(); ?><?php echo strtoupper($this->uri->segment(1)); ?>/livre/${data.pathoBooks[0].IDLivre}'">Voir pathologies</li>`;
                     } else {
-                        sousChapList.innerHTML = `<li class="sous-chapitre-item" style="color: #d62828;">${data.message || 'Aucune pathologie liée'}</li>`;
+                        sousChapList.innerHTML = `<li class="sous-chapitre-item" style="color: #d62828;">${data.message || AA_RACC_I18N.no_linked_patho}</li>`;
                     }
                 })
                 .catch(error => {
                     console.error('Erreur:', error);
-                    sousChapList.innerHTML = '<li class="sous-chapitre-item">Erreur de chargement</li>';
+                    sousChapList.innerHTML = '<li class="sous-chapitre-item">' + AA_RACC_I18N.loading_error + '</li>';
                 });
             }
         }
@@ -824,7 +833,7 @@
             <li class="sous-chapitre-item rappel-manuel-item" 
                 style="font-weight:bold; color:#457b9d; background-color:#e8f4f8; cursor:pointer;"
                 onclick="redirectToAnatomyResume('${finalIdAnatomy}', '${nbreResumeRappel}', event)">
-                Anatomie - synthèse structurée
+                ${AA_RACC_I18N.anat_synthesis}
             </li>
         `;
 
@@ -848,7 +857,7 @@
             sousChaps.forEach(sc => {
                 html += `
                     <li style="padding: 10px 15px; border-bottom: 1px solid #f1f5f9; list-style:none;">
-                        <span class="patho-item-title">${sc.TitreSousChapitre || 'Sans titre'}</span>
+                        <span class="patho-item-title">${sc.TitreSousChapitre || AA_RACC_I18N.untitled}</span>
                         <div class="patho-version-container">
                             ${sc.FichierHTML ? `
                                 <a href="#" class="patho-version-link essential" 
@@ -860,7 +869,7 @@
                             ${sc.FichierHTML_Resume ? `
                                 <a href="#" class="patho-version-link integral" 
                                    onclick="selectSousChapitrePatho('${sc.IDSousChapitre}', '${idChapitre}', event, 'integral')">
-                                    <span>Version intégrale</span>
+                                    <span>${AA_RACC_I18N.full_version}</span>
                                     <i class="fas fa-chevron-right"></i>
                                 </a>
                             ` : ''}
@@ -956,8 +965,8 @@
         } else {
             Swal.fire({
                 icon: 'info',
-                title: 'Bientôt disponible',
-                text: 'Le résumé de ce cours d\'anatomie sera bientôt disponible.',
+                title: AA_RACC_I18N.coming_soon,
+                text: AA_RACC_I18N.summary_coming_soon,
                 confirmButtonColor: '#1d3557'
             });
         }

@@ -1,3 +1,26 @@
+<?php
+/**
+ * Modale de connexion de l'accueil plateforme (#customModal).
+ *
+ * Tous les libellés passent par $this->lang->line() : la modale était en
+ * français en dur, ce qui la laissait non traduite dans les 11 autres langues.
+ * Les messages JS sont sérialisés en JSON pour survivre aux apostrophes
+ * (« Une erreur s'est produite ») et aux guillemets.
+ *
+ * Les règles RTL (arabe) vivent dans assets/css/rtl.css, section #customModal.
+ * Elles sont scopées par ID pour l'emporter sur ce <style> local, qui est
+ * imprimé après rtl.css puisque l'include arrive en fin de v1_page_home.php.
+ */
+$aa_js = json_encode(array(
+	'valid_email'    => $this->lang->line('login_valid_email'),
+	'enter_password' => $this->lang->line('login_enter_password'),
+	'in_progress'    => $this->lang->line('auth_prog'),
+	'success'        => $this->lang->line('login_success'),
+	'failed'         => $this->lang->line('login_failed'),
+	'error_title'    => $this->lang->line('error_title'),
+	'error_generic'  => $this->lang->line('error_generic'),
+), JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+?>
 <style>
 	.modal {
 		display: none;
@@ -91,24 +114,27 @@
 <!-- Modal -->
 <div id="customModal" class="modal" style="display: none;">
 	<div class="modal-content">
-		<span class="close" onclick="closeModal()">&times;</span>
+		<span class="close" onclick="closeModal()" role="button" tabindex="0"
+			aria-label="<?php echo $this->lang->line('fermer'); ?>">&times;</span>
 		<div class="modal-header">
-			<h2 class="modal-title" style="color: black">Authentification requise</h2>
+			<h2 class="modal-title" style="color: black"><?php echo $this->lang->line('auth_req'); ?></h2>
 		</div>
 		<div class="modal-body">
 			<form id="loginform" name="loginformA" method="post">
 				<input type="hidden" value="0" id="redirectLog">
 				<div id="user_message_error" class="alert alert-danger" style="display: none;">
-					Une erreur est survenue.
+					<?php echo $this->lang->line('user_message_error'); ?>
 				</div>
 				<div class="mb-2">
-					<label>Email</label>
-					<input type="email" name="email" id="email" placeholder="Votre email" required>
+					<label><?php echo $this->lang->line('email'); ?></label>
+					<input type="email" name="email" id="email"
+						placeholder="<?php echo $this->lang->line('in_email'); ?>" required>
 				</div>
 				<div class="mb-3">
-					<label>Mot de passe</label>
+					<label><?php echo $this->lang->line('password'); ?></label>
 					<div class="password-wrapper">
-						<input type="password" name="password" id="password" placeholder="Votre mot de passe" required>
+						<input type="password" name="password" id="password"
+							placeholder="<?php echo $this->lang->line('in_password'); ?>" required>
 						<!-- Icône SVG œil -->
 						<svg id="eyeIcon" class="toggle-password" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
 							<path
@@ -118,7 +144,7 @@
 					</div>
 				</div>
 				<div class="text-center mt-3">
-					<button type="submit" class="btn-log">Se connecter</button>
+					<button type="submit" class="btn-log"><?php echo $this->lang->line('sign_in'); ?></button>
 				</div>
 			</form>
 		</div>
@@ -129,6 +155,8 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
+	var AA_LOGIN_I18N = <?php echo $aa_js; ?>;
+
 	function openModalLogin() {
 		document.getElementById("customModal").style.display = "flex";
 	}
@@ -170,12 +198,12 @@
 
 			var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 			if (!emailPattern.test(email)) {
-				alert("Veuillez entrer un email valide.");
+				alert(AA_LOGIN_I18N.valid_email);
 				return false;
 			}
 
 			if (password.trim() === "") {
-				alert("Veuillez entrer un mot de passe.");
+				alert(AA_LOGIN_I18N.enter_password);
 				return false;
 			}
 
@@ -189,7 +217,7 @@
 				$("#user_message_error").hide();
 
 				Swal.fire({
-					title: "Connexion en cours...",
+					title: AA_LOGIN_I18N.in_progress,
 					didOpen: () => Swal.showLoading()
 				});
 
@@ -208,7 +236,7 @@
 						if (data && data.length > 0 && parseInt(data[0]["id"]) === 1) {
 							Swal.fire({
 								icon: 'success',
-								title: 'Connexion réussie !',
+								title: AA_LOGIN_I18N.success,
 								timer: 1500,
 								showConfirmButton: false
 							}).then(() => {
@@ -217,13 +245,13 @@
 						} else {
 							Swal.fire({
 								icon: 'error',
-								title: data && data[0]["desc"] ? data[0]["desc"] : "Erreur de connexion",
+								title: data && data[0]["desc"] ? data[0]["desc"] : AA_LOGIN_I18N.failed,
 								showConfirmButton: true
 							});
 						}
 					},
 					error: function () {
-						Swal.fire("Erreur", "Une erreur s'est produite. Veuillez réessayer.", "error");
+						Swal.fire(AA_LOGIN_I18N.error_title, AA_LOGIN_I18N.error_generic, "error");
 					}
 				});
 			}

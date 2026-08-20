@@ -490,7 +490,16 @@
 
         const sidebarRect = sidebar.getBoundingClientRect();
         tooltip.style.top = `${sidebarRect.top}px`;
-        tooltip.style.left = `${sidebarRect.right + 10}px`;
+        /* Le panneau se colle au bord interieur de la colonne : a sa droite
+           en LTR, a sa gauche en RTL -- ou la colonne est ancree a droite et
+           ou un `left` calcule le pousserait hors de l'ecran. */
+        if (document.documentElement.getAttribute('dir') === 'rtl') {
+            tooltip.style.left  = 'auto';
+            tooltip.style.right = `${window.innerWidth - sidebarRect.left + 10}px`;
+        } else {
+            tooltip.style.right = 'auto';
+            tooltip.style.left  = `${sidebarRect.right + 10}px`;
+        }
         tooltip.style.minHeight = '50%';
         tooltip.style.maxHeight = '80%';
         tooltip.style.display = 'block';
@@ -586,7 +595,7 @@
             })
             .catch(error => {
                 console.error('Erreur lors du chargement des sous-chapitres:', error);
-                sousChapList.innerHTML = '<li class="loading-sous-chapitres" style="color: red;">Erreur de chargement</li>';
+                sousChapList.innerHTML = '<li class="loading-sous-chapitres" style="color: red;">' + AA_RACC_I18N.loading_error + '</li>';
             });
     }
 function afficherSousChapitres(sousChapList, data) {
@@ -606,7 +615,7 @@ html += `
     </li>
 `;
 
-// Rappel Manuel -> Version Intégrale?
+// Rappel Manuel -> ${AA_RACC_I18N.full_version}?
 const lang = '<?php echo strtoupper($this->uri->segment(1)); ?>';
 const baseUrl = '<?php echo base_url(); ?>';
 
@@ -614,7 +623,7 @@ html += `
     <li class="sous-chapitre-item rappel-manuel-item" 
         style="font-weight:bold; color:#457b9d; background-color:#e8f4f8; cursor:pointer;"
         onclick="redirectToAnatomyResume('${idChapterRappel}', '${nbreResumeRappel}', event)">
-        Anatomie - synthèse structurée
+        ${AA_RACC_I18N.anat_synthesis}
     </li>
 `;
     html += `
@@ -630,18 +639,18 @@ html += `
     if (!data || data.length === 0) {
         html += `
                 <li class="loading-sous-chapitres">
-                    Aucune pathologie trouvée
+                    ${AA_RACC_I18N.no_patho_found}
                 </li>
         `;
     } else {
         data.forEach(sousChap => {
             html += `
                 <li style="padding: 10px; border-bottom: 1px solid #f1f5f9; list-style:none;">
-                    <span class="patho-item-title">${sousChap.TitreSousChapitre || 'Sans titre'}</span>
+                    <span class="patho-item-title">${sousChap.TitreSousChapitre || AA_RACC_I18N.untitled}</span>
                     <div class="patho-version-container">
                         <a href="#" class="patho-version-link essential" 
                            onclick="selectSousChapitre('${sousChap.IDSousChapitre}', '${sousChap.IDChapitre}', '${idChapterRappel}', this, event, 'essential', ${sousChap.FichierHTML ? 'true' : 'false'})">
-                            <span>Version intégrale</span>
+                            <span>${AA_RACC_I18N.full_version}</span>
                             <i class="fas fa-chevron-right"></i>
                         </a>
                         <a href="#" class="patho-version-link integral" 
@@ -772,8 +781,8 @@ function selectSousChapitre(idSousChapitre, idChapitre, idChapRappel, element, e
         console.error('❌ Erreur lors de la récupération du sous-chapitre:', err);
         Swal.fire({
             icon: 'error',
-            title: 'Erreur de chargement',
-            text: 'Impossible de charger le contenu du sous-chapitre.'
+            title: AA_RACC_I18N.loading_error,
+            text: AA_RACC_I18N.subchapter_load_failed
         });
     });
 }
@@ -798,14 +807,14 @@ function selectSousChapitrePatho(idSousChap, idChap, event) {
         } else {
             Swal.fire({
                 icon: 'warning',
-                title: 'Aucun contenu disponible',
-                text: 'Ce sous-chapitre n’a pas encore de fichier attaché.'
+                title: AA_RACC_I18N.no_content_available,
+                text: AA_RACC_I18N.no_attached_file
             });
         }
     })
     .catch(err => {
         console.error('Erreur:', err);
-        Swal.fire({ icon: 'error', title: 'Erreur', text: 'Impossible de charger le contenu.' });
+        Swal.fire({ icon: 'error', title: AA_RACC_I18N.error_title, text: AA_RACC_I18N.content_load_failed });
     });
 }
 
@@ -860,7 +869,7 @@ function redirectToAnatomyResume(idChapitre, nbreResume, event) {
         coursContainer.innerHTML = `
             <div style="text-align:center; padding:50px;">
                 <i class="fas fa-spinner fa-spin" style="font-size:40px; color:#1d3557;"></i>
-                <p style="margin-top:15px;">Chargement de la synthèse structurée...</p>
+                <p style="margin-top:15px;">${AA_RACC_I18N.loading_synthesis}</p>
             </div>
         `;
 
@@ -879,8 +888,8 @@ function redirectToAnatomyResume(idChapitre, nbreResume, event) {
                 if (data.hasResume) {
                     Swal.fire({
                         icon: 'success',
-                        title: 'Synthèse chargée',
-                        text: 'La synthèse structurée a été chargée avec succès.',
+                        title: AA_RACC_I18N.synthesis_loaded,
+                        text: AA_RACC_I18N.synthesis_loaded_msg,
                         timer: 2000,
                         showConfirmButton: false
                     });
@@ -889,8 +898,8 @@ function redirectToAnatomyResume(idChapitre, nbreResume, event) {
                 coursContainer.innerHTML = originalContent;
                 Swal.fire({
                     icon: 'error',
-                    title: 'Erreur',
-                    text: data.message || 'Impossible de charger le résumé.'
+                    title: AA_RACC_I18N.error_title,
+                    text: data.message || AA_RACC_I18N.summary_load_failed
                 });
             }
         })
@@ -899,8 +908,8 @@ function redirectToAnatomyResume(idChapitre, nbreResume, event) {
             coursContainer.innerHTML = originalContent;
             Swal.fire({
                 icon: 'error',
-                title: 'Erreur',
-                text: 'Impossible de charger le résumé.'
+                title: AA_RACC_I18N.error_title,
+                text: AA_RACC_I18N.summary_load_failed
             });
         });
         
@@ -923,7 +932,7 @@ function chargerRappelDefaut(idChapterRappel, nbreResume = 0, event) {
         Swal.fire({
             icon: 'warning',
             title: 'Aucun rappel disponible',
-            text: 'Ce chapitre n\'a pas de cours de rappel par défaut.'
+            text: AA_RACC_I18N.no_default_recall
         });
         return;
     }
@@ -945,7 +954,7 @@ function chargerRappelDefaut(idChapterRappel, nbreResume = 0, event) {
     coursContainer.innerHTML = `
         <div style="text-align:center; padding:50px;">
             <i class="fas fa-spinner fa-spin" style="font-size:40px; color:#1d3557;"></i>
-            <p style="margin-top:15px;">Chargement du rappel anatomique...</p>
+            <p style="margin-top:15px;">${AA_RACC_I18N.loading_anat_recall}</p>
         </div>
     `;
 
@@ -968,8 +977,8 @@ function chargerRappelDefaut(idChapterRappel, nbreResume = 0, event) {
             coursContainer.innerHTML = originalContent;
             Swal.fire({
                 icon: 'error',
-                title: 'Erreur',
-                text: 'Impossible de charger le rappel anatomique.'
+                title: AA_RACC_I18N.error_title,
+                text: AA_RACC_I18N.anat_recall_failed
             });
         }
     })
@@ -978,8 +987,8 @@ function chargerRappelDefaut(idChapterRappel, nbreResume = 0, event) {
         coursContainer.innerHTML = originalContent;
         Swal.fire({
             icon: 'error',
-            title: 'Erreur',
-            text: 'Impossible de charger le rappel anatomique.'
+            title: AA_RACC_I18N.error_title,
+            text: AA_RACC_I18N.anat_recall_failed
         });
     });
 }
@@ -992,7 +1001,7 @@ function chargerRappelManuel(idChapter, event) {
         Swal.fire({
             icon: 'warning',
             title: 'Aucun rappel manuel',
-            text: 'Ce chapitre n\'a pas de rappel manuel pour le moment.'
+            text: AA_RACC_I18N.no_manual_recall
         });
         return;
     }
@@ -1026,8 +1035,8 @@ function chargerRappelManuel(idChapter, event) {
             console.error(err);
             Swal.fire({
                 icon: 'error',
-                title: 'Erreur',
-                text: 'Impossible de vérifier le rappel manuel.'
+                title: AA_RACC_I18N.error_title,
+                text: AA_RACC_I18N.manual_recall_check_failed
             });
         });
         return;
@@ -1039,7 +1048,7 @@ function chargerRappelManuel(idChapter, event) {
     coursContainer.innerHTML = `
         <div style="text-align:center; padding:50px;">
             <i class="fas fa-spinner fa-spin" style="font-size:40px; color:#1d3557;"></i>
-            <p style="margin-top:15px;">Chargement du rappel anatomique...</p>
+            <p style="margin-top:15px;">${AA_RACC_I18N.loading_anat_recall}</p>
         </div>
     `;
 
@@ -1081,8 +1090,8 @@ function chargerRappelManuel(idChapter, event) {
         coursContainer.innerHTML = originalContent;
         Swal.fire({
             icon: 'error',
-            title: 'Erreur',
-            text: 'Impossible de charger le rappel manuel.'
+            title: AA_RACC_I18N.error_title,
+            text: AA_RACC_I18N.manual_recall_failed
         });
     });
 }
@@ -1251,8 +1260,8 @@ function chargerRappelEnModal(fichier, baseUrl) {
             modal.remove();
             Swal.fire({
                 icon: 'error',
-                title: 'Erreur',
-                text: 'Impossible de charger le rappel.'
+                title: AA_RACC_I18N.error_title,
+                text: AA_RACC_I18N.recall_load_failed
             });
         });
 }

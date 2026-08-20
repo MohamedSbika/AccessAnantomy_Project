@@ -58,7 +58,7 @@ checkbox{
                                 <thead>
                                     <tr>                                          
                                         <!-- <th>ID</th> -->
-                                        <th>username</th>
+                                        <th><?php echo $this->lang->line('tbl_username'); ?></th>
                                         <!-- <th>password</th>
                                         <th>firstname</th>
                                         <th>lastname</th>

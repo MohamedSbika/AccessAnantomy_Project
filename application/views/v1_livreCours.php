@@ -3,7 +3,7 @@ if (strlen($this->session->userdata('passTok')) == 200) {
 ?>
 
 <!DOCTYPE html>
-<html lang="fr">
+<html <?php echo aa_html_attrs(); ?>>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -247,6 +247,7 @@ if (strlen($this->session->userdata('passTok')) == 200) {
     </style>
 
     <?php include('components/aa_cours_responsive.php'); ?>
+<?php echo aa_rtl_assets(); ?>
 </head>
 
 <header style="z-index: 1000; width: 100%; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); background: linear-gradient(135deg, #120E47 30%, #182540 100%);">
@@ -266,12 +267,12 @@ if (strlen($this->session->userdata('passTok')) == 200) {
                             <button class="badge bg-info text-white border-0"
                                     onclick="openAddImageRappelModal('<?= $OneBook[0]['IDChapitre']; ?>')"
                                     style="cursor:pointer; background-color: #457b9d !important; font-size: 10px; height: 28px; padding: 0 10px; border-radius: 5px;">
-                                <i class="fa fa-image"></i> Gérer Images Rappel
+                                <i class="fa fa-image"></i> <?php echo $this->lang->line('btn_manage_recall_images'); ?>
                             </button>
                             <button class="badge bg-info text-white border-0"
                                     onclick="openFigureSvgModal()"
                                     style="cursor:pointer; background-color: #1d3557 !important; font-size: 10px; height: 28px; padding: 0 10px; border-radius: 5px;">
-                                <i class="fa fa-vector-square"></i> Gérer Figures SVG
+                                <i class="fa fa-vector-square"></i> <?php echo $this->lang->line('btn_manage_svg_figures'); ?>
                             </button>
                         <?php endif; ?>
                         <div style="display: flex; gap: 15px; padding-top: 5px;">
@@ -366,12 +367,12 @@ if (strlen($this->session->userdata('passTok')) == 200) {
         <div class="modal-dialog modal-dialog-centered" style="max-width:800px; width: 90%; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
             <div class="modal-content" style="border: none;">
                 <div class="modal-header" style="background: #1d3557; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;">
-                    <h2 class="modal-title" style="margin: 0; font-size: 1.25rem;">Gérer les images de rappel</h2>
+                    <h2 class="modal-title" style="margin: 0; font-size: 1.25rem;"><?php echo $this->lang->line('modal_recall_images'); ?></h2>
                     <button type="button" onclick="$('#addImageRappelModal').hide()" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">&times;</button>
                 </div>
                 <div class="modal-body" style="padding: 20px; color: #333;">
                     <div id="listeImagesRappel" style="margin-bottom: 20px;">
-                        <h4 style="margin-bottom: 10px; font-size: 1rem; color: #1d3557; border-bottom: 2px solid #f1f1f1; padding-bottom: 5px;">Images existantes</h4>
+                        <h4 style="margin-bottom: 10px; font-size: 1rem; color: #1d3557; border-bottom: 2px solid #f1f1f1; padding-bottom: 5px;"><?php echo $this->lang->line('existing_images'); ?></h4>
                         <div id="imagesContainer" style="display: flex; flex-wrap: wrap; gap: 10px; min-height: 50px; padding: 10px; background: #f8f9fa; border-radius: 8px;">
                             <!-- JS Content -->
                         </div>
@@ -379,15 +380,15 @@ if (strlen($this->session->userdata('passTok')) == 200) {
                     <form id="formRappelImage" enctype="multipart/form-data">
                         <input type="hidden" id="rappelChapitreImage" name="rappelChapitre">
                         <div style="margin-bottom: 15px;">
-                            <label style="display: block; margin-bottom: 5px; font-weight: 500;">Ajouter une image (JPG, PNG, WEBP)</label>
+                            <label style="display: block; margin-bottom: 5px; font-weight: 500;"><?php echo $this->lang->line('add_image_formats'); ?></label>
                             <input type="file" id="rappelImage" name="rappelImage" accept="image/*" onchange="previewImageRappel(event)" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
                         </div>
                         <div style="text-align: center; margin-bottom: 15px;">
                             <img id="previewRappelImage" src="" alt="" style="max-width:100%; max-height:200px; display:none; border-radius:8px; border: 1px solid #ddd; padding: 5px;">
                         </div>
                         <div style="text-align: center;">
-                            <button type="button" onclick="saveRappelImage()" style="background: #1d3557; color: white; border: none; padding: 10px 25px; border-radius: 6px; font-weight: 600; cursor: pointer;">Enregistrer</button>
-                            <button type="button" onclick="$('#addImageRappelModal').hide()" style="background: #ccc; border: none; padding: 10px 25px; border-radius: 6px; margin-left: 10px; cursor: pointer;">Fermer</button>
+                            <button type="button" onclick="saveRappelImage()" style="background: #1d3557; color: white; border: none; padding: 10px 25px; border-radius: 6px; font-weight: 600; cursor: pointer;"><?php echo $this->lang->line('save'); ?></button>
+                            <button type="button" onclick="$('#addImageRappelModal').hide()" style="background: #ccc; border: none; padding: 10px 25px; border-radius: 6px; margin-left: 10px; cursor: pointer;"><?php echo $this->lang->line('fermer'); ?></button>
                         </div>
                     </form>
                 </div>
@@ -396,6 +397,30 @@ if (strlen($this->session->userdata('passTok')) == 200) {
     </div>
 
     <script>
+    /* Libelles des deux modales d'administration (images de rappel, figures
+       interactives) : ils vivent dans des Swal.fire() et des confirm(), hors de
+       portee d'un echo PHP au fil du texte, et plusieurs contiennent une
+       apostrophe -- json_encode les echappe correctement. */
+    var AA_COURS_I18N = <?php echo json_encode(array(
+        'image_added'             => $this->lang->line('image_added'),
+        'image_delete_confirm'    => $this->lang->line('image_delete_confirm'),
+        'files_missing'           => $this->lang->line('files_missing'),
+        'fig_select_files'        => $this->lang->line('fig_select_files'),
+        'unexpected_response'     => $this->lang->line('unexpected_response'),
+        'fig_html_saved'          => $this->lang->line('fig_html_saved'),
+        'fig_svg_saved'           => $this->lang->line('fig_svg_saved'),
+        'reload_to_view'          => $this->lang->line('reload_to_view'),
+        'refused'                 => $this->lang->line('refused'),
+        'error_title'             => $this->lang->line('error_title'),
+        'upload_failed'           => $this->lang->line('upload_failed'),
+        'fields_missing'          => $this->lang->line('fields_missing'),
+        'fig_title_file_required' => $this->lang->line('fig_title_file_required'),
+        'fig_created'             => $this->lang->line('fig_created'),
+        'reload_to_display'       => $this->lang->line('reload_to_display'),
+        'fig_delete_confirm'      => $this->lang->line('fig_delete_confirm'),
+        'fig_status_png_only'     => $this->lang->line('fig_status_png_only'),
+    ), JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
+
     function openAddImageRappelModal(idChapitre) {
         document.getElementById('rappelChapitreImage').value = idChapitre;
         document.getElementById('rappelImage').value = '';
@@ -453,7 +478,7 @@ if (strlen($this->session->userdata('passTok')) == 200) {
             success: function(response) {
                 const result = JSON.parse(response);
                 if (result[0].id == '1') {
-                    Swal.fire({ icon: 'success', title: 'Image ajoutée', timer: 1000, showConfirmButton: false });
+                    Swal.fire({ icon: 'success', title: AA_COURS_I18N.image_added, timer: 1000, showConfirmButton: false });
                     loadRappelImages(idChapitre);
                     document.getElementById('formRappelImage').reset();
                     document.getElementById('previewRappelImage').style.display = 'none';
@@ -463,7 +488,7 @@ if (strlen($this->session->userdata('passTok')) == 200) {
     }
 
     function deleteRappelImageItem(idImage, idChapitre) {
-        if (!confirm('Supprimer cette image ?')) return;
+        if (!confirm(AA_COURS_I18N.image_delete_confirm)) return;
         fetch('<?php echo base_url(); ?>home/deleteRappelImage', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -483,14 +508,12 @@ if (strlen($this->session->userdata('passTok')) == 200) {
     <div id="figureSvgModal" tabindex="-1" aria-hidden="true" style="z-index: 10000; position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;">
         <div style="background: #fff; border-radius: 12px; width: min(1050px, 96vw); max-height: 90vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
             <div style="background: #1d3557; color: #fff; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; flex: 0 0 auto;">
-                <h2 style="margin: 0; font-size: 1.15rem;">Gérer les figures interactives (HTML ou SVG+JSON)</h2>
+                <h2 style="margin: 0; font-size: 1.15rem;"><?php echo $this->lang->line('modal_svg_figures'); ?></h2>
                 <button type="button" onclick="$('#figureSvgModal').hide()" style="background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; line-height: 1;">&times;</button>
             </div>
             <div style="padding: 16px 20px; color: #333; overflow-y: auto; flex: 1 1 auto;">
                 <p style="font-size: 12px; color: #6b7280; margin-top: 0;">
-                    Pour chaque figure : sélectionner <strong>un .html autonome</strong> (prioritaire),
-                    OU <strong>le .svg ET son .json</strong> (la paire est obligatoire), puis Enregistrer.
-                    Supprimer fait revenir la figure à son affichage PNG classique.
+                    <?php echo $this->lang->line('fig_intro'); ?>
                 </p>
                 <!-- data-label sur chaque cellule : sous 768px, cours-responsive.css
                      replie le tableau en fiches et affiche ces libellés à la place
@@ -498,35 +521,36 @@ if (strlen($this->session->userdata('passTok')) == 200) {
                 <table class="aa-fig-table" style="width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed;">
                     <thead>
                         <tr style="border-bottom: 2px solid #1d3557; text-align: left;">
-                            <th style="padding: 6px; width: 13%;">Figure</th>
-                            <th style="padding: 6px; width: 10%;">Statut</th>
-                            <th style="padding: 6px; width: 19%;">Fichier .html</th>
-                            <th style="padding: 6px; width: 19%;">Fichier .svg</th>
-                            <th style="padding: 6px; width: 19%;">Fichier .json</th>
-                            <th style="padding: 6px; width: 20%;">Actions</th>
+                            <th style="padding: 6px; width: 13%;"><?php echo $this->lang->line('fig_col_figure'); ?></th>
+                            <th style="padding: 6px; width: 10%;"><?php echo $this->lang->line('fig_col_status'); ?></th>
+                            <th style="padding: 6px; width: 19%;"><?php echo $this->lang->line('fig_col_html'); ?></th>
+                            <th style="padding: 6px; width: 19%;"><?php echo $this->lang->line('fig_col_svg'); ?></th>
+                            <th style="padding: 6px; width: 19%;"><?php echo $this->lang->line('fig_col_json'); ?></th>
+                            <th style="padding: 6px; width: 20%;"><?php echo $this->lang->line('fig_col_actions'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if (isset($listFig) && is_array($listFig)) foreach ($listFig as $figRow): ?>
                         <tr id="svgRow_<?= (int) $figRow['IDFigure']; ?>" style="border-bottom: 1px solid #eee;">
-                            <td data-label="Figure" style="padding: 6px; font-weight: 600; color: #1d3557; overflow: hidden; text-overflow: ellipsis;"><?= html_escape($figRow['TitreFigure']); ?></td>
-                            <td data-label="Statut" style="padding: 6px;">
+                            <td data-label="<?php echo html_escape($this->lang->line('fig_col_figure')); ?>" style="padding: 6px; font-weight: 600; color: #1d3557; overflow: hidden; text-overflow: ellipsis;"><?= html_escape($figRow['TitreFigure']); ?></td>
+                            <td data-label="<?php echo html_escape($this->lang->line('fig_col_status')); ?>" style="padding: 6px;">
                                 <?php
-                                    $figStatus = !empty($figRow['hasHtml']) ? 'HTML ✓' : (!empty($figRow['hasSvg']) ? 'SVG ✓' : 'PNG seul');
-                                    $figStatusCss = ($figStatus === 'PNG seul') ? 'background:#f3f4f6; color:#6b7280;' : 'background:#d1fae5; color:#065f46;';
+                                    $figPngOnly   = empty($figRow['hasHtml']) && empty($figRow['hasSvg']);
+                                    $figStatus    = !empty($figRow['hasHtml']) ? 'HTML ✓' : (!empty($figRow['hasSvg']) ? 'SVG ✓' : $this->lang->line('fig_status_png_only'));
+                                    $figStatusCss = $figPngOnly ? 'background:#f3f4f6; color:#6b7280;' : 'background:#d1fae5; color:#065f46;';
                                 ?>
                                 <span class="svg-status" style="display:inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; <?= $figStatusCss; ?>">
                                     <?= $figStatus; ?>
                                 </span>
                             </td>
-                            <td data-label="Fichier .html" style="padding: 6px;"><input type="file" accept=".html,.htm,text/html" class="htmlFileInput" style="width: 100%; font-size: 11px;"></td>
-                            <td data-label="Fichier .svg" style="padding: 6px;"><input type="file" accept=".svg,image/svg+xml" class="svgFileInput" style="width: 100%; font-size: 11px;"></td>
-                            <td data-label="Fichier .json" style="padding: 6px;"><input type="file" accept=".json,application/json" class="jsonFileInput" style="width: 100%; font-size: 11px;"></td>
-                            <td data-label="Actions" style="padding: 6px; white-space: nowrap;">
+                            <td data-label="<?php echo html_escape($this->lang->line('fig_col_html')); ?>" style="padding: 6px;"><input type="file" accept=".html,.htm,text/html" class="htmlFileInput" style="width: 100%; font-size: 11px;"></td>
+                            <td data-label="<?php echo html_escape($this->lang->line('fig_col_svg')); ?>" style="padding: 6px;"><input type="file" accept=".svg,image/svg+xml" class="svgFileInput" style="width: 100%; font-size: 11px;"></td>
+                            <td data-label="<?php echo html_escape($this->lang->line('fig_col_json')); ?>" style="padding: 6px;"><input type="file" accept=".json,application/json" class="jsonFileInput" style="width: 100%; font-size: 11px;"></td>
+                            <td data-label="<?php echo html_escape($this->lang->line('fig_col_actions')); ?>" style="padding: 6px; white-space: nowrap;">
                                 <button type="button" onclick="saveFigureSvgRow(<?= (int) $figRow['IDFigure']; ?>)"
-                                        style="background: #1d3557; color: white; border: none; padding: 4px 10px; border-radius: 5px; cursor: pointer; font-size: 12px;">Enregistrer</button>
+                                        style="background: #1d3557; color: white; border: none; padding: 4px 10px; border-radius: 5px; cursor: pointer; font-size: 12px;"><?php echo $this->lang->line('save'); ?></button>
                                 <button type="button" onclick="deleteFigureSvgRow(<?= (int) $figRow['IDFigure']; ?>)"
-                                        style="background: #e63946; color: white; border: none; padding: 4px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; margin-left: 4px;">Supprimer</button>
+                                        style="background: #e63946; color: white; border: none; padding: 4px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; margin-left: 4px;"><?php echo $this->lang->line('supprimer'); ?></button>
                             </td>
                         </tr>
                         <?php endforeach; ?>
@@ -535,32 +559,31 @@ if (strlen($this->session->userdata('passTok')) == 200) {
 
                 <!-- Ajout d'une NOUVELLE figure (crée la ligne _figure + HTML autonome OU paire SVG/JSON) -->
                 <div style="margin-top: 20px; border-top: 2px solid #1d3557; padding-top: 14px;">
-                    <h3 style="font-size: 1rem; color: #1d3557; margin: 0 0 10px;"><i class="fa fa-plus-circle"></i> Ajouter une nouvelle figure</h3>
+                    <h3 style="font-size: 1rem; color: #1d3557; margin: 0 0 10px;"><i class="fa fa-plus-circle"></i> <?php echo $this->lang->line('add_new_figure'); ?></h3>
                     <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end;">
                         <div style="flex: 1 1 150px; min-width: 130px;">
-                            <label style="font-size: 11px; font-weight: 600; display: block; margin-bottom: 3px;">Titre de la figure (saisie libre)</label>
+                            <label style="font-size: 11px; font-weight: 600; display: block; margin-bottom: 3px;"><?php echo $this->lang->line('fig_title_free'); ?></label>
                             <input type="text" id="newFigTitle" placeholder="Ex : Fig9" maxlength="50" autocomplete="off"
                                    onclick="this.focus();"
                                    style="width: 100%; border: 1px solid #1d3557; border-radius: 4px; padding: 7px 8px; box-sizing: border-box; font-size: 13px; color: #1d3557; background: #fff;">
                         </div>
                         <div style="flex: 1 1 180px; min-width: 160px;">
-                            <label style="font-size: 11px; font-weight: 600; display: block; margin-bottom: 3px;">Fichier .html (prioritaire)</label>
+                            <label style="font-size: 11px; font-weight: 600; display: block; margin-bottom: 3px;"><?php echo $this->lang->line('fig_file_html_priority'); ?></label>
                             <input type="file" id="newFigHtml" accept=".html,.htm,text/html" style="width: 100%; font-size: 11px;">
                         </div>
                         <div style="flex: 1 1 180px; min-width: 160px;">
-                            <label style="font-size: 11px; font-weight: 600; display: block; margin-bottom: 3px;">Fichier .svg</label>
+                            <label style="font-size: 11px; font-weight: 600; display: block; margin-bottom: 3px;"><?php echo $this->lang->line('fig_col_svg'); ?></label>
                             <input type="file" id="newFigSvg" accept=".svg,image/svg+xml" style="width: 100%; font-size: 11px;">
                         </div>
                         <div style="flex: 1 1 180px; min-width: 160px;">
-                            <label style="font-size: 11px; font-weight: 600; display: block; margin-bottom: 3px;">Fichier .json</label>
+                            <label style="font-size: 11px; font-weight: 600; display: block; margin-bottom: 3px;"><?php echo $this->lang->line('fig_col_json'); ?></label>
                             <input type="file" id="newFigJson" accept=".json,application/json" style="width: 100%; font-size: 11px;">
                         </div>
                         <button type="button" onclick="addFigureSvgNew()"
-                                style="background: #2d5e51; color: white; border: none; padding: 7px 16px; border-radius: 5px; cursor: pointer; font-size: 13px; font-weight: 600; flex: 0 0 auto;">Ajouter</button>
+                                style="background: #2d5e51; color: white; border: none; padding: 7px 16px; border-radius: 5px; cursor: pointer; font-size: 13px; font-weight: 600; flex: 0 0 auto;"><?php echo $this->lang->line('ajouter'); ?></button>
                     </div>
                     <p style="font-size: 11px; color: #6b7280; margin: 8px 0 0;">
-                        Un .html autonome suffit à lui seul ; sinon fournir la paire .svg + .json.
-                        La miniature est générée automatiquement à partir de l'image contenue dans le fichier.
+                        <?php echo $this->lang->line('fig_hint'); ?>
                     </p>
                 </div>
             </div>
@@ -572,10 +595,11 @@ if (strlen($this->session->userdata('passTok')) == 200) {
         $('#figureSvgModal').css('display', 'flex');
     }
 
-    function setSvgRowStatus(idFigure, label) {
+    /* interactif = un booleen explicite : comparer le libelle au texte
+       « PNG seul » cassait des que celui-ci etait traduit. */
+    function setSvgRowStatus(idFigure, label, isInteractive) {
         const badge = document.querySelector('#svgRow_' + idFigure + ' .svg-status');
         if (!badge) return;
-        const isInteractive = label !== 'PNG seul';
         badge.textContent = label;
         badge.style.background = isInteractive ? '#d1fae5' : '#f3f4f6';
         badge.style.color = isInteractive ? '#065f46' : '#6b7280';
@@ -590,7 +614,7 @@ if (strlen($this->session->userdata('passTok')) == 200) {
         // Aiguillage : un .html sélectionné est prioritaire ; sinon la paire .svg + .json
         const isHtml = !!htmlInput.files[0];
         if (!isHtml && (!svgInput.files[0] || !jsonInput.files[0])) {
-            Swal.fire({ icon: 'warning', title: 'Fichier(s) manquant(s)', text: 'Sélectionnez un .html autonome, OU le fichier .svg ET son .json.' });
+            Swal.fire({ icon: 'warning', title: AA_COURS_I18N.files_missing, text: AA_COURS_I18N.fig_select_files });
             return;
         }
 
@@ -614,21 +638,21 @@ if (strlen($this->session->userdata('passTok')) == 200) {
                     result = JSON.parse(response);
                 } catch (e) {
                     // Réponse non-JSON (warning PHP, page d'erreur…) : on l'affiche au lieu d'échouer en silence
-                    Swal.fire({ icon: 'error', title: 'Réponse inattendue du serveur', html: '<pre style="text-align:left; font-size:10px; max-height:200px; overflow:auto;">' + String(response).substring(0, 800).replace(/</g, '&lt;') + '</pre>' });
+                    Swal.fire({ icon: 'error', title: AA_COURS_I18N.unexpected_response, html: '<pre style="text-align:left; font-size:10px; max-height:200px; overflow:auto;">' + String(response).substring(0, 800).replace(/</g, '&lt;') + '</pre>' });
                     return;
                 }
                 if (result[0].id == '1') {
-                    Swal.fire({ icon: 'success', title: isHtml ? 'Figure HTML enregistrée' : 'Figure SVG enregistrée', text: 'Rechargez la page pour voir le viewer interactif.', timer: 2500, showConfirmButton: false });
-                    setSvgRowStatus(idFigure, isHtml ? 'HTML ✓' : 'SVG ✓');
+                    Swal.fire({ icon: 'success', title: isHtml ? AA_COURS_I18N.fig_html_saved : AA_COURS_I18N.fig_svg_saved, text: AA_COURS_I18N.reload_to_view, timer: 2500, showConfirmButton: false });
+                    setSvgRowStatus(idFigure, isHtml ? 'HTML ✓' : 'SVG ✓', true);
                     htmlInput.value = '';
                     svgInput.value = '';
                     jsonInput.value = '';
                 } else {
-                    Swal.fire({ icon: 'error', title: 'Refusé', text: result[0].desc });
+                    Swal.fire({ icon: 'error', title: AA_COURS_I18N.refused, text: result[0].desc });
                 }
             },
             error: function(xhr) {
-                Swal.fire({ icon: 'error', title: 'Erreur', text: 'Échec de l\'envoi au serveur (HTTP ' + (xhr && xhr.status ? xhr.status : '?') + ').' });
+                Swal.fire({ icon: 'error', title: AA_COURS_I18N.error_title, text: AA_COURS_I18N.upload_failed + ' (HTTP ' + (xhr && xhr.status ? xhr.status : '?') + ').' });
             }
         });
     }
@@ -641,7 +665,7 @@ if (strlen($this->session->userdata('passTok')) == 200) {
 
         // Aiguillage : un .html sélectionné est prioritaire ; sinon la paire .svg + .json
         if (!titre || (!htmlF && (!svgF || !jsonF))) {
-            Swal.fire({ icon: 'warning', title: 'Champs manquants', text: 'Le titre ET un .html (ou la paire .svg + .json) sont obligatoires.' });
+            Swal.fire({ icon: 'warning', title: AA_COURS_I18N.fields_missing, text: AA_COURS_I18N.fig_title_file_required });
             return;
         }
 
@@ -666,24 +690,24 @@ if (strlen($this->session->userdata('passTok')) == 200) {
                     result = JSON.parse(response);
                 } catch (e) {
                     // Réponse non-JSON (warning PHP, page d'erreur…) : on l'affiche au lieu d'échouer en silence
-                    Swal.fire({ icon: 'error', title: 'Réponse inattendue du serveur', html: '<pre style="text-align:left; font-size:10px; max-height:200px; overflow:auto;">' + String(response).substring(0, 800).replace(/</g, '&lt;') + '</pre>' });
+                    Swal.fire({ icon: 'error', title: AA_COURS_I18N.unexpected_response, html: '<pre style="text-align:left; font-size:10px; max-height:200px; overflow:auto;">' + String(response).substring(0, 800).replace(/</g, '&lt;') + '</pre>' });
                     return;
                 }
                 if (result[0].id == '1') {
-                    Swal.fire({ icon: 'success', title: 'Nouvelle figure créée', text: 'La page va se recharger pour l\'afficher.', timer: 2000, showConfirmButton: false })
+                    Swal.fire({ icon: 'success', title: AA_COURS_I18N.fig_created, text: AA_COURS_I18N.reload_to_display, timer: 2000, showConfirmButton: false })
                         .then(() => location.reload());
                 } else {
-                    Swal.fire({ icon: 'error', title: 'Refusé', text: result[0].desc });
+                    Swal.fire({ icon: 'error', title: AA_COURS_I18N.refused, text: result[0].desc });
                 }
             },
             error: function(xhr) {
-                Swal.fire({ icon: 'error', title: 'Erreur', text: 'Échec de l\'envoi au serveur (HTTP ' + (xhr && xhr.status ? xhr.status : '?') + ').' });
+                Swal.fire({ icon: 'error', title: AA_COURS_I18N.error_title, text: AA_COURS_I18N.upload_failed + ' (HTTP ' + (xhr && xhr.status ? xhr.status : '?') + ').' });
             }
         });
     }
 
     function deleteFigureSvgRow(idFigure) {
-        if (!confirm('Supprimer le contenu interactif (HTML/SVG) de cette figure ? Elle reviendra à son affichage PNG.')) return;
+        if (!confirm(AA_COURS_I18N.fig_delete_confirm)) return;
         fetch('<?php echo base_url(); ?>home/deleteFigureSvg', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -692,10 +716,10 @@ if (strlen($this->session->userdata('passTok')) == 200) {
         .then(r => r.json())
         .then(data => {
             if (data.success) {
-                setSvgRowStatus(idFigure, 'PNG seul');
+                setSvgRowStatus(idFigure, AA_COURS_I18N.fig_status_png_only, false);
                 Swal.fire({ icon: 'success', title: data.message, timer: 2000, showConfirmButton: false });
             } else {
-                Swal.fire({ icon: 'error', title: 'Erreur', text: data.message });
+                Swal.fire({ icon: 'error', title: AA_COURS_I18N.error_title, text: data.message });
             }
         });
     }

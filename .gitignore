@@ -71,3 +71,6 @@ Thumbs.db
 
 # Third party translation libs (large binary dependencies)
 /application/third_party/traduction/libs/
+# Python bytecode from tools/
+__pycache__/
+*.pyc

@@ -84,6 +84,7 @@ $route['^DE/testFigure/(:any)']  = "home/getFigure/$1";
 $route['^PL/testFigure/(:any)']  = "home/getFigure/$1";
 $route['^JA/testFigure/(:any)']  = "home/getFigure/$1";
 $route['^KO/testFigure/(:any)']  = "home/getFigure/$1";
+$route['^AR/testFigure/(:any)']  = "home/getFigure/$1";
 
 $route['Videoupload/listVideos']  = "videoupload/listVideos";
 
@@ -98,6 +99,7 @@ $route['^DE/listCalque/(:any)']  = "home/getListCalqueByChapitres/$1";
 $route['^PL/listCalque/(:any)']  = "home/getListCalqueByChapitres/$1";
 $route['^JA/listCalque/(:any)']  = "home/getListCalqueByChapitres/$1";
 $route['^KO/listCalque/(:any)']  = "home/getListCalqueByChapitres/$1";
+$route['^AR/listCalque/(:any)']  = "home/getListCalqueByChapitres/$1";
 $route['^FR/listTest/(:any)']  = "home/getListTestByChapitres3/$1";
 $route['^EN/listTest/(:any)']  = "home/getListTestByChapitres3/$1";
 $route['^ES/listTest/(:any)']  = "home/getListTestByChapitres3/$1";
@@ -109,6 +111,7 @@ $route['^DE/listTest/(:any)']  = "home/getListTestByChapitres3/$1";
 $route['^PL/listTest/(:any)']  = "home/getListTestByChapitres3/$1";
 $route['^JA/listTest/(:any)']  = "home/getListTestByChapitres3/$1";
 $route['^KO/listTest/(:any)']  = "home/getListTestByChapitres3/$1";
+$route['^AR/listTest/(:any)']  = "home/getListTestByChapitres3/$1";
 
 $route['^FR/switchPlatform/(:any)'] 		= "home/switchPlatform/$1";
 $route['^FR/login'] 					    = "home/login";
@@ -555,6 +558,46 @@ $route['^KO/evaluatCalque/(:any)'] 	= "home/getListCalqueByChapitres2/$1";
 $route['^KO/contactUS'] 				= "home/contactUS";
 $route['^KO/v1_livre'] 				    = "home/v1_livre";
 
+$route['^AR/switchPlatform/(:any)'] 				= "home/switchPlatform/$1";
+$route['^AR/login'] 				    = "home/login";
+$route['^AR/category/(:any)'] 		    = "home/pageCategory/$1";
+$route['^AR/livreList/(:any)/(:any)'] 	= "home/livreList/$1/$2";
+$route['^AR/livre/(:any)'] 				= "home/livre/$1";
+$route['^AR/livreDetails/(:any)'] 		= "home/livreDetails/$1";
+$route['^AR/livreCours/(:any)/(:any)'] 	= "home/livreCours/$1/$2";
+$route['^AR/livreCours/(:any)'] 	    = "home/livreCours/$1";
+$route['^AR/livreResume/(:any)/(:any)'] = "home/livreResume/$1/$2";
+$route['^AR/livreResume/(:any)']        = "home/livreResume/$1";
+$route['^AR/livreFigures/(:any)']       = "home/livreFigures/$1";
+$route['^AR/figuresOnly/(:any)']        = "home/figuresOnly/$1";
+
+$route['^AR/livreQcm/(:any)'] 			= "home/livreQcm/$1";
+$route['^AR/livreQroc/(:any)'] 			= "home/livreQroc/$1";
+$route['^AR/signUp'] 					= "home/signUp";
+$route['^AR/resetUp'] 					= "home/resetUp";
+$route['^AR/forgot_password'] 			= "home/forgot_password";
+$route['^AR/pagesSetting'] 				= "home/settingPaltform";
+$route['^AR/logout'] 					= "home/logout";
+$route['^AR/settingUsers'] 				= "home/settingUsers";
+$route['^AR/settingUsersEtab'] 			= "home/settingUsersEtab";
+$route['^AR/settingCurs'] 				= "home/settingCurs";
+$route['^AR/settingPlat'] 				= "home/settingPlat";
+$route['^AR/settingActualites'] 		= "home/settingActualites";
+$route['^AR/settingTest/(:any)'] 		= "home/settingFigures/$1";
+$route['^AR/cursHTML/(:any)/(:any)'] 	= "home/cursHTML/$1/$2";
+$route['^AR/cursHTML/(:any)'] 	        = "home/cursHTML/$1";
+$route['^AR/figHTML/(:any)'] 			= "home/figHTML/$1";
+$route['^AR/livreQcmEdit/(:any)'] 		= "home/livreQcmEdit/$1";
+$route['^AR/livreQrocEdit/(:any)'] 		= "home/livreQrocEdit/$1";
+$route['^AR/searchIndex'] 				= "home/searchIndex";
+$route['^AR/listOffers/(:any)'] 		= "home/listOffers/$1";
+$route['^AR/evaluatQCM/(:any)/(:any)/(:any)'] 	= "home/evaluatQCM/$1/$2/$3";
+$route['^AR/evaluatQROC/(:any)/(:any)/(:any)'] 	= "home/evaluatQROC/$1/$2/$3";
+$route['^AR/evaluatTEST/(:any)'] 	= "home/getListTestByChapitres4/$1";
+$route['^AR/evaluatCalque/(:any)'] 	= "home/getListCalqueByChapitres2/$1";
+$route['^AR/contactUS'] 				= "home/contactUS";
+$route['^AR/v1_livre'] 				    = "home/v1_livre";
+
 $route['404_override'] = 'errors/page_missing';
 $route['translate_uri_dashes'] = FALSE;
 
@@ -569,6 +612,7 @@ $route['^DE/PlatFormeConvert/(:any)'] = 'home/PlatFormeConvert/$1';
 $route['^PL/PlatFormeConvert/(:any)'] = 'home/PlatFormeConvert/$1';
 $route['^JA/PlatFormeConvert/(:any)'] = 'home/PlatFormeConvert/$1';
 $route['^KO/PlatFormeConvert/(:any)'] = 'home/PlatFormeConvert/$1';
+$route['^AR/PlatFormeConvert/(:any)'] = 'home/PlatFormeConvert/$1';
 
 $route['^ES/products/buyProduct/(:any)'] 		= "home/products/buyProduct/$1";
 $route['^RU/products/buyProduct/(:any)'] 		= "home/products/buyProduct/$1";
@@ -579,5 +623,6 @@ $route['^DE/products/buyProduct/(:any)'] 		= "home/products/buyProduct/$1";
 $route['^PL/products/buyProduct/(:any)'] 		= "home/products/buyProduct/$1";
 $route['^JA/products/buyProduct/(:any)'] 		= "home/products/buyProduct/$1";
 $route['^KO/products/buyProduct/(:any)'] 		= "home/products/buyProduct/$1";
+$route['^AR/products/buyProduct/(:any)'] 		= "home/products/buyProduct/$1";
 
 

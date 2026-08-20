@@ -212,13 +212,13 @@
 
 		<?php
 		// Atlas categories: FR=4, EN=9, ES=2597, RU=2701, TR=2801, PT=2901, IT=3001, DE=3101, PL=3201, JA=3301, KO=3401
-		if (in_array((int)$OneBook[0]["IDLivre"], [70, 71]) || in_array((int)$OneBook[0]["IDCategory"], [4, 9, 2597, 2701, 2801, 2901, 3001, 3101, 3201, 3301, 3401])) {
+		if (in_array((int)$OneBook[0]["IDLivre"], [70, 71]) || in_array((int)$OneBook[0]["IDCategory"], [4, 9, 2597, 2701, 2801, 2901, 3001, 3101, 3201, 3301, 3401, 3501])) {
 			// Code si la condition est vraie
 		} else {
 			if ($page != 'livre') {  // Vérification de la condition pour $page
 				?>
 				<div style="width: 60%;display: flex; gap: 45px;margin-right: 20px;">
-					<button class="carreaux_lec"  onclick="openModalModeLecture(); return false;">Mode lecture</button>
+					<button class="carreaux_lec"  onclick="openModalModeLecture(); return false;"><?php echo $this->lang->line('ModeLecture'); ?></button>
 
 				</div>
 				<?php

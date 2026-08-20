@@ -830,7 +830,7 @@
                                                                     // SECTION : Pathologie référente en français
                                                                     // Visible UNIQUEMENT si la langue du livre est EN ou ES
                                                                     // ====================================================
-                                                                    if (in_array($category['multi_lingue'], ['EN', 'ES', 'RU', 'TR', 'PT', 'IT', 'DE', 'PL', 'JA', 'KO'])):
+                                                                    if (in_array($category['multi_lingue'], ['EN', 'ES', 'RU', 'TR', 'PT', 'IT', 'DE', 'PL', 'JA', 'KO', 'AR'])):
                                                                         $livresFR = $this->db
                                                                             ->select('l.IDLivre, l.Titre')
                                                                             ->from('_livre l')
@@ -878,7 +878,7 @@
 
                                                                     <?php
                                                                     // Générer les options FR pour le modal JS (seulement si EN ou ES)
-                                                                    if (in_array($category['multi_lingue'], ['EN', 'ES', 'RU', 'TR', 'PT', 'IT', 'DE', 'PL', 'JA', 'KO'])):
+                                                                    if (in_array($category['multi_lingue'], ['EN', 'ES', 'RU', 'TR', 'PT', 'IT', 'DE', 'PL', 'JA', 'KO', 'AR'])):
                                                                         $optionsFRHtml = '<option value="">-- Choisissez une pathologie FR --</option>';
                                                                         foreach ($livresFR as $livreFR) {
                                                                             $this->db->select('IDChapitre, TitreChapitre')
@@ -896,7 +896,7 @@
                                                                     endif;
                                                                     ?>
 
-                                                                    <?php if (in_array($category['multi_lingue'], ['EN', 'ES', 'RU', 'TR', 'PT', 'IT', 'DE', 'PL', 'JA', 'KO'])): ?>
+                                                                    <?php if (in_array($category['multi_lingue'], ['EN', 'ES', 'RU', 'TR', 'PT', 'IT', 'DE', 'PL', 'JA', 'KO', 'AR'])): ?>
                                                                         <script>
                                                                             window.pathologieFROptions = <?= json_encode($optionsFRHtml ?? ''); ?>;
                                                                             window.bookIsMultiLingue = true;
@@ -951,43 +951,41 @@
                                                     <?php
                                                     $estPathologieBook = in_array((int) $OneBook[0]["IDTheme"], [20, 36, 31])
                                                         || (isset($category['Couverture']) && stripos($category['Couverture'], 'pathologie') !== false)
-                                                        || (isset($category['Libelle']) && (stripos($category['Libelle'], 'Pathologie') !== false || stripos($category['Libelle'], 'Patologia') !== false || stripos($category['Libelle'], 'Pathology') !== false || stripos($category['Libelle'], 'Патология') !== false || stripos($category['Libelle'], 'Patoloji') !== false));
+                                                        || (isset($category['Libelle']) && (stripos($category['Libelle'], 'Pathologie') !== false || stripos($category['Libelle'], 'Patologia') !== false || stripos($category['Libelle'], 'Pathology') !== false || stripos($category['Libelle'], 'Патология') !== false || stripos($category['Libelle'], 'Patoloji') !== false || stripos($category['Libelle'], '病理学') !== false || stripos($category['Libelle'], '병리학') !== false || stripos($category['Libelle'], 'علم الأمراض') !== false));
                                                     if ($estPathologieBook): ?>
                                                         <th width="5%" style="text-align: left;"></th>
-                                                        <th width="30%" style="text-align: center;">Titre Chapitre</th>
-                                                        <th width="20%" style="text-align: center;">Anatomie - Cours fondamental
-                                                            complet</th>
-                                                        <th width="20%" style="text-align: center;">Anatomie - synthèse
-                                                            structurée</th>
-                                                        <th width="25%" style="text-align: center;">Pathologies</th>
+                                                        <th width="30%" style="text-align: center;"><?php echo $this->lang->line('tbl_titre_chapitre'); ?></th>
+                                                        <th width="20%" style="text-align: center;"><?php echo $this->lang->line('tbl_anat_cours'); ?></th>
+                                                        <th width="20%" style="text-align: center;"><?php echo $this->lang->line('tbl_anat_synthese'); ?></th>
+                                                        <th width="25%" style="text-align: center;"><?php echo $this->lang->line('tbl_pathologies'); ?></th>
                                                     <?php else: ?>
                                                         <!-- ✅ PATCH : Ajouter une colonne vide pour la colonne des icônes d'administration -->
                                                         <th width="5%" style="text-align: left;"></th>
-                                                        <th width="15%">Cours</th>
+                                                        <th width="15%"><?php echo $this->lang->line('cours'); ?></th>
                                                         <?php if ($category['EstActifResume'] == 1) { ?>
-                                                            <th width="15%">Résumé</th>
+                                                            <th width="15%"><?php echo $this->lang->line('resume_btn'); ?></th>
                                                         <?php } ?>
 
                                                         <?php if ($category['EstActifQSM'] == 1) { ?>
-                                                            <th width="15%">QCM B</th>
-                                                            <th width="15%">QCM I</th>
-                                                            <th width="15%">QCM A</th>
+                                                            <th width="15%"><?php echo $this->lang->line('tbl_qcm_b'); ?></th>
+                                                            <th width="15%"><?php echo $this->lang->line('tbl_qcm_i'); ?></th>
+                                                            <th width="15%"><?php echo $this->lang->line('tbl_qcm_a'); ?></th>
                                                         <?php } ?>
 
                                                         <?php if ($category['EstActifQROC'] == 1) { ?>
-                                                            <th width="15%">QROC</th>
+                                                            <th width="15%"><?php echo $this->lang->line('qroc'); ?></th>
                                                         <?php } ?>
 
                                                         <?php if ($category['EstActifCalques'] == 1) { ?>
-                                                            <th width="15%">Calques</th>
+                                                            <th width="15%"><?php echo $this->lang->line('Calques'); ?></th>
                                                         <?php } ?>
 
                                                         <?php if ($category['EstActifTest'] == 1) { ?>
-                                                            <th width="15%">Test</th>
+                                                            <th width="15%"><?php echo $this->lang->line('tbl_test'); ?></th>
                                                         <?php } elseif ($category['EstActifTest'] == 2) { ?>
                                                             <th width="15%">
                                                                 <input type="button" class="btn btn-outline-primary"
-                                                                    style="border-color: #f8f9fa;color: #000000;" value="Test"
+                                                                    style="border-color: #f8f9fa;color: #000000;" value="<?php echo $this->lang->line('tbl_test'); ?>"
                                                                     data-toggle="modal"
                                                                     data-target="#centeredModalPrimaryTestFigure">
                                                             </th>
@@ -1000,7 +998,7 @@
                                                     <?php foreach ($listChap as $value) {
                                                         $estPathologie = in_array($value['IDLivre'], [20, 36, 31]) || in_array((int) $OneBook[0]["IDTheme"], [20, 36, 31])
                                                             || (isset($category['Couverture']) && stripos($category['Couverture'], 'pathologie') !== false)
-                                                            || (isset($category['Libelle']) && (stripos($category['Libelle'], 'Pathologie') !== false || stripos($category['Libelle'], 'Patologia') !== false || stripos($category['Libelle'], 'Pathology') !== false || stripos($category['Libelle'], 'Патология') !== false || stripos($category['Libelle'], 'Patoloji') !== false));
+                                                            || (isset($category['Libelle']) && (stripos($category['Libelle'], 'Pathologie') !== false || stripos($category['Libelle'], 'Patologia') !== false || stripos($category['Libelle'], 'Pathology') !== false || stripos($category['Libelle'], 'Патология') !== false || stripos($category['Libelle'], 'Patoloji') !== false || stripos($category['Libelle'], '病理学') !== false || stripos($category['Libelle'], '병리학') !== false || stripos($category['Libelle'], 'علم الأمراض') !== false));
                                                         ?>
                                                         <tr>
                                                             <?php if (!$estPathologie): ?>
@@ -1038,7 +1036,7 @@
                                                                                     ) { ?>
                                                                                         <a href="#"
                                                                                             onclick="openSousChapForm('<?php print $value['IDChapitre']; ?>', '<?php print $value['IDLivre']; ?>')"
-                                                                                            title="Ajouter Sous-Chapitre">
+                                                                                            title="<?php echo $this->lang->line('actionAjout'); ?>">
                                                                                             <i class="fa fa-plus"></i>
                                                                                         </a>
                                                                                     <?php } ?>
@@ -1484,7 +1482,7 @@
                                                                                                             class="fas fa-upload"></i>
                                                                                                         Upload (QCM.docx)</span>
                                                                                                     <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>livreQcmEdit/<?= $value['IDChapitre']; ?>"
-                                                                                                        class="btn btn-info">Editer</a>
+                                                                                                        class="btn btn-info"><?php echo $this->lang->line('actionEdit'); ?></a>
                                                                                                 </div>
                                                                                             </div>
                                                                                             <hr>
@@ -1534,7 +1532,7 @@
                                                                                                         class="fas fa-upload"></i>
                                                                                                     Upload (QCM.docx)</span>
                                                                                                 <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>livreQcmEdit/<?= $value['IDChapitre']; ?>"
-                                                                                                    class="btn btn-info">Editer</a>
+                                                                                                    class="btn btn-info"><?php echo $this->lang->line('actionEdit'); ?></a>
                                                                                             </div>
                                                                                         </div>
                                                                                         <hr>
@@ -1641,7 +1639,7 @@
                                                                                                             class="fas fa-upload"></i>
                                                                                                         Upload (QCM.docx)</span>
                                                                                                     <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>livreQcmEdit/<?= $value['IDChapitre']; ?>"
-                                                                                                        class="btn btn-info">Editer</a>
+                                                                                                        class="btn btn-info"><?php echo $this->lang->line('actionEdit'); ?></a>
                                                                                                 </div>
                                                                                             </div>
                                                                                             <hr>
@@ -1691,7 +1689,7 @@
                                                                                                         class="fas fa-upload"></i>
                                                                                                     Upload (QCM.docx)</span>
                                                                                                 <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>livreQcmEdit/<?= $value['IDChapitre']; ?>"
-                                                                                                    class="btn btn-info">Editer</a>
+                                                                                                    class="btn btn-info"><?php echo $this->lang->line('actionEdit'); ?></a>
                                                                                             </div>
                                                                                         </div>
                                                                                         <hr>
@@ -1798,7 +1796,7 @@
                                                                                                             class="fas fa-upload"></i>
                                                                                                         Upload (QCM.docx)</span>
                                                                                                     <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>livreQcmEdit/<?= $value['IDChapitre']; ?>"
-                                                                                                        class="btn btn-info">Editer</a>
+                                                                                                        class="btn btn-info"><?php echo $this->lang->line('actionEdit'); ?></a>
                                                                                                 </div>
                                                                                             </div>
                                                                                             <hr>
@@ -1848,7 +1846,7 @@
                                                                                                         class="fas fa-upload"></i>
                                                                                                     Upload (QCM.docx)</span>
                                                                                                 <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>livreQcmEdit/<?= $value['IDChapitre']; ?>"
-                                                                                                    class="btn btn-info">Editer</a>
+                                                                                                    class="btn btn-info"><?php echo $this->lang->line('actionEdit'); ?></a>
                                                                                             </div>
                                                                                         </div>
                                                                                         <hr>
@@ -1957,7 +1955,7 @@
                                                                                                             class="fas fa-upload"></i>
                                                                                                         Upload (QROC.docx)</span>
                                                                                                     <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>livreQrocEdit/<?= $value['IDChapitre']; ?>"
-                                                                                                        class="btn btn-info">Editer</a>
+                                                                                                        class="btn btn-info"><?php echo $this->lang->line('actionEdit'); ?></a>
                                                                                                 </div>
                                                                                             </div>
                                                                                             <hr>
@@ -2007,7 +2005,7 @@
                                                                                                         class="fas fa-upload"></i>
                                                                                                     Upload (QROC.docx)</span>
                                                                                                 <a href="<?php echo base_url(); ?><?php echo $this->lang->line('siteLang'); ?>livreQrocEdit/<?= $value['IDChapitre']; ?>"
-                                                                                                    class="btn btn-info">Editer</a>
+                                                                                                    class="btn btn-info"><?php echo $this->lang->line('actionEdit'); ?></a>
                                                                                             </div>
                                                                                         </div>
                                                                                         <hr>
@@ -2162,7 +2160,7 @@
                                                                             </a>
                                                                             <a href="#"
                                                                                 onclick="openSousChapForm('<?php print $value['IDChapitre']; ?>', '<?php print $value['IDLivre']; ?>')"
-                                                                                title="Ajouter Sous-Chapitre">
+                                                                                title="<?php echo $this->lang->line('actionAjout'); ?>">
                                                                                 <i class="fa fa-plus"></i>
                                                                             </a>
                                                                             <?php $estAdminBool = ((strlen($this->session->userdata('passTok')) == 200) && ($this->session->userdata('EstAdmin') == 1)) ? 'true' : 'false'; ?>
@@ -2173,7 +2171,7 @@
                                                                                 <i class="fas fa-link"
                                                                                     style="color:#3085d6; margin-left:5px;"></i>
                                                                             </a>
-                                                                            <?php if (in_array($category['multi_lingue'], ['EN', 'ES', 'RU', 'TR', 'PT', 'IT', 'DE', 'PL', 'JA', 'KO'])): ?>
+                                                                            <?php if (in_array($category['multi_lingue'], ['EN', 'ES', 'RU', 'TR', 'PT', 'IT', 'DE', 'PL', 'JA', 'KO', 'AR'])): ?>
                                                                                 <a href="#"
                                                                                     onclick="openPathoFRModal(<?php print $value['IDChapitre']; ?>, '<?php print $value['idpathologieFR'] ?? ''; ?>')"
                                                                                     title="Modifier la pathologie référente (FR)">
@@ -2265,7 +2263,7 @@
                                             <script>
                                                 window.estPathologieCategory = <?= (
                                                     (isset($category['Couverture']) && stripos($category['Couverture'], 'pathologie') !== false)
-                                                    || (isset($category['Libelle']) && (stripos($category['Libelle'], 'Pathologie') !== false || stripos($category['Libelle'], 'Patologia') !== false || stripos($category['Libelle'], 'Pathology') !== false || stripos($category['Libelle'], 'Патология') !== false || stripos($category['Libelle'], 'Patoloji') !== false))
+                                                    || (isset($category['Libelle']) && (stripos($category['Libelle'], 'Pathologie') !== false || stripos($category['Libelle'], 'Patologia') !== false || stripos($category['Libelle'], 'Pathology') !== false || stripos($category['Libelle'], 'Патология') !== false || stripos($category['Libelle'], 'Patoloji') !== false || stripos($category['Libelle'], '病理学') !== false || stripos($category['Libelle'], '병리학') !== false || stripos($category['Libelle'], 'علم الأمراض') !== false))
                                                 ) ? 'true' : 'false'; ?>;
                                                 $(document).ready(function () {
                                                     // L'ancien code .toggle-patho a été supprimé car nous utilisons maintenant togglePathoContainer() directement
