@@ -328,8 +328,10 @@ $lang['legend_progressive'] 	= "Leyenda progresiva";
 $lang['legend_label'] 		= "Leyenda:";
 $lang['legend_opt_complete'] 	= "Completa";
 $lang['legend_opt_sequential'] 	= "Secuencial";
-$lang['resume_btn'] 		= "Resumen";
+$lang['resume_btn'] 		= "Síntesis";
 $lang['resume_soon'] 		= "Esta sección estará disponible próximamente.";
+$lang['synthese_none'] 		= "No hay síntesis disponible por el momento.";
+$lang['resume_loading'] 	= "Cargando…";
 
 $lang['lecture_mode']         = "Modo de lectura";
 $lang['lecture_perso']        = "Lectura personal";

@@ -367,8 +367,10 @@ $lang['legend_progressive'] 	= "Progressive legend";
 $lang['legend_label'] 		= "Legend:";
 $lang['legend_opt_complete'] 	= "Complete";
 $lang['legend_opt_sequential'] 	= "Sequential";
-$lang['resume_btn'] 		= "Summary";
+$lang['resume_btn'] 		= "Synthesis";
 $lang['resume_soon'] 		= "This section will be available soon.";
+$lang['synthese_none'] 		= "No synthesis available at the moment.";
+$lang['resume_loading'] 	= "Loading…";
 
 $lang['lecture_mode']         = "Reading mode";
 $lang['lecture_perso']        = "Personal reading";

@@ -360,8 +360,10 @@ $lang['legend_progressive'] 	= "Podpis progresywny";
 $lang['legend_label'] 		= "Podpis:";
 $lang['legend_opt_complete'] 	= "Pełny";
 $lang['legend_opt_sequential'] 	= "Sekwencyjny";
-$lang['resume_btn'] 		= "Podsumowanie";
+$lang['resume_btn'] 		= "Synteza";
 $lang['resume_soon'] 		= "Ta sekcja będzie wkrótce dostępna.";
+$lang['synthese_none'] 		= "Brak dostępnej syntezy w tej chwili.";
+$lang['resume_loading'] 	= "Ładowanie…";
 
 $lang['lecture_mode'] 		= "Tryb czytania";
 $lang['lecture_perso'] 		= "Czytanie osobiste";

@@ -360,8 +360,10 @@ $lang['legend_progressive'] 	= "점진적 범례";
 $lang['legend_label'] 		= "범례:";
 $lang['legend_opt_complete'] 	= "전체";
 $lang['legend_opt_sequential'] 	= "순차";
-$lang['resume_btn'] 		= "요약";
+$lang['resume_btn'] 		= "종합";
 $lang['resume_soon'] 		= "이 섹션은 곧 제공될 예정입니다.";
+$lang['synthese_none'] 		= "현재 종합을 사용할 수 없습니다.";
+$lang['resume_loading'] 	= "불러오는 중…";
 
 $lang['lecture_mode'] 		= "읽기 모드";
 $lang['lecture_perso'] 		= "개인 읽기";

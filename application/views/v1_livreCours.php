@@ -320,7 +320,7 @@ if (strlen($this->session->userdata('passTok')) == 200) {
             </div>
         </div>
 
-<div class="col-12 col-lg-6 col-xl-6" style="float: right; width: 55%; margin-right: 0;">
+<div class="col-12 col-lg-6 col-xl-6" style="float: right; width: 55%; margin-right: 0; padding: 0;">
             <?php include('v1_bloc_figures.php'); ?>
         </div>
     </div>

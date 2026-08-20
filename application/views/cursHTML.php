@@ -104,7 +104,12 @@
         });
     </script>
 
-    <?php if(strlen($this->session->userdata('passTok'))==200) { ?>
+    <?php
+        // Bloc abonnement affiché en fin de cours (bouton "X% visible" + liens vers les offres).
+        // Masqué à la demande : le code est conservé, repasser à true pour le réafficher.
+        $showAbonnementBlock = false;
+    ?>
+    <?php if($showAbonnementBlock && strlen($this->session->userdata('passTok'))==200) { ?>
         <button style="width: 100%;color: red; font-size: 20px; text-align: left;"  name="btn_offre" id="btn_offre" class="btn-success">
             <?php echo $this->lang->line('abbonementInfo1'); ?> <?php print $paramsCurs; ?>% <?php echo $this->lang->line('abbonementInfo2'); ?><br>
         </button>

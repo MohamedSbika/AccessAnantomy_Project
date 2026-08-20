@@ -251,7 +251,7 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
 					.resume-modal-box {
 						background: #ffffff;
 						border-radius: 12px;
-						max-width: 420px;
+						max-width: 900px;
 						width: 100%;
 						padding: 24px 24px 20px;
 						box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
@@ -270,6 +270,7 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
 						color: #2d5e51ff;
 						font-weight: bold;
 						font-size: 1.05em;
+						text-align: left;
 					}
 
 					.resume-modal-close {
@@ -298,8 +299,12 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
 					.atlas-html-host {
 						display: none;
 						width: 100%;
-						height: 88vh;
-						overflow: auto;
+						/* Un seul ascenseur sur la page : l'hôte grandit avec son contenu au lieu
+						   de défiler lui-même (min-height conserve la grande boîte pour les
+						   figures courtes) — le défilement se fait donc via celui du navigateur. */
+						min-height: 88vh;
+						height: auto;
+						overflow: visible;
 						background: #fff;
 						margin-top: 10px;
 					}
@@ -337,9 +342,9 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
 										<?php
 										$compteurFigure = 0;
 										foreach ($arrayFigures as $figure) {
-											$class = ($compteurFigure === 0) ? "slider-image selected-figure" : "slider-image"; ?>
-											<div class="image-figure">
-												<img class="<?= $class ?>" src="data:image/png;base64,<?php print $figure['image'] ?>" onclick="afficheFigure(<?= $compteurFigure ?>)" alt="Image <?= $compteurFigure ?>" />
+											$class = ($compteurFigure === 0) ? "image-figure selected-figure" : "image-figure"; ?>
+											<div class="<?= $class ?>">
+												<img class="slider-image" src="data:image/png;base64,<?php print $figure['image'] ?>" onclick="afficheFigure(<?= $compteurFigure ?>)" alt="Image <?= $compteurFigure ?>" />
 											</div>
 											<?php
 											$compteurFigure++;
@@ -362,7 +367,7 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
 						<div class="resume-modal-box">
 							<button type="button" class="resume-modal-close" aria-label="Close">&times;</button>
 							<h3 class="resume-modal-title"><?php echo $this->lang->line('resume_btn'); ?></h3>
-							<p class="resume-modal-body"><?php echo $this->lang->line('resume_soon'); ?></p>
+							<div class="resume-modal-body"><?php echo $this->lang->line('synthese_none'); ?></div>
 						</div>
 					</div>
 
@@ -859,15 +864,58 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
             document.querySelectorAll('.restoreNormalMode').forEach(function(b) { b.classList.remove('active'); });
         }
 
-        // Bouton "Résumé" : ouvre la fenêtre modale (contenu bientôt disponible)
+        // Bouton "Synthèse" : lit la synthèse depuis le HTML de la figure et l'affiche.
+        // La modale est partagée ; seul son corps est reconstruit à chaque clic pour
+        // refléter la figure dont le bouton a été pressé.
         (function () {
             var modal = document.getElementById('resumeModal');
             if (!modal) return;
+            var body = modal.querySelector('.resume-modal-body');
+            var SYNTHESE_URL = "<?php echo base_url(); ?>home/figureSynthese/";
+            var NONE_MSG = <?php echo json_encode($this->lang->line('synthese_none')); ?>;
+            var LOADING_MSG = <?php echo json_encode($this->lang->line('resume_loading')); ?>;
+
             function openModal() { modal.style.display = 'flex'; }
             function closeModal() { modal.style.display = 'none'; }
-            document.querySelectorAll('.resumeBtn').forEach(function(b) {
-                b.addEventListener('click', openModal);
+            function showMessage(msg) { if (body) body.textContent = msg; }
+
+            // Fragment de synthèse rendu isolé dans un shadow root : ses styles ne
+            // fuient pas dans la page (même principe que l'affichage des figures).
+            function showFragment(htmlFragment) {
+                if (!body) return;
+                body.textContent = '';
+                var mount = document.createElement('div');
+                body.appendChild(mount);
+                if (mount.attachShadow) {
+                    var sr = mount.attachShadow({ mode: 'open' });
+                    sr.innerHTML = '<style>:host{display:block;text-align:left;} img,svg{max-width:100%;height:auto;} [class*="synthes"][class*="title"]{display:none !important;}</style>' + htmlFragment;
+                } else {
+                    mount.innerHTML = htmlFragment; // repli (très vieux navigateur) : sans isolation
+                }
+            }
+
+            document.querySelectorAll('.resumeBtn').forEach(function (b) {
+                b.addEventListener('click', function () {
+                    var block = b.closest('.block-figure');
+                    var host = block ? block.querySelector('.atlas-html-host') : null;
+                    // Figure sans HTML : aucune synthèse possible, message immédiat
+                    if (!host || host.dataset.hashtml !== '1') {
+                        showMessage(NONE_MSG);
+                        openModal();
+                        return;
+                    }
+                    showMessage(LOADING_MSG);
+                    openModal();
+                    fetch(SYNTHESE_URL + host.dataset.idfig)
+                        .then(function (r) {
+                            if (r.status === 204) { showMessage(NONE_MSG); return; }   // pas de synthèse
+                            if (!r.ok) throw new Error('synthese');
+                            return r.text().then(function (t) { showFragment(t); });
+                        })
+                        .catch(function () { showMessage(NONE_MSG); });
+                });
             });
+
             var closeBtn = modal.querySelector('.resume-modal-close');
             if (closeBtn) closeBtn.addEventListener('click', closeModal);
             modal.addEventListener('click', function(e) { if (e.target === modal) closeModal(); });
@@ -992,7 +1040,7 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
         var ATLAS_REVEAL_LABEL = <?php echo json_encode($this->lang->line('decouv_respons')); ?>;
 
         // Styles de base injectés dans chaque Shadow DOM : surlignage rouge (contrat data-num)
-        var ATLAS_SHADOW_STYLE = ':host{display:block;width:100%;height:100%;}'
+        var ATLAS_SHADOW_STYLE = ':host{display:block;width:100%;height:auto;}'
             + 'img,svg{max-width:100%;height:auto;}'
             + '[data-num]{cursor:pointer;}'
             + '.marker-num{transition:fill 200ms;}'
@@ -1007,12 +1055,17 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
 
         // Surcharges de mise en page (injectées APRÈS le style de l'export, donc gagnantes) :
         // pleine hauteur, légendes aux extrémités, figure maximale (boîte SVG = toute la cellule)
-        var ATLAS_SHADOW_LAYOUT = '.aa-root{height:100%;}'
+        // NB : hauteurs en min-height (et non height:100%) — l'hôte n'ayant plus de hauteur
+        // fixe, la figure se dimensionne sur son contenu et c'est la page qui défile.
+        var ATLAS_SHADOW_LAYOUT = '.aa-root{min-height:100%;}'
+            // La synthèse est extraite et affichée à la demande via le bouton « Synthèse » :
+            // on la masque donc dans le rendu inline de la figure (tous les modes).
+            + '[class*="synthes"],[id*="synthes"],[data-synthese]{display:none !important;}'
             + '@container (min-width:621px){'
-            + '.aa-layout{height:100%;gap:6px;grid-template-columns:minmax(160px,24%) minmax(0,1fr) minmax(160px,24%);}'
+            + '.aa-layout{min-height:100%;gap:6px;grid-template-columns:minmax(160px,24%) minmax(0,1fr) minmax(160px,24%);}'
             + '.aa-side{position:relative;overflow:hidden;}'
             + '.aa-svg-host{align-items:center;}'
-            + '.aa-svg-host svg{width:100% !important;height:100% !important;max-width:100% !important;max-height:100% !important;}'
+            + '.aa-svg-host svg{width:100% !important;height:auto !important;max-width:100% !important;max-height:none !important;}'
             + '.aa-viewer{padding:4px;}'
             + '.aa-legend-item{font-size:14px;padding:7px 8px;}'
             + '.aa-badge{min-width:24px;height:24px;font-size:12px;}'
@@ -1027,18 +1080,18 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
         // CALQUE posé au-dessus du groupe (comme .btn-corriger sur .legend-group-row en
         // classique) et le texte-réponse est masqué par visibility (la place est conservée,
         // la mise en page de l'export ne bouge pas).
-        var ATLAS_SHADOW_REVEAL = '.atlas-group{position:relative;display:block;list-style:none;margin:0;padding:0;}'
+        var ATLAS_SHADOW_REVEAL = '.atlas-group{position:relative;display:block;list-style:none;margin:0 0 12px;padding:8px 12px;border:1px solid #e5e7eb;border-radius:8px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.06);}'
             + '.atlas-reveal{display:none;position:absolute;top:0;left:0;width:100%;height:100%;z-index:5;'
-            + 'padding:0;border:none;border-radius:6px;font:inherit;font-weight:700;cursor:pointer;'
-            + 'background:#86C4AF;color:green;}'
+            + 'padding:0;border:1px solid rgba(9,138,99,.35);border-radius:8px;box-sizing:border-box;font:inherit;font-weight:700;cursor:pointer;'
+            + 'background:#86C4AF;color:green;box-shadow:0 2px 6px rgba(0,0,0,.18);}'
             + '.atlas-reveal:hover{background:rgb(9,138,99);color:#fff;}'
             + '.atlas-group-covered > .atlas-reveal{display:block;}'
             + '.atlas-item-hidden > .atlas-answer{visibility:hidden;}'
             + '.atlas-test-input{display:none;align-items:center;gap:4px;margin-left:4px;flex:1 1 auto;min-width:70px;}'
             + '.atlas-item-input > .atlas-answer{display:none;}'
             + '.atlas-item-input .atlas-test-input{display:inline-flex;}'
-            + '.atlas-test-input input{width:100%;min-width:60px;box-sizing:border-box;font:inherit;'
-            + 'padding:1px 4px;border:1px solid #9ca3af;border-radius:4px;background:#fff;}'
+            + '.atlas-test-input textarea{width:100%;min-width:60px;box-sizing:border-box;font:inherit;'
+            + 'padding:1px 4px;border:1px solid #9ca3af;border-radius:4px;background:#fff;resize:vertical;overflow:auto;line-height:1.3;min-height:1.6em;}'
             + '.atlas-eye{cursor:pointer;font-size:13px;line-height:1;user-select:none;}';
 
         /* ───────── Analyse du HTML : images, titres, découpage des légendes par 4 ───────── */
@@ -1194,8 +1247,8 @@ background: linear-gradient(135deg, #ffffffff 30%, #182540 100%);">
                 if (typeof showToast === 'function') showToast(eye);
             });
 
-            var input = document.createElement('input');
-            input.type = 'text';
+            var input = document.createElement('textarea');
+            input.rows = 1;
             input.setAttribute('autocomplete', 'off');
             input.addEventListener('click', function (e) { e.stopPropagation(); });
 

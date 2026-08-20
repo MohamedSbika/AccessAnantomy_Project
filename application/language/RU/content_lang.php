@@ -366,8 +366,10 @@ $lang['legend_progressive'] 	= "Прогрессивная легенда";
 $lang['legend_label'] 		= "Легенда:";
 $lang['legend_opt_complete'] 	= "Полная";
 $lang['legend_opt_sequential'] 	= "Последовательная";
-$lang['resume_btn'] 		= "Резюме";
+$lang['resume_btn'] 		= "Синтез";
 $lang['resume_soon'] 		= "Этот раздел скоро будет доступен.";
+$lang['synthese_none'] 		= "Синтез пока недоступен.";
+$lang['resume_loading'] 	= "Загрузка…";
 
 $lang['lecture_mode']         = "Режим чтения";
 $lang['lecture_perso']        = "Личное чтение";

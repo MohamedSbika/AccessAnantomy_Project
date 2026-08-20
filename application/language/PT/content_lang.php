@@ -360,8 +360,10 @@ $lang['legend_progressive'] 	= "Legenda progressiva";
 $lang['legend_label'] 		= "Legenda:";
 $lang['legend_opt_complete'] 	= "Completa";
 $lang['legend_opt_sequential'] 	= "Sequencial";
-$lang['resume_btn'] 		= "Resumo";
+$lang['resume_btn'] 		= "Síntese";
 $lang['resume_soon'] 		= "Esta seção estará disponível em breve.";
+$lang['synthese_none'] 		= "Nenhuma síntese disponível no momento.";
+$lang['resume_loading'] 	= "A carregar…";
 
 $lang['lecture_mode'] 		= "Modo de leitura";
 $lang['lecture_perso'] 		= "Leitura pessoal";

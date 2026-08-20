@@ -10068,6 +10068,95 @@ loadingTask.promise.then(function(pdf) {
             ->set_output($res[0]['htmlContent']);
     }
 
+    /**
+     * Renvoie UNIQUEMENT le fragment « synthèse » extrait du HTML d'une figure.
+     * 200 + fragment HTML si une synthèse est trouvée ; 204 (No Content) sinon
+     * (signal explicite « pas de synthèse », distinct d'une erreur). Même garde
+     * d'accès et même cache ETag que atlasFigureHtml.
+     */
+    public function figureSynthese($idFigure = 0)
+    {
+        if (strlen($this->session->userdata('passTok')) != 200) {
+            show_error('Accès refusé', 403);
+            return;
+        }
+
+        $this->db->select('htmlContent');
+        $this->db->from('figures');
+        $this->db->where('id', (int) $idFigure);
+        $res = $this->db->get()->result_array();
+
+        $html = (!empty($res) && isset($res[0]['htmlContent'])) ? $res[0]['htmlContent'] : '';
+        $fragment = ($html !== null && $html !== '') ? $this->extractSyntheseFragment($html) : '';
+
+        if ($fragment === '') {
+            // Aucune synthèse pour cette figure : le front affichera le message dédié
+            $this->output->set_status_header(204);
+            return;
+        }
+
+        $etag = '"' . md5($fragment) . '"';
+        $ifNoneMatch = isset($_SERVER['HTTP_IF_NONE_MATCH']) ? trim($_SERVER['HTTP_IF_NONE_MATCH']) : '';
+        if ($ifNoneMatch === $etag) {
+            $this->output
+                ->set_status_header(304)
+                ->set_header('ETag: ' . $etag)
+                ->set_header('Cache-Control: private, max-age=86400');
+            return;
+        }
+
+        $this->output
+            ->set_content_type('text/html', 'utf-8')
+            ->set_header('ETag: ' . $etag)
+            ->set_header('Cache-Control: private, max-age=86400')
+            ->set_output($fragment);
+    }
+
+    /**
+     * Extrait le premier élément « synthèse » d'un HTML de figure.
+     * Recherche LARGE (le nom exact de la balise sera figé plus tard) : tout élément
+     * dont la classe ou l'id contient « synthese », ou portant l'attribut data-synthese.
+     * Retourne le fragment HTML (outerHTML) ou '' si aucune synthèse n'est présente.
+     */
+    private function extractSyntheseFragment($html)
+    {
+        $dom = new DOMDocument();
+        libxml_use_internal_errors(true);
+        // Le préfixe force l'interprétation UTF-8 (sinon loadHTML casse les accents)
+        $dom->loadHTML('<?xml encoding="utf-8" ?>' . $html);
+        libxml_clear_errors();
+
+        $xp = new DOMXPath($dom);
+        $lc = "'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'"; // minuscules (insensible à la casse)
+        // « synthes » (sans voyelle finale) matche les deux orthographes : synthesis / synthèse
+        $query = "//*[contains(translate(@class,$lc),'synthes')"
+            . " or contains(translate(@id,$lc),'synthes')"
+            . " or @data-synthese]";
+        $nodes = $xp->query($query);
+
+        if ($nodes === false || $nodes->length === 0) {
+            return '';
+        }
+
+        // //* renvoie en ordre document : item(0) = la synthèse la plus englobante/première
+        $section = $dom->saveHTML($nodes->item(0));
+        if ($section === false) {
+            return '';
+        }
+
+        // Les styles de la synthèse vivent dans les <style> du document (hors du <section>).
+        // On les embarque pour que la modale, isolée dans son shadow root, reste stylée.
+        $styles = '';
+        $styleNodes = $xp->query('//style');
+        if ($styleNodes !== false) {
+            foreach ($styleNodes as $st) {
+                $styles .= '<style>' . $st->textContent . '</style>';
+            }
+        }
+
+        return trim($styles . $section);
+    }
+
     /** Lecture d'une colonne de _figure_svg avec gestion du cache navigateur (ETag / 304). */
     private function serveFigureSvgColumn($idFigure, $column, $contentType)
     {

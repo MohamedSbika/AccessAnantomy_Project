@@ -360,8 +360,10 @@ $lang['legend_progressive'] 	= "Aşamalı Etiket";
 $lang['legend_label'] 		= "Etiket:";
 $lang['legend_opt_complete'] 	= "Tam";
 $lang['legend_opt_sequential'] 	= "Sıralı";
-$lang['resume_btn'] 		= "Özet";
+$lang['resume_btn'] 		= "Sentez";
 $lang['resume_soon'] 		= "Bu bölüm yakında kullanıma sunulacak.";
+$lang['synthese_none'] 		= "Şu anda sentez mevcut değil.";
+$lang['resume_loading'] 	= "Yükleniyor…";
 
 $lang['lecture_mode'] 		= "Okuma Modu";
 $lang['lecture_perso'] 		= "Kişisel Okuma";
